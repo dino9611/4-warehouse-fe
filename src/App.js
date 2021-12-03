@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Route, Switch } from "react-router-dom";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const role = "user";
+
+  const renderRouting = () => {
+    if ((role = "user")) {
+      return (
+        <Switch>
+          <Route path="/" exact component="" />
+          <Route path="/login" exact component="" />
+          <Route path="/verify-email" exact component="" />
+          <Route path="/profile" exact component="" />
+          <Route path="/profile/history" exact component="" />
+          <Route path="/profile/history/detail/:orderId" exact component="" />
+          <Route path="/profile/address" exact component="" />
+          <Route path="/profile/address/add" exact component="" />
+          <Route path="/products" exact component="" />
+          <Route path="/products/:category" exact component="" />
+          <Route path="/products/:productId" exact component="" />
+          <Route path="/checkout" exact component="" />
+          <Route path="/checkout/payment" exact component="" />
+          <Route path="*" exact component="" />
+        </Switch>
+      );
+    } else if ((role = "admin")) {
+      return (
+        <Switch>
+          <Route path="/admin" exact component="" />
+          <Route path="/admin/dashboard" exact component="" />
+          <Route path="/admin/manage-product" exact component="" />
+          <Route path="/admin/manage-product/add" exact component="" />
+          <Route path="/admin/manage-product/edit" exact component="" />
+          <Route path="/admin/manage-transaction" exact component="" />
+          <Route path="/admin/stock-request" exact component="" />
+          <Route path="/admin/manage-warehouse" exact component="" />
+          <Route path="/admin/manage-admin" exact component="" />
+          <Route path="*" exact component="" />
+        </Switch>
+      );
+    } else {
+      return (
+        <Switch>
+          <Route path="/" exact component="" />
+          <Route path="/login" exact component="" />
+          <Route path="/register" exact component="" />
+          <Route path="/products" exact component="" />
+          <Route path="/products/:category" exact component="" />
+          <Route path="/products/:productId" exact component="" />
+          <Route path="*" exact component="" />
+        </Switch>
+      );
+    }
+  };
+
+  return <div className="App">{renderRouting()}</div>;
 }
 
 export default App;
