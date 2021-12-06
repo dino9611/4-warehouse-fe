@@ -1,3 +1,16 @@
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #272727;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #E9E9E9;
+    --neutral-5th-color: #FFFFFF;
+}
+
 .adm-products-main-wrap {
     display: flex;
     flex-direction: column;
@@ -20,4 +33,66 @@
 
 .txt-capitalize {
     text-transform: capitalize;
+}
+
+.adm-products-pagination {
+    display: flex;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0 24px;
+    width: 100%;
+}
+
+.adm-products-pagination-item {
+    align-items: center;
+    column-gap: 8px;
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.adm-products-pagination-item > p {
+    margin: 0;
+}
+
+.products-per-page-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100%;
+    color: var(--primary-4th-color);
+    cursor: pointer;
+    height: 48px;
+    width: 48px;
+}
+
+.products-per-page-btn:hover {
+    background-color: var(--primary-3rd-color);
+    color: var(--neutral-5th-color);
+    transition: 300ms;
+}
+
+.products-per-page-btn:disabled {
+    background-color: var(--neutral-5th-color);
+    color: var(--neutral-3rd-color);
+    cursor: default;
+}
+
+.adm-products-pagination-btn {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    cursor: pointer;
+    height: 48px;
+    width: 40px;
+}
+
+.adm-products-pagination-btn:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 400ms;
+}
+
+.adm-products-pagination-btn:disabled {
+    background-color: var(--neutral-3rd-color);
+    cursor: default;
 }

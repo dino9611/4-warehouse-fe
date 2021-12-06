@@ -12,18 +12,84 @@ import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
 
+
 function ManageProduct() {
     // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
     const [products, setProducts] = useState([]);
     
+    // PER WAREHOUSE MODAL SECTION
     const [addProdModal, setAddProdModal] = useState(false);
 
     const addProdToggle = () => setAddProdModal(!addProdModal);
 
+    // PAGINATION SECTION
+    const [page, setPage] = useState(0);
+
+    const [itemPerPage, setItemPerPage] = useState(5);
+
+    const [pageSelected, setPageSelected] = useState(0);
+
+    let pageCountTotal = Math.ceil(products.length / itemPerPage); // Itung total jumlah page yg tersedia
+
+    let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); // Itung range page yang bisa di-klik
+
+    let firstCount = pageCountRange[0]; // Tentuin first page yg mana, utk most first button
+
+    let lastCount = pageCountRange[pageCountRange.length - 1]; // Tentuin last page yg mana, utk most last button
+
+    let showMaxRange = 5 // Tentuin default max range yg tampil/di-render berapa buah
+
+    const renderPageRange = () => {
+        return pageCountRange.map((val, index) => {
+            if (index === page) {
+                return (
+                    <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)} disabled>
+                        {val}
+                    </button>
+                )
+            } else {
+                return(
+                <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)}>
+                    {val}
+                </button>
+                )
+            };
+        });
+    };
+
+    const rowsPerPageOptions = [5, 10, 50];
+
+    const renderRowsOptions = () => {
+        return rowsPerPageOptions.map((val) => {
+            if (val === itemPerPage) {
+                return (
+                    <button className="products-per-page-btn" value={val} onClick={(event) => selectPageFilter(event)} disabled>
+                        {val}
+                    </button>
+                )
+            } else {
+                return(
+                    <button className="products-per-page-btn" value={val} onClick={(event) => selectPageFilter(event)}>
+                        {val}
+                    </button>
+                )
+            };
+        });
+    };
+
+    const selectPage = (event) => {
+        setPage(event.target.value - 1);
+    };
+
+    const selectPageFilter = (event) => {
+        setItemPerPage(parseInt(event.target.value));
+        setPage(0);
+    };
+
     useEffect(async () => {
         try {
             const res = await axios.get(`${API_URL}/product/pagination`);
-            console.log(res.data);
+            // console.log(res.data);
             setProducts(res.data)
         } catch (error) {
             console.log(error);
@@ -58,11 +124,13 @@ function ManageProduct() {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products.map((val) => (
+                        {products
+                        .slice(page * itemPerPage, page * itemPerPage + itemPerPage)
+                        .map((val) => (
                              <TableRow
                              key={val.id}
                              >
-                                 {console.log(val.images[0], "Masuk sini")}
+                                 {/* {console.log(val.images[0], "Masuk sini")} */}
                                 <TableCell align="center" component="th" scope="row">
                                     <img src={`${API_URL}/src${val.images[0]}`} style={{height: "100px", width: "100px"}} alt={val.name}/>
                                 </TableCell>
@@ -83,6 +151,17 @@ function ManageProduct() {
                         ))}
                     </TableBody>
                 </Table>
+                <div className="adm-products-pagination">
+                    <div className="adm-products-pagination-item">
+                        <p>Product per Page:</p>
+                        {renderRowsOptions()}
+                    </div>
+                    <div className="adm-products-pagination-item">
+                        <div>{`<`}</div>
+                        {renderPageRange()}
+                        <div>{`>`}</div>
+                    </div>
+                </div>
             </TableContainer>
             </div>
         </div>
