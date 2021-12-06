@@ -11,6 +11,7 @@ import axios from 'axios';
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
+import Select from 'react-select';
 
 
 function ManageProduct() {
@@ -25,7 +26,7 @@ function ManageProduct() {
     // PAGINATION SECTION
     const [page, setPage] = useState(0);
 
-    const [itemPerPage, setItemPerPage] = useState(5);
+    const [itemPerPage, setItemPerPage] = useState(3);
 
     const [pageSelected, setPageSelected] = useState(0);
 
@@ -37,9 +38,11 @@ function ManageProduct() {
 
     let lastCount = pageCountRange[pageCountRange.length - 1]; // Tentuin last page yg mana, utk most last button
 
-    let showMaxRange = 5 // Tentuin default max range yg tampil/di-render berapa buah
+    let showMaxRange = 3; // Tentuin default max range yg tampil/di-render berapa buah
 
     const renderPageRange = () => {
+        let sisaPagination = products.length % itemPerPage;
+
         return pageCountRange.map((val, index) => {
             if (index === page) {
                 return (
@@ -47,6 +50,10 @@ function ManageProduct() {
                         {val}
                     </button>
                 )
+            } else if (index === showMaxRange) {
+                return <span>. . .</span>
+            } else if (index > showMaxRange && index < pageCountTotal - 1) {
+                return
             } else {
                 return(
                 <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)}>
@@ -57,7 +64,7 @@ function ManageProduct() {
         });
     };
 
-    const rowsPerPageOptions = [5, 10, 50];
+    const rowsPerPageOptions = [3, 10, 50];
 
     const renderRowsOptions = () => {
         return rowsPerPageOptions.map((val) => {
@@ -86,7 +93,7 @@ function ManageProduct() {
         setPage(0);
     };
 
-    useEffect(async () => {
+    const fetchProdData = async () => {
         try {
             const res = await axios.get(`${API_URL}/product/pagination`);
             // console.log(res.data);
@@ -94,6 +101,10 @@ function ManageProduct() {
         } catch (error) {
             console.log(error);
         };
+    };
+
+    useEffect(() => {
+        fetchProdData();
     },[]);
 
     // const showWhModal = AdminWhStockModal();
@@ -110,59 +121,64 @@ function ManageProduct() {
                 <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="adm-products-contents-wrap">
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                    <TableRow>
-                        <TableCell align="center">Image</TableCell>
-                        <TableCell align="center">Product ID</TableCell>
-                        <TableCell align="center">Name</TableCell>
-                        <TableCell align="center">Category</TableCell>
-                        <TableCell align="center">Price</TableCell>
-                        <TableCell align="center">Stock</TableCell>
-                        <TableCell align="center">Action</TableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {products
-                        .slice(page * itemPerPage, page * itemPerPage + itemPerPage)
-                        .map((val) => (
-                             <TableRow
-                             key={val.id}
-                             >
-                                 {/* {console.log(val.images[0], "Masuk sini")} */}
-                                <TableCell align="center" component="th" scope="row">
-                                    <img src={`${API_URL}/src${val.images[0]}`} style={{height: "100px", width: "100px"}} alt={val.name}/>
-                                </TableCell>
-                                <TableCell align="center">{val.id}</TableCell>
-                                <TableCell align="center" className="txt-capitalize">{val.name}</TableCell>
-                                <TableCell align="center" className="txt-capitalize">{val.category}</TableCell>
-                                <TableCell align="right">{`Rp${thousandSeparator(val.price)}`}</TableCell>
-                                <TableCell align="right">
-                                    <span style={{cursor: "pointer"}} onClick={addProdToggle}>
-                                        {val.total_stock}
-                                    </span>
-                                    <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} testVal={val.id}/>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <button className="btn btn-primary shadow-none">Pilihan</button>
-                                </TableCell>
-                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                <div className="adm-products-pagination">
-                    <div className="adm-products-pagination-item">
-                        <p>Product per Page:</p>
-                        {renderRowsOptions()}
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                        <TableRow>
+                            <TableCell align="center">Image</TableCell>
+                            <TableCell align="center">Product ID</TableCell>
+                            <TableCell align="center">Name</TableCell>
+                            <TableCell align="center">Category</TableCell>
+                            <TableCell align="center">Price</TableCell>
+                            <TableCell align="center">Stock</TableCell>
+                            <TableCell align="center">Action</TableCell>
+                        </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {products
+                            .slice(page * itemPerPage, page * itemPerPage + itemPerPage)
+                            .map((val) => (
+                                <TableRow
+                                key={val.SKU}
+                                >
+                                    {/* {console.log(val.images[0], "Masuk sini")} */}
+                                    <TableCell align="center" component="th" scope="row">
+                                        {/* Render image blm selesai */}
+                                        <img src={`${API_URL}/src${val.images[0]}`} style={{height: "100px", width: "100px"}} alt={val.name}/>
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {val.id}
+                                        <br />
+                                        SKU: {val.SKU}
+                                    </TableCell>
+                                    <TableCell align="center" className="txt-capitalize">{val.name}</TableCell>
+                                    <TableCell align="center" className="txt-capitalize">{val.category}</TableCell>
+                                    <TableCell align="right">{`Rp${thousandSeparator(val.price)}`}</TableCell>
+                                    <TableCell align="right">
+                                        <span style={{cursor: "pointer"}} onClick={addProdToggle}>
+                                            {val.total_stock}
+                                        </span>
+                                        <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} testVal={val.id}/>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <button className="btn btn-primary shadow-none">Pilihan</button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    <div className="adm-products-pagination">
+                        <div className="adm-products-pagination-item">
+                            <p>Product per Page:</p>
+                            {renderRowsOptions()}
+                        </div>
+                        <div className="adm-products-pagination-item">
+                            <div>{`<`}</div>
+                            {renderPageRange()}
+                            <div>{`>`}</div>
+                        </div>
                     </div>
-                    <div className="adm-products-pagination-item">
-                        <div>{`<`}</div>
-                        {renderPageRange()}
-                        <div>{`>`}</div>
-                    </div>
-                </div>
-            </TableContainer>
+                </TableContainer>
             </div>
         </div>
     )
