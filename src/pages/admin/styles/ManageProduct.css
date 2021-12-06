@@ -1,0 +1,23 @@
+.adm-products-main-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.adm-products-header-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.adm-products-header-wrap > h4 {
+    margin: 0;
+}
+
+.adm-products-contents-wrap {
+    margin-top: 24px;
+}
+
+.txt-capitalize {
+    text-transform: capitalize;
+}

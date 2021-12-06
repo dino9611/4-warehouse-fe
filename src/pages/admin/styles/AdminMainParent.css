@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+    font-family: "Poppins", "Open Sans", sans-serif !important;
+}
+
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #272727;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #E9E9E9;
+    --neutral-5th-color: #FFFFFF;
+}
+
+.adm-main-parent-wrap {
+    display: flex;
+    height: 100%;
+    position: relative;
+    width: 100vw;
+}
+
+.control-zIndex {
+    z-index: 1;
+}
+
+.adm-main-content-wrap {
+    background-color: #f6f3eb;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+}
