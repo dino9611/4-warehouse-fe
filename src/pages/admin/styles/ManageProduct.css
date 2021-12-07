@@ -3,11 +3,12 @@
     --primary-2nd-color: #FCB537;
     --primary-3rd-color: #8D280C;
     --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
 
     --neutral-1st-color: #070707;
-    --neutral-2nd-color: #272727;
+    --neutral-2nd-color: #5A5A5A;
     --neutral-3rd-color: #CACACA;
-    --neutral-4th-color: #E9E9E9;
+    --neutral-4th-color: #F4F4F4;
     --neutral-5th-color: #FFFFFF;
 }
 
@@ -59,7 +60,7 @@
     background-color: var(--neutral-5th-color);
     border: none;
     border-radius: 100%;
-    color: var(--neutral-3rd-color);
+    color: var(--primary-4th-color);
     cursor: pointer;
     height: 48px;
     width: 48px;
@@ -73,7 +74,7 @@
 
 .products-per-page-btn:disabled {
     background-color: var(--neutral-5th-color);
-    color: var(--primary-4th-color);
+    color: var(--neutral-3rd-color);
     cursor: default;
 }
 
@@ -97,4 +98,32 @@
     background-color: var(--primary-4th-color);
     color: var(--neutral-5th-color);
     cursor: default;
+}
+
+.adm-products-prev-btn,
+.adm-products-next-btn {
+    background-color: var(--neutral-4th-color);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    height: 48px;
+    width: 88px;
+}
+
+.adm-products-prev-btn:hover > img,
+.adm-products-next-btn:hover > img {
+    transform: translateY(-2px);
+    transition: 300ms;
+}
+
+.adm-products-prev-btn:disabled,
+.adm-products-next-btn:disabled {
+    cursor: default;
+    opacity: 50%;
+}
+
+.adm-products-prev-btn:disabled:hover > img,
+.adm-products-next-btn:disabled:hover > img {
+    transform: translateY(0);
+    transition: none;
 }

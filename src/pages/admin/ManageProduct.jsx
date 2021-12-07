@@ -11,6 +11,8 @@ import axios from 'axios';
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
+import paginationPrevArrow from "../../assets/components/Pagination-Prev-Arrow.svg";
+import paginationNextArrow from "../../assets/components/Pagination-Next-Arrow.svg";
 import Select from 'react-select';
 
 
@@ -91,13 +93,21 @@ function ManageProduct() {
     const selectPage = (event) => {
         setPage(event.target.value - 1);
     };
-
-    const nextPage = () => {
-        setPage(page + 1);
+    
+    const prevPage = () => {
+        if (page <= 0) {
+            return
+        } else {
+            setPage(page - 1);
+        }
     };
 
-    const prevPage = () => {
-        setPage(page - 1);
+    const nextPage = () => {
+        if (page + 1 >= pageCountTotal) {
+            return
+        } else {
+            setPage(page + 1);
+        }
     };
 
     const selectPageFilter = (event) => {
@@ -188,9 +198,21 @@ function ManageProduct() {
                             {renderRowsOptions()}
                         </div>
                         <div className="adm-products-pagination-item">
-                            <div onClick={prevPage} style={{cursor: "pointer"}}>{`<`}</div>
+                            <button 
+                                className="adm-products-prev-btn" 
+                                disabled={!page ? true : false} 
+                                onClick={prevPage}
+                            >
+                                <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />
+                            </button>
                             {renderPageRange()}
-                            <div onClick={nextPage} style={{cursor: "pointer"}}>{`>`}</div>
+                            <button 
+                                className="adm-products-next-btn" 
+                                disabled={(page + 1 === pageCountTotal) ? true : false} 
+                                onClick={nextPage}
+                            >
+                                <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />
+                            </button>
                         </div>
                     </div>
                 </TableContainer>
