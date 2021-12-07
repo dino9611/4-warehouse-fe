@@ -28,9 +28,11 @@ function ManageProduct() {
 
     const [itemPerPage, setItemPerPage] = useState(3);
 
-    const [pageSelected, setPageSelected] = useState(0);
+    const [prodLength, setProdLength] = useState(0);
 
-    let pageCountTotal = Math.ceil(products.length / itemPerPage); // Itung total jumlah page yg tersedia
+    const [pageSelected, setPageSelected] = useState(0); // Belum digunakan, besar % hapus
+
+    let pageCountTotal = Math.ceil(prodLength / itemPerPage); // Itung total jumlah page yg tersedia
 
     let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); // Itung range page yang bisa di-klik
 
@@ -38,7 +40,7 @@ function ManageProduct() {
 
     let lastCount = pageCountRange[pageCountRange.length - 1]; // Tentuin last page yg mana, utk most last button
 
-    let showMaxRange = 3; // Tentuin default max range yg tampil/di-render berapa buah
+    let showMaxRange = 4; // Tentuin default max range yg tampil/di-render berapa buah
 
     const renderPageRange = () => {
         let sisaPagination = products.length % itemPerPage;
@@ -51,20 +53,22 @@ function ManageProduct() {
                     </button>
                 )
             } else if (index === showMaxRange) {
-                return <span>. . .</span>
+                return (
+                    <span>. . .</span>
+                )
             } else if (index > showMaxRange && index < pageCountTotal - 1) {
                 return
             } else {
-                return(
-                <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)}>
-                    {val}
-                </button>
+                return (
+                    <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)}>
+                        {val}
+                    </button>
                 )
             };
         });
     };
 
-    const rowsPerPageOptions = [3, 10, 50];
+    const rowsPerPageOptions = [3, 5, 10, 50];
 
     const renderRowsOptions = () => {
         return rowsPerPageOptions.map((val) => {
@@ -88,6 +92,14 @@ function ManageProduct() {
         setPage(event.target.value - 1);
     };
 
+    const nextPage = () => {
+        setPage(page + 1);
+    };
+
+    const prevPage = () => {
+        setPage(page - 1);
+    };
+
     const selectPageFilter = (event) => {
         setItemPerPage(parseInt(event.target.value));
         setPage(0);
@@ -95,17 +107,21 @@ function ManageProduct() {
 
     const fetchProdData = async () => {
         try {
-            const res = await axios.get(`${API_URL}/product/pagination`);
-            // console.log(res.data);
-            setProducts(res.data)
+            const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page}&limit=${itemPerPage}`);
+            setProducts(res.data);
+            setProdLength(parseInt(res.headers["x-total-count"]));
         } catch (error) {
             console.log(error);
         };
     };
-
+    
     useEffect(() => {
         fetchProdData();
-    },[]);
+    },[page, itemPerPage]);
+    
+    console.log("Page setelah useEffect 01", page);
+    console.log("Prodlength setelah useEffect 02", prodLength);
+    console.log("Products setelah useEffect 03", products);
 
     // const showWhModal = AdminWhStockModal();
 
@@ -136,7 +152,6 @@ function ManageProduct() {
                         </TableHead>
                         <TableBody>
                             {products
-                            .slice(page * itemPerPage, page * itemPerPage + itemPerPage)
                             .map((val) => (
                                 <TableRow
                                 key={val.SKU}
@@ -173,9 +188,9 @@ function ManageProduct() {
                             {renderRowsOptions()}
                         </div>
                         <div className="adm-products-pagination-item">
-                            <div>{`<`}</div>
+                            <div onClick={prevPage} style={{cursor: "pointer"}}>{`<`}</div>
                             {renderPageRange()}
-                            <div>{`>`}</div>
+                            <div onClick={nextPage} style={{cursor: "pointer"}}>{`>`}</div>
                         </div>
                     </div>
                 </TableContainer>
