@@ -1,14 +1,15 @@
 import "./App.css";
 import { Route, Switch } from "react-router-dom";
+import Homepage from "./pages/non-user/Homepage";
 
 function App() {
   const role = "user";
 
   const renderRouting = () => {
-    if ((role = "user")) {
+    if (role == "user") {
       return (
         <Switch>
-          <Route path="/" exact component="" />
+          <Route path="/" exact component={Homepage} />
           <Route path="/login" exact component="" />
           <Route path="/verify-email" exact component="" />
           <Route path="/profile" exact component="" />
@@ -24,7 +25,7 @@ function App() {
           <Route path="*" exact component="" />
         </Switch>
       );
-    } else if ((role = "admin")) {
+    } else if (role == "admin") {
       return (
         <Switch>
           <Route path="/admin" exact component="" />
@@ -54,7 +55,12 @@ function App() {
     }
   };
 
-  return <div className="App">{renderRouting()}</div>;
+  return (
+    <div>
+      <div style={{ marginBottom: "30px" }}>{renderRouting()}</div>
+      <div className="app-carousel d-flex justify-content-center"></div>
+    </div>
+  );
 }
 
 export default App;

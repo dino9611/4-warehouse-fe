@@ -1,0 +1,16 @@
+.homepage-carousel {
+  width: 100%;
+  padding: 2.4% 0%;
+  overflow: hidden;
+}
+
+.homepage-carousel-wrapper {
+  width: 140%;
+  position: relative;
+  right: 20%;
+}
+
+.homepage-text-category {
+  font-size: 20px;
+  font-weight: 600;
+}
