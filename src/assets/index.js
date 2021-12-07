@@ -9,6 +9,7 @@ import rempah from "./rempah.svg";
 import sayur from "./sayur.svg";
 import susu from "./susu.svg";
 import teh from "./teh.svg";
+import produk1 from "./produk1.svg";
 
 export default {
   logo,
@@ -22,4 +23,5 @@ export default {
   sayur,
   susu,
   teh,
+  produk1,
 };

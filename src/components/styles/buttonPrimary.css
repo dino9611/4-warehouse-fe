@@ -1,0 +1,11 @@
+.button-primary-wrapper {
+  padding: 10px 11.8px 10px 11.8px;
+  border-radius: 100px;
+  background-color: #b24629;
+}
+
+.button-primary-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}

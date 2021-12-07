@@ -3,9 +3,12 @@ import "./styles/homepage.css";
 import Header from "../../components/Header";
 import Carousel from "./../../components/Carousel";
 import CardCategory from "../../components/CardCategory";
+import CardProduct from "../../components/CardProduct";
+import CarouselCard from "../../components/CarouselCard";
 import images from "./../../assets";
 
-const { buah, coklat, kacang, kopi, rempah, sayur, susu, teh } = images;
+const { produk1, buah, coklat, kacang, kopi, rempah, sayur, susu, teh } =
+  images;
 
 function Homepage() {
   return (
@@ -24,7 +27,7 @@ function Homepage() {
             Temukan produk dari kategori
           </h4>
         </div>
-        <div className="row d-flex justify-content-between w-100 mt-3">
+        <div className="row d-flex justify-content-between mt-3">
           <CardCategory img={kopi} name="Kopi" />
           <CardCategory img={teh} name="Teh" />
           <CardCategory img={susu} name="Susu" />
@@ -33,6 +36,116 @@ function Homepage() {
           <CardCategory img={sayur} name="Sayur" />
           <CardCategory img={buah} name="Buah" />
           <CardCategory img={kacang} name="Kacang" />
+        </div>
+      </div>
+      <div className="mt-5">
+        <div className="homepage-diskon">
+          <div className="container">
+            <div className="row ">
+              <h5
+                className="my-4"
+                style={{ fontSize: "20px", fontWeight: "600", color: "#fff" }}
+              >
+                Kejar diskon spesial!
+              </h5>
+            </div>
+            <div style={{ width: "100%" }}>
+              <div style={{ width: "100%" }}>
+                <CarouselCard>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                  <div>
+                    <CardProduct
+                      img={produk1}
+                      category="Kacang"
+                      title="Kacang almond panggang kupas 2kg"
+                      discount="212.000"
+                      price="105.000"
+                      btn="Beli"
+                    />
+                  </div>
+                </CarouselCard>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
