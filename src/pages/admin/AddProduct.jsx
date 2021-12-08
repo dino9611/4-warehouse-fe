@@ -47,6 +47,7 @@ function AdminAddProduct() {
                         </div>
                         <div className="add-info-form-right">
                             <select name="prod-category" id="prod-category">
+                                <option value="" selected disabled hidden>Choose here</option>
                                 <option value="Kopi">Kopi</option>
                                 <option value="Coklat">Coklat</option>
                                 <option value="Susu">Susu</option>
