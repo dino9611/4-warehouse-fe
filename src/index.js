@@ -10,7 +10,7 @@ import { BrowserRouter } from "react-router-dom";
 import reducers from "./redux/reducers";
 
 ReactDOM.render(
-  <Provider store={(createStore(reducers), {}, applyMiddleware(Thunk))}>
+  <Provider store={createStore(reducers, {}, applyMiddleware(Thunk))}>
     <BrowserRouter>
       <App />
     </BrowserRouter>

@@ -1,11 +1,12 @@
 import "./App.css";
 import { Route, Switch } from "react-router-dom";
+import AdminMainParent from "./pages/admin/AdminMainParent";
 
 function App() {
-  const role = "user";
+  const role = "admin";
 
   const renderRouting = () => {
-    if ((role = "user")) {
+    if ((role === "user")) {
       return (
         <Switch>
           <Route path="/" exact component="" />
@@ -24,18 +25,19 @@ function App() {
           <Route path="*" exact component="" />
         </Switch>
       );
-    } else if ((role = "admin")) {
+    } else if ((role === "admin")) {
       return (
         <Switch>
           <Route path="/admin" exact component="" />
-          <Route path="/admin/dashboard" exact component="" />
-          <Route path="/admin/manage-product" exact component="" />
-          <Route path="/admin/manage-product/add" exact component="" />
-          <Route path="/admin/manage-product/edit" exact component="" />
-          <Route path="/admin/manage-transaction" exact component="" />
-          <Route path="/admin/stock-request" exact component="" />
-          <Route path="/admin/manage-warehouse" exact component="" />
-          <Route path="/admin/manage-admin" exact component="" />
+          {/* Routing sub page admin ada di component admin sidebar */}
+          <Route path="/admin/dashboard" exact component={AdminMainParent} />
+          <Route path="/admin/manage-product" exact component={AdminMainParent} />
+          <Route path="/admin/manage-product/add" exact component={AdminMainParent} />
+          <Route path="/admin/manage-product/edit" exact component={AdminMainParent} />
+          <Route path="/admin/manage-transaction" exact component={AdminMainParent} />
+          <Route path="/admin/stock-request" exact component={AdminMainParent} />
+          <Route path="/admin/manage-warehouse" exact component={AdminMainParent} />
+          <Route path="/admin/manage-admin" exact component={AdminMainParent} />
           <Route path="*" exact component="" />
         </Switch>
       );
@@ -54,7 +56,11 @@ function App() {
     }
   };
 
-  return <div className="App">{renderRouting()}</div>;
+  return (
+    <div className="App">
+      {renderRouting()}
+    </div>
+  );
 }
 
 export default App;
