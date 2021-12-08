@@ -57,7 +57,7 @@ function App() {
 
   return (
     <div>
-      <div style={{ marginBottom: "30px" }}>{renderRouting()}</div>
+      <div>{renderRouting()}</div>
       <div className="app-carousel d-flex justify-content-center"></div>
     </div>
   );

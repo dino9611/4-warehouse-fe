@@ -19,3 +19,30 @@
   background-image: url("./../../../assets/banner-diskon.svg");
   height: 415px;
 }
+
+.homepage-carousel-diskon {
+  width: 100%;
+  overflow: hidden;
+}
+
+.homepage-carousel-wrapper-diskon {
+  width: 140%;
+  position: relative;
+}
+
+.homepage-footer-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.homepage-kategori {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.homepage-footer-content {
+  font-size: 12px;
+  color: #fff;
+}

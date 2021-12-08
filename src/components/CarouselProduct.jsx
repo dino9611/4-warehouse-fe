@@ -6,7 +6,7 @@ import "./styles/carouselCard.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-function CarouselCard({ children }) {
+function CarouselProduct({ children }) {
   const [newIndex, setNewIndex] = useState(null);
   const [oldIndex, setOldIndex] = useState(null);
 
@@ -46,8 +46,8 @@ function CarouselCard({ children }) {
     infinite: false,
     arrows: false,
     speed: 500,
-    slidesToScroll: 4.2,
-    slidesToShow: 4.2,
+    slidesToScroll: 4,
+    slidesToShow: 4,
     beforeChange: (oldIndex, newIndex) => {
       setNewIndex(newIndex);
       setOldIndex(oldIndex);
@@ -56,12 +56,12 @@ function CarouselCard({ children }) {
 
   return (
     <div>
-      {renderArrow()}
-      <Slider ref={sliderRef} {...settings} className="carousel-tes">
+      {/* {renderArrow()} */}
+      <Slider ref={sliderRef} {...settings}>
         {children}
       </Slider>
     </div>
   );
 }
 
-export default CarouselCard;
+export default CarouselProduct;
