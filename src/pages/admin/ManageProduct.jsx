@@ -13,64 +13,92 @@ import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Arrow.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Arrow.svg";
-import Select from 'react-select';
-
 
 function ManageProduct() {
     // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
     const [products, setProducts] = useState([]);
-    
-    // PER WAREHOUSE MODAL SECTION
-    const [addProdModal, setAddProdModal] = useState(false);
-
-    const addProdToggle = () => setAddProdModal(!addProdModal);
 
     // PAGINATION SECTION
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
 
     const [itemPerPage, setItemPerPage] = useState(3);
 
     const [prodLength, setProdLength] = useState(0);
 
-    const [pageSelected, setPageSelected] = useState(0); // Belum digunakan, besar % hapus
-
     let pageCountTotal = Math.ceil(prodLength / itemPerPage); // Itung total jumlah page yg tersedia
 
     let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); // Itung range page yang bisa di-klik
+    
+    let showMaxRange = 5; // Tentuin default max range yg tampil/di-render berapa buah
 
-    let firstCount = pageCountRange[0]; // Tentuin first page yg mana, utk most first button
+    let firstCount = pageCountRange[0]; // Tentuin first page yg mana, utk most first button (blm dipake)
 
-    let lastCount = pageCountRange[pageCountRange.length - 1]; // Tentuin last page yg mana, utk most last button
+    let lastCount = pageCountRange[pageCountRange.length - 1]; // Tentuin last page yg mana, utk most last button (blm dipake)
 
-    let showMaxRange = 4; // Tentuin default max range yg tampil/di-render berapa buah
+    // PER WAREHOUSE MODAL SECTION (Belum dipake)
+    // const [addProdModal, setAddProdModal] = useState(false);
 
+    // const addProdToggle = () => setAddProdModal(!addProdModal);
+    
+    // const showWhModal = AdminWhStockModal();
+
+    // const showWhStock = () => {
+    //     console.log("Click detected");
+    //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
+    // }
+
+    // RENDER PAGE RANGE SECTION
     const renderPageRange = () => {
-        let sisaPagination = products.length % itemPerPage;
+        const disabledBtn = (value) => {
+            return (
+                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)} disabled>
+                    {value}
+                </button>
+            );
+        };
 
-        return pageCountRange.map((val, index) => {
-            if (index === page) {
-                return (
-                    <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)} disabled>
-                        {val}
-                    </button>
-                )
-            } else if (index === showMaxRange) {
-                return (
-                    <span>. . .</span>
-                )
-            } else if (index > showMaxRange && index < pageCountTotal - 1) {
-                return
+        const clickableBtn = (value) => {
+            return (
+                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)}>
+                    {value}
+                </button>
+            );
+        };
+
+        if (pageCountRange.length <= showMaxRange) {
+            return pageCountRange.map((val, index) => {
+                if (val === page) {
+                    return disabledBtn(val);
+                } else {
+                    return clickableBtn(val);
+                };
+            });
+        } else {
+            let filteredArr;
+
+            if (page <= 5) {
+                filteredArr = pageCountRange.slice(0, 0 + 5)
             } else {
-                return (
-                    <button className="adm-products-pagination-btn" value={val} onClick={(event) => selectPage(event)}>
-                        {val}
-                    </button>
-                )
+                let slicingCounter = page - 6
+                filteredArr = pageCountRange.slice(2 + slicingCounter, slicingCounter + 2 + 5)
             };
-        });
+    
+            return filteredArr.map((val, index) => {
+                if (val === page) {
+                    return disabledBtn(val);
+                } else if (index >= showMaxRange) {
+                    return
+                } else if (index > showMaxRange && index < pageCountTotal - 1) {
+                    return
+                } else {
+                    return clickableBtn(val);
+                };
+            });
+        };
     };
 
-    const rowsPerPageOptions = [3, 5, 10, 50];
+    // FILTER ITEM PER PAGE SECTION
+    const rowsPerPageOptions = [1, 3, 5, 10, 50];
 
     const renderRowsOptions = () => {
         return rowsPerPageOptions.map((val) => {
@@ -79,19 +107,25 @@ function ManageProduct() {
                     <button className="products-per-page-btn" value={val} onClick={(event) => selectPageFilter(event)} disabled>
                         {val}
                     </button>
-                )
+                );
             } else {
                 return(
                     <button className="products-per-page-btn" value={val} onClick={(event) => selectPageFilter(event)}>
                         {val}
                     </button>
-                )
+                );
             };
         });
     };
 
+    // SELECT FUNCTION SECTION
+    const selectPageFilter = (event) => {
+        setItemPerPage(parseInt(event.target.value));
+        setPage(1);
+    };
+
     const selectPage = (event) => {
-        setPage(event.target.value - 1);
+        setPage(parseInt(event.target.value));
     };
     
     const prevPage = () => {
@@ -103,21 +137,18 @@ function ManageProduct() {
     };
 
     const nextPage = () => {
-        if (page + 1 >= pageCountTotal) {
+        if (page >= pageCountTotal) {
             return
         } else {
             setPage(page + 1);
         }
     };
 
-    const selectPageFilter = (event) => {
-        setItemPerPage(parseInt(event.target.value));
-        setPage(0);
-    };
-
+    // FETCH & RENDER SECTION
     const fetchProdData = async () => {
         try {
-            const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page}&limit=${itemPerPage}`);
+            const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
+            console.log(res.data);
             setProducts(res.data);
             setProdLength(parseInt(res.headers["x-total-count"]));
         } catch (error) {
@@ -127,18 +158,7 @@ function ManageProduct() {
     
     useEffect(() => {
         fetchProdData();
-    },[page, itemPerPage]);
-    
-    console.log("Page setelah useEffect 01", page);
-    console.log("Prodlength setelah useEffect 02", prodLength);
-    console.log("Products setelah useEffect 03", products);
-
-    // const showWhModal = AdminWhStockModal();
-
-    // const showWhStock = () => {
-    //     console.log("Click detected");
-    //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
-    // }
+    }, [page, itemPerPage]);
 
     return (
         <div className="adm-products-main-wrap">
@@ -166,10 +186,13 @@ function ManageProduct() {
                                 <TableRow
                                 key={val.SKU}
                                 >
-                                    {/* {console.log(val.images[0], "Masuk sini")} */}
+                                    {console.log(val.images[0], "Masuk sini")}
                                     <TableCell align="center" component="th" scope="row">
-                                        {/* Render image blm selesai */}
-                                        <img src={`${API_URL}/src${val.images[0]}`} style={{height: "100px", width: "100px"}} alt={val.name}/>
+                                        <img 
+                                            src={`${API_URL}/${val.images[0]}`} 
+                                            style={{height: "100px", width: "100px"}} 
+                                            alt={val.name}
+                                        />
                                     </TableCell>
                                     <TableCell align="left">
                                         {val.id}
@@ -180,10 +203,9 @@ function ManageProduct() {
                                     <TableCell align="center" className="txt-capitalize">{val.category}</TableCell>
                                     <TableCell align="right">{`Rp${thousandSeparator(val.price)}`}</TableCell>
                                     <TableCell align="right">
-                                        <span style={{cursor: "pointer"}} onClick={addProdToggle}>
+                                        <span style={{cursor: "pointer"}}>
                                             {val.total_stock}
                                         </span>
-                                        <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} testVal={val.id}/>
                                     </TableCell>
                                     <TableCell align="center">
                                         <button className="btn btn-primary shadow-none">Pilihan</button>
@@ -200,7 +222,7 @@ function ManageProduct() {
                         <div className="adm-products-pagination-item">
                             <button 
                                 className="adm-products-prev-btn" 
-                                disabled={!page ? true : false} 
+                                disabled={page === 1} 
                                 onClick={prevPage}
                             >
                                 <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />
@@ -208,7 +230,7 @@ function ManageProduct() {
                             {renderPageRange()}
                             <button 
                                 className="adm-products-next-btn" 
-                                disabled={(page + 1 === pageCountTotal) ? true : false} 
+                                disabled={(page === pageCountTotal) ? true : false} 
                                 onClick={nextPage}
                             >
                                 <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />

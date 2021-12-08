@@ -67,7 +67,7 @@
 }
 
 .products-per-page-btn:hover {
-    background-color: var(--primary-3rd-color);
+    background-color: var(--primary-4th-color);
     color: var(--neutral-5th-color);
     transition: 300ms;
 }
