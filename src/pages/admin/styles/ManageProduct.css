@@ -32,6 +32,30 @@
     margin-top: 24px;
 }
 
+.adm-products-add-wrap {
+    display: flex;
+    margin: 24px 16px;
+}
+
+.adm-products-add-wrap:hover {
+    text-decoration: none;
+}
+
+.adm-products-add-wrap > button {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    font-weight: 600;
+    height: 42px;
+    width: 160px;
+}
+
+.adm-products-add-wrap > button:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 300ms;
+}
+
 .txt-capitalize {
     text-transform: capitalize;
 }

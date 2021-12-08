@@ -57,12 +57,6 @@ function AdminSideBar(props) {
                         <h5>Manage Product</h5>
                     </div>
                 </Link>
-                <Link to={routes.addProduct} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <FiHome className="adm-sidebar-icon"/>
-                        <h5>Add Product</h5>
-                    </div>
-                </Link>
                 <Link to={routes.editProduct} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>

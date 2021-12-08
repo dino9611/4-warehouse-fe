@@ -13,6 +13,7 @@ import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Arrow.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Arrow.svg";
+import {Link} from "react-router-dom";
 
 function ManageProduct() {
     // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
@@ -46,6 +47,22 @@ function ManageProduct() {
     //     console.log("Click detected");
     //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
     // }
+
+    // FETCH & RENDER SECTION
+    const fetchProdData = async () => {
+        try {
+            const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
+            console.log(res.data);
+            setProducts(res.data);
+            setProdLength(parseInt(res.headers["x-total-count"]));
+        } catch (error) {
+            console.log(error);
+        };
+    };
+    
+    useEffect(() => {
+        fetchProdData();
+    }, [page, itemPerPage]);
 
     // RENDER PAGE RANGE SECTION
     const renderPageRange = () => {
@@ -144,22 +161,6 @@ function ManageProduct() {
         }
     };
 
-    // FETCH & RENDER SECTION
-    const fetchProdData = async () => {
-        try {
-            const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
-            console.log(res.data);
-            setProducts(res.data);
-            setProdLength(parseInt(res.headers["x-total-count"]));
-        } catch (error) {
-            console.log(error);
-        };
-    };
-    
-    useEffect(() => {
-        fetchProdData();
-    }, [page, itemPerPage]);
-
     return (
         <div className="adm-products-main-wrap">
             <div className="adm-products-header-wrap">
@@ -168,17 +169,23 @@ function ManageProduct() {
             </div>
             <div className="adm-products-contents-wrap">
                 <TableContainer component={Paper}>
+                    <Link to="/admin/manage-product/add" className="adm-products-add-wrap">
+                        <button>+ Add Products</button>
+                    </Link>
+                    {/* <div className="adm-products-add-wrap">
+                        <button>+ Add Products</button>
+                    </div> */}
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
-                        <TableRow>
-                            <TableCell align="center">Image</TableCell>
-                            <TableCell align="center">Product ID</TableCell>
-                            <TableCell align="center">Name</TableCell>
-                            <TableCell align="center">Category</TableCell>
-                            <TableCell align="center">Price</TableCell>
-                            <TableCell align="center">Stock</TableCell>
-                            <TableCell align="center">Action</TableCell>
-                        </TableRow>
+                            <TableRow>
+                                <TableCell align="center">Image</TableCell>
+                                <TableCell align="center">Product ID</TableCell>
+                                <TableCell align="center">Name</TableCell>
+                                <TableCell align="center">Category</TableCell>
+                                <TableCell align="center">Price</TableCell>
+                                <TableCell align="center">Stock</TableCell>
+                                <TableCell align="center">Action</TableCell>
+                            </TableRow>
                         </TableHead>
                         <TableBody>
                             {products
@@ -230,7 +237,7 @@ function ManageProduct() {
                             {renderPageRange()}
                             <button 
                                 className="adm-products-next-btn" 
-                                disabled={(page === pageCountTotal) ? true : false} 
+                                disabled={page === pageCountTotal} 
                                 onClick={nextPage}
                             >
                                 <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />
