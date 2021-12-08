@@ -21,7 +21,7 @@ function ManageProduct() {
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
 
-    const [itemPerPage, setItemPerPage] = useState(3);
+    const [itemPerPage, setItemPerPage] = useState(5);
 
     const [prodLength, setProdLength] = useState(0);
 
