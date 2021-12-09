@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Homepage from "./pages/non-user/Homepage";
 import Product from "./pages/non-user/Product";
+import Profile from "./pages/user/Profile";
 
 function App() {
   const role = "user";
@@ -15,7 +16,7 @@ function App() {
           <Route path="/" exact component={Homepage} />
           <Route path="/login" exact component="" />
           <Route path="/verify-email" exact component="" />
-          <Route path="/profile" exact component="" />
+          <Route path="/profile" exact component={Profile} />
           <Route path="/profile/history" exact component="" />
           <Route path="/profile/history/detail/:orderId" exact component="" />
           <Route path="/profile/address" exact component="" />
@@ -60,9 +61,8 @@ function App() {
 
   return (
     <div>
-      <div>
-        <Header />
-      </div>
+      <Header />
+
       <div>{renderRouting()}</div>
       <div>
         <Footer />

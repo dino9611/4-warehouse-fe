@@ -15,6 +15,9 @@ import instagram from "./instagram.svg";
 import facebook from "./facebook.svg";
 import wa from "./wa1.svg";
 import call from "./wa.svg";
+import expanddown from "./expanddown.svg";
+import profil from "./profil.svg";
+import search from "./search.svg";
 
 export default {
   logo,
@@ -34,4 +37,7 @@ export default {
   facebook,
   wa,
   call,
+  expanddown,
+  profil,
+  search,
 };

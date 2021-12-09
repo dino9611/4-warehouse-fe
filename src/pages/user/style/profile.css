@@ -1,0 +1,31 @@
+.profile-photo-wrapper {
+  height: auto;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 10%;
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08);
+}
+
+.profile-photo-circle {
+  position: relative;
+}
+
+.profile-photo {
+  height: 100px;
+  width: 50%;
+  object-fit: cover;
+  border-radius: 100%;
+  border: 2px solid #8d280c;
+}
+
+.profile-update-photo {
+  position: absolute;
+  bottom: 0;
+  background-color: black;
+  border-radius: 100%;
+}
+
+.profile-username {
+  font-size: 1em;
+  font-weight: 600;
+}
