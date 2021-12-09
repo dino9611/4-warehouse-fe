@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import "./styles/ManageProduct.css"
+import "./styles/ManageProduct.css";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -172,9 +172,6 @@ function ManageProduct() {
                     <Link to="/admin/manage-product/add" className="adm-products-add-wrap">
                         <button>+ Add Products</button>
                     </Link>
-                    {/* <div className="adm-products-add-wrap">
-                        <button>+ Add Products</button>
-                    </div> */}
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>

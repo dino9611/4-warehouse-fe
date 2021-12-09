@@ -1,33 +1,34 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import "./styles/AddProduct.css"
+import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
-import thousandSeparator from '../../helpers/ThousandSeparator';
+import {Link} from "react-router-dom";
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
+    const [category, setCategory] = useState([]);
+    const [warehouse, setWarehouse] = useState([]);
 
-    const [addProdInput, setAddProdInput] = useState({
+    const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
         image: "",
         prod_name: "",
         prod_category: 0,
         prod_weight: "",
         prod_price: "",
         prod_cost: "",
-        prod_stock: "",
         prod_desc: ""
       });
-    console.log(addProdInput);
+    // console.log(addProdInput);
 
-    const [addWhStock, setAddWhStock] = useState({
+    const [addWhStock, setAddWhStock] = useState({ // Utk bawa input data stok produk ke BE
         wh_id_01: 1,
         stock_01: "",
         wh_id_02: 2,
         stock_02: "",
-        wh_03_id: 3,
+        wh_id_03: 3,
         stock_03: ""
     });
-    console.log(addWhStock);
+    // console.log(addWhStock);
 
     let { 
         image, 
@@ -36,7 +37,6 @@ function AdminAddProduct() {
         prod_weight, 
         prod_price, 
         prod_cost, 
-        prod_stock, 
         prod_desc 
     } = addProdInput;
 
@@ -45,16 +45,13 @@ function AdminAddProduct() {
         stock_01,
         wh_id_02,
         stock_02,
-        wh_03_id,
+        wh_id_03,
         stock_03
     } = addWhStock;
 
     let stockList = [stock_01, stock_02, stock_03];
 
-    const [category, setCategory] = useState([]);
-    const [warehouse, setWarehouse] = useState([]);
-
-    const fetchCategory = async () => {
+    const fetchCategory = async () => { // Utk render data kategori produk
         try {
             const res = await axios.get(`${API_URL}/product/category`);
             setCategory(res.data);
@@ -63,7 +60,7 @@ function AdminAddProduct() {
         }
     };
 
-    const fetchWarehouse = async () => {
+    const fetchWarehouse = async () => { // Utk render data list warehouse
         try {
             const res = await axios.get(`${API_URL}/warehouse/list`);
             setWarehouse(res.data);
@@ -75,17 +72,17 @@ function AdminAddProduct() {
     useEffect(() => {
         fetchCategory();
         fetchWarehouse();
-        console.log("Setelah useEffect", addWhStock);
+        // console.log("Setelah useEffect", addWhStock);
     }, []);
 
     // HANDLER FUNCTIONS SECTION
-    const addProdStringHandler = (event) => {
+    const addProdStringHandler = (event) => { // Utk setState data berbentuk string
         setAddProdInput((prevState) => {
             return { ...prevState, [event.target.name]: event.target.value };
         });
     };
 
-    const addProdNumberHandler = (event, cb) => {
+    const addProdNumberHandler = (event, cb) => { // Utk setState data berbentuk number
         cb((prevState) => {
             return { ...prevState, [event.target.name]: parseInt(event.target.value) };
         });
@@ -151,7 +148,7 @@ function AdminAddProduct() {
                                 id="prod_category"
                                 name="prod_category" 
                                 defaultValue={prod_category}
-                                onChange={(event) => addProdNumberHandler(event)}
+                                onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
                                 style={{textTransform: "capitalize"}}
                             >
                                 <option value={0} disabled hidden>Select here</option>
@@ -239,24 +236,6 @@ function AdminAddProduct() {
                                 </div>
                             </div>
                         ))}
-                        {/* <div className="add-info-form-left">
-                            <label htmlFor="prod_stock">Stock (per Warehouse)</label>
-                        </div>
-                        <div className="add-info-form-right">
-                            <input 
-                                type="number" 
-                                id="prod_stock" 
-                                name="prod_stock" 
-                                value={prod_stock}
-                                onChange={(event) => addProdNumberHandler(event)}
-                                onKeyUp={(event) => noMinusHandler(event)}
-                                placeholder="Input stock (minimum: 0)"
-                                min="0"
-                                disabled={role === "admin"}
-                            />
-                            <p>*Only super admin can fill</p>
-                        </div> */}
-                    {/* </div> */}
                 </form>
                 <div className="add-desc-form-wrap">
                     <div className="add-desc-form-item">
@@ -277,9 +256,13 @@ function AdminAddProduct() {
                         </div>
                     </div>
                 </div>
-                <div className="add-products-submit-wrap d-flex justify-content-end mt-3">
-                    <button className="btn btn-warning">Cancel</button>
-                    <button className="btn btn-success">Submit</button>
+                <div className="add-products-submission-wrap">
+                    <Link to="/admin/manage-product" className="add-products-cancel-wrap">
+                        <button>Cancel</button>
+                    </Link>
+                    <button className="add-products-submit-btn">
+                        Submit
+                    </button>
                 </div>
             </div>
         </div>
