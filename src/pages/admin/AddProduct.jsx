@@ -8,11 +8,14 @@ import {Link} from "react-router-dom";
 // Kasih notes character left utk deskripsi (kasih 2000 max char aja)
 // Auto thousand separator display numbers
 // Proteksi price & cost klo input 0
+// Proteksi minimal image utama dimasukkan
+// Gimana cara map warehouse, jadi kedepannya klo banyak warehouse ga usah hard code satu2
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
+    const [addImage, setAddImage] = useState("");
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
         images: "",
@@ -104,6 +107,15 @@ function AdminAddProduct() {
         }
     };
 
+    const addImageHandler = (event) => {
+        let file = event.target.value;
+        if (file) {
+            setAddImage(file);
+        } else {
+            setAddImage("");
+        }
+    }
+
     // CLICK FUNCTION SECTION
     const onSubmitAddProd = async (event) => { // Untuk trigger submit button
         event.preventDefault();
@@ -154,9 +166,10 @@ function AdminAddProduct() {
                         <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
                     </div>
                     <div className="add-images-right-wrap">
-                        <div className="add-images-upload-item">
+                        <label className="add-images-upload-item">
+                            <input type="file" onChange={(event) => addImageHandler(event)} />
                             <p>Main Image</p>
-                        </div>
+                        </label>
                         <div className="add-images-upload-item">
                             <p>Second Image</p>
                         </div>

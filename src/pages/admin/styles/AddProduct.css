@@ -96,7 +96,12 @@
     font-weight: 500;
     height: 200px;
     justify-content: center;
+    margin: 0;
     width: 200px;
+}
+
+.add-images-upload-item > input {
+    display: none;
 }
 
 .add-images-upload-item > p {
