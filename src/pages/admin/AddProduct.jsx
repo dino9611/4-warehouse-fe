@@ -166,9 +166,21 @@ function AdminAddProduct() {
                         <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
                     </div>
                     <div className="add-images-right-wrap">
-                        <label className="add-images-upload-item">
-                            <input type="file" onChange={(event) => addImageHandler(event)} />
-                            <p>Main Image</p>
+                        <label className={addImage ? "add-images-upload-preview" : "add-images-upload-item"}>
+                            <input 
+                                type="file" 
+                                onChange={(event) => addImageHandler(event)} 
+                            />
+                            {addImage ?
+                                <img 
+                                    src={URL.createObjectURL} 
+                                    alt="Product-Main-Image" 
+                                    className="add-images-preview"
+                                />
+                                :
+                                <p>Main Image</p>
+                            }
+                            {/* <p>Main Image</p> */}
                         </label>
                         <div className="add-images-upload-item">
                             <p>Second Image</p>

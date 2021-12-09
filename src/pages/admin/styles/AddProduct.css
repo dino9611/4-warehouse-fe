@@ -100,8 +100,26 @@
     width: 200px;
 }
 
-.add-images-upload-item > input {
+.add-images-upload-preview {
+    align-items: center;
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    height: 200px;
+    justify-content: center;
+    margin: 0;
+    width: 200px;
+}
+
+.add-images-upload-item > input,
+.add-images-upload-preview > input {
     display: none;
+}
+
+.add-images-upload-preview > .add-images-preview {
+    height: 100%;
+    width: 100%;
 }
 
 .add-images-upload-item > p {
