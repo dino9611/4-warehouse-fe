@@ -4,13 +4,18 @@ import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 
+// Belum:
+// Kasih notes character left utk deskripsi (kasih 2000 max char aja)
+// Auto thousand separator display numbers
+// Proteksi price & cost klo input 0
+
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
-        image: "",
+        images: "",
         prod_name: "",
         prod_category: 0,
         prod_weight: "",
@@ -31,7 +36,7 @@ function AdminAddProduct() {
     // console.log(addWhStock);
 
     let { 
-        image, 
+        images, 
         prod_name, 
         prod_category, 
         prod_weight, 
@@ -97,6 +102,43 @@ function AdminAddProduct() {
         } else {
             return
         }
+    };
+
+    // CLICK FUNCTION SECTION
+    const onSubmitAddProd = async (event) => { // Untuk trigger submit button
+        event.preventDefault();
+        let inputtedProd = {
+            images: images,
+            prod_name: prod_name,
+            prod_category: prod_category,
+            prod_weight: prod_weight,
+            prod_price: prod_price,
+            prod_cost: prod_cost,
+            prod_desc: prod_desc
+        }
+        let inputtedStock = {
+            wh_id_01: wh_id_01,
+            stock_01: stock_01,
+            wh_id_02: wh_id_02,
+            stock_02: stock_02,
+            wh_id_03: wh_id_03,
+            stock_03: stock_03
+        }
+        if (prod_name && prod_category && prod_weight && prod_price && prod_cost && prod_desc) {
+            try {
+                await axios.post(`${API_URL}/product/add`, [inputtedProd, inputtedStock])
+                setAddProdInput((prevState) => {
+                    return {...prevState, images: "", prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
+                });
+                setAddWhStock((prevState) => {
+                    return {...prevState, images: "", wh_id_01: 1, stock_01: "", wh_id_02: 2, stock_02: "", wh_id_03: 3, stock_03: ""}
+                });
+            } catch (err) {
+                console.log(err);
+            };
+        } else {
+            alert("Pastikan terisi semua (discount price tidak wajib)");
+        };
     };
     
     return (
@@ -260,7 +302,11 @@ function AdminAddProduct() {
                     <Link to="/admin/manage-product" className="add-products-cancel-wrap">
                         <button>Cancel</button>
                     </Link>
-                    <button className="add-products-submit-btn">
+                    <button 
+                        className="add-products-submit-btn"
+                        onClick={onSubmitAddProd}
+                        disabled={!prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !prod_desc || !stockList}
+                    >
                         Submit
                     </button>
                 </div>

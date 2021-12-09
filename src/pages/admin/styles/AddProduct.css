@@ -238,3 +238,9 @@ select > option {
     background-color: var(--primary-3rd-color);
     transition: 400ms;
 }
+
+.add-products-submit-btn:disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
