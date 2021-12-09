@@ -29,9 +29,6 @@ const {
 function Homepage() {
   return (
     <div>
-      <div>
-        <Header />
-      </div>
       <div className="homepage-carousel w-100">
         <div className="homepage-carousel-wrapper">
           <Carousel />
@@ -272,7 +269,6 @@ function Homepage() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

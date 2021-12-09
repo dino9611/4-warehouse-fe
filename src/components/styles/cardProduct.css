@@ -15,25 +15,25 @@
 }
 
 .card-product-category {
-  font-size: 12px;
+  font-size: 0.75em;
   font-weight: 500;
   color: #0a4d3c;
 }
 
 .card-product-name {
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 600;
   line-height: 1.63;
   color: #5a5a5a;
 }
 
 .card-product-diskon {
-  font-size: 10px;
+  font-size: 0.625em;
   color: #cacaca;
 }
 
 .card-product-price {
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 600;
   line-height: 1.63;
   color: #070707;

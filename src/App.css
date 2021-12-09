@@ -3,3 +3,12 @@ body {
   background-color: #f1ede7;
   font-family: "Poppins", "Open Sans", sans-serif;
 }
+
+.text-link {
+  text-decoration: none !important;
+  color: initial;
+}
+
+.text-link:hover {
+  color: initial;
+}

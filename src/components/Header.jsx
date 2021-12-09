@@ -1,5 +1,6 @@
 import "./styles/header.css";
 import asset from "./../assets/index";
+import { Link } from "react-router-dom";
 
 const { logo, notif, cart } = asset;
 
@@ -7,7 +8,7 @@ function Header() {
   return (
     <div className="header-bar">
       <div className="container" style={{ height: "74px" }}>
-        <div className="row d-flex align-items-center justify-content-between h-100">
+        <div className="row align-items-center justify-content-between h-100">
           <div className="d-flex">
             <div style={{ marginRight: "57px" }}>
               <img src={logo} alt="" />
@@ -17,7 +18,9 @@ function Header() {
               style={{ fontWeight: "600", fontSize: "14px" }}
             >
               <div>Kategori</div>
-              <div className="mx-5">Produk</div>
+              <Link to="/products" className="text-link">
+                <div className="mx-5">Produk</div>
+              </Link>
               <div>Promo</div>
             </div>
           </div>
