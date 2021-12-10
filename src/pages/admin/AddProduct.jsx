@@ -9,20 +9,11 @@ import {Link} from "react-router-dom";
 // Auto thousand separator display numbers
 // Proteksi price & cost klo input 0
 // Proteksi minimal image utama dimasukkan
-// Gimana cara map warehouse, jadi kedepannya klo banyak warehouse ga usah hard code satu2
-// Cara dinamis nama folder penyimpanan assets nnti per kategori
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
-    // const [addImage, setAddImage] = useState(""); // Utk bawa data upload image ke BE
-
-    // const [addImage, setAddImage] = useState({ // Testing pake object
-    //     main_img: "",
-    //     secondary_img: "",
-    //     third_img: ""
-    // });
 
     const [addImage, setAddImage] = useState([ // Testing pake array
         "",
@@ -31,8 +22,6 @@ function AdminAddProduct() {
     ]);
 
     console.log(addImage);
-
-    // Pake itu sebenernya bisa, tp looping nya beda, enakan pake array
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
         prod_name: "",
@@ -227,66 +216,31 @@ function AdminAddProduct() {
                         <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
                     </div>
                     <div className="add-images-right-wrap">
-                        <label htmlFor="main_img" className={addImage[0] ? "add-images-upload-preview" : "add-images-upload-item"}>
-                            <input 
-                                type="file" 
-                                id="main_img" 
-                                name="main_img" 
-                                accept=".jpg,.jpeg,.png"
-                                onChange={(event) => addImageHandler(event, 0)} 
-                            />
-                            {addImage[0] ?
-                                <img 
-                                    src={URL.createObjectURL(addImage[0])} 
-                                    alt="Preview-Main-Image" 
-                                    className="add-images-preview"
-                                />
-                                :
-                                <p>Main Image</p>
-                            }
-                        </label>
-                        <label htmlFor="secondary_img" className={addImage[1] ? "add-images-upload-preview" : "add-images-upload-item"}>
-                            <input 
-                                type="file" 
-                                id="secondary_img" 
-                                name="secondary_img" 
-                                accept=".jpg,.jpeg,.png"
-                                onChange={(event) => addImageHandler(event, 1)} 
-                            />
-                            {addImage[1] ?
-                                <img 
-                                    src={URL.createObjectURL(addImage[1])} 
-                                    alt="Preview-Secondary-Image" 
-                                    className="add-images-preview"
-                                />
-                                :
-                                <p>Second Image</p>
-                            }
-                        </label>
-                        <label htmlFor="third_img" className={addImage[2] ? "add-images-upload-preview" : "add-images-upload-item"}>
-                            <input 
-                                type="file" 
-                                id="third_img" 
-                                name="third_img" 
-                                accept=".jpg,.jpeg,.png"
-                                onChange={(event) => addImageHandler(event, 2)} 
-                            />
-                            {addImage[2] ?
-                                <img 
-                                    src={URL.createObjectURL(addImage[2])} 
-                                    alt="Preview-Third-Image" 
-                                    className="add-images-preview"
-                                />
-                                :
-                                <p>Third Image</p>
-                            }
-                        </label>
-                        {/* <div className="add-images-upload-item">
-                            <p>Second Image</p>
-                        </div>
-                        <div className="add-images-upload-item">
-                            <p>Third Image</p>
-                        </div> */}
+                        {addImage.map((val, index) => {
+                            return (
+                                <label 
+                                    htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                    className={addImage[index] ? "add-images-upload-preview" : "add-images-upload-item"}
+                                >
+                                    <input 
+                                        type="file" 
+                                        id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                        name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                        accept=".jpg,.jpeg,.png"
+                                        onChange={(event) => addImageHandler(event, index)} 
+                                    />
+                                    {addImage[index] ?
+                                        <img 
+                                            src={URL.createObjectURL(addImage[index])} 
+                                            alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
+                                            className="add-images-preview"
+                                        />
+                                        :
+                                        <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                                    }
+                                </label>
+                            )
+                        })}
                     </div>
                 </div>
                 <form id="add-prod-form" className="add-info-form-wrap">
