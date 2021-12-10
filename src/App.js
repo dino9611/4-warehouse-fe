@@ -1,15 +1,38 @@
 import "./App.css";
+import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
+import { Login } from "./pages/user";
+import { Register } from "./pages/non-user";
+import { API_URL } from "./constants/api";
+import { LoginAction } from "./redux/actions/AuthAction";
+import { connect } from "react-redux";
+import axios from "axios";
 
 function App() {
   const role = "user";
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    if (token) {
+      axios
+        .get(`${API_URL}/auth/keeplogin`, {
+          headers: {
+            Authorization: "Bearer" + token,
+          },
+        })
+        .then((res) => {
+          this.props.LoginAction(res.data);
+        })
+        .catch((err) => {});
+    }
+  }, []);
 
   const renderRouting = () => {
-    if ((role = "user")) {
+    if (role === "user") {
       return (
         <Switch>
           <Route path="/" exact component="" />
-          <Route path="/login" exact component="" />
+          <Route path="/login" exact component={Login} />
+          <Route path="/register" exact component={Register} />
           <Route path="/verify-email" exact component="" />
           <Route path="/profile" exact component="" />
           <Route path="/profile/history" exact component="" />
@@ -44,7 +67,7 @@ function App() {
         <Switch>
           <Route path="/" exact component="" />
           <Route path="/login" exact component="" />
-          <Route path="/register" exact component="" />
+          <Route path="/register" exact component={Register} />
           <Route path="/products" exact component="" />
           <Route path="/products/:category" exact component="" />
           <Route path="/products/:productId" exact component="" />
@@ -57,4 +80,4 @@ function App() {
   return <div className="App">{renderRouting()}</div>;
 }
 
-export default App;
+export default connect(null, { LoginAction })(App);

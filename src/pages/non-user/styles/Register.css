@@ -1,0 +1,60 @@
+.regis-form {
+  /* color: #b24629; */
+  /* margin-top: 75px !important; */
+  /* padding-left: 30%; */
+  width: 100% !important;
+  padding-left: 10%;
+  /* width: 100% !important; */
+}
+/* .gambar {
+  padding-right: 10%;
+} */
+.login-page {
+  margin-top: 5%;
+  padding-left: 5%;
+}
+.regis-text {
+  padding-left: 12%;
+  padding-top: 2%;
+}
+.input-login {
+  margin-right: 17%;
+  margin-top: 3%;
+}
+.email {
+  margin-right: 3%;
+  width: 100% !important;
+  margin-top: 40% !important;
+}
+.input {
+  margin-left: 40%;
+  width: 40%;
+  border: 0px solid;
+  width: 60% !important;
+  margin-top: 4% !important;
+  /* color: #b24629; */
+}
+.input-field {
+  margin-top: 2% !important;
+}
+.regis-button {
+  background-color: #b24629;
+  font-size: 1.2em;
+  color: white;
+  padding-left: 18%;
+  padding-right: 18%;
+  padding-bottom: 1%;
+  padding-top: 1%;
+  border: none;
+  font-weight: 600;
+  margin-left: 42%;
+  margin-top: 7%;
+}
+.login-here {
+  padding-left: 47%;
+  padding-top: 2%;
+}
+.link {
+  padding-top: 0.5%;
+  padding-left: 0.7%;
+}
