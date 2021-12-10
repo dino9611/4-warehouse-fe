@@ -36,6 +36,10 @@
   height: 42px;
 }
 
+.header-product {
+  position: relative;
+}
+
 .header-container-login {
   min-width: 200px;
   max-width: 200px;

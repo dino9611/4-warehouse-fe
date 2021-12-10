@@ -1,0 +1,53 @@
+.profile-photo-wrapper {
+  height: auto;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 10%;
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08);
+}
+
+.profile-photo {
+  height: 100px;
+  width: 50%;
+  object-fit: cover;
+  border-radius: 100%;
+  border: 2px solid #8d280c;
+}
+
+.profile-update-photo {
+  position: absolute;
+  bottom: 0;
+  border-radius: 100%;
+  opacity: 1;
+}
+
+.profile-username {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.photo-profile-btn {
+  padding: 2% 10%;
+  border-radius: 100px;
+  border: solid 1px #b24629;
+  background-color: #fff;
+  font-size: 0.75em;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.profile-route-container {
+  background-color: #fff;
+  border-radius: 12px;
+  height: 200px;
+  padding: 8%;
+}
+
+.profile-route-name {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.profile-route-border {
+  border-bottom: 1px solid rgb(216, 214, 214);
+}

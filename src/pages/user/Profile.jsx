@@ -1,28 +1,32 @@
 import React from "react";
+import Textbox from "../../components/Textbox";
 import "./style/profile.css";
-import images from "./../../assets";
 
 function Profile() {
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-3">
-          <div className="profile-sidebar-container">
-            <div className="profile-photo-wrapper w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-              <div className="profile-photo-circle d-flex justify-content-center align-items-center w-100 h-100 mb-3">
-                <img
-                  src={images.footer}
-                  alt="photo-profile"
-                  className="profile-photo"
-                />
-                <div className="profile-update-photo">asdasd</div>
-              </div>
-
-              <div className="profile-username">gangsarap</div>
-            </div>
-          </div>
+    <div className="about-container">
+      <h5 className="mb-5">Data Diri</h5>
+      <div className="d-flex w-100 justify-content-between mb-4">
+        <div className="w-100 mr-4">
+          <Textbox label="Nama Depan" placeholder="Nama Depan" />
         </div>
-        <div className="col-9 ">asd</div>
+        <div className="w-100">
+          <Textbox label="Nama Belakang" placeholder="Nama Belakang" />
+        </div>
+      </div>
+      <div className="mb-4">
+        <Textbox label="Email" placeholder="Email" />
+      </div>
+      <div className="d-flex w-100 justify-content-between mb-4">
+        <div className="w-100 mr-4">
+          <Textbox label="Jenis Kelamin" placeholder="Jenis Kelamin" />
+        </div>
+        <div className="w-100">
+          <Textbox label="Tanggal Lahir" placeholder="Tanggal Lahir" />
+        </div>
+      </div>
+      <div>
+        <Textbox label="Password" placeholder="Ubah Password" />
       </div>
     </div>
   );

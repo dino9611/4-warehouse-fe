@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Homepage from "./pages/non-user/Homepage";
 import Product from "./pages/non-user/Product";
-import Profile from "./pages/user/Profile";
+import ProfilePage from "./pages/user/ProfilePage";
 
 function App() {
   const role = "user";
@@ -16,11 +16,7 @@ function App() {
           <Route path="/" exact component={Homepage} />
           <Route path="/login" exact component="" />
           <Route path="/verify-email" exact component="" />
-          <Route path="/profile" exact component={Profile} />
-          <Route path="/profile/history" exact component="" />
-          <Route path="/profile/history/detail/:orderId" exact component="" />
-          <Route path="/profile/address" exact component="" />
-          <Route path="/profile/address/add" exact component="" />
+          <Route path="/profile" component={ProfilePage} />
           <Route path="/products" exact component={Product} />
           <Route path="/products/:category" exact component="" />
           <Route path="/products/:productId" exact component="" />

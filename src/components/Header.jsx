@@ -6,8 +6,10 @@ import { useState } from "react";
 const { logo, notif, cart, expanddown, profil, search } = asset;
 
 function Header() {
+  const [handlerProduct, setHandlerProduct] = useState(false);
   const [handlerCategory, setHandlerCategory] = useState(false);
   const [handlerProfile, setHandlerProfile] = useState(false);
+
   let username = "gangsarap";
   let login = true;
 
@@ -31,24 +33,6 @@ function Header() {
         </div>
       </div>
     );
-  };
-
-  const onClickDropdown = (e) => {
-    console.log(e.target);
-    const isDropdownButton = e.target.matches("[data-dropdown-button]");
-    if (!isDropdownButton && e.target.closest("[data-dropdown]") != null)
-      return;
-
-    let currentDropdown;
-    if (isDropdownButton) {
-      currentDropdown = e.target.closest("[data-dropdown]");
-      currentDropdown.classList.toggle("active");
-    }
-
-    document.querySelectorAll("[data-dropdown].active").forEach((dropdown) => {
-      if (dropdown === currentDropdown) return;
-      dropdown.classList.remove("active");
-    });
   };
 
   const renderDownProfile = () => {
@@ -116,7 +100,15 @@ function Header() {
               style={{ fontWeight: "600", fontSize: "14px" }}
             >
               <Link to="/products" className="text-link">
-                <div>Produk</div>
+                <div
+                  className="header-product"
+                  onClick={() => setHandlerProduct(!handlerProduct)}
+                >
+                  <div>Produk</div>
+                  {handlerProduct ? (
+                    <div className="header-focus-border"></div>
+                  ) : null}
+                </div>
               </Link>
               <div className="header-kategori mx-5">
                 <button

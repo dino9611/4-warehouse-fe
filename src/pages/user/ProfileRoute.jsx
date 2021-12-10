@@ -1,0 +1,16 @@
+import React from "react";
+import { useParams } from "react-router";
+import Address from "./Address";
+import HistoryOrder from "./HistoryOrder";
+
+function ProfileRoute(props) {
+  const { subProfile } = useParams();
+
+  if (subProfile === "history") {
+    return <HistoryOrder />;
+  } else if (subProfile === "address") {
+    return <Address />;
+  }
+}
+
+export default ProfileRoute;

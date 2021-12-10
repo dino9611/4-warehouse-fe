@@ -1,0 +1,15 @@
+.textbox-styling {
+  border-radius: 12px;
+  border: solid 1px #cacaca;
+  padding: 12px;
+  font-size: 1em;
+}
+
+.textbox-styling:enabled {
+  outline-color: #b24629;
+}
+
+.textbox-error {
+  border: solid 1px #c83532 !important;
+  background-color: #fbefef !important;
+}

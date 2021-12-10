@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./styles/product.css";
 import CardProduct from "./../../components/CardProduct";
-import produk1 from "./../../assets/produk1.svg";
 import { debounce } from "throttle-debounce";
 import axios from "axios";
 import Pagination from "@mui/material/Pagination";
 import { API_URL } from "./../../constants/api.js";
+import images from "./../../assets";
 
 function Product() {
   // Product
@@ -22,6 +22,9 @@ function Product() {
   const [category, setCategory] = useState([]);
   const [joinCategory, setJoinCategory] = useState("");
   const [sort, setSort] = useState("");
+
+  // Tes
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -127,6 +130,68 @@ function Product() {
   return (
     <div className="container mt-5">
       <div className="row">
+        <div className="product-sidebar">
+          <div className="product-sidebar-wrapper w-100 mb-2">
+            <div className="product-sidebar-title d-flex align-items-center justify-content-between">
+              <div className="product-title-name">Urut berdasarkan</div>
+              <div className="product-title-reset">Reset</div>
+            </div>
+            <div className="product-sort-content d-flex justify-content-center">
+              <select className="product-content-select w-100">
+                <option value="">asdasdasd</option>
+              </select>
+            </div>
+          </div>
+          <div className="product-sidebar-wrapper w-100">
+            <div className="product-sidebar-title d-flex align-items-center justify-content-between">
+              <div className="product-title-name">Filter</div>
+              <div className="product-title-reset">Reset</div>
+            </div>
+            <div className="product-sort-content">
+              <div className="product-checkbox d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  id="myCheck"
+                  className="product-checkmark"
+                  onChange={() => setIsChecked(!isChecked)}
+                />
+                {isChecked ? (
+                  <img src={images.checked} alt="" />
+                ) : (
+                  <img src={images.uncheck} alt="" />
+                )}
+              </div>
+              <div className="product-checkbox d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  id="myCheck"
+                  className="product-checkmark"
+                  onChange={() => setIsChecked(!isChecked)}
+                />
+                {isChecked ? (
+                  <img src={images.checked} alt="" />
+                ) : (
+                  <img src={images.uncheck} alt="" />
+                )}
+              </div>
+              <div className="product-checkbox d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  id="myCheck"
+                  className="product-checkmark"
+                  onChange={() => setIsChecked(!isChecked)}
+                />
+                {isChecked ? (
+                  <img src={images.checked} alt="" />
+                ) : (
+                  <img src={images.uncheck} alt="" />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row mt-5">
         <div className="col-3">
           <div className="product-filter-font mb-3">Filter</div>
           <div className="product-filter-container p-3">
