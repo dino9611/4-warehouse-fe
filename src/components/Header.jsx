@@ -8,6 +8,7 @@ const { logo, notif, cart, expanddown, profil, search } = asset;
 function Header() {
   const [handlerCategory, setHandlerCategory] = useState(false);
   const [handlerProfile, setHandlerProfile] = useState(false);
+  const [handleProduct, setHandleProduct] = useState(false);
   let username = "gangsarap";
   let login = true;
 
@@ -116,7 +117,12 @@ function Header() {
               style={{ fontWeight: "600", fontSize: "14px" }}
             >
               <Link to="/products" className="text-link">
-                <div>Produk</div>
+                <div>
+                  <div>Produk</div>
+                  {handleProduct ? (
+                    <div className="header-focus-border"></div>
+                  ) : null}
+                </div>
               </Link>
               <div className="header-kategori mx-5">
                 <button

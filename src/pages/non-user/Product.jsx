@@ -91,13 +91,16 @@ function Product() {
     return dataCategory.map((el, index) => {
       return (
         <div key={index}>
-          <label className="d-flex align-items-center" for={el.category}>
+          <label
+            className="product-category-label d-flex align-items-center"
+            for={el.category}
+          >
             <input
               type="checkbox"
               id={el.category}
               name={el.category}
               value={el.id}
-              className="mr-2"
+              className=" mr-2"
               onChange={onChangeHandlerCategory}
             />
             {el.category.charAt(0).toUpperCase() + el.category.slice(1)}
@@ -127,18 +130,33 @@ function Product() {
     });
   };
 
+  const isCheckedLur = (e) => {
+    console.log(e.target.checked);
+  };
+
   return (
     <div className="container mt-5">
-      <div className="row">
-        <div className="product-sidebar">
+      <div className="row justify-content-between">
+        <div className="product-sidebar mr-3">
           <div className="product-sidebar-wrapper w-100 mb-2">
             <div className="product-sidebar-title d-flex align-items-center justify-content-between">
               <div className="product-title-name">Urut berdasarkan</div>
               <div className="product-title-reset">Reset</div>
             </div>
             <div className="product-sort-content d-flex justify-content-center">
-              <select className="product-content-select w-100">
-                <option value="">asdasdasd</option>
+              <select
+                placeholder="select option"
+                className="product-content-select w-100"
+                onChange={(e) => setSort(e.target.value)}
+              >
+                <option value="" hidden>
+                  Urutkan
+                </option>
+                <option value="">Urutkan</option>
+                <option value="nameasc">A-Z</option>
+                <option value="namedesc">Z-A</option>
+                <option value="pricedesc">Harga Tertinggi</option>
+                <option value="priceasc">Harga Terendah</option>
               </select>
             </div>
           </div>
@@ -148,84 +166,58 @@ function Product() {
               <div className="product-title-reset">Reset</div>
             </div>
             <div className="product-sort-content">
-              <div className="product-checkbox d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  id="myCheck"
-                  className="product-checkmark"
-                  onChange={() => setIsChecked(!isChecked)}
-                />
-                {isChecked ? (
-                  <img src={images.checked} alt="" />
-                ) : (
-                  <img src={images.uncheck} alt="" />
-                )}
-              </div>
-              <div className="product-checkbox d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  id="myCheck"
-                  className="product-checkmark"
-                  onChange={() => setIsChecked(!isChecked)}
-                />
-                {isChecked ? (
-                  <img src={images.checked} alt="" />
-                ) : (
-                  <img src={images.uncheck} alt="" />
-                )}
-              </div>
-              <div className="product-checkbox d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  id="myCheck"
-                  className="product-checkmark"
-                  onChange={() => setIsChecked(!isChecked)}
-                />
-                {isChecked ? (
-                  <img src={images.checked} alt="" />
-                ) : (
-                  <img src={images.uncheck} alt="" />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="row mt-5">
-        <div className="col-3">
-          <div className="product-filter-font mb-3">Filter</div>
-          <div className="product-filter-container p-3">
-            <div className="d-flex flex-column">
-              <div className="product-filter-by mb-3">Kategori</div>
+              {renderFilterCategory()}
+              <div className="product-border my-3"></div>
               <div>
-                <div className="product-category-content d-flex flex-column">
-                  {renderFilterCategory()}
+                <div className="product-title-name">Price</div>
+                <div className="product-price-wrapper d-flex align-items-center my-3">
+                  <div
+                    className="product-input-price mr-1"
+                    style={{ color: "#070707" }}
+                  >
+                    Rp
+                  </div>
+                  <input
+                    type="number"
+                    placeholder="Harga Minimum"
+                    onChange={debounce(1000, (e) =>
+                      setPriceMin(e.target.value)
+                    )}
+                    className="product-input-price w-100"
+                  />
+                </div>
+                <div className="product-price-wrapper d-flex align-items-center">
+                  <div
+                    className="product-input-price mr-1"
+                    style={{ color: "#070707" }}
+                  >
+                    Rp
+                  </div>
+                  <input
+                    type="number"
+                    placeholder="Harga maksimum"
+                    className="product-input-price w-100"
+                  />
+                </div>
+              </div>
+              <div className="product-border my-3"></div>
+              <div>
+                <div className="product-title-name ">Lokasi Pengiriman</div>
+                <div className="product-address my-2">
+                  Kembangan, Jakarta Barat, DKI JAKARTA
+                </div>
+                <div className="d-flex align-items-center">
+                  <div className="product-change-address mr-1">Ubah</div>
+                  <div>
+                    <img src={images.point} alt="" />
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="product-border my-2"></div>
-            <div className="d-flex flex-column">
-              <div className="product-filter-by mb-3">Harga</div>
-              <div className="mb-2">
-                <input
-                  type="number"
-                  placeholder="Harga Minimum"
-                  onChange={debounce(1000, (e) => setPriceMin(e.target.value))}
-                  className="product-filter-harga"
-                />
-              </div>
-              <div>
-                <input
-                  type="number"
-                  placeholder="Harga Maksimum"
-                  onChange={debounce(1000, (e) => setPriceMax(e.target.value))}
-                  className="product-filter-harga"
-                />
-              </div>
-            </div>
           </div>
         </div>
-        <div className="col-9">
+
+        <div className="product-content">
           <div className="d-flex">
             <input
               type="text"

@@ -88,7 +88,6 @@ input[type="number"] {
 
 .product-sidebar {
   padding: 0 !important;
-  width: 19%;
 }
 
 .product-sidebar-wrapper {
@@ -133,5 +132,43 @@ input[type="number"] {
   margin-right: auto;
   left: 1%;
   text-align: center;
-  opacity: 0;
+  /* opacity: 0; */
+}
+
+.product-category-label {
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+.product-input-price {
+  border: none;
+  font-size: 0.875em;
+}
+
+.product-input-price:enabled {
+  outline-color: transparent;
+}
+
+.product-price-wrapper {
+  padding: 7%;
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+}
+
+.product-address {
+  font-size: 0.75em;
+  font-weight: 500;
+  line-height: 1.67;
+  color: #070707;
+}
+
+.product-change-address {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+}
+
+.product-content {
+  padding: 0 !important;
+  width: 70%;
 }

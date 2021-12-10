@@ -18,6 +18,9 @@ import call from "./wa.svg";
 import expanddown from "./expanddown.svg";
 import profil from "./profil.svg";
 import search from "./search.svg";
+import checked from "./checked.svg";
+import unchecked from "./unchecked.svg";
+import point from "./point.svg";
 
 export default {
   logo,
@@ -40,4 +43,7 @@ export default {
   expanddown,
   profil,
   search,
+  checked,
+  unchecked,
+  point,
 };
