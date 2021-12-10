@@ -118,10 +118,7 @@ function Header() {
             >
               <Link to="/products" className="text-link">
                 <div style={{ position: "relative" }}>
-                  <div
-                    className=""
-                    onClick={() => setHandleProduct(!handleProduct)}
-                  >
+                  <div className="" onClick={() => setHandleProduct(true)}>
                     Produk
                   </div>
                   {handleProduct ? (
