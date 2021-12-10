@@ -1,15 +1,10 @@
 import "./styles/buttonPrimary.css";
 
-function ButtonPrimary({ name }) {
+function ButtonPrimary({ name, width, height }) {
   return (
-    <div
-      className="button-primary-wrapper"
-      style={{ width: "118px", height: "42px" }}
-    >
-      <div className="button-primary-text d-flex justify-content-center align-items-center">
-        {name}
-      </div>
-    </div>
+    <button className="button-primary w-100" style={{ width, height }}>
+      {name}
+    </button>
   );
 }
 

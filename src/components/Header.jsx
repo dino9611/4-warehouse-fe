@@ -117,8 +117,13 @@ function Header() {
               style={{ fontWeight: "600", fontSize: "14px" }}
             >
               <Link to="/products" className="text-link">
-                <div>
-                  <div>Produk</div>
+                <div style={{ position: "relative" }}>
+                  <div
+                    className=""
+                    onClick={() => setHandleProduct(!handleProduct)}
+                  >
+                    Produk
+                  </div>
                   {handleProduct ? (
                     <div className="header-focus-border"></div>
                   ) : null}

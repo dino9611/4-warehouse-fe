@@ -57,11 +57,21 @@ input[type="number"] {
 }
 
 .product-filter-nama {
-  padding: 12px;
+  font-size: 0.875em;
+  border: none;
+  cursor: text;
+}
+
+.product-filter-nama:enabled {
+  outline-color: transparent !important;
+}
+
+.product-filter-nama-wrapper {
   border-radius: 12px;
+  padding: 1.3%;
   border: solid 1px #cacaca;
   background-color: #fff;
-  cursor: text;
+  width: 40%;
 }
 
 .product-filter-nama:enabled {
@@ -77,8 +87,9 @@ input[type="number"] {
 }
 
 .product-list-wrapper {
+  margin-top: 2%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   row-gap: 5%;
 }
 
@@ -88,6 +99,7 @@ input[type="number"] {
 
 .product-sidebar {
   padding: 0 !important;
+  flex-basis: 19%;
 }
 
 .product-sidebar-wrapper {
@@ -169,6 +181,11 @@ input[type="number"] {
 }
 
 .product-content {
-  padding: 0 !important;
-  width: 70%;
+  /* padding: 0 !important; */
+  width: 79.5%;
+}
+
+.product-show-font {
+  font-size: 0.75em;
+  font-weight: 500;
 }

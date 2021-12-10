@@ -218,31 +218,21 @@ function Product() {
         </div>
 
         <div className="product-content">
-          <div className="d-flex">
-            <input
-              type="text"
-              placeholder="Cari nama"
-              onChange={debounce(1000, (e) => setName(e.target.value))}
-              className="product-filter-nama w-100"
-            />
-            <div className="d-flex align-items-center mx-2">
-              <select
-                placeholder="select option"
-                className="product-sort"
-                onChange={(e) => setSort(e.target.value)}
-              >
-                <option value="" hidden>
-                  Urutkan
-                </option>
-                <option value="">Urutkan</option>
-                <option value="nameasc">A-Z</option>
-                <option value="namedesc">Z-A</option>
-                <option value="pricedesc">Harga Tertinggi</option>
-                <option value="priceasc">Harga Terendah</option>
-              </select>
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="product-show-font">
+              {`Menampilkan ${limit} dari ${totalProduct} produk`}
+            </div>
+            <div className="product-filter-nama-wrapper d-flex align-items-center">
+              <input
+                type="text"
+                placeholder="Cari produk"
+                onChange={debounce(1000, (e) => setName(e.target.value))}
+                className="product-filter-nama w-100"
+              />
+              <img src={images.searchpolos} alt="" />
             </div>
           </div>
-          <div className="product-list-wrapper mt-5">{renderProduct()}</div>
+          <div className="product-list-wrapper">{renderProduct()}</div>
           <div className="d-flex justify-content-center mt-5">
             <Pagination
               count={Math.ceil(totalProduct / limit)}

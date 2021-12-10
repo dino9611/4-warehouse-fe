@@ -21,6 +21,7 @@ import search from "./search.svg";
 import checked from "./checked.svg";
 import unchecked from "./unchecked.svg";
 import point from "./point.svg";
+import searchpolos from "./searchpolos.svg";
 
 export default {
   logo,
@@ -46,4 +47,5 @@ export default {
   checked,
   unchecked,
   point,
+  searchpolos,
 };
