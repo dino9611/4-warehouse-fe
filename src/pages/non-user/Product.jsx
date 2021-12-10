@@ -153,9 +153,9 @@ function Product() {
                   type="checkbox"
                   id="myCheck"
                   className="product-checkmark"
-                  onChange={() => setIsChecked(!isChecked)}
+                  onChange={() => setIsChecked(1)}
                 />
-                {isChecked ? (
+                {isChecked === 1 ? (
                   <img src={images.checked} alt="" />
                 ) : (
                   <img src={images.uncheck} alt="" />
@@ -166,9 +166,9 @@ function Product() {
                   type="checkbox"
                   id="myCheck"
                   className="product-checkmark"
-                  onChange={() => setIsChecked(!isChecked)}
+                  onChange={() => setIsChecked(2)}
                 />
-                {isChecked ? (
+                {isChecked === 2 ? (
                   <img src={images.checked} alt="" />
                 ) : (
                   <img src={images.uncheck} alt="" />
@@ -179,9 +179,9 @@ function Product() {
                   type="checkbox"
                   id="myCheck"
                   className="product-checkmark"
-                  onChange={() => setIsChecked(!isChecked)}
+                  onChange={() => setIsChecked(3)}
                 />
-                {isChecked ? (
+                {isChecked === 3 ? (
                   <img src={images.checked} alt="" />
                 ) : (
                   <img src={images.uncheck} alt="" />

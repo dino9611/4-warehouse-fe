@@ -133,5 +133,5 @@ input[type="number"] {
   margin-right: auto;
   left: 1%;
   text-align: center;
-  opacity: 0;
+  /* opacity: 0; */
 }
