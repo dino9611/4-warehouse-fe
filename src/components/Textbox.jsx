@@ -9,6 +9,11 @@ function Textbox({
   value,
   onChange,
   error,
+  name,
+  disabled,
+  onClick,
+  cursor,
+  backgroundColor,
 }) {
   return (
     <div className="d-flex flex-column">
@@ -20,18 +25,24 @@ function Textbox({
           {label}
         </label>
       ) : null}
-      <input
-        type="text"
-        placeholder={placeholder}
-        className={`textbox-styling ${error ? "textbox-error" : null}`}
-        style={{
-          width,
-          height,
-        }}
-        value={value}
-        onChange={onChange}
-        id={label}
-      />
+      <div className="d-flex flex-column" onClick={onClick}>
+        <input
+          type="text"
+          placeholder={placeholder}
+          className={`textbox-styling ${error ? "textbox-error" : null}`}
+          style={{
+            width,
+            height,
+            cursor,
+            backgroundColor,
+          }}
+          value={value}
+          onChange={onChange}
+          id={label}
+          name={name}
+          disabled={disabled}
+        />
+      </div>
     </div>
   );
 }

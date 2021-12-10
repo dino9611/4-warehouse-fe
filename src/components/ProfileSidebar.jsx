@@ -1,12 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/profileSidebar.css";
 import images from "./../assets";
 import { Link, useRouteMatch } from "react-router-dom";
+import axios from "axios";
+import { API_URL } from "./../constants/api";
 
 function ProfileSidebar() {
+  // Untuk url nesting route
   let { url } = useRouteMatch();
 
-  console.log(url);
+  const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    if (file) {
+      (async () => {
+        try {
+          const formData = new FormData();
+          formData.append("image", file);
+
+          await axios.patch(`${API_URL}/profile/upload-photo/1`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          alert("berhasil");
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }
+  }, [file]);
+
   return (
     <>
       <div className="profile-sidebar-container mb-4">
@@ -22,7 +47,12 @@ function ProfileSidebar() {
             <label htmlFor="photo-profile" className="photo-profile-btn">
               Pilih foto
             </label>
-            <input type="file" id="photo-profile" style={{ display: "none" }} />
+            <input
+              type="file"
+              id="photo-profile"
+              style={{ display: "none" }}
+              onChange={(e) => setFile(e.target.files[0])}
+            />
           </div>
 
           <div className="profile-username">gangsarap</div>

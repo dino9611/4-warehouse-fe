@@ -1,0 +1,47 @@
+.calender-hover:hover {
+  background-color: rgb(228, 228, 228);
+  border-radius: 100px;
+  transition: all 0.3s;
+}
+
+.calender-hover:active {
+  background-color: rgb(196, 193, 193);
+  transition: all 0.3s;
+}
+
+.calender-current-date {
+  background-color: dodgerblue;
+  border-radius: 100px;
+}
+
+.calender-current-date:hover {
+  background-color: rgb(2, 118, 235);
+}
+
+.tes {
+  height: 25px !important;
+  width: 25px !important;
+}
+
+.calender-pick-date {
+  background-color: lightskyblue;
+  border-radius: 100px;
+  transition: all 0.3s;
+}
+
+.calender-pick-date:hover {
+  background-color: rgb(97, 184, 238);
+  transition: all 0.3s;
+}
+
+.calender-create {
+  background-color: transparent;
+  border: none;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  transition: all 0.3s;
+}
+
+.calender-create:hover {
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
