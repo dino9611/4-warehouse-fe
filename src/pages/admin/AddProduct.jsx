@@ -10,15 +10,31 @@ import {Link} from "react-router-dom";
 // Proteksi price & cost klo input 0
 // Proteksi minimal image utama dimasukkan
 // Gimana cara map warehouse, jadi kedepannya klo banyak warehouse ga usah hard code satu2
+// Cara dinamis nama folder penyimpanan assets nnti per kategori
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
-    const [addImage, setAddImage] = useState("");
+    // const [addImage, setAddImage] = useState(""); // Utk bawa data upload image ke BE
+
+    // const [addImage, setAddImage] = useState({ // Testing pake object
+    //     main_img: "",
+    //     secondary_img: "",
+    //     third_img: ""
+    // });
+
+    const [addImage, setAddImage] = useState([ // Testing pake array
+        "",
+        "",
+        ""
+    ]);
+
+    console.log(addImage);
+
+    // Pake itu sebenernya bisa, tp looping nya beda, enakan pake array
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
-        images: "",
         prod_name: "",
         prod_category: 0,
         prod_weight: "",
@@ -102,23 +118,40 @@ function AdminAddProduct() {
             cb((prevState) => {
                 return { ...prevState, [event.target.name]: input * -1 };
             });
-        } else {
+        } 
+        // else if (prod_weight == 0 || prod_price == 0 || prod_cost == 0) {
+        //     cb((prevState) => {
+        //         return { ...prevState, [event.target.name]: parseInt(input) + 1 };
+        //     });
+        // } 
+        else {
             return
         }
     };
 
-    const addImageHandler = (event) => {
-        let file = event.target.value;
+    const addImageHandler = (event, indexArr) => { // Utk setState upload image
+        let file = event.target.files[0];
+        console.log(file);
         if (file) {
-            setAddImage(file);
+            setAddImage((prevState) => {
+                let newArray = prevState;
+                newArray[indexArr] = file;
+                return [...newArray];
+            });
         } else {
-            setAddImage("");
+            setAddImage((prevState) => {
+                let newArray = prevState;
+                newArray[indexArr] = "";
+                return [...newArray];
+            });
         }
-    }
+    };
 
     // CLICK FUNCTION SECTION
     const onSubmitAddProd = async (event) => { // Untuk trigger submit button
         event.preventDefault();
+        
+        let uploadedImg = addImage;
         let inputtedProd = {
             images: images,
             prod_name: prod_name,
@@ -127,7 +160,7 @@ function AdminAddProduct() {
             prod_price: prod_price,
             prod_cost: prod_cost,
             prod_desc: prod_desc
-        }
+        };
         let inputtedStock = {
             wh_id_01: wh_id_01,
             stock_01: stock_01,
@@ -135,15 +168,43 @@ function AdminAddProduct() {
             stock_02: stock_02,
             wh_id_03: wh_id_03,
             stock_03: stock_03
+        };
+
+        const formData = new FormData();
+
+        for (let i = 0; i < uploadedImg.length; i++) {
+            if (uploadedImg[i]) {
+                formData.append("images", uploadedImg[i]);
+            }
         }
+        // formData.append("images", uploadedImg); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
+        
+        // Test pake JSON.stringify
+        formData.append("dataProduct", JSON.stringify(inputtedProd));
+        formData.append("dataStock", JSON.stringify(inputtedStock));
+
+        // Test ga pake JSON.stringify
+        // formData.append("dataProduct", inputtedProd);
+        // formData.append("dataStock", inputtedStock);
+
+        let config = {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        };
+
         if (prod_name && prod_category && prod_weight && prod_price && prod_cost && prod_desc) {
             try {
-                await axios.post(`${API_URL}/product/add`, [inputtedProd, inputtedStock])
+                // await axios.post(`${API_URL}/product/add`, [uploadedImg, inputtedProd, inputtedStock]);
+                await axios.post(`${API_URL}/product/add`, formData, config);
+                setAddImage((prevState) => {
+                    return {...prevState, main_img: "", secondary_img: "", third_img: ""}
+                });
                 setAddProdInput((prevState) => {
-                    return {...prevState, images: "", prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
+                    return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
                 });
                 setAddWhStock((prevState) => {
-                    return {...prevState, images: "", wh_id_01: 1, stock_01: "", wh_id_02: 2, stock_02: "", wh_id_03: 3, stock_03: ""}
+                    return {...prevState, wh_id_01: 1, stock_01: "", wh_id_02: 2, stock_02: "", wh_id_03: 3, stock_03: ""}
                 });
             } catch (err) {
                 console.log(err);
@@ -156,7 +217,7 @@ function AdminAddProduct() {
     return (
         <div className="add-products-main-wrap">
             <div className="add-products-header-wrap">
-                <h4>Tambah Produk bambang</h4>
+                <h4>Tambah Produk Page</h4>
                 <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="add-products-contents-wrap">
@@ -166,28 +227,66 @@ function AdminAddProduct() {
                         <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
                     </div>
                     <div className="add-images-right-wrap">
-                        <label className={addImage ? "add-images-upload-preview" : "add-images-upload-item"}>
+                        <label htmlFor="main_img" className={addImage[0] ? "add-images-upload-preview" : "add-images-upload-item"}>
                             <input 
                                 type="file" 
-                                onChange={(event) => addImageHandler(event)} 
+                                id="main_img" 
+                                name="main_img" 
+                                accept=".jpg,.jpeg,.png"
+                                onChange={(event) => addImageHandler(event, 0)} 
                             />
-                            {addImage ?
+                            {addImage[0] ?
                                 <img 
-                                    src={URL.createObjectURL} 
-                                    alt="Product-Main-Image" 
+                                    src={URL.createObjectURL(addImage[0])} 
+                                    alt="Preview-Main-Image" 
                                     className="add-images-preview"
                                 />
                                 :
                                 <p>Main Image</p>
                             }
-                            {/* <p>Main Image</p> */}
                         </label>
-                        <div className="add-images-upload-item">
+                        <label htmlFor="secondary_img" className={addImage[1] ? "add-images-upload-preview" : "add-images-upload-item"}>
+                            <input 
+                                type="file" 
+                                id="secondary_img" 
+                                name="secondary_img" 
+                                accept=".jpg,.jpeg,.png"
+                                onChange={(event) => addImageHandler(event, 1)} 
+                            />
+                            {addImage[1] ?
+                                <img 
+                                    src={URL.createObjectURL(addImage[1])} 
+                                    alt="Preview-Secondary-Image" 
+                                    className="add-images-preview"
+                                />
+                                :
+                                <p>Second Image</p>
+                            }
+                        </label>
+                        <label htmlFor="third_img" className={addImage[2] ? "add-images-upload-preview" : "add-images-upload-item"}>
+                            <input 
+                                type="file" 
+                                id="third_img" 
+                                name="third_img" 
+                                accept=".jpg,.jpeg,.png"
+                                onChange={(event) => addImageHandler(event, 2)} 
+                            />
+                            {addImage[2] ?
+                                <img 
+                                    src={URL.createObjectURL(addImage[2])} 
+                                    alt="Preview-Third-Image" 
+                                    className="add-images-preview"
+                                />
+                                :
+                                <p>Third Image</p>
+                            }
+                        </label>
+                        {/* <div className="add-images-upload-item">
                             <p>Second Image</p>
                         </div>
                         <div className="add-images-upload-item">
                             <p>Third Image</p>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <form id="add-prod-form" className="add-info-form-wrap">

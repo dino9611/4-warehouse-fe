@@ -109,6 +109,7 @@
     height: 200px;
     justify-content: center;
     margin: 0;
+    overflow: hidden;
     width: 200px;
 }
 
@@ -118,6 +119,7 @@
 }
 
 .add-images-upload-preview > .add-images-preview {
+    object-fit: contain;
     height: 100%;
     width: 100%;
 }
