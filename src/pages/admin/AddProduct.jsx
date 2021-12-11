@@ -9,11 +9,17 @@ import {Link} from "react-router-dom";
 // Auto thousand separator display numbers
 // Proteksi price & cost klo input 0
 // Proteksi minimal image utama dimasukkan
+// Proteksi scroll
+// Kasih proteksi submit 2x klo internet lambat
+// Kasih spinner loading / skeleton
+// Klo cancel image upload msh ttp nyala button nya
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
+    const [mainImgCheck, setMainImgCheck] = useState(false);
+    const [charCounter, setCharCounter] = useState(0);
 
     const [addImage, setAddImage] = useState([ // Testing pake array
         "",
@@ -21,7 +27,7 @@ function AdminAddProduct() {
         ""
     ]);
 
-    console.log(addImage);
+    // console.log(addImage);
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
         prod_name: "",
@@ -42,6 +48,11 @@ function AdminAddProduct() {
         stock_03: ""
     });
     // console.log(addWhStock);
+
+    const [testWh, setTestWh] = useState([]);
+    // console.log(testWh);
+
+    const descCharLimit = 2000;
 
     let { 
         images, 
@@ -76,7 +87,11 @@ function AdminAddProduct() {
     const fetchWarehouse = async () => { // Utk render data list warehouse
         try {
             const res = await axios.get(`${API_URL}/warehouse/list`);
+            res.data.forEach((val) => {
+                val.stock = "";
+            });
             setWarehouse(res.data);
+            setTestWh(res.data);
         } catch (error) {
             console.log(error)
         }
@@ -100,7 +115,7 @@ function AdminAddProduct() {
             return { ...prevState, [event.target.name]: parseInt(event.target.value) };
         });
     };
-
+    
     const noMinusHandler = (event, cb) => { // Biar input number tidak negatif (-)
         let input = event.target.value;
         if (input < 0) {
@@ -118,6 +133,28 @@ function AdminAddProduct() {
         }
     };
 
+    const addStockHandler = (event, index) => { // Khusus setState data stock
+        let input = event.target.value;
+        setTestWh((prevState) => {
+            let newArray = prevState;
+            newArray[index].stock = parseInt(input);
+            return [...newArray];
+        });
+    };
+
+    const stockNoMinHandler = (event, index) => { // Biar input number stock tidak negatif (-)
+        let input = event.target.value;
+        if (input < 0) {
+            setTestWh((prevState) => {
+                let newArray = prevState;
+                newArray[index].stock = parseInt(input) * -1;
+                return [...newArray];
+            });
+        } else {
+            return
+        }
+    };
+
     const addImageHandler = (event, indexArr) => { // Utk setState upload image
         let file = event.target.files[0];
         console.log(file);
@@ -125,6 +162,7 @@ function AdminAddProduct() {
             setAddImage((prevState) => {
                 let newArray = prevState;
                 newArray[indexArr] = file;
+                setMainImgCheck(true);
                 return [...newArray];
             });
         } else {
@@ -134,6 +172,10 @@ function AdminAddProduct() {
                 return [...newArray];
             });
         }
+    };
+
+    const charCounterHandler = (event) => {
+        return setCharCounter(descCharLimit - event.target.value.length);
     };
 
     // CLICK FUNCTION SECTION
@@ -163,18 +205,13 @@ function AdminAddProduct() {
 
         for (let i = 0; i < uploadedImg.length; i++) {
             if (uploadedImg[i]) {
-                formData.append("images", uploadedImg[i]);
+                formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
             }
         }
-        // formData.append("images", uploadedImg); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
         
         // Test pake JSON.stringify
         formData.append("dataProduct", JSON.stringify(inputtedProd));
         formData.append("dataStock", JSON.stringify(inputtedStock));
-
-        // Test ga pake JSON.stringify
-        // formData.append("dataProduct", inputtedProd);
-        // formData.append("dataStock", inputtedStock);
 
         let config = {
             headers: {
@@ -334,8 +371,29 @@ function AdminAddProduct() {
                             <p>in Rupiah (Rp)</p>
                         </div>
                     </div>
-                    {/* <div className="add-info-form-item"> */}
-                        {warehouse.map((val, index) => (
+                        {testWh.map((val, index) => (
+                            <div className="add-info-form-item" key={`Gudang-${val.id}`}>
+                                <div className="add-info-form-left">
+                                    <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
+                                </div>
+                                <div className="add-info-form-right">
+                                    <input 
+                                        type="number" 
+                                        className="add-stock-input-wrap"
+                                        id={`stock_0${val.id}`}
+                                        name={`stock_0${val.id}`}
+                                        value={val.stock}
+                                        onChange={(event) => addStockHandler(event, index)}
+                                        onKeyUp={(event) => stockNoMinHandler(event, index)}
+                                        placeholder="Input stock (minimum: 0)"
+                                        min="0"
+                                        disabled={role === "admin"}
+                                    />
+                                    <p>*Only super admin can fill</p>
+                                </div>
+                            </div>
+                        ))}
+                        {/* {warehouse.map((val, index) => (
                             <div className="add-info-form-item" key={`Gudang-${val.id}`}>
                                 <div className="add-info-form-left">
                                     <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
@@ -355,12 +413,13 @@ function AdminAddProduct() {
                                     <p>*Only super admin can fill</p>
                                 </div>
                             </div>
-                        ))}
+                        ))} */}
                 </form>
                 <div className="add-desc-form-wrap">
                     <div className="add-desc-form-item">
                         <div className="add-desc-form-left">
                             <label htmlFor="prod_desc">Product Description</label>
+                            <p>max char: {charCounter}/{descCharLimit}</p>
                         </div>
                         <div className="add-desc-form-right">
                             <textarea 
@@ -370,7 +429,9 @@ function AdminAddProduct() {
                                 name="prod_desc" 
                                 value={prod_desc}
                                 onChange={(event) => addProdStringHandler(event)}
+                                onKeyUp={(event) => charCounterHandler(event)}
                                 placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
+                                maxlength="2000"
                             >
                             </textarea>
                         </div>
@@ -383,7 +444,7 @@ function AdminAddProduct() {
                     <button 
                         className="add-products-submit-btn"
                         onClick={onSubmitAddProd}
-                        disabled={!prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !prod_desc || !stockList}
+                        disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !prod_desc}
                     >
                         Submit
                     </button>

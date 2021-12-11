@@ -147,6 +147,10 @@
     width: 100%;
 }
 
+.add-desc-form-left > p {
+    font-size: 0.9em;
+}
+
 .add-info-form-left > label,
 .add-desc-form-left > label {
     font-size: 20px;
@@ -199,12 +203,19 @@
     font-weight: 300;
 }
 
-.add-info-form-right > input[name="prod_weight"],
+/* .add-info-form-right > input[name="prod_weight"],
 .add-info-form-right > input[name="prod_price"],
 .add-info-form-right > input[name="prod_cost"],
 .add-info-form-right > input[name="stock_01"],
 .add-info-form-right > input[name="stock_02"],
 .add-info-form-right > input[name="stock_03"] {
+    width: 320px;
+} */
+
+.add-info-form-right > input[name="prod_weight"],
+.add-info-form-right > input[name="prod_price"],
+.add-info-form-right > input[name="prod_cost"],
+.add-info-form-right > .add-stock-input-wrap {
     width: 320px;
 }
 
