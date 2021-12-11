@@ -4,6 +4,8 @@ import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 // Belum:
 // Kasih spinner loading / skeleton
@@ -13,6 +15,7 @@ import deleteTrash from "../../assets/components/Delete-Trash.svg";
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
+    const [skeletonLoad, setSkeletonLoad] = useState(true);
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
     const [mainImgCheck, setMainImgCheck] = useState(false);
@@ -70,6 +73,7 @@ function AdminAddProduct() {
     useEffect(() => {
         fetchCategory();
         fetchWarehouse();
+        setSkeletonLoad(false);
     }, []);
 
     // HANDLER && CHECKER FUNCTIONS SECTION
@@ -232,206 +236,224 @@ function AdminAddProduct() {
     
     return (
         <div className="add-products-main-wrap">
-            <div className="add-products-header-wrap">
-                <h4>Tambah Produk Page</h4>
-                <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
-            </div>
-            <div className="add-products-contents-wrap">
-                <div className="add-images-form-wrap">
-                    <div className="add-images-left-wrap">
-                        <h5>Upload Image</h5>
-                        <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
+            {!skeletonLoad ?
+                <>
+                    <div className="add-products-header-wrap">
+                        <h4>Tambah Produk Page</h4>
+                        <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
                     </div>
-                    <div className="add-images-right-wrap">
-                        {addImage.map((val, index) => {
-                            return (
-                                <label 
-                                    htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                    className={addImage[index] ? "add-images-upload-preview" : "add-images-upload-item"}
-                                >
-                                    <input 
-                                        type="file" 
-                                        id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                        name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                        accept=".jpg,.jpeg,.png"
-                                        onChange={(event) => addImageHandler(event, index)} 
-                                        disabled={addImage[index]}
-                                    />
-                                    {addImage[index] ?
-                                        <>
-                                            <img 
-                                                src={URL.createObjectURL(addImage[index])} 
-                                                alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
-                                                className="add-images-preview"
+                    <div className="add-products-contents-wrap">
+                        <div className="add-images-form-wrap">
+                            <div className="add-images-left-wrap">
+                                <h5>Upload Image</h5>
+                                <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
+                            </div>
+                            <div className="add-images-right-wrap">
+                                {addImage.map((val, index) => {
+                                    return (
+                                        <label 
+                                            htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                            className={addImage[index] ? "add-images-upload-preview" : "add-images-upload-item"}
+                                        >
+                                            <input 
+                                                type="file" 
+                                                id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                                name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                                accept=".jpg,.jpeg,.png"
+                                                onChange={(event) => addImageHandler(event, index)} 
+                                                disabled={addImage[index]}
                                             />
-                                            <span 
-                                                className="add-images-del-icon"
-                                                onClick={(event) => delImgUpload(event, index)}
-                                            >
-                                                <img src={deleteTrash} />
-                                            </span>
-                                        </>
-                                        :
-                                        <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
-                                    }
-                                </label>
-                            )
-                        })}
-                    </div>
-                </div>
-                <form id="add-prod-form" className="add-info-form-wrap">
-                    <div className="add-info-form-item">
-                        <div className="add-info-form-left">
-                            <label htmlFor="prod_name">Product Name</label>
+                                            {addImage[index] ?
+                                                <>
+                                                    <img 
+                                                        src={URL.createObjectURL(addImage[index])} 
+                                                        alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
+                                                        className="add-images-preview"
+                                                    />
+                                                    <span 
+                                                        className="add-images-del-icon"
+                                                        onClick={(event) => delImgUpload(event, index)}
+                                                    >
+                                                        <img src={deleteTrash} />
+                                                    </span>
+                                                </>
+                                                :
+                                                <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                                            }
+                                        </label>
+                                    )
+                                })}
+                            </div>
                         </div>
-                        <div className="add-info-form-right">
-                            <input 
-                                type="text" 
-                                id="prod_name" 
-                                name="prod_name" 
-                                value={prod_name}
-                                onChange={(event) => addProdStringHandler(event)}
-                                placeholder="Example: Javara (Brand, if any) + Coconut Sugar (Name) + 250gr (Size)"
-                            />
-                        </div>
-                    </div>
-                    <div className="add-info-form-item">
-                        <div className="add-info-form-left">
-                            <label htmlFor="prod_category">Category</label>
-                        </div>
-                        <div className="add-info-form-right">
-                            <select 
-                                id="prod_category"
-                                name="prod_category" 
-                                defaultValue={prod_category}
-                                onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                style={{textTransform: "capitalize"}}
-                            >
-                                <option value={0} disabled hidden>Select here</option>
-                                {category.map((val) => (
-                                    <option value={val.id} key={`00${val.id}-${val.category}`} style={{textTransform: "capitalize"}}>
-                                        {val.category}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="add-info-form-item">
-                        <div className="add-info-form-left">
-                            <label htmlFor="prod_weight">Product Weight</label>
-                        </div>
-                        <div className="add-info-form-right">
-                            <input 
-                                type="number" 
-                                id="prod_weight" 
-                                name="prod_weight" 
-                                value={prod_weight}
-                                onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
-                                onWheel={(event) => event.target.blur()}
-                                placeholder="(base weight + packaging)"
-                                min="1"
-                            />
-                            <p>Gram (g)</p>
-                        </div>
-                    </div>
-                    <div className="add-info-form-item">
-                        <div className="add-info-form-left">
-                            <label htmlFor="prod_price">Product Price / Pcs</label>
-                        </div>
-                        <div className="add-info-form-right">
-                            <input 
-                                type="number" 
-                                id="prod_price" 
-                                name="prod_price" 
-                                value={prod_price}
-                                onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
-                                onWheel={(event) => event.target.blur()}
-                                placeholder="Input price (minimum: 1)"
-                                min="1"
-                            />
-                            <p>in Rupiah (Rp)</p>
-                        </div>
-                    </div>
-                    <div className="add-info-form-item">
-                        <div className="add-info-form-left">
-                            <label htmlFor="prod_cost">Product Cost / Pcs</label>
-                        </div>
-                        <div className="add-info-form-right">
-                            <input 
-                                type="number" 
-                                id="prod_cost" 
-                                name="prod_cost" 
-                                value={prod_cost}
-                                onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
-                                onWheel={(event) => event.target.blur()}
-                                placeholder="Product COGS (minimum: 1)"
-                                min="1"
-                            />
-                            <p>in Rupiah (Rp)</p>
-                        </div>
-                    </div>
-                        {warehouse.map((val, index) => (
-                            <div className="add-info-form-item" key={`Gudang-${val.id}`}>
+                        <form id="add-prod-form" className="add-info-form-wrap">
+                            <div className="add-info-form-item">
                                 <div className="add-info-form-left">
-                                    <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
+                                    <label htmlFor="prod_name">Product Name</label>
+                                </div>
+                                <div className="add-info-form-right">
+                                    <input 
+                                        type="text" 
+                                        id="prod_name" 
+                                        name="prod_name" 
+                                        value={prod_name}
+                                        onChange={(event) => addProdStringHandler(event)}
+                                        placeholder="Example: Javara (Brand, if any) + Coconut Sugar (Name) + 250gr (Size)"
+                                    />
+                                </div>
+                            </div>
+                            <div className="add-info-form-item">
+                                <div className="add-info-form-left">
+                                    <label htmlFor="prod_category">Category</label>
+                                </div>
+                                <div className="add-info-form-right">
+                                    <select 
+                                        id="prod_category"
+                                        name="prod_category" 
+                                        defaultValue={prod_category}
+                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
+                                        style={{textTransform: "capitalize"}}
+                                    >
+                                        <option value={0} disabled hidden>Select here</option>
+                                        {category.map((val) => (
+                                            <option value={val.id} key={`00${val.id}-${val.category}`} style={{textTransform: "capitalize"}}>
+                                                {val.category}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="add-info-form-item">
+                                <div className="add-info-form-left">
+                                    <label htmlFor="prod_weight">Product Weight</label>
                                 </div>
                                 <div className="add-info-form-right">
                                     <input 
                                         type="number" 
-                                        className="add-stock-input-wrap"
-                                        id={`stock_0${val.id}`}
-                                        name={`stock_0${val.id}`}
-                                        value={val.stock}
-                                        onChange={(event) => addStockHandler(event, index)}
-                                        onKeyUp={(event) => stockNoMinHandler(event, index)}
+                                        id="prod_weight" 
+                                        name="prod_weight" 
+                                        value={prod_weight}
+                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
+                                        onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
                                         onWheel={(event) => event.target.blur()}
-                                        placeholder="Input stock (minimum: 0)"
-                                        min="0"
-                                        disabled={role === "admin"}
+                                        placeholder="(base weight + packaging)"
+                                        min="1"
                                     />
-                                    <p>*Only super admin can fill</p>
+                                    <p>Gram (g)</p>
                                 </div>
                             </div>
-                        ))}
-                </form>
-                <div className="add-desc-form-wrap">
-                    <div className="add-desc-form-item">
-                        <div className="add-desc-form-left">
-                            <label htmlFor="prod_desc">Product Description</label>
-                            <p>max char: {charCounter}/{descCharLimit}</p>
+                            <div className="add-info-form-item">
+                                <div className="add-info-form-left">
+                                    <label htmlFor="prod_price">Product Price / Pcs</label>
+                                </div>
+                                <div className="add-info-form-right">
+                                    <input 
+                                        type="number" 
+                                        id="prod_price" 
+                                        name="prod_price" 
+                                        value={prod_price}
+                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
+                                        onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                        onWheel={(event) => event.target.blur()}
+                                        placeholder="Input price (minimum: 1)"
+                                        min="1"
+                                    />
+                                    <p>in Rupiah (Rp)</p>
+                                </div>
+                            </div>
+                            <div className="add-info-form-item">
+                                <div className="add-info-form-left">
+                                    <label htmlFor="prod_cost">Product Cost / Pcs</label>
+                                </div>
+                                <div className="add-info-form-right">
+                                    <input 
+                                        type="number" 
+                                        id="prod_cost" 
+                                        name="prod_cost" 
+                                        value={prod_cost}
+                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
+                                        onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                        onWheel={(event) => event.target.blur()}
+                                        placeholder="Product COGS (minimum: 1)"
+                                        min="1"
+                                    />
+                                    <p>in Rupiah (Rp)</p>
+                                </div>
+                            </div>
+                                {warehouse.map((val, index) => (
+                                    <div className="add-info-form-item" key={`Gudang-${val.id}`}>
+                                        <div className="add-info-form-left">
+                                            <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
+                                        </div>
+                                        <div className="add-info-form-right">
+                                            <input 
+                                                type="number" 
+                                                className="add-stock-input-wrap"
+                                                id={`stock_0${val.id}`}
+                                                name={`stock_0${val.id}`}
+                                                value={val.stock}
+                                                onChange={(event) => addStockHandler(event, index)}
+                                                onKeyUp={(event) => stockNoMinHandler(event, index)}
+                                                onWheel={(event) => event.target.blur()}
+                                                placeholder="Input stock (minimum: 0)"
+                                                min="0"
+                                                disabled={role === "admin"}
+                                            />
+                                            <p>*Only super admin can fill</p>
+                                        </div>
+                                    </div>
+                                ))}
+                        </form>
+                        <div className="add-desc-form-wrap">
+                            <div className="add-desc-form-item">
+                                <div className="add-desc-form-left">
+                                    <label htmlFor="prod_desc">Product Description</label>
+                                    <p>max char: {charCounter}/{descCharLimit}</p>
+                                </div>
+                                <div className="add-desc-form-right">
+                                    <textarea 
+                                        type="text" 
+                                        rows="8"
+                                        cols="100"
+                                        name="prod_desc" 
+                                        value={prod_desc}
+                                        onChange={(event) => addProdStringHandler(event)}
+                                        onKeyUp={(event) => charCounterHandler(event)}
+                                        placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
+                                        maxlength="2000"
+                                    >
+                                    </textarea>
+                                </div>
+                            </div>
                         </div>
-                        <div className="add-desc-form-right">
-                            <textarea 
-                                type="text" 
-                                rows="8"
-                                cols="100"
-                                name="prod_desc" 
-                                value={prod_desc}
-                                onChange={(event) => addProdStringHandler(event)}
-                                onKeyUp={(event) => charCounterHandler(event)}
-                                placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
-                                maxlength="2000"
+                        <div className="add-products-submission-wrap">
+                            <Link to="/admin/manage-product" className="add-products-cancel-wrap">
+                                <button>Cancel</button>
+                            </Link>
+                            <button 
+                                className="add-products-submit-btn"
+                                onClick={onSubmitAddProd}
+                                disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !(warehouse.every(stockTrueChecker)) || !prod_desc}
                             >
-                            </textarea>
+                                Submit
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div className="add-products-submission-wrap">
-                    <Link to="/admin/manage-product" className="add-products-cancel-wrap">
-                        <button>Cancel</button>
-                    </Link>
-                    <button 
-                        className="add-products-submit-btn"
-                        onClick={onSubmitAddProd}
-                        disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !(warehouse.every(stockTrueChecker)) || !prod_desc}
-                    >
-                        Submit
-                    </button>
-                </div>
-            </div>
+                </>
+                :
+                <Stack spacing={3}>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "48px", width: "20%"}}/>
+                        <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "48px", width: "25%"}}/>        
+                    </div>
+                    <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
+                    <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
+                    <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
+                    <div style={{display: "flex", columnGap: "24px", justifyContent: "flex-end"}}>
+                        <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "48px", width: "160px"}} />
+                        <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "48px", width: "160px"}} />
+                    </div>
+                </Stack>
+            }
         </div>
     )
 }
