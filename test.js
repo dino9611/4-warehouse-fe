@@ -53,22 +53,25 @@
 
 // console.log(typeof("-"));
 
-let x = ["", "", ""];
+// let x = ["", "", ""];
 
-x.forEach((val) => {
-    console.log(Boolean(val));
-})
+// x.forEach((val) => {
+//     console.log(Boolean(val));
+// })
 
-let z = "Bambang Sutedjo"
+// let z = "Bambang Sutedjo"
 
-console.log(z.length);
+// console.log(z.length);
 
-const thousandSeparator = (value) => {
-    let pattern = /(\d)(?=(\d{3})+(?!\d))/g;
-    let replacement = "\$1,";
-    let stringConvert = String(value);
-    return stringConvert.replace(pattern, replacement);
-  };
+// const thousandSeparator = (value) => {
+//     let pattern = /(\d)(?=(\d{3})+(?!\d))/g;
+//     let replacement = "\$1,";
+//     let stringConvert = String(value);
+//     return stringConvert.replace(pattern, replacement);
+//   };
 
-let xx = thousandSeparator(10000);
-console.log(parseInt(xx));
+// let xx = thousandSeparator(10000);
+// console.log(parseInt(xx));
+
+let zzz = "Kacang-Kacangan";
+console.log(zzz.toLowerCase().replace(/-/g, '_'));

@@ -5,22 +5,23 @@ import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 
 // Belum:
-// Auto thousand separator display numbers
+// Proteksi seluruh stok harus diisi
+// Proteksi seluruh input harus diisi
+// Button delete uploaded image
+// Klo submit prod, mau submit lg ga bisa, main image blokir button jd nya disable
 // Proteksi price & cost klo input 0
-// Proteksi minimal image utama dimasukkan
 // Kasih proteksi submit 2x klo internet lambat
 // Kasih spinner loading / skeleton
-// Klo cancel image upload msh ttp nyala button nya
-// Button delete uploaded image
+// Auto thousand separator display numbers
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [category, setCategory] = useState([]);
     const [warehouse, setWarehouse] = useState([]);
     const [mainImgCheck, setMainImgCheck] = useState(false);
-    const [charCounter, setCharCounter] = useState(0);
+    const [charCounter, setCharCounter] = useState(2000);
 
-    const [addImage, setAddImage] = useState([ // Testing pake array
+    const [addImage, setAddImage] = useState([
         "",
         "",
         ""
@@ -38,19 +39,6 @@ function AdminAddProduct() {
       });
     // console.log(addProdInput);
 
-    const [addWhStock, setAddWhStock] = useState({ // Utk bawa input data stok produk ke BE
-        wh_id_01: 1,
-        stock_01: "",
-        wh_id_02: 2,
-        stock_02: "",
-        wh_id_03: 3,
-        stock_03: ""
-    });
-    // console.log(addWhStock);
-
-    const [testWh, setTestWh] = useState([]);
-    // console.log(testWh);
-
     const descCharLimit = 2000;
 
     let { 
@@ -62,17 +50,6 @@ function AdminAddProduct() {
         prod_cost, 
         prod_desc 
     } = addProdInput;
-
-    let {
-        wh_id_01,
-        stock_01,
-        wh_id_02,
-        stock_02,
-        wh_id_03,
-        stock_03
-    } = addWhStock;
-
-    let stockList = [stock_01, stock_02, stock_03];
 
     const fetchCategory = async () => { // Utk render data kategori produk
         try {
@@ -90,7 +67,6 @@ function AdminAddProduct() {
                 val.stock = "";
             });
             setWarehouse(res.data);
-            setTestWh(res.data);
         } catch (error) {
             console.log(error)
         }
@@ -99,7 +75,6 @@ function AdminAddProduct() {
     useEffect(() => {
         fetchCategory();
         fetchWarehouse();
-        // console.log("Setelah useEffect", addWhStock);
     }, []);
 
     // HANDLER FUNCTIONS SECTION
@@ -134,7 +109,7 @@ function AdminAddProduct() {
 
     const addStockHandler = (event, index) => { // Khusus setState data stock
         let input = event.target.value;
-        setTestWh((prevState) => {
+        setWarehouse((prevState) => {
             let newArray = prevState;
             newArray[index].stock = parseInt(input);
             return [...newArray];
@@ -144,7 +119,7 @@ function AdminAddProduct() {
     const stockNoMinHandler = (event, index) => { // Biar input number stock tidak negatif (-)
         let input = event.target.value;
         if (input < 0) {
-            setTestWh((prevState) => {
+            setWarehouse((prevState) => {
                 let newArray = prevState;
                 newArray[index].stock = parseInt(input) * -1;
                 return [...newArray];
@@ -196,46 +171,51 @@ function AdminAddProduct() {
             prod_cost: prod_cost,
             prod_desc: prod_desc
         };
-        let inputtedStock = {
-            wh_id_01: wh_id_01,
-            stock_01: stock_01,
-            wh_id_02: wh_id_02,
-            stock_02: stock_02,
-            wh_id_03: wh_id_03,
-            stock_03: stock_03
-        };
+        let inputtedStock = warehouse;
 
+        // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
         const formData = new FormData();
-
         for (let i = 0; i < uploadedImg.length; i++) {
             if (uploadedImg[i]) {
                 formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
             }
         }
-        
-        // Test pake JSON.stringify
         formData.append("dataProduct", JSON.stringify(inputtedProd));
         formData.append("dataStock", JSON.stringify(inputtedStock));
-
         let config = {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         };
 
+        // Kirim data kategori utk menentukan folder kategori image yang di-upload
+        try {
+            await axios.post(`${API_URL}/product/determine-category`, inputtedProd);
+        } catch (err) {
+            console.log(err);
+        };
+
         if (prod_name && prod_category && prod_weight && prod_price && prod_cost && prod_desc) {
             try {
-                // await axios.post(`${API_URL}/product/add`, [uploadedImg, inputtedProd, inputtedStock]);
                 await axios.post(`${API_URL}/product/add`, formData, config);
                 setAddImage((prevState) => {
-                    return {...prevState, main_img: "", secondary_img: "", third_img: ""}
+                    let newArray = prevState;
+                    newArray.forEach((val, index) => {
+                        newArray[index] = "";
+                    })
+                    return [...newArray];
                 });
                 setAddProdInput((prevState) => {
                     return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
                 });
-                setAddWhStock((prevState) => {
-                    return {...prevState, wh_id_01: 1, stock_01: "", wh_id_02: 2, stock_02: "", wh_id_03: 3, stock_03: ""}
+                setWarehouse((prevState) => {
+                    let newArray = prevState;
+                    newArray.forEach((val, index) => {
+                        newArray[index].stock = "";
+                    })
+                    return [...newArray];
                 });
+                setMainImgCheck(false);
             } catch (err) {
                 console.log(err);
             };
@@ -378,7 +358,7 @@ function AdminAddProduct() {
                             <p>in Rupiah (Rp)</p>
                         </div>
                     </div>
-                        {testWh.map((val, index) => (
+                        {warehouse.map((val, index) => (
                             <div className="add-info-form-item" key={`Gudang-${val.id}`}>
                                 <div className="add-info-form-left">
                                     <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
@@ -401,27 +381,6 @@ function AdminAddProduct() {
                                 </div>
                             </div>
                         ))}
-                        {/* {warehouse.map((val, index) => (
-                            <div className="add-info-form-item" key={`Gudang-${val.id}`}>
-                                <div className="add-info-form-left">
-                                    <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
-                                </div>
-                                <div className="add-info-form-right">
-                                    <input 
-                                        type="number" 
-                                        id={`stock_0${val.id}`}
-                                        name={`stock_0${val.id}`}
-                                        value={stockList[index]}
-                                        onChange={(event) => addProdNumberHandler(event, setAddWhStock)}
-                                        onKeyUp={(event) => noMinusHandler(event, setAddWhStock)}
-                                        placeholder="Input stock (minimum: 0)"
-                                        min="0"
-                                        disabled={role === "admin"}
-                                    />
-                                    <p>*Only super admin can fill</p>
-                                </div>
-                            </div>
-                        ))} */}
                 </form>
                 <div className="add-desc-form-wrap">
                     <div className="add-desc-form-item">
