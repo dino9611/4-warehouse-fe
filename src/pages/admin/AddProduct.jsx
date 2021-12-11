@@ -5,12 +5,10 @@ import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 
 // Belum:
-// Proteksi seluruh stok harus diisi
 // Proteksi seluruh input harus diisi
 // Button delete uploaded image
 // Klo submit prod, mau submit lg ga bisa, main image blokir button jd nya disable
 // Proteksi price & cost klo input 0
-// Kasih proteksi submit 2x klo internet lambat
 // Kasih spinner loading / skeleton
 // Auto thousand separator display numbers
 
@@ -20,6 +18,7 @@ function AdminAddProduct() {
     const [warehouse, setWarehouse] = useState([]);
     const [mainImgCheck, setMainImgCheck] = useState(false);
     const [charCounter, setCharCounter] = useState(2000);
+    console.log(mainImgCheck);
 
     const [addImage, setAddImage] = useState([
         "",
@@ -27,7 +26,7 @@ function AdminAddProduct() {
         ""
     ]);
 
-    // console.log(addImage);
+    console.log(warehouse);
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
         prod_name: "",
@@ -77,7 +76,7 @@ function AdminAddProduct() {
         fetchWarehouse();
     }, []);
 
-    // HANDLER FUNCTIONS SECTION
+    // HANDLER && CHECKER FUNCTIONS SECTION
     const addProdStringHandler = (event) => { // Utk setState data berbentuk string
         setAddProdInput((prevState) => {
             return { ...prevState, [event.target.name]: event.target.value };
@@ -157,6 +156,8 @@ function AdminAddProduct() {
         return setCharCounter(descCharLimit - event.target.value.length);
     };
 
+    const stockTrueChecker = (value) => value.stock + 1 > 0 && typeof(value.stock) === "number";
+
     // CLICK FUNCTION SECTION
     const onSubmitAddProd = async (event) => { // Untuk trigger submit button
         event.preventDefault();
@@ -205,6 +206,7 @@ function AdminAddProduct() {
                     })
                     return [...newArray];
                 });
+                setMainImgCheck(false);
                 setAddProdInput((prevState) => {
                     return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
                 });
@@ -215,7 +217,7 @@ function AdminAddProduct() {
                     })
                     return [...newArray];
                 });
-                setMainImgCheck(false);
+                document.querySelector("button.add-products-submit-btn").disabled = true;
             } catch (err) {
                 console.log(err);
             };
@@ -411,7 +413,7 @@ function AdminAddProduct() {
                     <button 
                         className="add-products-submit-btn"
                         onClick={onSubmitAddProd}
-                        disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !prod_desc}
+                        disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !(warehouse.every(stockTrueChecker)) || !prod_desc}
                     >
                         Submit
                     </button>

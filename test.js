@@ -73,5 +73,15 @@
 // let xx = thousandSeparator(10000);
 // console.log(parseInt(xx));
 
-let zzz = "Kacang-Kacangan";
-console.log(zzz.toLowerCase().replace(/-/g, '_'));
+// let zzz = "Kacang-Kacangan";
+// console.log(zzz.toLowerCase().replace(/-/g, '_'));
+
+let yyy = ['/assets/images/uploaded/kopi/Product_20211211287.jpg', '/assets/images/uploaded/kopi/Product_20211211298.jpg', '/assets/images/uploaded/kopi/Product_20211211312.jpg'];
+
+let test1 = yyy[0].replace(/'/g, `"`);
+
+// let hhh = yyy.map((val) => {
+//     return val.replace(/'/g, `"`)
+// })
+
+console.log(test1);

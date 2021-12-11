@@ -190,7 +190,6 @@ function ManageProduct() {
                                 <TableRow
                                 key={val.SKU}
                                 >
-                                    {console.log(val.images[0], "Masuk sini")}
                                     <TableCell align="center" component="th" scope="row">
                                         <img 
                                             src={`${API_URL}/${val.images[0]}`} 
@@ -205,7 +204,7 @@ function ManageProduct() {
                                     </TableCell>
                                     <TableCell align="center" className="txt-capitalize">{val.name}</TableCell>
                                     <TableCell align="center" className="txt-capitalize">{val.category}</TableCell>
-                                    <TableCell align="right">{`Rp${thousandSeparator(val.price)}`}</TableCell>
+                                    <TableCell align="right">{`Rp ${thousandSeparator(val.price)}`}</TableCell>
                                     <TableCell align="right">
                                         <span style={{cursor: "pointer"}}>
                                             {val.total_stock}
