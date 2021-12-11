@@ -6,10 +6,9 @@ import {Link} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import Swal from 'sweetalert2';
 
 // Belum:
-// Kasih spinner loading / skeleton
-// Auto thousand separator display numbers
 // Notif berhasil upload/gagal
 // Styiling select category
 
@@ -226,8 +225,19 @@ function AdminAddProduct() {
                     return [...newArray];
                 });
                 document.querySelector("button.add-products-submit-btn").disabled = true;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Add product success!',
+                    text: `${inputtedProd.prod_name}`,
+                    confirmButtonColor: '#B24629',
+                  });
             } catch (err) {
                 console.log(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...something went wrong, reload/try again',
+                    confirmButtonColor: '#B24629',
+                  });
             };
         } else {
             alert("Pastikan terisi semua (discount price tidak wajib)");
