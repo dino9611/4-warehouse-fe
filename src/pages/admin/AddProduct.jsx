@@ -328,6 +328,7 @@ function AdminAddProduct() {
                                 value={prod_weight}
                                 onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
                                 onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                onWheel={(event) => event.target.blur()}
                                 placeholder="(base weight + packaging)"
                                 min="1"
                             />
@@ -346,6 +347,7 @@ function AdminAddProduct() {
                                 value={prod_price}
                                 onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
                                 onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                onWheel={(event) => event.target.blur()}
                                 placeholder="Input price (minimum: 1)"
                                 min="1"
                             />
@@ -364,6 +366,7 @@ function AdminAddProduct() {
                                 value={prod_cost}
                                 onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
                                 onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                onWheel={(event) => event.target.blur()}
                                 placeholder="Product COGS (minimum: 1)"
                                 min="1"
                             />
@@ -384,6 +387,7 @@ function AdminAddProduct() {
                                         value={val.stock}
                                         onChange={(event) => addStockHandler(event, index)}
                                         onKeyUp={(event) => stockNoMinHandler(event, index)}
+                                        onWheel={(event) => event.target.blur()}
                                         placeholder="Input stock (minimum: 0)"
                                         min="0"
                                         disabled={role === "admin"}
