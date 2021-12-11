@@ -5,11 +5,17 @@ import Textbox from "../../components/Textbox";
 import CalenderComp from "./../../components/CalenderComp";
 import { API_URL } from "../../constants/api";
 import "./style/profile.css";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function Profile() {
+  const dispatch = useDispatch();
+
   const [personalData, setPersonalData] = useState({});
   const [handleGender, setHandleGender] = useState(false);
   const [handleCalender, setHandleCalender] = useState(false);
+  const [date, setDate] = useState("");
+  const calenderData = useSelector((state) => state.ProfileReducer);
 
   useEffect(() => {
     (async () => {
@@ -29,14 +35,25 @@ function Profile() {
   // Ubah personal data ke state
 
   const onChangeData = (e) => {
-    setPersonalData({ ...personalData, [e.target.name]: e.target.value });
+    setPersonalData({
+      ...personalData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   // Submit data untuk disimpan ke dalam database
 
   const onClickInputData = async () => {
+    const sendPersonalData = {
+      ...personalData,
+      date_of_birth: calenderData.chooseDate,
+    };
+    console.log(sendPersonalData);
     try {
-      await axios.post(`${API_URL}/profile/edit/personal-data/2`, personalData);
+      await axios.post(
+        `${API_URL}/profile/edit/personal-data/2`,
+        sendPersonalData
+      );
 
       alert("Berhasil input data");
     } catch (error) {
@@ -103,7 +120,6 @@ function Profile() {
             label="Jenis Kelamin"
             placeholder="Jenis Kelamin"
             name="gender"
-            onChange={onChangeData}
             value={personalData.gender}
             disabled="disabled"
             backgroundColor="#fff"
@@ -118,13 +134,13 @@ function Profile() {
             placeholder="Tanggal Lahir"
             name="date_of_birth"
             onChange={onChangeData}
-            value={personalData.date_of_birth}
+            value={calenderData.chooseDate || personalData.date_of_birth}
             disabled="disabled"
             backgroundColor="#fff"
             cursor="pointer"
-            onClick={(e) => setHandleCalender(!handleCalender)}
+            onClick={() => dispatch({ type: "OPENCALENDER" })}
           />
-          {handleCalender ? (
+          {calenderData.handleCalender ? (
             <div className="profile-dropdown-calender">
               <CalenderComp bornDate={`${personalData.date_of_birth}`} />
             </div>

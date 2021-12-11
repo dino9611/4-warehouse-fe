@@ -2,6 +2,7 @@ import "./styles/calender.css";
 import CalenderJs from "./Calender";
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 function Calender({
   width = "210px",
@@ -19,6 +20,8 @@ function Calender({
   const [lastPick, setLastPick] = useState("");
   const [changeDate, setChangeDate] = useState("");
   const calender = CalenderJs(currentYear, currentMonth, null, 5);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (lastPick === `${currentYear}-${currentMonth + 1}-${changeDate}`) {
@@ -212,6 +215,8 @@ function Calender({
 
     setLastPick(e.target.value);
     setChangeDate(date);
+
+    dispatch({ type: "PICKDATE", payload: e.target.value });
 
     if (
       e.target.value ===
