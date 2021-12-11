@@ -5,7 +5,6 @@ import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 
 // Belum:
-// Kasih notes character left utk deskripsi (kasih 2000 max char aja)
 // Auto thousand separator display numbers
 // Proteksi price & cost klo input 0
 // Proteksi minimal image utama dimasukkan
