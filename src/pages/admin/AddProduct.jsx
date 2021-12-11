@@ -8,10 +8,6 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
 
-// Belum:
-// Notif berhasil upload/gagal
-// Styiling select category
-
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [skeletonLoad, setSkeletonLoad] = useState(true);
