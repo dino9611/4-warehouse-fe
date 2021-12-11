@@ -6,10 +6,6 @@ import {Link} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
 
 // Belum:
-// Proteksi seluruh input harus diisi
-// Button delete uploaded image
-// Klo submit prod, mau submit lg ga bisa, main image blokir button jd nya disable (Ternyata gara2 selection kategori ga balik ke 0)
-// Proteksi price & cost klo input 0
 // Kasih spinner loading / skeleton
 // Auto thousand separator display numbers
 // Notif berhasil upload/gagal
@@ -48,6 +44,7 @@ function AdminAddProduct() {
         prod_cost, 
         prod_desc 
     } = addProdInput;
+    console.log(prod_weight);
 
     const fetchCategory = async () => { // Utk render data kategori produk
         try {
@@ -94,13 +91,11 @@ function AdminAddProduct() {
             cb((prevState) => {
                 return { ...prevState, [event.target.name]: input * -1 };
             });
-        } 
-        // else if (prod_weight == 0 || prod_price == 0 || prod_cost == 0) {
-        //     cb((prevState) => {
-        //         return { ...prevState, [event.target.name]: parseInt(input) + 1 };
-        //     });
-        // } 
-        else {
+        } else if (prod_weight === 0 || prod_price === 0 || prod_cost === 0) {
+            cb((prevState) => {
+                return { ...prevState, [event.target.name]: ""};
+            });
+        } else {
             return
         }
     };
@@ -151,18 +146,15 @@ function AdminAddProduct() {
     };
 
     const delImgUpload = (event, indexArr) => {
-        console.log(indexArr)
         return setAddImage((prevState) => {
             let newArray = prevState;
             newArray[indexArr] = "";
             if (indexArr === 0) {
                 setMainImgCheck(false);
             }
-            console.log("Sampe sblm return")
             return [...newArray];
         });
     }
-    console.log(addImage);
 
     const charCounterHandler = (event) => {
         return setCharCounter(descCharLimit - event.target.value.length);
