@@ -110,6 +110,7 @@
     justify-content: center;
     margin: 0;
     overflow: hidden;
+    position: relative;
     width: 200px;
 }
 
@@ -122,6 +123,21 @@
     object-fit: contain;
     height: 100%;
     width: 100%;
+}
+
+.add-images-del-icon {
+    background-color: var(--neutral-5th-color);
+    border-radius: 12px;
+    padding: 8px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    opacity: 0;
+}
+
+.add-images-upload-preview:hover > .add-images-del-icon {
+    opacity: 1;
+    transition: 300ms;
 }
 
 .add-images-upload-item > p {

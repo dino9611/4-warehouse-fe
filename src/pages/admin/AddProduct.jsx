@@ -3,14 +3,17 @@ import React, { useEffect, useState } from 'react';
 import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
+import deleteTrash from "../../assets/components/Delete-Trash.svg";
 
 // Belum:
 // Proteksi seluruh input harus diisi
 // Button delete uploaded image
-// Klo submit prod, mau submit lg ga bisa, main image blokir button jd nya disable
+// Klo submit prod, mau submit lg ga bisa, main image blokir button jd nya disable (Ternyata gara2 selection kategori ga balik ke 0)
 // Proteksi price & cost klo input 0
 // Kasih spinner loading / skeleton
 // Auto thousand separator display numbers
+// Notif berhasil upload/gagal
+// Styiling select category
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
@@ -18,15 +21,12 @@ function AdminAddProduct() {
     const [warehouse, setWarehouse] = useState([]);
     const [mainImgCheck, setMainImgCheck] = useState(false);
     const [charCounter, setCharCounter] = useState(2000);
-    console.log(mainImgCheck);
 
     const [addImage, setAddImage] = useState([
         "",
         "",
         ""
     ]);
-
-    console.log(warehouse);
 
     const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
         prod_name: "",
@@ -36,7 +36,6 @@ function AdminAddProduct() {
         prod_cost: "",
         prod_desc: ""
       });
-    // console.log(addProdInput);
 
     const descCharLimit = 2000;
 
@@ -130,7 +129,6 @@ function AdminAddProduct() {
 
     const addImageHandler = (event, indexArr) => { // Utk setState upload image
         let file = event.target.files[0];
-        // console.log(file);
         if (file) {
             setAddImage((prevState) => {
                 let newArray = prevState;
@@ -151,6 +149,20 @@ function AdminAddProduct() {
             });
         }
     };
+
+    const delImgUpload = (event, indexArr) => {
+        console.log(indexArr)
+        return setAddImage((prevState) => {
+            let newArray = prevState;
+            newArray[indexArr] = "";
+            if (indexArr === 0) {
+                setMainImgCheck(false);
+            }
+            console.log("Sampe sblm return")
+            return [...newArray];
+        });
+    }
+    console.log(addImage);
 
     const charCounterHandler = (event) => {
         return setCharCounter(descCharLimit - event.target.value.length);
@@ -251,13 +263,22 @@ function AdminAddProduct() {
                                         name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
                                         accept=".jpg,.jpeg,.png"
                                         onChange={(event) => addImageHandler(event, index)} 
+                                        disabled={addImage[index]}
                                     />
                                     {addImage[index] ?
-                                        <img 
-                                            src={URL.createObjectURL(addImage[index])} 
-                                            alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
-                                            className="add-images-preview"
-                                        />
+                                        <>
+                                            <img 
+                                                src={URL.createObjectURL(addImage[index])} 
+                                                alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
+                                                className="add-images-preview"
+                                            />
+                                            <span 
+                                                className="add-images-del-icon"
+                                                onClick={(event) => delImgUpload(event, index)}
+                                            >
+                                                <img src={deleteTrash} />
+                                            </span>
+                                        </>
                                         :
                                         <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
                                     }
