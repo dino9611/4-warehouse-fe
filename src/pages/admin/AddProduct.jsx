@@ -8,10 +8,10 @@ import {Link} from "react-router-dom";
 // Auto thousand separator display numbers
 // Proteksi price & cost klo input 0
 // Proteksi minimal image utama dimasukkan
-// Proteksi scroll
 // Kasih proteksi submit 2x klo internet lambat
 // Kasih spinner loading / skeleton
 // Klo cancel image upload msh ttp nyala button nya
+// Button delete uploaded image
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
@@ -156,18 +156,23 @@ function AdminAddProduct() {
 
     const addImageHandler = (event, indexArr) => { // Utk setState upload image
         let file = event.target.files[0];
-        console.log(file);
+        // console.log(file);
         if (file) {
             setAddImage((prevState) => {
                 let newArray = prevState;
                 newArray[indexArr] = file;
-                setMainImgCheck(true);
+                if (indexArr === 0) {
+                    setMainImgCheck(true);
+                }
                 return [...newArray];
             });
         } else {
             setAddImage((prevState) => {
                 let newArray = prevState;
                 newArray[indexArr] = "";
+                if (indexArr === 0) {
+                    setMainImgCheck(false);
+                }
                 return [...newArray];
             });
         }
