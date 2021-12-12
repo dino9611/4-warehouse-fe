@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./styles/product.css";
 import CardProduct from "./../../components/CardProduct";
 import { debounce } from "throttle-debounce";
@@ -7,6 +7,7 @@ import Pagination from "@mui/material/Pagination";
 import { API_URL } from "./../../constants/api.js";
 import images from "./../../assets";
 import { useTransition, animated } from "react-spring";
+import ClickOutside from "../../helpers/ClickOutside";
 
 function Product() {
   // Product
@@ -23,16 +24,18 @@ function Product() {
   const [category, setCategory] = useState([]);
   const [joinCategory, setJoinCategory] = useState("");
   const [sort, setSort] = useState("");
+  const [sortName, setSortName] = useState("Urutkan");
 
   const [handleSort, setHandleSort] = useState(false);
+  const ref = useRef();
 
-  // Tes
-  const [isChecked, setIsChecked] = useState(false);
+  ClickOutside(ref, () => setHandleSort(false));
 
   const transition = useTransition(handleSort, {
-    from: { x: 0, y: -30, opacity: 0, PointerEvent: "none" },
+    config: { mass: 1, tension: 500, friction: 60, clamp: true },
+    from: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
     enter: { x: 0, y: 0, opacity: 1, PointerEvent: "all" },
-    leave: { x: 0, y: -20, opacity: 0, PointerEvent: "none" },
+    leave: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
   });
 
   useEffect(() => {
@@ -96,6 +99,12 @@ function Product() {
     setPage(value);
   };
 
+  const onClickSort = (e) => {
+    setSort(e.target.id);
+    setSortName(e.target.innerHTML);
+    setHandleSort(false);
+  };
+
   const renderFilterCategory = () => {
     return dataCategory.map((el, index) => {
       return (
@@ -139,37 +148,52 @@ function Product() {
       <div
         className="product-content-select w-100 "
         style={{ position: "relative" }}
+        onClick={() => setHandleSort(!handleSort)}
       >
-        <div
-          className="d-flex align-items-center justify-content-between w-100"
-          onClick={() => setHandleSort(!handleSort)}
-        >
-          <div>asdasd</div>
+        <div className="d-flex align-items-center justify-content-between w-100">
+          <div style={{ fontSize: "0.875em" }}>{sortName}</div>
           <img src={images.arrowdropdown} alt="" />
         </div>
         {/* {handleSort ? renderContentSort() : null} */}
         {transition((style, item) =>
           item ? (
-            <animated.div style={style} className="product-sort-list w-100">
-              <div className="product-sort-sub">Nama A-Z</div>
-              <div className="product-sort-sub">Nama Z-A</div>
-              <div className="product-sort-sub">Harga terendah</div>
-              <div className="product-sort-sub">Harga tertinggi</div>
+            <animated.div
+              ref={ref}
+              style={style}
+              className="product-sort-list w-100"
+            >
+              <div
+                id="nameasc"
+                onClick={onClickSort}
+                className="product-sort-sub"
+              >
+                Nama A-Z
+              </div>
+              <div
+                id="namedesc"
+                onClick={onClickSort}
+                className="product-sort-sub"
+              >
+                Nama Z-A
+              </div>
+              <div
+                id="priceasc"
+                onClick={onClickSort}
+                className="product-sort-sub"
+              >
+                Harga terendah
+              </div>
+              <div
+                id="pricedesc"
+                onClick={onClickSort}
+                className="product-sort-sub"
+              >
+                Harga tertinggi
+              </div>
             </animated.div>
           ) : null
         )}
       </div>
-    );
-  };
-
-  const renderContentSort = () => {
-    return (
-      <animated.div className="product-sort-list w-100">
-        <div className="product-sort-sub">Nama A-Z</div>
-        <div className="product-sort-sub">Nama Z-A</div>
-        <div className="product-sort-sub">Harga terendah</div>
-        <div className="product-sort-sub">Harga tertinggi</div>
-      </animated.div>
     );
   };
 
@@ -200,31 +224,34 @@ function Product() {
           <div className="product-sidebar-wrapper w-100 mb-2">
             <div className="product-sidebar-title d-flex align-items-center justify-content-between">
               <div className="product-title-name">Urut berdasarkan</div>
-              <div className="product-title-reset">Reset</div>
+              <div
+                className="product-title-reset"
+                onClick={() => {
+                  setSort("");
+                  setSortName("Urutkan");
+                }}
+              >
+                Reset
+              </div>
             </div>
             <div className="product-sort-content d-flex justify-content-center">
               {renderSort()}
-
-              {/* <select
-                placeholder="select option"
-                className="product-content-select w-100"
-                onChange={(e) => setSort(e.target.value)}
-              >
-                <option value="" hidden>
-                  Urutkan
-                </option>
-                <option value="">Urutkan</option>
-                <option value="nameasc">A-Z</option>
-                <option value="namedesc">Z-A</option>
-                <option value="pricedesc">Harga Tertinggi</option>
-                <option value="priceasc">Harga Terendah</option>
-              </select> */}
             </div>
           </div>
           <div className="product-sidebar-wrapper w-100">
             <div className="product-sidebar-title d-flex align-items-center justify-content-between">
               <div className="product-title-name">Filter</div>
-              <div className="product-title-reset">Reset</div>
+              <div
+                className="product-title-reset"
+                onClick={() => {
+                  setCategory([]);
+                  setJoinCategory("");
+                  setPriceMax(null);
+                  setPriceMin(null);
+                }}
+              >
+                Reset
+              </div>
             </div>
             <div className="product-sort-content">
               {renderFilterCategory()}
@@ -257,6 +284,9 @@ function Product() {
                   <input
                     type="number"
                     placeholder="Harga maksimum"
+                    onChange={debounce(1000, (e) =>
+                      setPriceMax(e.target.value)
+                    )}
                     className="product-input-price w-100"
                   />
                 </div>
@@ -281,7 +311,9 @@ function Product() {
         <div className="product-content">
           <div className="d-flex justify-content-between align-items-center">
             <div className="product-show-font">
-              {`Menampilkan ${limit} dari ${totalProduct} produk`}
+              {`Menampilkan ${
+                totalProduct < limit ? totalProduct : limit
+              } dari ${totalProduct} produk`}
             </div>
             <div className="product-filter-nama-wrapper d-flex align-items-center">
               <input
