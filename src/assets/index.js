@@ -20,6 +20,8 @@ import profil from "./profil.svg";
 import search from "./search.svg";
 import checked from "./checked.svg";
 import uncheck from "./uncheck.svg";
+import error from "./error.svg";
+import success from "./success.svg";
 
 export default {
   logo,
@@ -44,4 +46,6 @@ export default {
   search,
   checked,
   uncheck,
+  error,
+  success,
 };

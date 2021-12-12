@@ -1,4 +1,5 @@
 import React from "react";
+import images from "./../assets";
 import "./styles/textbox.css";
 
 function Textbox({
@@ -9,11 +10,15 @@ function Textbox({
   value,
   onChange,
   error,
+  errormsg,
+  successmsg,
   name,
   disabled,
   onClick,
   cursor,
   backgroundColor,
+  type = "text",
+  onBlur,
 }) {
   return (
     <div className="d-flex flex-column">
@@ -27,7 +32,7 @@ function Textbox({
       ) : null}
       <div className="d-flex flex-column" onClick={onClick}>
         <input
-          type="text"
+          type={type}
           placeholder={placeholder}
           className={`textbox-styling ${error ? "textbox-error" : null}`}
           style={{
@@ -41,8 +46,24 @@ function Textbox({
           id={label}
           name={name}
           disabled={disabled}
+          onBlur={onBlur}
         />
       </div>
+      {error ? (
+        <div className="d-flex align-items-center mt-1">
+          {error ? (
+            <>
+              <img src={images.error} alt="error" className=" mr-1" />
+              <div className="textbox-error-msg">{errormsg}</div>
+            </>
+          ) : (
+            <>
+              <img src={images.success} alt="success" className=" mr-1" />
+              <div className="textbox-success-msg">{successmsg}</div>
+            </>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
