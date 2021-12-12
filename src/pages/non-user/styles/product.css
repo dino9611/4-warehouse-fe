@@ -106,16 +106,16 @@ input[type="number"] {
   box-shadow: 0 1px 12px 0 rgba(231, 203, 162, 0.16);
   background-color: #fff;
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .product-sidebar-title {
   padding: 6.5% 8.5%;
   background-color: #f4f4f4;
+  border-radius: 8px;
 }
 
 .product-sort-content {
-  padding: 6.5% 8.5%;
+  padding: 16px;
 }
 
 .product-title-name {
@@ -131,7 +131,12 @@ input[type="number"] {
 }
 
 .product-content-select {
-  padding: 7.5%;
+  padding: 9px 12px;
+  border: 1px solid black;
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+  cursor: pointer;
 }
 
 .product-checkbox {
@@ -188,4 +193,25 @@ input[type="number"] {
 .product-show-font {
   font-size: 0.75em;
   font-weight: 500;
+}
+
+.product-sort-list {
+  position: absolute;
+  background-color: #fff;
+  color: #5a5a5a;
+  font-size: 0.875em;
+  border-radius: 8px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  left: 0;
+  top: 120%;
+  z-index: 999;
+}
+
+.product-sort-sub {
+  padding: 12px;
+  cursor: pointer;
+}
+
+.product-sort-sub:hover {
+  color: #b24629;
 }

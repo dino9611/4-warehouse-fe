@@ -6,6 +6,7 @@ import axios from "axios";
 import Pagination from "@mui/material/Pagination";
 import { API_URL } from "./../../constants/api.js";
 import images from "./../../assets";
+import { useTransition, animated } from "react-spring";
 
 function Product() {
   // Product
@@ -13,7 +14,7 @@ function Product() {
   const [dataCategory, setDataCategory] = useState([]);
   // Pagination
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(6);
+  const [limit, setLimit] = useState(8);
   const [totalProduct, setTotalProduct] = useState(null);
   // Filter & Sort
   const [name, setName] = useState("");
@@ -23,8 +24,16 @@ function Product() {
   const [joinCategory, setJoinCategory] = useState("");
   const [sort, setSort] = useState("");
 
+  const [handleSort, setHandleSort] = useState(false);
+
   // Tes
   const [isChecked, setIsChecked] = useState(false);
+
+  const transition = useTransition(handleSort, {
+    from: { x: 0, y: -30, opacity: 0, PointerEvent: "none" },
+    enter: { x: 0, y: 0, opacity: 1, PointerEvent: "all" },
+    leave: { x: 0, y: -20, opacity: 0, PointerEvent: "none" },
+  });
 
   useEffect(() => {
     (async () => {
@@ -102,12 +111,66 @@ function Product() {
               value={el.id}
               className=" mr-2"
               onChange={onChangeHandlerCategory}
+              style={{ opacity: "0", cursor: "pointer", zIndex: "999" }}
             />
+            {category.find((element) => element === el.id) ? (
+              <img
+                src={images.checked}
+                alt="checked"
+                style={{ position: "absolute" }}
+              />
+            ) : (
+              <img
+                src={images.unchecked}
+                alt="unchecked"
+                style={{ position: "absolute" }}
+              />
+            )}
+
             {el.category.charAt(0).toUpperCase() + el.category.slice(1)}
           </label>
         </div>
       );
     });
+  };
+
+  const renderSort = () => {
+    return (
+      <div
+        className="product-content-select w-100 "
+        style={{ position: "relative" }}
+      >
+        <div
+          className="d-flex align-items-center justify-content-between w-100"
+          onClick={() => setHandleSort(!handleSort)}
+        >
+          <div>asdasd</div>
+          <img src={images.arrowdropdown} alt="" />
+        </div>
+        {/* {handleSort ? renderContentSort() : null} */}
+        {transition((style, item) =>
+          item ? (
+            <animated.div style={style} className="product-sort-list w-100">
+              <div className="product-sort-sub">Nama A-Z</div>
+              <div className="product-sort-sub">Nama Z-A</div>
+              <div className="product-sort-sub">Harga terendah</div>
+              <div className="product-sort-sub">Harga tertinggi</div>
+            </animated.div>
+          ) : null
+        )}
+      </div>
+    );
+  };
+
+  const renderContentSort = () => {
+    return (
+      <animated.div className="product-sort-list w-100">
+        <div className="product-sort-sub">Nama A-Z</div>
+        <div className="product-sort-sub">Nama Z-A</div>
+        <div className="product-sort-sub">Harga terendah</div>
+        <div className="product-sort-sub">Harga tertinggi</div>
+      </animated.div>
+    );
   };
 
   const renderProduct = () => {
@@ -130,10 +193,6 @@ function Product() {
     });
   };
 
-  const isCheckedLur = (e) => {
-    console.log(e.target.checked);
-  };
-
   return (
     <div className="container mt-5">
       <div className="row justify-content-between">
@@ -144,7 +203,9 @@ function Product() {
               <div className="product-title-reset">Reset</div>
             </div>
             <div className="product-sort-content d-flex justify-content-center">
-              <select
+              {renderSort()}
+
+              {/* <select
                 placeholder="select option"
                 className="product-content-select w-100"
                 onChange={(e) => setSort(e.target.value)}
@@ -157,7 +218,7 @@ function Product() {
                 <option value="namedesc">Z-A</option>
                 <option value="pricedesc">Harga Tertinggi</option>
                 <option value="priceasc">Harga Terendah</option>
-              </select>
+              </select> */}
             </div>
           </div>
           <div className="product-sidebar-wrapper w-100">
