@@ -16,6 +16,7 @@ function Profile() {
   const [personalData, setPersonalData] = useState({});
   const [handleGender, setHandleGender] = useState(false);
   const [handlePassword, setHandlePassword] = useState(false);
+  const [handleEmail, setHandleEmail] = useState(false);
   const [dataPassword, setDataPassword] = useState({
     currentPass: "",
     newPass: "",
@@ -24,6 +25,13 @@ function Profile() {
   const [isPassTrue, setIsPassTrue] = useState(true);
   const [isPassFilled, setIsPassFilled] = useState(true);
   const [isPassMatch, setIsPassMatch] = useState(true);
+  const [dataEmail, setDataEmail] = useState({
+    password: "",
+    email: "",
+  });
+  const [isDataFilled, setIsDataFilled] = useState(true);
+  const [isPassValid, setIsPassValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
   const calenderData = useSelector((state) => state.ProfileReducer);
 
   // Kondisi Password !!!!!!!
@@ -230,6 +238,103 @@ function Profile() {
     }
   };
 
+  const renderEmail = () => {
+    return (
+      <div>
+        <div className="mb-3 d-flex align-items-center justify-content-center">
+          <h5>Ubah Email</h5>
+        </div>
+        <div>
+          <Textbox
+            type="password"
+            label="Masukkan password Anda"
+            placeholder="Password Anda"
+            name="password"
+            onChange={onChangeEmail}
+            value={dataEmail.password}
+            error={
+              (dataEmail.password || isDataFilled) && isPassValid ? null : 1
+            }
+            errormsg={
+              !isPassValid
+                ? "Password yang anda masukkan salah"
+                : "Password harus diisi"
+            }
+          />
+        </div>
+        <div className="my-3">
+          <Textbox
+            type="text"
+            label="Masukkan email baru Anda"
+            placeholder="Email Baru Anda"
+            name="email"
+            onChange={onChangeEmail}
+            value={dataEmail.email}
+            error={
+              (dataEmail.password || isDataFilled) && isEmailValid ? null : 1
+            }
+            errormsg={
+              !isEmailValid ? "Email tidak valid" : "Password harus diisi"
+            }
+          />
+        </div>
+        <div className="d-flex justify-content-end">
+          <div className="mr-3">
+            <ButtonPrimary onClick={onClickSaveEmail}>Simpan</ButtonPrimary>
+          </div>
+          <ButtonPrimary onClick={onCloseEmail}>Kembali</ButtonPrimary>
+        </div>
+      </div>
+    );
+  };
+
+  const onCloseEmail = () => {
+    setDataEmail({
+      password: "",
+      email: "",
+    });
+    setHandleEmail(false);
+    setIsEmailValid(true);
+    setIsPassValid(true);
+    setIsDataFilled(true);
+  };
+
+  const onChangeEmail = (e) => {
+    setDataEmail({ ...dataEmail, [e.target.name]: e.target.value });
+  };
+
+  const onClickSaveEmail = async () => {
+    try {
+      if (!dataEmail.password && !dataEmail.email) {
+        setIsDataFilled(false);
+        return;
+      }
+
+      const regexEmail = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
+      if (regexEmail.test(dataEmail.email)) {
+        setIsEmailValid(true);
+      } else {
+        setIsEmailValid(false);
+        return;
+      }
+
+      let res = await axios.patch(
+        `${API_URL}/profile/change-email/3`,
+        dataEmail
+      );
+
+      if (!res.data.length) {
+        setIsPassValid(false);
+        return;
+      }
+
+      setIsPassValid(true);
+      console.log("berhasil");
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
+
   return (
     <div className="about-container">
       <h5 className="mb-5">Data Diri</h5>
@@ -254,7 +359,15 @@ function Profile() {
         </div>
       </div>
       <div className="mb-4">
-        <Textbox label="Email" placeholder="Email" />
+        <Textbox
+          label="Email"
+          placeholder="Email"
+          disabled="disabled"
+          backgroundColor="#fff"
+          cursor="pointer"
+          value={personalData.email}
+          onClick={() => setHandleEmail(!handleEmail)}
+        />
       </div>
       <div className="d-flex w-100 justify-content-between mb-4">
         <div className="w-100 mr-4" style={{ position: "relative" }}>
@@ -305,6 +418,11 @@ function Profile() {
       <div className="profile-modal">
         <Modal open={handlePassword} close={handleClosePassword}>
           {renderChangePassword()}
+        </Modal>
+      </div>
+      <div className="profile-modal">
+        <Modal open={handleEmail} close={onCloseEmail}>
+          {renderEmail()}
         </Modal>
       </div>
     </div>

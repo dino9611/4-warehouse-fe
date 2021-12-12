@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import Homepage from "./pages/non-user/Homepage";
 import Product from "./pages/non-user/Product";
 import ProfilePage from "./pages/user/ProfilePage";
+import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
 
 function App() {
   const role = "user";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" exact component="" />
           <Route path="/verify-email" exact component="" />
           <Route path="/profile" component={ProfilePage} />
+          <Route path="/auth/accept" exact component={VerifyChangeEmail} />
           <Route path="/products" exact component={Product} />
           <Route path="/products/:category" exact component="" />
           <Route path="/products/:productId" exact component="" />

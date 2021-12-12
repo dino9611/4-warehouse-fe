@@ -4,6 +4,7 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 import ProfileSidebar from "../../components/ProfileSidebar";
 import ProfileRoute from "./ProfileRoute";
 import Profile from "./Profile";
+import VerifyChangeEmail from "./VerifyChangeEmail";
 
 function ProfilePage() {
   let { path } = useRouteMatch();
@@ -23,6 +24,11 @@ function ProfilePage() {
                 exact
                 component={ProfileRoute}
               />
+              {/* <Route
+                path="/profile/accept"
+                exact
+                component={VerifyChangeEmail}
+              /> */}
             </Switch>
           </div>
         </div>
