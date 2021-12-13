@@ -99,7 +99,7 @@ input[type="number"] {
 
 .product-sidebar {
   padding: 0 !important;
-  flex-basis: 19%;
+  width: 19%;
 }
 
 .product-sidebar-wrapper {

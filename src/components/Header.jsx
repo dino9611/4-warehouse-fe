@@ -8,12 +8,18 @@ import ClickOutside from "./../helpers/ClickOutside";
 const { logo, notif, cart, expanddown, profil, search } = asset;
 
 function Header() {
+  const [handlerProduct, setHandlerProduct] = useState(false);
   const [handlerCategory, setHandlerCategory] = useState(false);
   const [handlerProfile, setHandlerProfile] = useState(false);
+<<<<<<< HEAD
   const [handleProduct, setHandleProduct] = useState(false);
   const ref = useRef();
   const refProfile = useRef();
   let username = "gangsarapasdasd";
+=======
+
+  let username = "gangsarap";
+>>>>>>> develop
   let login = true;
 
   ClickOutside(ref, () => setHandlerCategory(false));
@@ -44,6 +50,7 @@ function Header() {
       "Buah",
       "Kacang",
     ];
+<<<<<<< HEAD
 
     return transition((style, item) =>
       item ? (
@@ -55,6 +62,16 @@ function Header() {
           </div>
         </animated.div>
       ) : null
+=======
+    return (
+      <div className="header-down-category">
+        <div className="d-flex align-items-center justify-content-between w-100">
+          {category.map((el, index) => {
+            return <div key="index">{el}</div>;
+          })}
+        </div>
+      </div>
+>>>>>>> develop
     );
   };
 
@@ -129,11 +146,20 @@ function Header() {
               style={{ fontWeight: "600", fontSize: "14px" }}
             >
               <Link to="/products" className="text-link">
+<<<<<<< HEAD
                 <div style={{ position: "relative" }}>
                   <div className="" onClick={() => setHandleProduct(true)}>
                     Produk
                   </div>
                   {handleProduct ? (
+=======
+                <div
+                  className="header-product"
+                  onClick={() => setHandlerProduct(!handlerProduct)}
+                >
+                  <div>Produk</div>
+                  {handlerProduct ? (
+>>>>>>> develop
                     <div className="header-focus-border"></div>
                   ) : null}
                 </div>

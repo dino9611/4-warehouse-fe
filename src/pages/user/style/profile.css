@@ -1,31 +1,40 @@
-.profile-photo-wrapper {
-  height: auto;
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 10%;
-  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08);
-}
-
-.profile-photo-circle {
-  position: relative;
-}
-
-.profile-photo {
-  height: 100px;
-  width: 50%;
-  object-fit: cover;
-  border-radius: 100%;
-  border: 2px solid #8d280c;
-}
-
-.profile-update-photo {
+.profile-dropdown-gender {
   position: absolute;
-  bottom: 0;
-  background-color: black;
-  border-radius: 100%;
+  height: auto;
+  border-radius: 12px;
+  padding: 3.3%;
+  background-color: #fff;
+  /* box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08); */
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,
+    rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,
+    rgba(0, 0, 0, 0.07) 0px 16px 16px;
+  font-size: 1em;
+  font-weight: 500;
 }
 
-.profile-username {
+.profile-dropdown-border {
+  border-bottom: 1px solid rgb(216, 214, 214);
+}
+
+.profile-gender:hover {
+  background-color: whitesmoke;
+  cursor: pointer;
+}
+
+.profile-dropdown-calender {
+  position: absolute;
+  height: auto;
+  border-radius: 12px;
+  padding: 1.5%;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,
+    rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,
+    rgba(0, 0, 0, 0.07) 0px 16px 16px;
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.profile-modal {
+  position: relative;
+  z-index: 1;
 }

@@ -38,6 +38,9 @@ function Product() {
     leave: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
   });
 
+  // Tes
+  const [isChecked, setIsChecked] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
