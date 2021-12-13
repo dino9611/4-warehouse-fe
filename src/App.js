@@ -1,6 +1,7 @@
 import "./App.css";
 import { Route, Switch } from "react-router-dom";
 import AdminMainParent from "./pages/admin/AdminMainParent";
+import AdminLogin from "./pages/admin/AdminLogin";
 
 function App() {
   const role = "admin";
@@ -28,7 +29,7 @@ function App() {
     } else if ((role === "admin")) {
       return (
         <Switch>
-          <Route path="/admin" exact component="" />
+          <Route path="/admin" exact component={AdminLogin} />
           {/* Routing sub page admin ada di component admin sidebar */}
           <Route path="/admin/dashboard" exact component={AdminMainParent} />
           <Route path="/admin/manage-product" exact component={AdminMainParent} />

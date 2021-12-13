@@ -144,7 +144,7 @@ function AdminAddProduct() {
     };
 
     const delImgUpload = (event, indexArr) => {
-        return setAddImage((prevState) => {
+            setAddImage((prevState) => {
             let newArray = prevState;
             newArray[indexArr] = "";
             if (indexArr === 0) {
@@ -256,36 +256,42 @@ function AdminAddProduct() {
                             <div className="add-images-right-wrap">
                                 {addImage.map((val, index) => {
                                     return (
-                                        <label 
-                                            htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                            className={addImage[index] ? "add-images-upload-preview" : "add-images-upload-item"}
-                                        >
-                                            <input 
-                                                type="file" 
-                                                id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                accept=".jpg,.jpeg,.png"
-                                                onChange={(event) => addImageHandler(event, index)} 
-                                                disabled={addImage[index]}
-                                            />
+                                        <div className="add-images-tile-wrap">
+                                            <label 
+                                                htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                                className={addImage[index] ? "add-images-upload-preview" : "add-images-upload-item"}
+                                            >
+                                                <input 
+                                                    type="file" 
+                                                    id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                                    name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                                    accept=".jpg,.jpeg,.png"
+                                                    onChange={(event) => addImageHandler(event, index)} 
+                                                    disabled={addImage[index]}
+                                                />
+                                                {addImage[index] ?
+                                                    <>
+                                                        <img 
+                                                            src={URL.createObjectURL(addImage[index])} 
+                                                            alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
+                                                            className="add-images-preview"
+                                                        />
+                                                    </>
+                                                    :
+                                                    <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                                                }
+                                            </label>
                                             {addImage[index] ?
-                                                <>
-                                                    <img 
-                                                        src={URL.createObjectURL(addImage[index])} 
-                                                        alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
-                                                        className="add-images-preview"
-                                                    />
-                                                    <span 
-                                                        className="add-images-del-icon"
-                                                        onClick={(event) => delImgUpload(event, index)}
-                                                    >
-                                                        <img src={deleteTrash} />
-                                                    </span>
-                                                </>
+                                                <span 
+                                                    className="add-images-del-icon"
+                                                    onClick={(event) => delImgUpload(event, index)}
+                                                >
+                                                    <img src={deleteTrash} />
+                                                </span>
                                                 :
-                                                <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                                                null
                                             }
-                                        </label>
+                                        </div>
                                     )
                                 })}
                             </div>
