@@ -1,0 +1,137 @@
+.product-filter-container {
+  height: auto;
+  width: 100%;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.product-filter-font {
+  font-weight: 600;
+}
+
+.product-filter-by {
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+.product-category-content {
+  font-size: 0.75em;
+}
+
+.product-label {
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.product-border {
+  border-bottom: 1px solid rgb(223, 222, 222);
+}
+
+.product-filter-harga {
+  font-size: 0.75em;
+  color: #070707;
+  padding: 3% 5%;
+  border-radius: 12px;
+  border: solid 1px #cacaca;
+}
+
+.product-filter-harga:enabled {
+  outline-color: #b24629;
+}
+
+input::-webkit-input-placeholder {
+  font-size: 1em;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.product-filter-nama {
+  padding: 12px;
+  border-radius: 12px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+  cursor: text;
+}
+
+.product-filter-nama:enabled {
+  outline-color: #b24629;
+}
+
+.product-sort {
+  padding: 12px;
+  border-radius: 12px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.product-list-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  row-gap: 5%;
+}
+
+.product-card {
+  justify-self: center;
+}
+
+.product-sidebar {
+  padding: 0 !important;
+  width: 19%;
+}
+
+.product-sidebar-wrapper {
+  box-shadow: 0 1px 12px 0 rgba(231, 203, 162, 0.16);
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.product-sidebar-title {
+  padding: 6.5% 8.5%;
+  background-color: #f4f4f4;
+}
+
+.product-sort-content {
+  padding: 6.5% 8.5%;
+}
+
+.product-title-name {
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.product-title-reset {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+}
+
+.product-content-select {
+  padding: 7.5%;
+}
+
+.product-checkbox {
+  position: relative;
+}
+
+.product-checkmark {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 1%;
+  text-align: center;
+  /* opacity: 0; */
+}
