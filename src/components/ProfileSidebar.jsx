@@ -4,10 +4,13 @@ import images from "./../assets";
 import { Link, useRouteMatch } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "./../constants/api";
+import { useSelector } from "react-redux";
+import Avatar from "@mui/material/Avatar";
 
 function ProfileSidebar() {
   // Untuk url nesting route
   let { url } = useRouteMatch();
+  const data = useSelector((state) => state.ProfileReducer);
 
   const [file, setFile] = useState(null);
 
@@ -24,7 +27,6 @@ function ProfileSidebar() {
             },
           });
 
-          await axios.get(`${API_URL}/personal-data/1`);
           alert("berhasil");
         } catch (error) {
           console.log(error);
@@ -38,11 +40,23 @@ function ProfileSidebar() {
       <div className="profile-sidebar-container mb-4">
         <div className="profile-photo-wrapper w-100 h-100 d-flex flex-column align-items-center justify-content-center">
           <div className="d-flex justify-content-center align-items-center w-100 h-100 mb-3">
-            <img
-              src={images.footer}
-              alt="photo-profile"
-              className="profile-photo"
-            />
+            {file || data.profile_picture ? (
+              <img
+                src={
+                  file
+                    ? URL.createObjectURL(file)
+                    : `${API_URL}/${data.profile_picture}`
+                }
+                alt="photo-profile"
+                className="profile-photo"
+              />
+            ) : (
+              <div className="profile-photo">
+                <Avatar className="w-100 h-100 d-flex align-items-center justify-content-center">
+                  {data.username.slice(0, 1).toUpperCase()}
+                </Avatar>
+              </div>
+            )}
           </div>
           <div className="w-100 d-flex justify-content-center">
             <label htmlFor="photo-profile" className="photo-profile-btn">
@@ -56,7 +70,7 @@ function ProfileSidebar() {
             />
           </div>
 
-          <div className="profile-username">gangsarap</div>
+          <div className="profile-username">{data.username}</div>
         </div>
       </div>
       <div className="profile-route-container w-100">

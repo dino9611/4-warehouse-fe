@@ -1,6 +1,8 @@
 const INITIAL_STATE = {
   chooseDate: "",
   handleCalender: false,
+  profile_picture: "",
+  username: "",
 };
 
 const profileReducer = (state = INITIAL_STATE, action) => {
@@ -9,6 +11,8 @@ const profileReducer = (state = INITIAL_STATE, action) => {
       return { ...state, chooseDate: action.payload, handleCalender: false };
     case "OPENCALENDER":
       return { ...state, handleCalender: !state.handleCalender };
+    case "PICKIMAGE":
+      return { ...state, ...action.payload };
     default:
       return state;
   }

@@ -25,6 +25,7 @@ function Profile() {
   const [isPassTrue, setIsPassTrue] = useState(true);
   const [isPassFilled, setIsPassFilled] = useState(true);
   const [isPassMatch, setIsPassMatch] = useState(true);
+  const [isPassCorrect, setIsPassCorrect] = useState(true);
   const [dataEmail, setDataEmail] = useState({
     password: "",
     email: "",
@@ -34,12 +35,10 @@ function Profile() {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const calenderData = useSelector((state) => state.ProfileReducer);
 
-  // Kondisi Password !!!!!!!
-
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios.get(`${API_URL}/profile/personal-data/2`);
+        let res = await axios.get(`${API_URL}/profile/personal-data/1`);
 
         const date = new Date(`${res.data[0].date_of_birth}`);
         let formatDate = `${date.getFullYear()}-${
@@ -47,6 +46,13 @@ function Profile() {
         }-${date.getDate()}`;
 
         setPersonalData({ ...res.data[0], date_of_birth: formatDate });
+        dispatch({
+          type: "PICKIMAGE",
+          payload: {
+            profile_picture: res.data[0].profile_picture,
+            username: res.data[0].username,
+          },
+        });
       } catch (error) {
         console.log(error);
       }
@@ -67,12 +73,12 @@ function Profile() {
   const onClickInputData = async () => {
     const sendPersonalData = {
       ...personalData,
-      date_of_birth: personalData.date_of_birth || calenderData.chooseDate,
+      date_of_birth: calenderData.chooseDate || personalData.date_of_birth,
     };
     console.log(sendPersonalData);
     try {
       await axios.post(
-        `${API_URL}/profile/edit/personal-data/2`,
+        `${API_URL}/profile/edit/personal-data/1`,
         sendPersonalData
       );
 
@@ -125,8 +131,14 @@ function Profile() {
             name="currentPass"
             onChange={onChangePassword}
             value={dataPassword.currentPass}
-            error={dataPassword.currentPass ? null : isPassFilled ? null : 1}
-            errormsg="Password harus diisi"
+            error={
+              (dataPassword.newPass || isPassFilled) && isPassCorrect ? null : 1
+            }
+            errormsg={
+              !isPassCorrect
+                ? "Password lama anda salah"
+                : "Password harus diisi"
+            }
           />
         </div>
         <div className="my-3">
@@ -183,6 +195,7 @@ function Profile() {
     setConfirmNewPass("");
     setIsPassFilled(true);
     setIsPassTrue(true);
+    setIsPassCorrect(true);
   };
 
   const onChangePassword = (e) => {
@@ -210,13 +223,25 @@ function Profile() {
         }
 
         let res = await axios.patch(
-          `${API_URL}/profile/change-password/2`,
+          `${API_URL}/profile/change-password/1`,
           dataPassword
         );
+        console.log(res.data);
+        if (!res.data.length) {
+          console.log("error pass");
+          setIsPassCorrect(false);
+          return;
+        }
 
         setHandlePassword(false);
-
-        alert(res.data.message);
+        setDataPassword({
+          currentPass: "",
+          newPass: "",
+        });
+        setConfirmNewPass("");
+        setIsPassFilled(true);
+        setIsPassTrue(true);
+        setIsPassCorrect(true);
       } else {
         setIsPassFilled(false);
         setIsPassTrue(true);
@@ -319,7 +344,7 @@ function Profile() {
       }
 
       let res = await axios.patch(
-        `${API_URL}/profile/change-email/3`,
+        `${API_URL}/profile/change-email/1`,
         dataEmail
       );
 
@@ -328,7 +353,9 @@ function Profile() {
         return;
       }
 
+      setHandleEmail(false);
       setIsPassValid(true);
+
       console.log("berhasil");
     } catch (error) {
       alert(error.response.data.message);

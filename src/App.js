@@ -9,7 +9,7 @@ import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
 import AdminMainParent from "./pages/admin/AdminMainParent";
 
 function App() {
-  const role = "admin";
+  const role = "user";
 
   const renderRouting = () => {
     if (role == "user") {
