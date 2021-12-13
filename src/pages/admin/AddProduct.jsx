@@ -42,7 +42,6 @@ function AdminAddProduct() {
         prod_cost, 
         prod_desc 
     } = addProdInput;
-    console.log(prod_weight);
 
     const fetchCategory = async () => { // Utk render data kategori produk
         try {
