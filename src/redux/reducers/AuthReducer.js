@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   role_id: null,
   is_login: null,
   is_verified: null,
+  profile_picture: null,
 };
 
 const authReducers = (state = INITIAL_STATE, action) => {

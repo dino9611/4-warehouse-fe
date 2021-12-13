@@ -3,11 +3,12 @@ import TextField from "@mui/material/TextField";
 import { API_URL } from "../../constants/api";
 import "./styles/Login.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { LoginAction } from "../../redux/actions/AuthAction";
 import { connect } from "react-redux";
-import gambar from "./../../assets/kopi.jpg";
-import SnackbarMui from "../../components/Snackbar";
+import gambar from "./../../assets/login.png";
+import SuccessSnack from "../../components/SuccessSnack";
+import ErrorSnack from "../../components/ErrorSnackbar";
 
 class Login extends React.Component {
   state = {
@@ -15,7 +16,8 @@ class Login extends React.Component {
     username: "",
     password: "",
     isLogin: false,
-    openSnack: false,
+    successSnack: false,
+    errorSnack: false,
     message: "",
   };
 
@@ -35,15 +37,16 @@ class Login extends React.Component {
     axios
       .post(`${API_URL}/auth/login`, { username: username, password })
       .then((res) => {
-        this.setState({ openSnack: true, message: "Login Success" });
+        this.setState({ successSnack: true, message: "Login Berhasil" });
         localStorage.setItem("token", res.headers["x-token-access"]);
         this.props.LoginAction(res.data);
+
         console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
         this.setState({
-          openSnack: true,
+          errorSnack: true,
           message: err.response.data.message || "Server Error",
         });
       });
@@ -54,7 +57,7 @@ class Login extends React.Component {
       return;
     }
 
-    this.setState({ openSnack: false });
+    this.setState({ errorSnack: false, successSnack: false });
   };
 
   // action = (
@@ -74,77 +77,85 @@ class Login extends React.Component {
   // );
   render() {
     const { showpassword, username, password } = this.state;
+    if (this.props.isLogin) {
+      return <Redirect to="/" />;
+    }
     return (
-      <div className=".page-auth d-flex flex-row">
-        <div className="login-page d-flex flex-row">
-          <div>
-            <img src={gambar} height="50%" width="170%" />
-          </div>
-          <div className="login-form">
-            <div className="login-text">
-              <h2>Login</h2>
+      <div className="container">
+        <div className="container login-page">
+          <div className=" d-flex flex-row">
+            <div>
+              <img src={gambar} height="100%" width="100%" className="gambar" />
             </div>
-            <div className=" input-login d-flex flex-column">
-              {/* <h5 className="email">Email</h5> */}
-              <div className="input">
-                <TextField
-                  fullWidth
-                  value={username}
-                  id="outlined-basic"
-                  label="Username/Email"
-                  onChange={this.onInputChange}
-                  name="username"
-                  type="text"
-                  variant="outlined"
-                  // className="input"
-                  color="warning"
-                />
+            <div className="login-form">
+              <div className="login-text">
+                <h2>Login</h2>
               </div>
-              <div className="input">
-                <TextField
-                  fullWidth
-                  value={password}
-                  id="outlined-password-input"
-                  label="Password"
-                  name="password"
-                  onChange={this.onInputChange}
-                  type={showpassword}
-                  autoComplete="current-password"
-                  className="input-field"
-                  color="warning"
-                />
-              </div>
-              <div className="mt-2 checkbox d-flex">
-                <input
-                  type="checkbox"
-                  className="checkbox-input"
-                  onChange={this.onCheckShow}
-                />
-                <h6 className="showpassword">Show Password</h6>
-              </div>
-              <div>
-                <button
-                  className="login-button rounded "
-                  onClick={this.onLoginCLick}
-                >
-                  Login
-                </button>
-              </div>
+              <div className=" input-login d-flex flex-column">
+                <div className="input">
+                  <TextField
+                    fullWidth
+                    value={username}
+                    id="outlined-basic"
+                    label="Username/Email"
+                    onChange={this.onInputChange}
+                    name="username"
+                    type="text"
+                    variant="outlined"
+                    color="warning"
+                  />
+                </div>
+                <div className="input">
+                  <TextField
+                    fullWidth
+                    value={password}
+                    id="outlined-password-input"
+                    label="Password"
+                    name="password"
+                    onChange={this.onInputChange}
+                    type={showpassword}
+                    autoComplete="current-password"
+                    className="input-field"
+                    color="warning"
+                  />
+                </div>
+                <div className="mt-2 checkbox d-flex">
+                  <input
+                    type="checkbox"
+                    className="checkbox-input"
+                    onChange={this.onCheckShow}
+                  />
+                  <h6 className="showpassword">Show Password</h6>
+                </div>
+                <div>
+                  <button
+                    className="login-button rounded "
+                    onClick={this.onLoginCLick}
+                  >
+                    Login
+                  </button>
+                </div>
 
-              <div className="d-flex signup">
-                <h6 className="pt-1">No Account?</h6>
-                <Link className="link" to="/register">
-                  SignUp
-                </Link>
+                <div className="d-flex signup">
+                  <h6 className="pt-1">No Account?</h6>
+                  <Link className="link" to="/register">
+                    SignUp
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
+          <SuccessSnack
+            message={this.state.message}
+            successSnack={this.state.successSnack}
+            handleClose={this.handleClose}
+          />
+          <ErrorSnack
+            message={this.state.message}
+            errorSnack={this.state.errorSnack}
+            handleClose={this.handleClose}
+          />
         </div>
-        <SnackbarMui
-          message={this.state.message}
-          openSnack={this.state.openSnack}
-          handleClose={this.handleClose}
-        />
       </div>
     );
   }

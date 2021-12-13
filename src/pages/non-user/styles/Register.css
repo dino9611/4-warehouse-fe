@@ -2,16 +2,18 @@
   /* color: #b24629; */
   /* margin-top: 75px !important; */
   /* padding-left: 30%; */
-  width: 100% !important;
-  padding-left: 10%;
+  /* width: 100% !important; */
+
+  /* padding-left: 10%; */
   /* width: 100% !important; */
 }
-/* .gambar {
-  padding-right: 10%;
-} */
-.login-page {
+
+.regis-container {
+  /* width: 100% !important; */
+}
+.regis-page {
   margin-top: 5%;
-  padding-left: 5%;
+  /* margin-right: % !important; */
 }
 .regis-text {
   padding-left: 12%;
@@ -57,4 +59,12 @@
 .link {
   padding-top: 0.5%;
   padding-left: 0.7%;
+}
+.link :hover {
+  color: white;
+}
+.gambar {
+  margin-left: 30%;
+  /* padding-right: 10%; */
+  /* width: 100% !important; */
 }

@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { SnackbarContent } from "@mui/material";
 
-class SnackbarMui extends React.Component {
+class ErrorSnack extends React.Component {
   action = (
     <React.Fragment>
       {/* <Button color="secondary" size="small" onClick={this.handleClose}>
@@ -26,14 +27,21 @@ class SnackbarMui extends React.Component {
           vertical: "top",
           horizontal: "right",
         }}
-        open={this.props.openSnack}
-        autoHideDuration={2000}
-        onClose={this.props.handleClose}
+        open={this.props.errorSnack}
         message={this.props.message}
-        action={this.action}
-      />
+      >
+        <SnackbarContent
+          style={{
+            backgroundColor: "#CB3A31",
+          }}
+          message={this.props.message}
+          action={this.action}
+          autoHideDuration={3000}
+          onClose={this.props.handleClose}
+        />
+      </Snackbar>
     );
   }
 }
 
-export default SnackbarMui;
+export default ErrorSnack;

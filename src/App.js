@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Login } from "./pages/user";
 import { Register } from "./pages/non-user";
+import Home from "./pages/Home";
 import { API_URL } from "./constants/api";
 import { LoginAction } from "./redux/actions/AuthAction";
 import { connect } from "react-redux";
@@ -30,7 +31,7 @@ function App() {
     if (role === "user") {
       return (
         <Switch>
-          <Route path="/" exact component="" />
+          <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
           <Route path="/verify-email" exact component="" />

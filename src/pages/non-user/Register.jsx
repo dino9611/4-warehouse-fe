@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import TextField from "@mui/material/TextField";
 import { API_URL } from "../../constants/api";
-import "./styles/Register.css";
+import "./styles/regis.css";
 import axios from "axios";
-import gambar from "./../../assets/register.jpg";
-import { Link } from "react-router-dom";
-import SnackbarMui from "../../components/Snackbar";
+import gambar from "./../../assets/register.png";
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { LoginAction } from "../../redux/actions/AuthAction";
+import SuccessSnack from "../../components/SuccessSnack";
+import ErrorSnack from "../../components/ErrorSnackbar";
 
 class Register extends Component {
   state = {
@@ -13,9 +16,21 @@ class Register extends Component {
     email: "",
     password: "",
     confirm_password: "",
-    openSnack: false,
+    successSnack: false,
+    errorSnack: false,
     message: "",
+    showpassword: "password",
+    islogin: false,
   };
+
+  onCheckShow = (e) => {
+    if (e.target.checked) {
+      this.setState({ showpassword: "text" });
+    } else {
+      this.setState({ showpassword: "password" });
+    }
+  };
+
   onInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -25,132 +40,71 @@ class Register extends Component {
       return;
     }
 
-    this.setState({ openSnack: false });
+    this.setState({ errorSnack: false, successSnack: false });
   };
 
   onRegisClick = () => {
     const { username, email, password, confirm_password } = this.state;
-    if (username && password && email) {
+    if (username && password && email && confirm_password) {
       if (confirm_password === password) {
         axios
           .post(`${API_URL}/auth/register`, { username, email, password })
           .then((res) => {
-            alert("berhasil");
-            this.setState({ openSnack: "true", message: "Login Success" });
+            this.setState({
+              successSnack: true,
+              message:
+                "Registrasi Berhasil, Silahkan Cek Email Anda untuk Verifikasi",
+            });
           })
           .catch((err) => {
             console.log(err);
             this.setState({
-              openSnack: true,
+              errorSnack: true,
               message: err.response.data.message || "Server Error",
             });
           });
       } else {
         this.setState({
-          openSnack: "true",
-          message: "Password doesn't Match ",
+          errorSnack: true,
+          message: "Password tidak Cocok ",
         });
       }
     } else {
-      this.setState({ openSnack: "true", message: "Please Fill in All Input" });
+      this.setState({ errorSnack: "true", message: "Tolong isi Semua Input" });
     }
   };
 
   render() {
-    const { username, email, password, confirm_password } = this.state;
+    const { username, email, password, confirm_password, showpassword } =
+      this.state;
+    if (this.props.isLogin) {
+      return <Redirect to="/" />;
+    }
     return (
-      <div className="d-flex">
-        <div className="login-page d-flex">
-          <div className="gambar">
-            <img src={gambar} height="70%" width="150%" />
-          </div>
-          <div className="regis-form">
-            <div className="regis-text">
-              <h2>Register</h2>
+      <div className="login-main-wrap">
+        <div className="container login-sub-wrap">
+          <div className="d-flex justify-content-between login-left-image-wrap">
+            <div className="">
+              {/* <img src={gambar} width="100%" height="84%" /> */}
+              <h1>register</h1>
             </div>
-            <div className=" input-login d-flex flex-column">
-              <div className="input">
-                <TextField
-                  fullWidth
-                  value={username}
-                  id="outlined-basic"
-                  label="Username"
-                  onChange={this.onInputChange}
-                  name="username"
-                  type="text"
-                  variant="outlined"
-                  // className="input"
-                  color="warning"
-                />
-              </div>
-              <div className="input">
-                <TextField
-                  fullWidth
-                  value={email}
-                  id="outlined-basic"
-                  label="Email"
-                  onChange={this.onInputChange}
-                  name="email"
-                  type="email"
-                  variant="outlined"
-                  // className="input"
-                  color="warning"
-                />
-              </div>
-              <div className="input">
-                <TextField
-                  fullWidth
-                  value={password}
-                  id="outlined-password-input"
-                  label="Password"
-                  name="password"
-                  onChange={this.onInputChange}
-                  type="password"
-                  autoComplete="current-password"
-                  className="input-field"
-                  color="warning"
-                />
-              </div>
-              <div className="input">
-                <TextField
-                  fullWidth
-                  value={confirm_password}
-                  id="outlined-password-input"
-                  label=" Confirm Password"
-                  name="confirm_password"
-                  onChange={this.onInputChange}
-                  type="password"
-                  autoComplete="current-password"
-                  className="input-field"
-                  color="warning"
-                />
-              </div>
-              <div>
-                <button
-                  className="regis-button rounded "
-                  onClick={this.onRegisClick}
-                >
-                  Register
-                </button>
-              </div>
-
-              <div className="d-flex login-here">
-                <h6 className="pt-1">Already Have an Account?</h6>
-                <Link className="link" to="/login">
-                  Login Here!
-                </Link>
+            <div>
+              <div className="regis-text">
+                <h1>register</h1>
               </div>
             </div>
           </div>
+          <div className="login-right-form-wrap"></div>
         </div>
-        <SnackbarMui
-          message={this.state.message}
-          openSnack={this.state.openSnack}
-          handleClose={this.handleClose}
-        />
       </div>
     );
   }
 }
 
-export default Register;
+const mapStateToProps = (state) => {
+  return {
+    isLogin: state.auth.isLogin,
+  };
+};
+
+export default connect(mapStateToProps, { LoginAction })(Register);
