@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import "./styles/ManageProduct.css"
+import "./styles/ManageProduct.css";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -172,9 +172,6 @@ function ManageProduct() {
                     <Link to="/admin/manage-product/add" className="adm-products-add-wrap">
                         <button>+ Add Products</button>
                     </Link>
-                    {/* <div className="adm-products-add-wrap">
-                        <button>+ Add Products</button>
-                    </div> */}
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -193,7 +190,6 @@ function ManageProduct() {
                                 <TableRow
                                 key={val.SKU}
                                 >
-                                    {console.log(val.images[0], "Masuk sini")}
                                     <TableCell align="center" component="th" scope="row">
                                         <img 
                                             src={`${API_URL}/${val.images[0]}`} 
@@ -208,7 +204,7 @@ function ManageProduct() {
                                     </TableCell>
                                     <TableCell align="center" className="txt-capitalize">{val.name}</TableCell>
                                     <TableCell align="center" className="txt-capitalize">{val.category}</TableCell>
-                                    <TableCell align="right">{`Rp${thousandSeparator(val.price)}`}</TableCell>
+                                    <TableCell align="right">{`Rp ${thousandSeparator(val.price)}`}</TableCell>
                                     <TableCell align="right">
                                         <span style={{cursor: "pointer"}}>
                                             {val.total_stock}
