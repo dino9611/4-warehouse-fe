@@ -44,7 +44,7 @@ function Product() {
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios.get(`${API_URL}/product/list-category`);
+        let res = await axios.get(`${API_URL}/product/category`);
 
         setDataCategory(res.data);
       } catch (error) {
@@ -115,6 +115,7 @@ function Product() {
           <label
             className="product-category-label d-flex align-items-center"
             for={el.category}
+            style={{ cursor: "pointer" }}
           >
             <input
               type="checkbox"

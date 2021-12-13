@@ -19,16 +19,13 @@ import expanddown from "./expanddown.svg";
 import profil from "./profil.svg";
 import search from "./search.svg";
 import checked from "./checked.svg";
-<<<<<<< HEAD
 import unchecked from "./unchecked.svg";
 import point from "./point.svg";
 import searchpolos from "./searchpolos.svg";
 import arrowdropdown from "./arrowdropdown.svg";
-=======
 import uncheck from "./uncheck.svg";
 import error from "./error.svg";
 import success from "./success.svg";
->>>>>>> develop
 
 export default {
   logo,
@@ -52,14 +49,11 @@ export default {
   profil,
   search,
   checked,
-<<<<<<< HEAD
   unchecked,
   point,
   searchpolos,
   arrowdropdown,
-=======
   uncheck,
   error,
   success,
->>>>>>> develop
 };

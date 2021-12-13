@@ -1,12 +1,4 @@
 .button-primary {
-<<<<<<< HEAD
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  background-color: #b24629;
-  border-radius: 100px;
-  padding: 8% 10%;
-=======
   border: none;
   background-color: #b24629;
   border-radius: 100px;
@@ -19,5 +11,4 @@
 
 .button-primary:hover {
   background-color: #8d280c;
->>>>>>> develop
 }
