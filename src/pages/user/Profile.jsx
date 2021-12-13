@@ -1,17 +1,32 @@
-import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import "./style/profile.css";
+import axios from "axios";
+
+// Component
+
 import ButtonPrimary from "../../components/ButtonPrimary";
 import Textbox from "../../components/Textbox";
 import CalenderComp from "./../../components/CalenderComp";
+import ClickOutside from "./../../components/ClickOutside";
+import Modal from "../../components/Modal";
 import { API_URL } from "../../constants/api";
-import "./style/profile.css";
+
+// Import redux
+
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import Modal from "../../components/Modal";
-import ClickOutside from "./../../components/ClickOutside";
+
+//Transition
+
+import { useTransition, animated } from "react-spring";
 
 function Profile() {
+  // Redux
+
   const dispatch = useDispatch();
+  const calenderData = useSelector((state) => state.ProfileReducer);
+
+  // Handle dan input untuk personal data
 
   const [personalData, setPersonalData] = useState({});
   const [handleGender, setHandleGender] = useState(false);
@@ -21,11 +36,17 @@ function Profile() {
     currentPass: "",
     newPass: "",
   });
+
+  // Handle dan input untuk change password
+
   const [confirmNewPass, setConfirmNewPass] = useState("");
   const [isPassTrue, setIsPassTrue] = useState(true);
   const [isPassFilled, setIsPassFilled] = useState(true);
   const [isPassMatch, setIsPassMatch] = useState(true);
   const [isPassCorrect, setIsPassCorrect] = useState(true);
+
+  // Handle dan input untuk change email
+
   const [dataEmail, setDataEmail] = useState({
     password: "",
     email: "",
@@ -33,7 +54,13 @@ function Profile() {
   const [isDataFilled, setIsDataFilled] = useState(true);
   const [isPassValid, setIsPassValid] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(true);
-  const calenderData = useSelector((state) => state.ProfileReducer);
+
+  // Ref handle component
+
+  const genderRef = useRef();
+  const calenderRef = useRef();
+
+  // Use effect untuk get data personal (Sementara)
 
   useEffect(() => {
     (async () => {
@@ -68,6 +95,26 @@ function Profile() {
     });
   };
 
+  // Transition gender
+
+  const transition = useTransition(handleGender, {
+    config: { mass: 1, tension: 500, friction: 60, clamp: true },
+    from: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
+    enter: { x: 0, y: 0, opacity: 1, PointerEvent: "all" },
+    leave: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
+  });
+  ClickOutside(genderRef, () => setHandleGender(false));
+
+  // Transition Calender
+
+  const transitionCalender = useTransition(calenderData.handleCalender, {
+    config: { mass: 1, tension: 500, friction: 60, clamp: true },
+    from: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
+    enter: { x: 0, y: 0, opacity: 1, PointerEvent: "all" },
+    leave: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
+  });
+  ClickOutside(calenderRef, () => dispatch({ type: "CLOSECALENDER" }));
+
   // Submit data untuk disimpan ke dalam database
 
   const onClickInputData = async () => {
@@ -88,34 +135,36 @@ function Profile() {
     }
   };
 
-  // Gender setting
-
-  const handlerGender = () => {
-    setHandleGender(!handleGender);
-  };
+  // Handle untuk memilih gender
 
   const onClickGender = (e) => {
     setPersonalData({ ...personalData, gender: e.target.innerHTML });
     setHandleGender(false);
   };
 
+  // Render untuk dropdown gender
+
   const renderInputGender = () => {
-    return (
-      <div
-        className={`profile-dropdown-gender w-100 d-flex flex-column justify-content-between`}
-      >
-        <div className="profile-gender p-1" onClick={onClickGender}>
-          Male
-        </div>
-        <div className="profile-dropdown-border w-100 my-2"></div>
-        <div className="profile-gender p-1" onClick={onClickGender}>
-          Female
-        </div>
-      </div>
+    return transition((style, item) =>
+      item ? (
+        <animated.div
+          ref={genderRef}
+          style={style}
+          className="profile-dropdown-gender w-100 d-flex flex-column justify-content-between"
+        >
+          <div className="profile-gender p-1" onClick={onClickGender}>
+            Male
+          </div>
+          <div className="profile-dropdown-border w-100 my-2"></div>
+          <div className="profile-gender p-1" onClick={onClickGender}>
+            Female
+          </div>
+        </animated.div>
+      ) : null
     );
   };
 
-  // Ubah Password
+  // Render untuk change password
 
   const renderChangePassword = () => {
     return (
@@ -186,6 +235,8 @@ function Profile() {
     );
   };
 
+  // Handle menutup dropdown password
+
   const handleClosePassword = () => {
     setHandlePassword(false);
     setDataPassword({
@@ -198,9 +249,13 @@ function Profile() {
     setIsPassCorrect(true);
   };
 
+  // Handle untuk mengubah data password
+
   const onChangePassword = (e) => {
     setDataPassword({ ...dataPassword, [e.target.name]: e.target.value });
   };
+
+  // Submit data ubah password
 
   const onClickChangePassword = async () => {
     try {
@@ -251,6 +306,8 @@ function Profile() {
     }
   };
 
+  // Protection untuk password strength
+
   const onBlurPassword = () => {
     let strongRegex = new RegExp(
       "^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})"
@@ -262,6 +319,8 @@ function Profile() {
       setIsPassTrue(true);
     }
   };
+
+  // Render modal email
 
   const renderEmail = () => {
     return (
@@ -313,6 +372,8 @@ function Profile() {
     );
   };
 
+  // Handle untuk close modal email
+
   const onCloseEmail = () => {
     setDataEmail({
       password: "",
@@ -324,9 +385,13 @@ function Profile() {
     setIsDataFilled(true);
   };
 
+  // Mengubah data email
+
   const onChangeEmail = (e) => {
     setDataEmail({ ...dataEmail, [e.target.name]: e.target.value });
   };
+
+  // Submit data email ke backend
 
   const onClickSaveEmail = async () => {
     try {
@@ -361,6 +426,8 @@ function Profile() {
       alert(error.response.data.message);
     }
   };
+
+  // RETURN
 
   return (
     <div className="about-container">
@@ -406,9 +473,10 @@ function Profile() {
             disabled="disabled"
             backgroundColor="#fff"
             cursor="pointer"
-            onClick={handlerGender}
+            onClick={() => setHandleGender(!handleGender)}
           />
-          {handleGender ? renderInputGender() : null}
+          {/* {handleGender ? renderInputGender() : null} */}
+          {renderInputGender()}
         </div>
         <div className="w-100" style={{ position: "relative" }}>
           <Textbox
@@ -422,11 +490,22 @@ function Profile() {
             cursor="pointer"
             onClick={() => dispatch({ type: "OPENCALENDER" })}
           />
-          {calenderData.handleCalender ? (
-            <div className="profile-dropdown-calender">
-              <CalenderComp bornDate={`${personalData.date_of_birth}`} />
+          {/* {calenderData.handleCalender ? (
+            <div ref={} className="profile-dropdown-calender">
+              <CalenderComp  bornDate={`${personalData.date_of_birth}`} />
             </div>
-          ) : null}
+          ) : null} */}
+          {transitionCalender((style, item) =>
+            item ? (
+              <animated.div
+                ref={calenderRef}
+                style={style}
+                className="profile-dropdown-calender"
+              >
+                <CalenderComp bornDate={`${personalData.date_of_birth}`} />
+              </animated.div>
+            ) : null
+          )}
         </div>
       </div>
       <div>
@@ -442,11 +521,13 @@ function Profile() {
       <div className="mt-4 w-100 d-flex justify-content-end">
         <ButtonPrimary onClick={onClickInputData}>Simpan</ButtonPrimary>
       </div>
-      <div className="profile-modal">
-        <Modal open={handlePassword} close={handleClosePassword}>
-          {renderChangePassword()}
-        </Modal>
-      </div>
+      {
+        <div className="profile-modal">
+          <Modal open={handlePassword} close={handleClosePassword}>
+            {renderChangePassword()}
+          </Modal>
+        </div>
+      }
       <div className="profile-modal">
         <Modal open={handleEmail} close={onCloseEmail}>
           {renderEmail()}

@@ -10,6 +10,7 @@ function Calender({
   padding,
   id,
   bornDate,
+  ref,
 }) {
   const [currentMonth, setCurrentMonth] = useState(
     new Date(bornDate).getMonth() + 1
@@ -232,6 +233,7 @@ function Calender({
 
   return (
     <div
+      ref={ref}
       className={padding}
       style={{
         fontFamily: "'Poppins', sans-serif",

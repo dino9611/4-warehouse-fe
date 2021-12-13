@@ -1,10 +1,19 @@
 import React, { useRef } from "react";
 import ReactDom from "react-dom";
 import ClickOutside from "./ClickOutside";
+import { useTransition, animated } from "react-spring";
 import "./styles/modal.css";
 
 function Modal({ open, close, children }) {
   const ref = useRef();
+
+  // Transition modal
+
+  const transitionModal = useTransition(open, {
+    from: { transform: "translate(-50%, 0%)" },
+    enter: { transform: "translate(-50%, -50%)", top: "50%", left: "50%" },
+    leave: { transform: "translate(-50%, 0%)" },
+  });
 
   ClickOutside(ref, close);
 
@@ -14,10 +23,15 @@ function Modal({ open, close, children }) {
     <>
       <div>
         <div className="modal-overlay-style"></div>
-        <div ref={ref} className="modal-style">
-          {children}
-        </div>
+        {transitionModal((style, item) =>
+          item ? (
+            <animated.div style={style} ref={ref} className="modal-style">
+              {children}
+            </animated.div>
+          ) : null
+        )}
       </div>
+      )
     </>,
     document.getElementById("portal")
   );
