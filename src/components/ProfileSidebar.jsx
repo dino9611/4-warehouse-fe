@@ -24,6 +24,7 @@ function ProfileSidebar() {
             },
           });
 
+          await axios.get(`${API_URL}/personal-data/1`);
           alert("berhasil");
         } catch (error) {
           console.log(error);
