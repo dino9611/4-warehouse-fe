@@ -46,8 +46,8 @@ function CarouselCard({ children }) {
     infinite: false,
     arrows: false,
     speed: 500,
-    slidesToScroll: 4.2,
-    slidesToShow: 4.2,
+    slidesToScroll: 5,
+    slidesToShow: 5,
     beforeChange: (oldIndex, newIndex) => {
       setNewIndex(newIndex);
       setOldIndex(oldIndex);
