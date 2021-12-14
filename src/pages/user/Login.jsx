@@ -15,7 +15,7 @@ class Login extends React.Component {
     showpassword: "password",
     username: "",
     password: "",
-    isLogin: false,
+    is_login: false,
     successSnack: false,
     errorSnack: false,
     message: "",
@@ -77,85 +77,75 @@ class Login extends React.Component {
   // );
   render() {
     const { showpassword, username, password } = this.state;
-    if (this.props.isLogin) {
+    if (this.props.is_login) {
       return <Redirect to="/" />;
     }
     return (
-      <div className="container">
-        <div className="container login-page">
-          <div className=" d-flex flex-row">
-            <div>
-              <img src={gambar} height="100%" width="100%" className="gambar" />
+      <div className="login-main-wrap">
+        <div className="login-sub-wrap">
+          <div className="login-left-image-wrap">
+            <img src={gambar} width="100%" height="100%" />
+          </div>
+          <div className="login-right-form-wrap">
+            <h2 className="regis-text">Masuk</h2>
+            <div className="label-text">
+              <h6>Username</h6>
+              <input
+                type="text"
+                className="form-control shadow-none text-input"
+                placeholder="username"
+                name="username"
+                onChange={this.onInputChange}
+                value={username}
+              />
             </div>
-            <div className="login-form">
-              <div className="login-text">
-                <h2>Login</h2>
-              </div>
-              <div className=" input-login d-flex flex-column">
-                <div className="input">
-                  <TextField
-                    fullWidth
-                    value={username}
-                    id="outlined-basic"
-                    label="Username/Email"
-                    onChange={this.onInputChange}
-                    name="username"
-                    type="text"
-                    variant="outlined"
-                    color="warning"
-                  />
-                </div>
-                <div className="input">
-                  <TextField
-                    fullWidth
-                    value={password}
-                    id="outlined-password-input"
-                    label="Password"
-                    name="password"
-                    onChange={this.onInputChange}
-                    type={showpassword}
-                    autoComplete="current-password"
-                    className="input-field"
-                    color="warning"
-                  />
-                </div>
-                <div className="mt-2 checkbox d-flex">
-                  <input
-                    type="checkbox"
-                    className="checkbox-input"
-                    onChange={this.onCheckShow}
-                  />
-                  <h6 className="showpassword">Show Password</h6>
-                </div>
-                <div>
-                  <button
-                    className="login-button rounded "
-                    onClick={this.onLoginCLick}
-                  >
-                    Login
-                  </button>
-                </div>
 
-                <div className="d-flex signup">
-                  <h6 className="pt-1">No Account?</h6>
-                  <Link className="link" to="/register">
-                    SignUp
-                  </Link>
-                </div>
+            <div className="label-text">
+              <div className="form-kata-sandi row">
+                <h6>Kata sandi</h6>
+                <Link to="" className="link-lupa-password">
+                  Lupa Password?
+                </Link>
               </div>
+              <input
+                type={showpassword}
+                className="form-control shadow-none text-input-password"
+                placeholder="Kata sandi"
+                name="password"
+                onChange={this.onInputChange}
+                value={password}
+              />
+            </div>
+
+            <div className="checkbox-form row">
+              <input
+                type="checkbox"
+                className="checkbox-input"
+                onChange={this.onCheckShow}
+              />
+              <h6 className="showpassword">Show Password</h6>
+            </div>
+            <div className="d-flex">
+              <button className="btn-regis" onClick={this.onLoginCLick}>
+                Masuk
+              </button>
+              <h6 className="sudah-punya-akun-text">Belum punya akun?</h6>
+              <Link to="/register" className="link-masuk">
+                Daftar
+              </Link>
             </div>
           </div>
-          <SuccessSnack
-            message={this.state.message}
-            successSnack={this.state.successSnack}
-            handleClose={this.handleClose}
-          />
-          <ErrorSnack
-            message={this.state.message}
-            errorSnack={this.state.errorSnack}
-            handleClose={this.handleClose}
-          />
         </div>
+        <SuccessSnack
+          message={this.state.message}
+          successSnack={this.state.successSnack}
+          handleClose={this.handleClose}
+        />
+        <ErrorSnack
+          message={this.state.message}
+          errorSnack={this.state.errorSnack}
+          handleClose={this.handleClose}
+        />
       </div>
     );
   }
@@ -163,7 +153,7 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLogin: state.auth.isLogin,
+    isLogin: state.auth.is_login,
   };
 };
 

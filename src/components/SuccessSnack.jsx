@@ -31,7 +31,7 @@ class SuccessSnack extends React.Component {
       >
         <SnackbarContent
           style={{
-            backgroundColor: "#43936C",
+            backgroundColor: "#43936c",
           }}
           message={this.props.message}
           autoHideDuration={3000}
