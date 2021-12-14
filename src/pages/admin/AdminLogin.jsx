@@ -21,9 +21,10 @@ function AdminLogin() {
 
     const {inputtedUsername, inputtedPassword} = userInput;
 
+    // SET UP ACTION DISPATCHER TO USE W/ ANY IMPORTED ACTIONS IN FILE
     const dispatch = useDispatch();
 
-    // GET ISLOGIN & ROLE DATA FROM REDUX STORE
+    // GET IS_LOGIN & ROLE_ID DATA FROM REDUX STORE
     const getIsLogin = useSelector(state => state.auth.is_login);
     const getRoleId = useSelector(state => state.auth.role_id);
 
@@ -34,7 +35,7 @@ function AdminLogin() {
       });
     };
 
-    const showPassHandler = (event) => {
+    const showPassHandler = () => {
         setClickToggle(!clickToggle);
         if (clickToggle) {
           setShowPass("text");
@@ -48,17 +49,18 @@ function AdminLogin() {
         event.preventDefault();
         const { inputtedUsername, inputtedPassword } = userInput;
         try {
-            const res = await axios.get(`${API_URL}/admin/login`, userInput);
+            const res = await axios.post(`${API_URL}/admin/login`, userInput);
             if (res.data.length) {
-                localStorage.setItem("id",res.data[0].id);
-                // dispatch(loginAction(res.data[0]));
+                localStorage.setItem("token", res.headers["x-token-access"]);
+                // dispatch(LoginAction(res.data));
+                alert("Login berhasil");
             } else {
                 // errorToast("User tidak ditemukan");
                 alert("User tidak ditemukan");
             };
         } catch (error) {
         // errorToast("Server Error, from PublicLogin");
-        alert("Server Error, from PublicLogin");
+        alert("Server Error, from AdminLogin");
         console.log(error);
         };
     };
