@@ -34,7 +34,7 @@ function ProfileSidebar() {
       })();
     }
   }, [file]);
-
+  console.log(data);
   return (
     <>
       <div className="profile-sidebar-container mb-4">
@@ -45,7 +45,7 @@ function ProfileSidebar() {
                 src={
                   file
                     ? URL.createObjectURL(file)
-                    : `${API_URL}/${data.profile_picture}`
+                    : `${API_URL}${data.profile_picture}`
                 }
                 alt="photo-profile"
                 className="profile-photo"
