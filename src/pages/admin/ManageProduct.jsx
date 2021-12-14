@@ -44,7 +44,7 @@ function ManageProduct() {
     // const showWhModal = AdminWhStockModal();
 
     // const showWhStock = () => {
-    //     console.log("Click detected");
+    //     ("Click detected");
     //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
     // }
 
@@ -52,7 +52,6 @@ function ManageProduct() {
     const fetchProdData = async () => {
         try {
             const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
-            console.log(res.data);
             setProducts(res.data);
             setProdLength(parseInt(res.headers["x-total-count"]));
         } catch (error) {
