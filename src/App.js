@@ -72,7 +72,7 @@ function App() {
             <Route path="/admin/manage-admin" exact component={AdminMainParent} />
             <Route path="*" exact component="" />
           </Switch>
-          <ToastContainer style={{ width: "400px" }}/>
+          <ToastContainer/>
         </>
       );
     } else { // * Non User & Non Admin Route
@@ -88,7 +88,7 @@ function App() {
             <Route path="/admin" exact component={AdminLogin} /> {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
             <Route path="*" exact component="" />
           </Switch>
-          <ToastContainer style={{ width: "400px" }}/> {/* Bila ingin menggunakan react-toastify, saat ini digunakan utk admin login & admin route */}
+          <ToastContainer/> {/* Bila ingin menggunakan react-toastify, saat ini digunakan utk admin login & admin route */}
         </>
       );
     }

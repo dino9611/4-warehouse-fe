@@ -117,6 +117,10 @@
     width: 100%;
 }
 
+.adm-login-input-wrap > input {
+    padding-right: 52px;
+}
+
 .adm-login-form-wrap > input:focus,
 .adm-login-input-wrap > input:focus {
     border-color: var(--primary-4th-color);
@@ -131,11 +135,6 @@
     opacity: 1; /* Firefox fix */
 }
 
-.adm-login-form-wrap > input:disabled,
-.adm-login-input-wrap > input:disabled {
-    color: var(--neutral-3rd-color);
-    background-color: var(--neutral-4th-color);
-}
 
 .adm-login-form-wrap > input:-ms-input-placeholder,
 .adm-login-input-wrap > input:-ms-input-placeholder {
@@ -149,6 +148,12 @@
     /* Microsoft Edge */
     font-size: 0.9em;
     font-weight: 300;
+}
+
+.adm-login-form-wrap > input:disabled,
+.adm-login-input-wrap > input:disabled {
+    color: var(--neutral-3rd-color);
+    background-color: var(--neutral-4th-color);
 }
 
 .adm-login-btn-wrap {

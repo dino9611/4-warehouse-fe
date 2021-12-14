@@ -28,7 +28,6 @@ function AdminLogin() {
     // GET IS_LOGIN & ROLE_ID DATA FROM REDUX STORE
     const getIsLogin = useSelector(state => state.auth.is_login);
     const getRoleId = useSelector(state => state.auth.role_id);
-    const getUsername = useSelector(state => state.auth.username)
 
     // HANDLER FUNCTIONS SECTION
     const inputChangeHandler = (event) => {
@@ -51,15 +50,15 @@ function AdminLogin() {
         event.preventDefault();
         try {
             const res = await axios.post(`${API_URL}/admin/login`, userInput);
-            if (res.data.length && !res.data.message) { // Sengaja kondisi nya ini biar ga ke-trigger bisa login klo ada res.data.message
+            if (res.data && !res.data.message) { // Sengaja kondisi nya ini biar ga ke-trigger bisa login klo ada res.data.message
                 localStorage.setItem("token", res.headers["x-token-access"]);
                 dispatch(LoginAction(res.data));
-                successToast(`Login successful! Welcome back ${getUsername}`)
+                successToast(`Login successful! Welcome back!`)
             } else {
                 errorToast(res.data.message);
             };
         } catch (error) {
-            alert("Server Error, from AdminLogin");
+            errorToast("Server Error, from AdminLogin");
             console.log(error);
         };
     };
