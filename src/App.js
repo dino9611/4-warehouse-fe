@@ -18,12 +18,12 @@ function App() {
 
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector(state => state.auth.role_id);
-  const test = useSelector(state => state.auth)
+  const test = useSelector(state => state.auth); // Utk debug problem routing logout
   const dispatch = useDispatch();
 
   useEffect(() => {
     let token = localStorage.getItem("token");
-    console.log("Line 24: ", test);
+    console.log("Line 24: ", test); // Utk debug problem routing logout
     if (token) {
         axios.get(`${API_URL}/auth/keeplogin`, {
             headers: {
@@ -37,13 +37,13 @@ function App() {
               setLoading(false);
           });
       } else {
-        console.log("Line 38: ", test);
+        console.log("Line 38: ", test); // Utk debug problem routing logout
         setLoading(false);
       }
   }, []);
 
   const renderRouting = () => {
-    console.log("getRoleId line 46: ", getRoleId)
+    console.log("getRoleId line 46: ", getRoleId); // Utk debug problem routing logout
     if (getRoleId === 3) { // * User Route
       return (
         <Switch>

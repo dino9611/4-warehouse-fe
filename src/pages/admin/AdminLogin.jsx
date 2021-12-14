@@ -49,7 +49,7 @@ function AdminLogin() {
         event.preventDefault();
         try {
             const res = await axios.post(`${API_URL}/admin/login`, userInput);
-            if (res.data && !res.data.message) { // Sengaja kondisi nya ini biar ga ke-trigger bisa login klo ada res.data.message
+            if (res.data && !res.data.message) { // Sengaja kondisi nya ini biar ga ke-trigger bisa login klo ada res.data.message (karena dri BE kirim message klo salah username/pass)
                 localStorage.setItem("token", res.headers["x-token-access"]);
                 dispatch(LoginAction(res.data));
                 successToast(`Login successful! Welcome back!`)
