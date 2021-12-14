@@ -19,11 +19,11 @@ function App() {
 
   useEffect(() => {
     let token = localStorage.getItem("token");
-      if (token) {
+    if (token) {
         axios.get(`${API_URL}/auth/keeplogin`, {
             headers: {
               Authorization: "Bearer " + token,
-            },
+            }
           }).then((res) => {
               dispatch(LoginAction(res.data));
           }).catch((err) => {
@@ -34,7 +34,7 @@ function App() {
       } else {
         setLoading(false);
       }
-    }, []);
+  }, []);
 
   const renderRouting = () => {
     if (getRoleId === 3) { // * User Route
@@ -77,16 +77,19 @@ function App() {
       );
     } else { // * Non User & Non Admin Route
       return (
-        <Switch>
-          <Route path="/" exact component="" />
-          <Route path="/login" exact component="" />
-          <Route path="/register" exact component="" />
-          <Route path="/products" exact component="" />
-          <Route path="/products/:category" exact component="" />
-          <Route path="/products/:productId" exact component="" />
-          <Route path="/admin" exact component={AdminLogin} /> {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
-          <Route path="*" exact component="" />
-        </Switch>
+        <>
+          <Switch>
+            <Route path="/" exact component="" />
+            <Route path="/login" exact component="" />
+            <Route path="/register" exact component="" />
+            <Route path="/products" exact component="" />
+            <Route path="/products/:category" exact component="" />
+            <Route path="/products/:productId" exact component="" />
+            <Route path="/admin" exact component={AdminLogin} /> {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
+            <Route path="*" exact component="" />
+          </Switch>
+          <ToastContainer style={{ width: "400px" }}/> {/* Bila ingin menggunakan react-toastify, saat ini digunakan utk admin login & admin route */}
+        </>
       );
     }
   };

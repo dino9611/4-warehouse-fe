@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {LoginAction} from "../../redux/actions/AuthAction";
 import {Redirect} from "react-router-dom"
+import { successToast, errorToast } from "../../redux/actions/ToastAction";
 
 function AdminLogin() {
     const [showPass, setShowPass] = useState("password");
@@ -27,6 +28,7 @@ function AdminLogin() {
     // GET IS_LOGIN & ROLE_ID DATA FROM REDUX STORE
     const getIsLogin = useSelector(state => state.auth.is_login);
     const getRoleId = useSelector(state => state.auth.role_id);
+    const getUsername = useSelector(state => state.auth.username)
 
     // HANDLER FUNCTIONS SECTION
     const inputChangeHandler = (event) => {
@@ -49,17 +51,14 @@ function AdminLogin() {
         event.preventDefault();
         try {
             const res = await axios.post(`${API_URL}/admin/login`, userInput);
-            if (res.data) {
-                console.log(res.data);
+            if (res.data.length && !res.data.message) { // Sengaja kondisi nya ini biar ga ke-trigger bisa login klo ada res.data.message
                 localStorage.setItem("token", res.headers["x-token-access"]);
                 dispatch(LoginAction(res.data));
-                alert("Login berhasil");
+                successToast(`Login successful! Welcome back ${getUsername}`)
             } else {
-                // errorToast("User tidak ditemukan");
-                alert(res.data.message);
+                errorToast(res.data.message);
             };
         } catch (error) {
-            // errorToast("Server Error, from PublicLogin");
             alert("Server Error, from AdminLogin");
             console.log(error);
         };

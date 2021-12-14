@@ -16,7 +16,7 @@
     align-items: center;
     background-color: var(--neutral-5th-color);
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     min-height: 72px;
     padding: 8px 24px;
     position: sticky;
