@@ -14,6 +14,9 @@ import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Arrow.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Arrow.svg";
 import {Link} from "react-router-dom";
+import deleteTrash from "../../assets/components/Delete-Trash.svg";
+import editIcon from "../../assets/components/Edit-Icon.svg";
+import chevronDown from "../../assets/components/Chevron-Down.svg";
 
 function ManageProduct() {
     // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
@@ -160,6 +163,13 @@ function ManageProduct() {
         }
     };
 
+    // RENDER DROPDOWN ACTION MENU
+    const [toggleDropdown, setToggleDropdown] = useState(false);
+
+    const dropdownClick = () => {
+        setToggleDropdown(!toggleDropdown)
+    };
+
     return (
         <div className="adm-products-main-wrap">
             <div className="adm-products-header-wrap">
@@ -180,12 +190,12 @@ function ManageProduct() {
                                 <TableCell align="center">Category</TableCell>
                                 <TableCell align="center">Price</TableCell>
                                 <TableCell align="center">Stock</TableCell>
-                                <TableCell align="center">Action</TableCell>
+                                <TableCell align="center" style={{width: "176px"}}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {products
-                            .map((val) => (
+                            .map((val, index) => (
                                 <TableRow
                                 key={val.SKU}
                                 >
@@ -209,8 +219,38 @@ function ManageProduct() {
                                             {val.total_stock}
                                         </span>
                                     </TableCell>
-                                    <TableCell align="center">
-                                        <button className="btn btn-primary shadow-none">Pilihan</button>
+                                    <TableCell align="center" className="adm-products-action-cell">
+                                        <button className="adm-products-dropdown-btn" onClick={dropdownClick}>
+                                            Pilihan
+                                            <img 
+                                                src={chevronDown} 
+                                                style={{
+                                                    transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                                }}
+                                            />
+                                        </button>
+                                        <ul 
+                                            className="adm-products-dropdown-menu" 
+                                            style={{
+                                                opacity: toggleDropdown ? 1 : 0,
+                                                transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)"
+                                            }}
+                                        >
+                                            <li 
+                                                // onClick={editProdToggle}
+                                            >
+                                                <img src={editIcon} />
+                                                <Link to="/admin/manage-product/edit" className="link-no-decoration">
+                                                    Edit
+                                                </Link>
+                                            </li>
+                                            <li 
+                                                // onClick={() => delDataClick(prodId)}
+                                            >
+                                                <img src={deleteTrash} />
+                                                Delete
+                                            </li>
+                                        </ul>
                                     </TableCell>
                                 </TableRow>
                             ))}
