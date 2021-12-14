@@ -8,6 +8,7 @@ import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {LoginAction} from "../../redux/actions/AuthAction";
+import {Redirect} from "react-router-dom"
 
 function AdminLogin() {
     const [showPass, setShowPass] = useState("password");
@@ -21,6 +22,10 @@ function AdminLogin() {
     const {inputtedUsername, inputtedPassword} = userInput;
 
     const dispatch = useDispatch();
+
+    // GET ISLOGIN & ROLE DATA FROM REDUX STORE
+    const getIsLogin = useSelector(state => state.auth.is_login);
+    const getRoleId = useSelector(state => state.auth.role_id);
 
     // HANDLER FUNCTIONS SECTION
     const inputChangeHandler = (event) => {
@@ -56,6 +61,17 @@ function AdminLogin() {
         alert("Server Error, from PublicLogin");
         console.log(error);
         };
+    };
+
+    // REDIRECT CONDITION IF ALREADY LOGIN & TRY ACCESS LOGIN PAGE
+    if (getIsLogin && getRoleId === 1 || getRoleId === 2) {
+        return (
+            <Redirect to="/admin/dashboard" />
+        );
+    } else if (getIsLogin && getRoleId === 3) {
+        return (
+            <Redirect to="/" />
+        );
     };
 
     return (
