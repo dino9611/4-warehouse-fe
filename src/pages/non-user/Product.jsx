@@ -159,7 +159,6 @@ function Product() {
           <div style={{ fontSize: "0.875em" }}>{sortName}</div>
           <img src={images.arrowdropdown} alt="" />
         </div>
-        {/* {handleSort ? renderContentSort() : null} */}
         {transition((style, item) =>
           item ? (
             <animated.div
