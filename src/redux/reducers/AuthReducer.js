@@ -8,18 +8,16 @@ const INITIAL_STATE = {
     profile_picture: null,
   };
   
-  const authReducers = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-      case "LOGIN":
-        return { ...state, ...action.payload, isLogin: true };
-      case "AFTER_VERIFIED":
-        return { ...state, ...action.payload, is_login: true };
-      case "ADMIN_LOGIN":
-        return { ...state, ...action.payload, isLogin: true };
+const authReducers = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case "LOGIN":
+      return { ...state, ...action.payload, is_login: true };
+    case "AFTER_VERIFIED":
+      return { ...state, ...action.payload, is_login: true };
+
+    default:
+      return state;
+  }
+};
   
-      default:
-        return state;
-    }
-  };
-  
-  export default authReducers;
+export default authReducers;
