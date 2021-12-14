@@ -151,12 +151,9 @@
     font-weight: 300;
 }
 
-.adm-login-input-wrap > img {
-    transition: 300ms;
-}
-
 .adm-login-btn-wrap {
     display: flex;
+    width: 100%;
 }
 
 .adm-login-btn {

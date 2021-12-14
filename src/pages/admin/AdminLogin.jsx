@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react';
 import AdminLoginImg from "../../assets/visuals/Admin_Login_01.png";
 import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
 import ShowPassTrue from "../../assets/components/Show-Pass-True.svg";
+import axios from 'axios';
+import {API_URL} from "../../constants/api";
+import {Link} from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 function AdminLogin() {
     const [showPass, setShowPass] = useState("password");
@@ -14,6 +18,8 @@ function AdminLogin() {
     });
 
     const {inputtedUsername, inputtedPassword} = userInput;
+
+    const dispatch = useDispatch();
 
     // HANDLER FUNCTIONS SECTION
     const inputChangeHandler = (event) => {
@@ -32,25 +38,24 @@ function AdminLogin() {
     };
 
     // CLICK FUNCTIONS SECTION
-    
-
-
-    // const onLoginClick = async (event) => {
-    //     event.preventDefault();
-    //     const { inputtedUsername, inputtedPassword } = userInput;
-    //     try {
-    //     const res = await axios.get(`${API_URL}/users?username=${inputtedUsername}&password=${inputtedPassword}`);
-    //     if (res.data.length) {
-    //         localStorage.setItem("id",res.data[0].id);
-    //         dispatch(loginAction(res.data[0]));
-    //     } else {
-    //         errorToast("User tidak ditemukan");
-    //     };
-    //     } catch (err) {
-    //     errorToast("Server Error, from PublicLogin");
-    //     console.log(err);
-    //     };
-    // };
+    const onLoginClick = async (event) => {
+        event.preventDefault();
+        const { inputtedUsername, inputtedPassword } = userInput;
+        try {
+            const res = await axios.get(`${API_URL}/admin/login`, userInput);
+            if (res.data.length) {
+                localStorage.setItem("id",res.data[0].id);
+                // dispatch(loginAction(res.data[0]));
+            } else {
+                // errorToast("User tidak ditemukan");
+                alert("User tidak ditemukan");
+            };
+        } catch (error) {
+        // errorToast("Server Error, from PublicLogin");
+        alert("Server Error, from PublicLogin");
+        console.log(error);
+        };
+    };
 
     return (
         <div className="adm-login-main-wrap">
@@ -63,7 +68,7 @@ function AdminLogin() {
                         <h1>Admin Sign In</h1>
                         <p>Make sure you already have admin account or contact your super admin directly</p>
                     </div>
-                    <form className="adm-login-form-wrap">
+                    <form className="adm-login-form-wrap" onSubmit={onLoginClick}>
                         <p>Username</p>
                         <input
                             type="text"
@@ -92,33 +97,6 @@ function AdminLogin() {
                         </div>
                     </form>
                 </div>
-                {/* <form className="d-flex flex-column justify-content-center w-75" onSubmit={onLoginClick}>
-                    <h1 className="text-center fw-700 mb-3">Sign In</h1>
-                    <p className="text-center m-0 mb-5">Sign in or create an account to enjoy member exclusive promo.</p>
-                    <p className="m-0 mb-1">Username <span className="text-danger">*</span></p>
-                    <input
-                        type="text"
-                        className="form-control shadow-none h-50px mb-4"
-                        value={userInput.inputtedUsername}
-                        onChange={usernameChangeHandler}
-                    />
-                    <p className="m-0 mb-1">Password <span className="text-danger">*</span></p>
-                    <input
-                        type={showPass}
-                        className="form-control shadow-none h-50px mb-2"
-                        value={userInput.inputtedPassword}
-                        onChange={passwordChangeHandler}
-                    />
-                    <div className="f-row-start mb-4">
-                        <input
-                            type="checkbox"
-                            className="form-check-input float-none m-0"
-                            onClick={showPassHandler}
-                        /> 
-                        <p className="fs-0_8x m-0 ml-3">Show Password</p>
-                    </div>
-                    <button type="submit" className="btn main-btn-and-effect fw-500 h-50px mb-4">SIGN IN</button>
-                </form> */}
             </div>
         </div>
     )
