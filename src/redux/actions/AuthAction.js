@@ -5,9 +5,8 @@ export const LoginAction = (userdata) => {
     };
 };
 
-export const logoutAction = (userdata) => {
+export const logoutAction = () => {
   return {
-      type: "LOGOUT",
-      payload: userdata,
+      type: "LOGOUT"
   }
 };
