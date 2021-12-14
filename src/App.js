@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AdminMainParent from "./pages/admin/AdminMainParent";
 import AdminLogin from "./pages/admin/AdminLogin";
+import AdminNotFound from './pages/admin/AdminNotFound';
 import axios from 'axios';
 import {API_URL} from "./constants/api";
 import {LoginAction} from "./redux/actions";
@@ -86,6 +87,7 @@ function App() {
             <Route path="/products/:category" exact component="" />
             <Route path="/products/:productId" exact component="" />
             <Route path="/admin" exact component={AdminLogin} /> {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
+            <Route path="/admin/:subAdmin" component={AdminNotFound} />
             <Route path="*" exact component="" />
           </Switch>
           <ToastContainer/> {/* Bila ingin menggunakan react-toastify, saat ini digunakan utk admin login & admin route */}
