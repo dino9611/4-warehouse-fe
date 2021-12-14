@@ -56,7 +56,7 @@ function AdminLogin() {
                 alert("Login berhasil");
             } else {
                 // errorToast("User tidak ditemukan");
-                alert("User tidak ditemukan");
+                alert(res.data.message);
             };
         } catch (error) {
             // errorToast("Server Error, from PublicLogin");
