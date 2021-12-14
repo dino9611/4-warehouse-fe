@@ -1,14 +1,8 @@
 import { combineReducers } from "redux";
-<<<<<<< HEAD
+import authReducers from "./AuthReducer";
 import ProfileReducer from "./ProfileReducer";
 
 export default combineReducers({
+  auth: authReducers,
   ProfileReducer,
 });
-=======
-import authReducers from "./AuthReducer";
-
-export default combineReducers({
-  auth: authReducers,
-});
->>>>>>> WJ-5
