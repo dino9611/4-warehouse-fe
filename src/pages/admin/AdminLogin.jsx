@@ -5,10 +5,9 @@ import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
 import ShowPassTrue from "../../assets/components/Show-Pass-True.svg";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
-import {Link} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {LoginAction} from "../../redux/actions/AuthAction";
-import {Redirect} from "react-router-dom"
+import {Redirect} from "react-router-dom";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
 
 function AdminLogin() {
