@@ -47,21 +47,21 @@ function AdminLogin() {
     // CLICK FUNCTIONS SECTION
     const onLoginClick = async (event) => {
         event.preventDefault();
-        const { inputtedUsername, inputtedPassword } = userInput;
         try {
             const res = await axios.post(`${API_URL}/admin/login`, userInput);
-            if (res.data.length) {
+            if (res.data) {
+                console.log(res.data);
                 localStorage.setItem("token", res.headers["x-token-access"]);
-                // dispatch(LoginAction(res.data));
+                dispatch(LoginAction(res.data));
                 alert("Login berhasil");
             } else {
                 // errorToast("User tidak ditemukan");
                 alert("User tidak ditemukan");
             };
         } catch (error) {
-        // errorToast("Server Error, from PublicLogin");
-        alert("Server Error, from AdminLogin");
-        console.log(error);
+            // errorToast("Server Error, from PublicLogin");
+            alert("Server Error, from AdminLogin");
+            console.log(error);
         };
     };
 

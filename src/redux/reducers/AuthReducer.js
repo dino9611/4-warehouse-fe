@@ -6,7 +6,7 @@ const INITIAL_STATE = {
     is_login: null,
     is_verified: null,
     profile_picture: null,
-  };
+};
   
 const authReducers = (state = INITIAL_STATE, action) => {
   switch (action.type) {
