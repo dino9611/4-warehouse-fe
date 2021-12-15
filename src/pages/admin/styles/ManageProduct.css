@@ -15,6 +15,9 @@
     --semantic-warning: #EF8943;
     --semantic-success: #43936C;
     --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
 .link-no-decoration {
@@ -173,17 +176,17 @@
 
 .adm-products-dropdown-btn {
     background-color: var(--neutral-5th-color);
-    border: 1px solid var(--primary-4th-color);
-    border-radius: 100px;
-    color: var(--primary-4th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: 8px;
+    color: var(--neutral-1st-color);
     cursor: pointer;
     height: 40px;
     width: 96px;
 }
 
 .adm-products-dropdown-btn:hover {
-    border-color: var(--primary-3rd-color);
-    color: var(--primary-3rd-color);
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
     transition: 400ms;
 }
 
@@ -194,21 +197,22 @@
 .adm-products-dropdown-menu {
     align-items: flex-start;
     background-color: var(--neutral-5th-color);
-    border: 1px solid var(--primary-4th-color);
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    left: 13%;
+    left: 22.5%;
     list-style: none;
     margin-top: 5px;
-    /* row-gap: 10px; */
     overflow: hidden;
     padding: 0;
     position: absolute;
     transition: 300ms;
-    width: 112px;
-    z-index: 100;
+    width: 96px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
 }
 
 .adm-products-dropdown-menu > li {
@@ -222,7 +226,7 @@
 }
 
 .adm-products-dropdown-menu > li:hover {
-    background-color: var(--neutral-4th-color);
+    color: var(--primary-4th-color);
     transition: 300ms;
 }
 

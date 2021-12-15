@@ -17,6 +17,7 @@ import {Link} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import editIcon from "../../assets/components/Edit-Icon.svg";
 import chevronDown from "../../assets/components/Chevron-Down.svg";
+import Swal from 'sweetalert2';
 
 function ManageProduct() {
     // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
@@ -64,7 +65,20 @@ function ManageProduct() {
     
     useEffect(() => {
         fetchProdData();
+        console.log("Line 67: ", products);
     }, [page, itemPerPage]);
+
+    useEffect(() => {
+        for (let i = 0; i < products.length; i++) {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[i] = false;
+                return [...newArray];
+            })
+        };
+        // setDropdownLength(dropdownLength.splice(products.length));
+        // console.log("Line 87 Manage Product: ", dropdownLength);
+    }, [products])
 
     // RENDER PAGE RANGE SECTION
     const renderPageRange = () => {
@@ -164,11 +178,60 @@ function ManageProduct() {
     };
 
     // RENDER DROPDOWN ACTION MENU
-    const [toggleDropdown, setToggleDropdown] = useState(false);
+    const [dropdownLength, setDropdownLength] = useState([]);
 
-    const dropdownClick = () => {
-        setToggleDropdown(!toggleDropdown)
+    const dropdownClick = (index) => {
+        if (!dropdownLength[index]) {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        }
+        console.log(dropdownLength);
     };
+
+    const dropdownBlur = (index) => {
+        if (!dropdownLength[index]) {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        }
+    };
+
+    const delProdClick = (prodId, SKU, prodName) => {
+        Swal.fire({
+            title: `Are you sure delete ${prodName} ?`,
+            text: `[ ID: ${prodId} | SKU: ${SKU} ]`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#43936C',
+            cancelButtonColor: '#CB3A31',
+            confirmButtonText: 'Yes! (NO UNDO)'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              )
+            }
+          })
+    }
 
     return (
         <div className="adm-products-main-wrap">
@@ -220,20 +283,25 @@ function ManageProduct() {
                                         </span>
                                     </TableCell>
                                     <TableCell align="center" className="adm-products-action-cell">
-                                        <button className="adm-products-dropdown-btn" onClick={dropdownClick}>
+                                        <button 
+                                            className="adm-products-dropdown-btn" 
+                                            onClick={() => dropdownClick(index)}
+                                            onBlur={() => dropdownBlur(index)}
+                                        >
                                             Pilihan
                                             <img 
                                                 src={chevronDown} 
                                                 style={{
-                                                    transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                                    transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
                                                 }}
                                             />
                                         </button>
                                         <ul 
                                             className="adm-products-dropdown-menu" 
                                             style={{
-                                                opacity: toggleDropdown ? 1 : 0,
-                                                transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)"
+                                                transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
+                                                opacity: dropdownLength[index] ? 1 : 0,
+                                                zIndex: dropdownLength[index] ? 100 : -10,
                                             }}
                                         >
                                             <li 
@@ -245,7 +313,7 @@ function ManageProduct() {
                                                 </Link>
                                             </li>
                                             <li 
-                                                // onClick={() => delDataClick(prodId)}
+                                                onClick={() => delProdClick(val.id, val.SKU, val.name)}
                                             >
                                                 <img src={deleteTrash} />
                                                 Delete
