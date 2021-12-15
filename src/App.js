@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
@@ -8,77 +9,129 @@ import { API_URL } from "./constants/api";
 import { LoginAction } from "./redux/actions/AuthAction";
 import { connect } from "react-redux";
 import axios from "axios";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Homepage from "./pages/non-user/Homepage";
+import Product from "./pages/non-user/Product";
+import ProfilePage from "./pages/user/ProfilePage";
+import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
+import { useDispatch, useSelector } from "react-redux";
+import AdminMainParent from "./pages/admin/AdminMainParent";
+import AdminLogin from "./pages/admin/AdminLogin";
+import NotFound from "./pages/non-user/NotFoundV1";
+
+import { LoginAction } from "./redux/actions";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const role = "user";
+  const [loading, setLoading] = useState(true);
+
+  // GET ROLE_ID DATA FROM REDUX STORE
+  const getRoleId = useSelector((state) => state.auth.role_id);
+  const dispatch = useDispatch();
+  // useEffect(() => {
+  //   let token = localStorage.getItem("token");
+  //   if (token) {
+  //     axios
+  //       .get(`${API_URL}/auth/keeplogin`, {
+  //         headers: {
+  //           Authorization: "Bearer" + token,
+  //         },
+  //       })
+  //       .then((res) => {
+  //         this.props.LoginAction(res.data);
+  //       })
+  //       .catch((err) => {});
+  //     }
+  //   }, []);
   useEffect(() => {
     let token = localStorage.getItem("token");
     if (token) {
       axios
         .get(`${API_URL}/auth/keeplogin`, {
           headers: {
-            Authorization: "Bearer" + token,
+            Authorization: "Bearer " + token,
           },
         })
         .then((res) => {
-          this.props.LoginAction(res.data);
+          dispatch(LoginAction(res.data));
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
   }, []);
 
   const renderRouting = () => {
-    if (role === "user") {
+    if (getRoleId === 3) {
+      // * User Route
       return (
         <Switch>
-          <Route path="/" exact component={Home} />
+          <Route path="/" exact component={Homepage} />
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
           <Route path="/verify-email" exact component={VerifyEmail} />
-          <Route path="/profile" exact component="" />
-          <Route path="/profile/history" exact component="" />
-          <Route path="/profile/history/detail/:orderId" exact component="" />
-          <Route path="/profile/address" exact component="" />
-          <Route path="/profile/address/add" exact component="" />
-          <Route path="/products" exact component="" />
+          <Route path="/profile" component={ProfilePage} />
+          <Route path="/auth/accept" exact component={VerifyChangeEmail} />
+          <Route path="/products" exact component={Product} />
           <Route path="/products/:category" exact component="" />
           <Route path="/products/:productId" exact component="" />
           <Route path="/checkout" exact component="" />
           <Route path="/checkout/payment" exact component="" />
-          <Route path="*" exact component="" />
+          <Route path="*" component="" />
         </Switch>
       );
-    } else if ((role = "admin")) {
+    } else if (getRoleId === 1 || getRoleId === 2) {
+      // * Super Admin & Admin Route
       return (
-        <Switch>
-          <Route path="/admin" exact component="" />
-          <Route path="/admin/dashboard" exact component="" />
-          <Route path="/admin/manage-product" exact component="" />
-          <Route path="/admin/manage-product/add" exact component="" />
-          <Route path="/admin/manage-product/edit" exact component="" />
-          <Route path="/admin/manage-transaction" exact component="" />
-          <Route path="/admin/stock-request" exact component="" />
-          <Route path="/admin/manage-warehouse" exact component="" />
-          <Route path="/admin/manage-admin" exact component="" />
-          <Route path="*" exact component="" />
-        </Switch>
+        <>
+          <Switch>
+            <Route path="/admin" exact component={AdminLogin} />
+            {/* Routing sub page admin ada di component admin sidebar */}
+            <Route path="/admin/:subPageAdmin" component={AdminMainParent} />
+            <Route path="*" component={NotFound} />
+          </Switch>
+          <ToastContainer />
+        </>
       );
     } else {
+      // * Non User & Non Admin Route
       return (
-        <Switch>
-          <Route path="/" exact component="" />
-          <Route path="/login" exact component="" />
-          <Route path="/register" exact component={Register} />
-          <Route path="/products" exact component="" />
-          <Route path="/products/:category" exact component="" />
-          <Route path="/products/:productId" exact component="" />
-          <Route path="*" exact component="" />
-        </Switch>
+        <>
+          <Switch>
+            <Route path="/" exact component={Homepage} />
+            <Route path="/login" exact component="" />
+            <Route path="/register" exact component={Register} />
+            <Route path="/products" exact component="" />
+            <Route path="/products/:category" exact component="" />
+            <Route path="/products/:productId" exact component="" />
+            <Route path="/admin" exact component={AdminLogin} />{" "}
+            {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
+            <Route path="*" component={NotFound} />
+          </Switch>
+          <ToastContainer />{" "}
+          {/* Bila ingin menggunakan react-toastify, saat ini digunakan utk admin login & admin route */}
+        </>
       );
     }
   };
 
-  return <div className="App">{renderRouting()}</div>;
+  return (
+    <div className="App">
+      {" "}
+      {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
+      {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
+      {loading ? <div>Loading</div> : renderRouting()}
+      <div>{getRoleId === 1 || getRoleId === 2 ? null : <Footer />}</div>
+    </div>
+  );
 }
 
 export default connect(null, { LoginAction })(App);

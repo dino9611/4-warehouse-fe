@@ -1,38 +1,69 @@
+:root {
+  --primary-1st-color: #0A4D3C;
+  --primary-2nd-color: #FCB537;
+  --primary-3rd-color: #8D280C;
+  --primary-4th-color: #B24629;
+  --primary-5th-color: #F1EDE7;
+
+  --neutral-1st-color: #070707;
+  --neutral-2nd-color: #5A5A5A;
+  --neutral-3rd-color: #CACACA;
+  --neutral-4th-color: #F4F4F4;
+  --neutral-5th-color: #FFFFFF;
+
+  --semantic-error: #CB3A31;
+  --semantic-warning: #EF8943;
+  --semantic-success: #43936C;
+  --semantic-info: #27A0E3;
+
+  --b-rad-root: 12px;
+  --b-shadow-root: 0px 1px 6px #D7D7D8;
+
+  /* REACT TOASTIFY ROOT STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
+  --toastify-toast-width: 400px !important;
+  --toastify-font-family: "Poppins", "Open Sans", sans-serif;
+  --toastify-text-color-light: var(--neutral-1st-color) !important;
+
+  /* ? Success Toast */
+  --toastify-icon-color-success: var(--semantic-success);
+  --toastify-color-progress-success: var(--semantic-success);
+
+  /* ? Error Toast */
+  --toastify-icon-color-error: var(--semantic-error) !important;
+  --toastify-color-progress-error: var(--semantic-error) !important;
+}
+
+/* ? Cek bagian ini, apakah ada yang mempengaruhi/tidak */
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  margin: 0;
+  background-color: #f1ede7;
+  font-family: "Poppins", "Open Sans", sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.text-link {
+  text-decoration: none !important;
+  color: initial;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.text-link:hover {
+  color: initial;
+}
+/* ? ------------------------------------------------- */
+
+/* REACT TOASTIFY CUSTOM STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
+.Toastify__toast-theme--light {
+  font-size: 0.95em;
+  font-weight: 400;
 }
 
-.App-link {
-  color: #61dafb;
+.Toastify__close-button {
+  color: var(--neutral-1st-color) !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Toastify__close-button:hover, .Toastify__close-button:focus {
+  color: var(--neutral-2nd-color) !important;
 }
