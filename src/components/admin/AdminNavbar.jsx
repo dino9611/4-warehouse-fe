@@ -2,15 +2,10 @@ import "./styles/AdminNavbar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { logoutAction } from "../../redux/actions";
-import { useEffect } from "react";
-import {Redirect} from "react-router-dom";
 
 function AdminNavbar() {
-    const getAuth = useSelector(state => state.auth); // Utk debug problem routing logout
     const getRoleId = useSelector(state => state.auth.role_id);
     const getUsername = useSelector(state => state.auth.username);
-
-    const {is_login} = getAuth; // Utk debug problem routing logout
 
     const dispatch = useDispatch();
 

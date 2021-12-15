@@ -10,26 +10,22 @@ import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
 import { useDispatch, useSelector } from "react-redux";
 import AdminMainParent from "./pages/admin/AdminMainParent";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminNotFound from './pages/admin/AdminNotFound';
+import NotFound from './pages/non-user/NotFoundV1';
 import axios from 'axios';
 import {API_URL} from "./constants/api";
 import {LoginAction} from "./redux/actions";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TestPage from './TestPage';
-import TestPage404 from './TestPage404';
 
 function App() {
   const [loading, setLoading] = useState(true);
 
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector(state => state.auth.role_id);
-  const test = useSelector(state => state.auth); // Utk debug problem routing logout
   const dispatch = useDispatch();
 
   useEffect(() => {
     let token = localStorage.getItem("token");
-    console.log("Line 24: ", test); // Utk debug problem routing logout
     if (token) {
         axios.get(`${API_URL}/auth/keeplogin`, {
             headers: {
@@ -43,13 +39,11 @@ function App() {
               setLoading(false);
           });
       } else {
-        console.log("Line 38: ", test); // Utk debug problem routing logout
         setLoading(false);
       }
   }, []);
 
   const renderRouting = () => {
-    console.log("getRoleId line 46: ", getRoleId); // Utk debug problem routing logout
     if (getRoleId === 3) { // * User Route
       return (
         <Switch>
@@ -63,27 +57,17 @@ function App() {
           <Route path="/products/:productId" exact component="" />
           <Route path="/checkout" exact component="" />
           <Route path="/checkout/payment" exact component="" />
-          <Route path="*" exact component="" />
+          <Route path="*" component="" />
         </Switch>
       );
     } else if (getRoleId === 1 || getRoleId === 2) { // * Super Admin & Admin Route
       return (
         <>
-          {console.log("Masuk route ADMIN")}
           <Switch>
-            <Route path="/" exact component={TestPage} />
             <Route path="/admin" exact component={AdminLogin} />
             {/* Routing sub page admin ada di component admin sidebar */}
             <Route path="/admin/:subPageAdmin" component={AdminMainParent} />
-            {/* <Route path="/admin/dashboard" exact component={AdminMainParent} />
-            <Route path="/admin/manage-product" exact component={AdminMainParent} />
-            <Route path="/admin/manage-product/add" exact component={AdminMainParent} />
-            <Route path="/admin/manage-product/edit" exact component={AdminMainParent} />
-            <Route path="/admin/manage-transaction" exact component={AdminMainParent} />
-            <Route path="/admin/stock-request" exact component={AdminMainParent} />
-            <Route path="/admin/manage-warehouse" exact component={AdminMainParent} />
-            <Route path="/admin/manage-admin" exact component={AdminMainParent} /> */}
-            <Route path="*" component={TestPage404} />
+            <Route path="*" component={NotFound} />
           </Switch>
           <ToastContainer/>
         </>
@@ -91,17 +75,15 @@ function App() {
     } else { // * Non User & Non Admin Route
       return (
         <>
-          {console.log("Masuk route non user")}
           <Switch>
-            <Route path="/" exact component={TestPage} />
+            <Route path="/" exact component={Homepage} />
             <Route path="/login" exact component="" />
             <Route path="/register" exact component="" />
             <Route path="/products" exact component="" />
             <Route path="/products/:category" exact component="" />
             <Route path="/products/:productId" exact component="" />
             <Route path="/admin" exact component={AdminLogin} /> {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
-            <Route path="/admin/:subAdmin" component={AdminNotFound} />
-            <Route path="*" component={TestPage404} />
+            <Route path="*" component={NotFound} />
           </Switch>
           <ToastContainer/> {/* Bila ingin menggunakan react-toastify, saat ini digunakan utk admin login & admin route */}
         </>
@@ -110,8 +92,12 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App"> {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
+      {(getRoleId === 1 || getRoleId === 2) ? null : <Header />}
       {loading ? <div>Loading</div> : renderRouting()}
+      <div>
+        {(getRoleId === 1 || getRoleId === 2) ? null : <Footer />}
+      </div>
     </div>
   );
 }

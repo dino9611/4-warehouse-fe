@@ -33,14 +33,15 @@
   --toastify-color-progress-error: var(--semantic-error) !important;
 }
 
+/* ? Cek bagian ini, apakah ada yang mempengaruhi/tidak */
+.App {
+  text-align: center;
+}
+
 body {
   margin: 0;
   background-color: #f1ede7;
   font-family: "Poppins", "Open Sans", sans-serif;
-}
-
-.App {
-  text-align: center;
 }
 
 .text-link {
@@ -51,6 +52,7 @@ body {
 .text-link:hover {
   color: initial;
 }
+/* ? ------------------------------------------------- */
 
 /* REACT TOASTIFY CUSTOM STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
 .Toastify__toast-theme--light {

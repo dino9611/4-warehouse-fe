@@ -38,9 +38,10 @@
     background-color: var(--neutral-5th-color);
     border-radius: var(--b-rad-root);
     display: flex;
-    height: 80%;
-    max-width: calc(1384px - 320px);
-    margin: 0 160px;
+    height: 75%;
+    margin: 0 200px;
+    max-width: calc(1600px - 400px); /* * Start size suitable for > 1280px viewport */
+    min-width: calc(1600px - 400px);
 
     box-shadow: var(--b-shadow-root);
     -webkit-box-shadow: var(--b-shadow-root);
@@ -180,4 +181,52 @@
     background-color: var(--neutral-3rd-color);
     color: var(--neutral-5th-color);
     cursor: default;
+}
+
+/* EXTRA LARGE SCREEN XL */
+@media (max-width: 1280px) {
+    .adm-login-sub-wrap {
+        height: 60%;
+        margin: 0 160px;
+        max-width: calc(1280px - 360px);
+        min-width: calc(1280px - 360px);
+
+    }
+}
+
+/* DESKTOP SIZE LG */
+@media (max-width: 1024px) {
+    .adm-login-sub-wrap {
+        height: 52%;
+        margin: 0 120px;
+        max-width: calc(1024px - 240px);
+        min-width: calc(1024px - 240px);
+    }
+
+    .adm-login-right-form h1 {
+        font-size: 2em;
+    }
+
+    .adm-login-right-form p {
+        font-size: 0.85em;
+    }
+
+    .adm-login-form-wrap > input::placeholder,
+    .adm-login-input-wrap > input::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        font-size: 0.85em;
+    }
+
+
+    .adm-login-form-wrap > input:-ms-input-placeholder,
+    .adm-login-input-wrap > input:-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        font-size: 0.85em;
+    }
+
+    .adm-login-form-wrap > input::-ms-input-placeholder,
+    .adm-login-input-wrap > input::-ms-input-placeholder {
+        /* Microsoft Edge */
+        font-size: 0.85em;
+    }
 }
