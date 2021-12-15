@@ -2,8 +2,6 @@ import "./styles/AdminNavbar.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { logoutAction } from "../../redux/actions";
-import { useEffect } from "react";
-import {Redirect} from "react-router-dom";
 
 function AdminNavbar() {
     const getRoleId = useSelector(state => state.auth.role_id);

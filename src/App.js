@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import "./App.css";
 import { Route, Switch } from "react-router-dom";
 import Header from "./components/Header";
-// import Footer from "./components/Footer";
-// import Homepage from "./pages/non-user/Homepage";
-// import Product from "./pages/non-user/Product";
-// import ProfilePage from "./pages/user/ProfilePage";
-// import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
+import Footer from "./components/Footer";
+import Homepage from "./pages/non-user/Homepage";
+import Product from "./pages/non-user/Product";
+import ProfilePage from "./pages/user/ProfilePage";
+import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
 import { useDispatch, useSelector } from "react-redux";
 import AdminMainParent from "./pages/admin/AdminMainParent";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -48,12 +48,12 @@ function App() {
     if (getRoleId === 3) { // * User Route
       return (
         <Switch>
-          {/* <Route path="/" exact component={Homepage} />
+          <Route path="/" exact component={Homepage} />
           <Route path="/login" exact component="" />
           <Route path="/verify-email" exact component="" />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/auth/accept" exact component={VerifyChangeEmail} />
-          <Route path="/products" exact component={Product} /> */}
+          <Route path="/products" exact component={Product} />
           <Route path="/products/:category" exact component="" />
           <Route path="/products/:productId" exact component="" />
           <Route path="/checkout" exact component="" />

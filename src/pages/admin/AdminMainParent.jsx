@@ -65,8 +65,6 @@ const routes = [
   ];
 
 function AdminMainParent() {
-
-
     return (
       <div className="adm-main-parent-wrap">
           <AdminSideBar routes={routePath} className="control-zIndex"/>
