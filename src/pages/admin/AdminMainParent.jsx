@@ -65,27 +65,23 @@ const routes = [
   ];
 
 function AdminMainParent() {
-
-
     return (
-        <Router>
-            <div className="adm-main-parent-wrap">
-                <AdminSideBar routes={routePath} className="control-zIndex"/>
-                <div className="adm-main-content-wrap">
-                    <AdminNavbar/>
-                    <Switch>
-                        {routes.map((route, index) => (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                exact={route.exact}
-                                children={<route.main />}
-                            />
-                        ))}
-                    </Switch>
-                </div>
-            </div>
-        </Router>
+      <div className="adm-main-parent-wrap">
+          <AdminSideBar routes={routePath} className="control-zIndex"/>
+          <div className="adm-main-content-wrap">
+              <AdminNavbar/>
+              <Switch>
+                  {routes.map((route, index) => (
+                      <Route
+                          key={index}
+                          path={route.path}
+                          exact={route.exact}
+                          children={<route.main />}
+                      />
+                  ))}
+              </Switch>
+          </div>
+      </div>
     )
 }
 
