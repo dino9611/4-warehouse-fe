@@ -1,3 +1,3 @@
 import Register from "./Register";
-
-export { Register };
+import VerifyEmail from "./VerifyEmail";
+export { Register, VerifyEmail };

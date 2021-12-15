@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Login } from "./pages/user";
-import { Register } from "./pages/non-user";
+import { Register, VerifyEmail } from "./pages/non-user";
 import Home from "./pages/Home";
 import { API_URL } from "./constants/api";
 import { LoginAction } from "./redux/actions/AuthAction";
@@ -34,7 +34,7 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
-          <Route path="/verify-email" exact component="" />
+          <Route path="/verify-email" exact component={VerifyEmail} />
           <Route path="/profile" exact component="" />
           <Route path="/profile/history" exact component="" />
           <Route path="/profile/history/detail/:orderId" exact component="" />
