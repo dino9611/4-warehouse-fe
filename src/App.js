@@ -16,7 +16,6 @@ import {API_URL} from "./constants/api";
 import {LoginAction} from "./redux/actions";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TestPage from './TestPage';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -64,7 +63,6 @@ function App() {
     } else if (getRoleId === 1 || getRoleId === 2) { // * Super Admin & Admin Route
       return (
         <>
-          {console.log("Masuk route ADMIN")}
           <Switch>
             <Route path="/admin" exact component={AdminLogin} />
             {/* Routing sub page admin ada di component admin sidebar */}
@@ -77,9 +75,8 @@ function App() {
     } else { // * Non User & Non Admin Route
       return (
         <>
-          {console.log("Masuk route non user")}
           <Switch>
-            <Route path="/" exact component={TestPage} />
+            <Route path="/" exact component={Homepage} />
             <Route path="/login" exact component="" />
             <Route path="/register" exact component="" />
             <Route path="/products" exact component="" />
@@ -95,8 +92,12 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App"> {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
+      {(getRoleId === 1 || getRoleId === 2) ? null : <Header />}
       {loading ? <div>Loading</div> : renderRouting()}
+      <div>
+        {(getRoleId === 1 || getRoleId === 2) ? null : <Footer />}
+      </div>
     </div>
   );
 }

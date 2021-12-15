@@ -33,44 +33,26 @@
   --toastify-color-progress-error: var(--semantic-error) !important;
 }
 
+/* ? Cek bagian ini, apakah ada yang mempengaruhi/tidak */
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  margin: 0;
+  background-color: #f1ede7;
+  font-family: "Poppins", "Open Sans", sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.text-link {
+  text-decoration: none !important;
+  color: initial;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.text-link:hover {
+  color: initial;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* ? ------------------------------------------------- */
 
 /* REACT TOASTIFY CUSTOM STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
 .Toastify__toast-theme--light {

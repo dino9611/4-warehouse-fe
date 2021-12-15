@@ -1,0 +1,14 @@
+.card-category-rectangle {
+  width: 100px;
+  height: 165px;
+  border-radius: 100px;
+  background-color: #fff;
+  box-shadow: 0 1px 12px 0 #d4c7b2;
+}
+
+.card-category-inner-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  background-color: #f4f4f4;
+}
