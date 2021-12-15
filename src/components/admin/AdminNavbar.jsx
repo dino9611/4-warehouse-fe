@@ -17,14 +17,7 @@ function AdminNavbar() {
     const onLogout = () => {
         localStorage.removeItem("token");
         dispatch(logoutAction());
-    }
-
-    // useEffect(() => {
-    //     if (!is_login) {
-    //         console.log("Masuk useEffect admin navbar (line 24)");
-    //         <Redirect to="/" />
-    //     }
-    // }, [is_login]);
+    };
 
     return (
         <nav className="adm-nav-main-wrap">

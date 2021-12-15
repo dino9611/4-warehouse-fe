@@ -68,7 +68,7 @@ function AdminMainParent() {
 
 
     return (
-        <Router>
+        // <Router>
             <div className="adm-main-parent-wrap">
                 <AdminSideBar routes={routePath} className="control-zIndex"/>
                 <div className="adm-main-content-wrap">
@@ -85,7 +85,7 @@ function AdminMainParent() {
                     </Switch>
                 </div>
             </div>
-        </Router>
+        // </Router>
     )
 }
 

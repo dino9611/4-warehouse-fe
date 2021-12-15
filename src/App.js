@@ -71,17 +71,19 @@ function App() {
         <>
           {console.log("Masuk route ADMIN")}
           <Switch>
+            <Route path="/" exact component={TestPage} />
             <Route path="/admin" exact component={AdminLogin} />
             {/* Routing sub page admin ada di component admin sidebar */}
-            <Route path="/admin/dashboard" exact component={AdminMainParent} />
+            <Route path="/admin/:subPageAdmin" component={AdminMainParent} />
+            {/* <Route path="/admin/dashboard" exact component={AdminMainParent} />
             <Route path="/admin/manage-product" exact component={AdminMainParent} />
             <Route path="/admin/manage-product/add" exact component={AdminMainParent} />
             <Route path="/admin/manage-product/edit" exact component={AdminMainParent} />
             <Route path="/admin/manage-transaction" exact component={AdminMainParent} />
             <Route path="/admin/stock-request" exact component={AdminMainParent} />
             <Route path="/admin/manage-warehouse" exact component={AdminMainParent} />
-            <Route path="/admin/manage-admin" exact component={AdminMainParent} />
-            <Route path="*" exact component="" />
+            <Route path="/admin/manage-admin" exact component={AdminMainParent} /> */}
+            <Route path="*" component={TestPage404} />
           </Switch>
           <ToastContainer/>
         </>
