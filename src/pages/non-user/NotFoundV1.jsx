@@ -1,4 +1,4 @@
-import "./styles/AdminNotFound.css";
+import "./styles/NotFoundV1.css";
 import Admin404Img from "../../assets/visuals/Admin_Not_Found_01.jpeg";
 import {Link} from "react-router-dom";
 
@@ -9,7 +9,7 @@ function AdminNotFound() {
         <div className="adm-404-main-wrap">
             <div className="adm-404-sub-wrap">
                 <div className="adm-404-heading-wrap">
-                    <h2>You're trying access forbidden path!</h2>
+                    <h2>404 Page Not Found!</h2>
                 </div>
                 <div className="adm-404-img-wrap">
                     <img src={Admin404Img}  alt="Admin-Not-Found" />
