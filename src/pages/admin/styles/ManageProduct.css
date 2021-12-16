@@ -58,7 +58,8 @@
     text-decoration: none;
 }
 
-.adm-products-add-wrap button {
+.adm-products-add-wrap button,
+.del-modal-foot-wrap > button {
     background-color: var(--primary-4th-color);
     border: none;
     border-radius: 100px;
@@ -68,7 +69,8 @@
     width: 160px;
 }
 
-.adm-products-add-wrap button:hover {
+.adm-products-add-wrap button:hover,
+.del-modal-foot-wrap > button:hover {
     background-color: var(--primary-3rd-color);
     transition: 300ms;
 }
@@ -232,4 +234,57 @@
 
 .adm-products-dropdown-menu > li > img {
     margin-right: 8px;
+}
+
+/* DELETE MODAL CONTENT */
+.del-modal-heading-wrap {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 40px;
+    row-gap: 16px;
+}
+
+.del-modal-heading-wrap > h3,
+.del-modal-heading-wrap > h6 {
+    margin: 0;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.del-modal-body-wrap {
+    position: relative;
+}
+
+.del-modal-body-wrap > img {
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 52%;
+}
+
+.del-modal-foot-wrap {
+    column-gap: 16px;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.del-modal-foot-wrap > button:disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.del-modal-foot-wrap > button:last-child {
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--primary-4th-color);
+    color: var(--primary-4th-color);
+}
+
+.del-modal-foot-wrap > button:last-child:hover {
+    border-color: var(--primary-3rd-color);
+    color: var(--primary-3rd-color);
+    transition: 400ms;
 }
