@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import TextField from "@mui/material/TextField";
 import { API_URL } from "../../constants/api";
-import "./styles/Login.css";
+import "./style/Login.css";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
 import { LoginAction } from "../../redux/actions/AuthAction";

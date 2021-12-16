@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { useEffect } from "react";
+
 import { Route, Switch } from "react-router-dom";
 import { Login } from "./pages/user";
 import { Register, VerifyEmail } from "./pages/non-user";
-import Home from "./pages/Home";
+
 import { API_URL } from "./constants/api";
-import { LoginAction } from "./redux/actions/AuthAction";
+
 import { connect } from "react-redux";
 import axios from "axios";
 import Header from "./components/Header";
@@ -107,8 +107,9 @@ function App() {
         <>
           <Switch>
             <Route path="/" exact component={Homepage} />
-            <Route path="/login" exact component="" />
+            <Route path="/login" exact component={Login} />
             <Route path="/register" exact component={Register} />
+            <Route path="/verify-email" exact component={VerifyEmail} />
             <Route path="/products" exact component="" />
             <Route path="/products/:category" exact component="" />
             <Route path="/products/:productId" exact component="" />

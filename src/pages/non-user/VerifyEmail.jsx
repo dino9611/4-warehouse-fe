@@ -13,11 +13,11 @@ class VerifyEmail extends React.Component {
   //   console.log(token);
   // }
 
-  componentDidMount(props) {
+  async componentDidMount(props) {
     try {
       const { token } = qs.parse(this.props.location.search);
       console.log(token);
-      const res = axios.get(`${API_URL}/auth/verified`, {
+      const res = await axios.get(`${API_URL}/auth/verified`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(res.data);
