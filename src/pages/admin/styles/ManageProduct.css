@@ -58,7 +58,7 @@
     text-decoration: none;
 }
 
-.adm-products-add-wrap > button {
+.adm-products-add-wrap button {
     background-color: var(--primary-4th-color);
     border: none;
     border-radius: 100px;
@@ -68,7 +68,7 @@
     width: 160px;
 }
 
-.adm-products-add-wrap > button:hover {
+.adm-products-add-wrap button:hover {
     background-color: var(--primary-3rd-color);
     transition: 300ms;
 }

@@ -9,6 +9,7 @@ import AdminSideBar from "../../components/admin/AdminSideBar";
 import AdminNavbar from "../../components/admin/AdminNavbar";
 import ManageProduct from "./ManageProduct";
 import AdminAddProduct from "./AddProduct";
+import EditProduct from "./EditProduct";
 
 const routePath = {
     dashboard: "/admin/dashboard",
@@ -40,7 +41,7 @@ const routes = [
     {
       path: routePath.editProduct,
       exact: true,
-      main: () => <div>Belum ada page edit product</div>
+      main: () => <EditProduct />
     },
     {
       path: routePath.transactions,

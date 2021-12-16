@@ -18,10 +18,13 @@ import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import editIcon from "../../assets/components/Edit-Icon.svg";
 import chevronDown from "../../assets/components/Chevron-Down.svg";
 import Swal from 'sweetalert2';
+import Modal from '../../components/Modal';
+import Textbox from "../../components/Textbox";
 
 function ManageProduct() {
-    // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
     const [products, setProducts] = useState([]);
+    
+    const [dropdownLength, setDropdownLength] = useState([]); // Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
 
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
@@ -68,16 +71,12 @@ function ManageProduct() {
         console.log("Line 67: ", products);
     }, [page, itemPerPage]);
 
-    useEffect(() => {
+    useEffect(() => { // Utk create array yg identik dengan masing2 dropdown action menu per produk
+        let newArr = [];
         for (let i = 0; i < products.length; i++) {
-            setDropdownLength((prevState) => {
-                let newArray = prevState;
-                newArray[i] = false;
-                return [...newArray];
-            })
+            newArr[i] = false;
         };
-        // setDropdownLength(dropdownLength.splice(products.length));
-        // console.log("Line 87 Manage Product: ", dropdownLength);
+        setDropdownLength([...newArr]);
     }, [products])
 
     // RENDER PAGE RANGE SECTION
@@ -178,8 +177,6 @@ function ManageProduct() {
     };
 
     // RENDER DROPDOWN ACTION MENU
-    const [dropdownLength, setDropdownLength] = useState([]);
-
     const dropdownClick = (index) => {
         if (!dropdownLength[index]) {
             setDropdownLength((prevState) => {
@@ -197,41 +194,72 @@ function ManageProduct() {
         console.log(dropdownLength);
     };
 
-    const dropdownBlur = (index) => {
-        if (!dropdownLength[index]) {
-            setDropdownLength((prevState) => {
-                let newArray = prevState;
-                newArray[index] = true;
-                return [...newArray];
-            });
-        } else {
-            setDropdownLength((prevState) => {
-                let newArray = prevState;
-                newArray[index] = false;
-                return [...newArray];
-            });
-        }
+    const dropdownBlur = () => {
+        let newArr = dropdownLength.map(() => { // Clickaway action dropdown menu/menutup kembali dropdown bila klik diluar dropdown
+            return false;
+        })
+        setDropdownLength([...newArr]);
     };
 
-    const delProdClick = (prodId, SKU, prodName) => {
-        Swal.fire({
-            title: `Are you sure delete ${prodName} ?`,
-            text: `[ ID: ${prodId} | SKU: ${SKU} ]`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#43936C',
-            cancelButtonColor: '#CB3A31',
-            confirmButtonText: 'Yes! (NO UNDO)'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-              )
-            }
-          })
+    // ? Backup delete modal (simpen dlu)
+    // const delProdClick = (prodId, SKU, prodName) => {
+    //     Swal.fire({
+    //         title: `Are you sure delete ${prodName} ?`,
+    //         text: `[ ID: ${prodId} | SKU: ${SKU} ]`,
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#43936C',
+    //         cancelButtonColor: '#CB3A31',
+    //         confirmButtonText: 'Yes! (NO UNDO)'
+    //       }).then((result) => {
+    //         if (result.isConfirmed) {
+    //           Swal.fire(
+    //             'Deleted!',
+    //             'Your file has been deleted.',
+    //             'success'
+    //           )
+    //         }
+    //       })
+    // };
+
+    const [toggleModal, setToggleModal] = useState(false);
+
+    const handleCloseModal = () => {
+        setToggleModal(!toggleModal);
     }
+
+    const delModalContent = (prodId, SKU, prodName) => {
+        return (
+            <div>
+                <div>
+                    <h3>`Are you sure delete ${prodName} ?`</h3>
+                    <h6>`[ ID: ${prodId} | SKU: ${SKU} ]`</h6>
+                </div>
+                {/* <Textbox
+                    type="password"
+                    label="Password"
+                    placeholder="Your password"
+                    name="currentPass"
+                    // onChange={onChangePassword}
+                    // value={dataPassword.currentPass}
+                    // error={
+                    // (dataPassword.newPass || isPassFilled) && isPassCorrect ? null : 1
+                    // }
+                    // errormsg={
+                    // !isPassCorrect
+                    //     ? "Password lama anda salah"
+                    //     : "Password harus diisi"
+                    // }
+                /> */}
+            </div>
+        )
+    };
+
+    // const delProdClick = (prodId, SKU, prodName) => {
+    //     // setModalClose(!modalClose);
+    //     // setToggleModal(!toggleModal)
+    //     return <Modal open={toggleModal} close={handleCloseModal} children={<h1>Test</h1>} />
+    // };
 
     return (
         <div className="adm-products-main-wrap">
@@ -240,10 +268,12 @@ function ManageProduct() {
                 <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="adm-products-contents-wrap">
-                <TableContainer component={Paper}>
-                    <Link to="/admin/manage-product/add" className="adm-products-add-wrap">
-                        <button>+ Add Products</button>
-                    </Link>
+                <TableContainer component={Paper} style={{borderRadius: "12px"}}>
+                    <div className="adm-products-add-wrap">
+                        <Link to="/admin/manage-product/add">
+                            <button>+ Add Products</button>
+                        </Link>
+                    </div>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -308,18 +338,26 @@ function ManageProduct() {
                                                 // onClick={editProdToggle}
                                             >
                                                 <img src={editIcon} />
-                                                <Link to="/admin/manage-product/edit" className="link-no-decoration">
+                                                <Link 
+                                                    to={{
+                                                        pathname: "/admin/manage-product/edit",
+                                                        state: val
+                                                    }}
+                                                    className="link-no-decoration"
+                                                >
                                                     Edit
                                                 </Link>
                                             </li>
                                             <li 
-                                                onClick={() => delProdClick(val.id, val.SKU, val.name)}
+                                                // onClick={() => delProdClick(val.id, val.SKU, val.name)}
+                                                onClick={handleCloseModal}
                                             >
                                                 <img src={deleteTrash} />
                                                 Delete
                                             </li>
                                         </ul>
                                     </TableCell>
+                                    {/* <Modal open={toggleModal} close={handleCloseModal} children={() => delModalContent(val.id, val.SKU, val.name)} /> */}
                                 </TableRow>
                             ))}
                         </TableBody>

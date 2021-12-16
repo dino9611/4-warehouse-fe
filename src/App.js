@@ -29,7 +29,7 @@ function App() {
     if (token) {
         axios.get(`${API_URL}/auth/keeplogin`, {
             headers: {
-              Authorization: "Bearer " + token,
+              Authorization: "Bearer " + token
             }
           }).then((res) => {
               dispatch(LoginAction(res.data));
