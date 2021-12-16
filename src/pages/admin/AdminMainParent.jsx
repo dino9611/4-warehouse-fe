@@ -1,9 +1,7 @@
 import "./styles/AdminMainParent.css";
 import {
-    BrowserRouter as Router,
     Switch,
-    Route,
-    Link
+    Route
 } from "react-router-dom";
 import AdminSideBar from "../../components/admin/AdminSideBar";
 import AdminNavbar from "../../components/admin/AdminNavbar";
