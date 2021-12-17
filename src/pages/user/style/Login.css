@@ -111,9 +111,9 @@
   color: #b24629;
   font-weight: 600;
 }
-button:hover {
+/* button:hover {
   background-color: var(--primary-3rd-color);
-}
+} */
 Link:hover {
   color: var(--primary-3rd-color) !important;
 }
