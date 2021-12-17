@@ -1,20 +1,20 @@
 import "./styles/AdminMainParent.css";
 import {
-    BrowserRouter as Router,
     Switch,
-    Route,
-    Link
+    Route
 } from "react-router-dom";
 import AdminSideBar from "../../components/admin/AdminSideBar";
 import AdminNavbar from "../../components/admin/AdminNavbar";
 import ManageProduct from "./ManageProduct";
 import AdminAddProduct from "./AddProduct";
+import EditProduct from "./EditProduct";
 
 const routePath = {
     dashboard: "/admin/dashboard",
     manageProduct: "/admin/manage-product",
     addProduct: "/admin/manage-product/add",
     editProduct: "/admin/manage-product/edit",
+    stockOpname: "/admin/stock-opname",
     transactions: "/admin/manage-transaction",
     warehouses: "/admin/manage-warehouse",
     stockRequest: "/admin/stock-request",
@@ -40,7 +40,12 @@ const routes = [
     {
       path: routePath.editProduct,
       exact: true,
-      main: () => <div>Belum ada page edit product</div>
+      main: () => <EditProduct />
+    },
+    {
+      path: routePath.stockOpname,
+      exact: true,
+      main: () => <div>Belum ada page stock opname</div>
     },
     {
       path: routePath.transactions,

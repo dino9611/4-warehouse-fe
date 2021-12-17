@@ -38,6 +38,11 @@
     justify-content: center;
 }
 
+.adm-sidebar-brand-wrap > img {
+    height: 72px;
+    width: 100%;
+}
+
 .adm-sidebar-list-wrap {
     display: flex;
     flex-direction: column;
