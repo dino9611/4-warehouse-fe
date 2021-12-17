@@ -17,7 +17,6 @@ import {Link} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import editIcon from "../../assets/components/Edit-Icon.svg";
 import chevronDown from "../../assets/components/Chevron-Down.svg";
-import Swal from 'sweetalert2';
 import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
 import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
@@ -29,6 +28,14 @@ function ManageProduct() {
     const [products, setProducts] = useState([]);
     
     const [dropdownLength, setDropdownLength] = useState([]); // Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
+
+    const [modalLength, setModalLength] = useState([]); // Utk atur relation delete modal per produk, sehingga delete unique identik dgn msg2 produk
+    
+    const [passToggle, setPassToggle] = useState(false); // Utk atur showPass pada confirm delete produk
+    
+    const [showPass, setShowPass] = useState("password"); // Utk rubah input type pada modal delete produk
+    
+    const [passForDel, setPassForDel] = useState(""); // Utk kirim pass ke BE melakukan validasi confirm delete
 
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
@@ -60,6 +67,8 @@ function ManageProduct() {
     // }
 
     // FETCH & RENDER SECTION
+    const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
+
     const fetchProdData = async () => {
         try {
             const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
@@ -72,7 +81,6 @@ function ManageProduct() {
     
     useEffect(() => {
         fetchProdData();
-        console.log("Line 67: ", products);
     }, [page, itemPerPage]);
 
     useEffect(() => { // Utk create array yg identik dengan masing2 dropdown action menu & modal per produk
@@ -159,7 +167,7 @@ function ManageProduct() {
         });
     };
 
-    // SELECT FUNCTION SECTION
+    // SELECT PAGE FUNCTION SECTION
     const selectPageFilter = (event) => {
         setItemPerPage(parseInt(event.target.value));
         setPage(1);
@@ -209,30 +217,7 @@ function ManageProduct() {
         setDropdownLength([...newArr]);
     };
 
-    // ? Backup delete modal (simpen dlu)
-    // const delProdClick = (prodId, SKU, prodName) => {
-    //     Swal.fire({
-    //         title: `Are you sure delete ${prodName} ?`,
-    //         text: `[ ID: ${prodId} | SKU: ${SKU} ]`,
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#43936C',
-    //         cancelButtonColor: '#CB3A31',
-    //         confirmButtonText: 'Yes! (NO UNDO)'
-    //       }).then((result) => {
-    //         if (result.isConfirmed) {
-    //           Swal.fire(
-    //             'Deleted!',
-    //             'Your file has been deleted.',
-    //             'success'
-    //           )
-    //         }
-    //       })
-    // };
-
-    const [modalLength, setModalLength] = useState([]);
-    const [toggleModal, setToggleModal] = useState(false);
-
+    // RENDER MODAL DELETE PRODUCT
     const modalClick = (index) => {
         if (!modalLength[index]) {
             setModalLength((prevState) => {
@@ -259,15 +244,16 @@ function ManageProduct() {
         setShowPass("password");
     };
 
-    const handleCloseModal = () => {
-        setToggleModal(!toggleModal);
-    };
+    const passForDelHandler = (event) => setPassForDel(event.target.value);
 
-    const getUsername = useSelector(state => state.auth.username);
-    
-    const [passForDel, setPassForDel] = useState("");
-    const [showPass, setShowPass] = useState("password");
-    const [passToggle, setPassToggle] = useState(false);
+    const showPassHandler = () => {
+        setPassToggle(!passToggle);
+        if (passToggle) {
+          setShowPass("text");
+        } else {
+          setShowPass("password");
+        };
+    };
     
     const delModalContent = (prodId, SKU, prodName, index) => {
         return (
@@ -284,14 +270,6 @@ function ManageProduct() {
                         value={passForDel}
                         onChange={(event) => passForDelHandler(event)}
                         placeholder="Your password"
-                        // error={
-                        // (dataPassword.newPass || isPassFilled) && isPassCorrect ? null : 1
-                        // }
-                        // errormsg={
-                        // !isPassCorrect
-                        //     ? "Password lama anda salah"
-                        //     : "Password harus diisi"
-                        // }
                     />
                     <img 
                         src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
@@ -307,19 +285,9 @@ function ManageProduct() {
         )
     };
 
-    const passForDelHandler = (event) => setPassForDel(event.target.value);
-
-    const showPassHandler = () => {
-        setPassToggle(!passToggle);
-        if (passToggle) {
-          setShowPass("text");
-        } else {
-          setShowPass("password");
-        };
-    };
-
     const onConfirmDelProd = async (prodId, index) => {
         let inputtedPass = passForDel;
+        document.querySelector("div.del-modal-foot-wrap > button").disabled = true;
 
         try {
             const res = await axios.delete(`${API_URL}/product/delete/${prodId}`, {headers: {username: getUsername, pass: inputtedPass}});
@@ -331,25 +299,20 @@ function ManageProduct() {
                 });
                 setPassForDel("");
                 setShowPass("password");
-                successToast(res.data.message)
-            } else if (res.data.validationMessage) {
+                successToast(res.data.message);
+                fetchProdData();
+            } else if (res.data.validationMessage) { // Case salah input password
                 errorToast(res.data.validationMessage);
+                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             } else {
-                errorToast(res.data.failMessage);
+                errorToast(res.data.failMessage); // Case product id tidak ditemukan
+                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             };
         } catch (error) {
             errorToast("Server Error, from ManageProduct");
             console.log(error);
         }
-    }
-
-    // console.log(passForDel);
-
-    // const delProdClick = (prodId, SKU, prodName) => {
-    //     // setModalClose(!modalClose);
-    //     // setToggleModal(!toggleModal)
-    //     return <Modal open={toggleModal} close={handleCloseModal} children={<h1>Test</h1>} />
-    // };
+    };
 
     return (
         <div className="adm-products-main-wrap">
@@ -424,9 +387,7 @@ function ManageProduct() {
                                                 zIndex: dropdownLength[index] ? 100 : -10,
                                             }}
                                         >
-                                            <li 
-                                                // onClick={editProdToggle}
-                                            >
+                                            <li>
                                                 <img src={editIcon} />
                                                 <Link 
                                                     to={{
@@ -439,7 +400,6 @@ function ManageProduct() {
                                                 </Link>
                                             </li>
                                             <li 
-                                                // onClick={() => delProdClick(val.id, val.SKU, val.name)}
                                                 onClick={() => modalClick(index)}
                                             >
                                                 <img src={deleteTrash} />
@@ -476,7 +436,7 @@ function ManageProduct() {
                     </div>
                 </TableContainer>
                 {products.map((val, index) => (
-                    <Modal open={modalLength[index]} close={() => onCloseModal(index)} >
+                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
                         {delModalContent(val.id, val.SKU, val.name, index)}
                     </Modal>
                 ))}
