@@ -60,28 +60,28 @@ function AdminSideBar(props) {
                         <h5>Manage Product</h5>
                     </div>
                 </Link>
-                <Link to={routes.editProduct} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <FiHome className="adm-sidebar-icon"/>
-                        <h5>Edit Product</h5>
-                    </div>
-                </Link>
                 <Link to={routes.transactions} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>
                         <h5>Manage Transaction</h5>
                     </div>
                 </Link>
-                <Link to={routes.warehouses} className="link-no-decoration">
+                <Link to={routes.stockOpname} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>
-                        <h5>Manage Warehouse</h5>
+                        <h5>Stock Opname</h5>
                     </div>
                 </Link>
                 <Link to={routes.stockRequest} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>
                         <h5>Stock Request</h5>
+                    </div>
+                </Link>
+                <Link to={routes.warehouses} className="link-no-decoration">
+                    <div className="adm-sidebar-item-wrap">
+                        <FiHome className="adm-sidebar-icon"/>
+                        <h5>Manage Warehouse</h5>
                     </div>
                 </Link>
                 <Link to={routes.manageAdmin} className="link-no-decoration">

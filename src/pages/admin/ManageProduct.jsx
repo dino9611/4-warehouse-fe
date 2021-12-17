@@ -147,7 +147,7 @@ function ManageProduct() {
     };
 
     // FILTER ITEM PER PAGE SECTION
-    const rowsPerPageOptions = [1, 3, 5, 10, 50];
+    const rowsPerPageOptions = [5, 10, 50];
 
     const renderRowsOptions = () => {
         return rowsPerPageOptions.map((val) => {

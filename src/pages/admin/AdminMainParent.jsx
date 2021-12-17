@@ -14,6 +14,7 @@ const routePath = {
     manageProduct: "/admin/manage-product",
     addProduct: "/admin/manage-product/add",
     editProduct: "/admin/manage-product/edit",
+    stockOpname: "/admin/stock-opname",
     transactions: "/admin/manage-transaction",
     warehouses: "/admin/manage-warehouse",
     stockRequest: "/admin/stock-request",
@@ -40,6 +41,11 @@ const routes = [
       path: routePath.editProduct,
       exact: true,
       main: () => <EditProduct />
+    },
+    {
+      path: routePath.stockOpname,
+      exact: true,
+      main: () => <div>Belum ada page stock opname</div>
     },
     {
       path: routePath.transactions,
