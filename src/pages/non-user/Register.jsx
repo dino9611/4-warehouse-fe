@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import TextField from "@mui/material/TextField";
 import { API_URL } from "../../constants/api";
-import "./styles/Regis.css";
+import "./styles/regis.css";
 import axios from "axios";
 import gambar from "./../../assets/register.png";
 import { Link, Redirect } from "react-router-dom";
