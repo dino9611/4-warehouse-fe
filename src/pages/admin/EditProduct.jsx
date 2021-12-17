@@ -2,34 +2,34 @@ import "./styles/EditProduct.css";
 import React, { useEffect, useState } from 'react';
 import {useLocation} from "react-router-dom";
 import axios from 'axios';
-import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
+import { useSelector } from "react-redux";
 
 function EditProduct() {
-    let testLocation = useLocation();
-    console.log("Dari edit page: ", testLocation.state);
+    const dataFromParent = useLocation();
+    // console.log("Dari edit page: ", dataFromParent.state);
 
-    const {images, id, SKU, name, category_id, weight, price, product_cost, total_stock, description} = testLocation.state;
+    const {images, id, name, category_id, weight, price, product_cost, description} = dataFromParent.state;
 
-    const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
     const [skeletonLoad, setSkeletonLoad] = useState(true);
     const [editCategory, setEditCategory] = useState([]);
-    const [warehouse, setWarehouse] = useState([]);
     const [mainImgCheck, setMainImgCheck] = useState(false);
     const [charCounter, setCharCounter] = useState(2000 - description.length);
 
-    const [addImage, setAddImage] = useState([
-        "",
-        "",
-        ""
+    const [editImage, setEditImage] = useState([
+        images[0],
+        images[1],
+        images[2]
     ]);
 
-    const [addProdInput, setAddProdInput] = useState({ // Utk bawa input data produk ke BE
+    const getRoleId = useSelector(state => state.auth.username);
+
+    const [editProdInput, setEditProdInput] = useState({ // Utk bawa input edit data produk ke BE
         prod_name: name,
         prod_category: category_id,
         prod_weight: weight,
@@ -47,7 +47,7 @@ function EditProduct() {
         prod_price, 
         prod_cost, 
         prod_desc 
-    } = addProdInput;
+    } = editProdInput;
 
     const fetchCategory = async () => { // Utk render data kategori produk
         try {
@@ -58,32 +58,19 @@ function EditProduct() {
         }
     };
 
-    const fetchWarehouse = async () => { // Utk render data list warehouse
-        try {
-            const res = await axios.get(`${API_URL}/warehouse/list`);
-            res.data.forEach((val) => {
-                val.stock = "";
-            });
-            setWarehouse(res.data);
-        } catch (error) {
-            console.log(error)
-        }
-    };
-
     useEffect(() => {
         fetchCategory();
-        fetchWarehouse();
         setSkeletonLoad(false);
     }, []);
 
     // HANDLER && CHECKER FUNCTIONS SECTION
-    const addProdStringHandler = (event) => { // Utk setState data berbentuk string
-        setAddProdInput((prevState) => {
+    const editProdStringHandler = (event) => { // Utk setState data berbentuk string
+        setEditProdInput((prevState) => {
             return { ...prevState, [event.target.name]: event.target.value };
         });
     };
 
-    const addProdNumberHandler = (event, cb) => { // Utk setState data berbentuk number
+    const editProdNumberHandler = (event, cb) => { // Utk setState data berbentuk number
         cb((prevState) => {
             return { ...prevState, [event.target.name]: parseInt(event.target.value) };
         });
@@ -104,32 +91,10 @@ function EditProduct() {
         }
     };
 
-    const addStockHandler = (event, index) => { // Khusus setState data stock
-        let input = event.target.value;
-        setWarehouse((prevState) => {
-            let newArray = prevState;
-            newArray[index].stock = parseInt(input);
-            return [...newArray];
-        });
-    };
-
-    const stockNoMinHandler = (event, index) => { // Biar input number stock tidak negatif (-)
-        let input = event.target.value;
-        if (input < 0) {
-            setWarehouse((prevState) => {
-                let newArray = prevState;
-                newArray[index].stock = parseInt(input) * -1;
-                return [...newArray];
-            });
-        } else {
-            return
-        }
-    };
-
-    const addImageHandler = (event, indexArr) => { // Utk setState upload image
+    const editImageHandler = (event, indexArr) => { // Utk setState upload image
         let file = event.target.files[0];
         if (file) {
-            setAddImage((prevState) => {
+            setEditImage((prevState) => {
                 let newArray = prevState;
                 newArray[indexArr] = file;
                 if (indexArr === 0) {
@@ -138,7 +103,7 @@ function EditProduct() {
                 return [...newArray];
             });
         } else {
-            setAddImage((prevState) => {
+            setEditImage((prevState) => {
                 let newArray = prevState;
                 newArray[indexArr] = "";
                 if (indexArr === 0) {
@@ -150,7 +115,7 @@ function EditProduct() {
     };
 
     const delImgUpload = (event, indexArr) => {
-            setAddImage((prevState) => {
+            setEditImage((prevState) => {
             let newArray = prevState;
             newArray[indexArr] = "";
             if (indexArr === 0) {
@@ -164,15 +129,12 @@ function EditProduct() {
         return setCharCounter(descCharLimit - event.target.value.length);
     };
 
-    const stockTrueChecker = (value) => value.stock + 1 > 0 && typeof(value.stock) === "number";
-
     // CLICK FUNCTION SECTION
-    const onSubmitAddProd = async (event) => { // Untuk trigger submit button
+    const onSubmitedEditProd = async (event) => { // Untuk trigger submit button
         event.preventDefault();
         
-        let uploadedImg = addImage;
+        let uploadedImg = editImage;
         let inputtedProd = {
-            images: images,
             prod_name: prod_name,
             prod_category: prod_category,
             prod_weight: prod_weight,
@@ -180,7 +142,6 @@ function EditProduct() {
             prod_cost: prod_cost,
             prod_desc: prod_desc
         };
-        let inputtedStock = warehouse;
 
         // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
         const formData = new FormData();
@@ -190,7 +151,6 @@ function EditProduct() {
             }
         }
         formData.append("dataProduct", JSON.stringify(inputtedProd));
-        formData.append("dataStock", JSON.stringify(inputtedStock));
         let config = {
             headers: {
                 "Content-Type": "multipart/form-data"
@@ -204,10 +164,10 @@ function EditProduct() {
             console.log(err);
         };
 
-        if (prod_name && prod_category && prod_weight && prod_price && prod_cost && prod_desc) {
+        if (mainImgCheck || prod_name || prod_category || prod_weight || prod_price || prod_cost || prod_desc) {
             try {
-                await axios.post(`${API_URL}/product/add`, formData, config);
-                setAddImage((prevState) => {
+                await axios.patch(`${API_URL}/product/edit/${id}`, formData, config);
+                setEditImage((prevState) => {
                     let newArray = prevState;
                     newArray.forEach((val, index) => {
                         newArray[index] = "";
@@ -215,15 +175,8 @@ function EditProduct() {
                     return [...newArray];
                 });
                 setMainImgCheck(false);
-                setAddProdInput((prevState) => {
+                setEditProdInput((prevState) => {
                     return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
-                });
-                setWarehouse((prevState) => {
-                    let newArray = prevState;
-                    newArray.forEach((val, index) => {
-                        newArray[index].stock = "";
-                    })
-                    return [...newArray];
                 });
                 document.querySelector("button.edit-product-submit-btn").disabled = true;
                 Swal.fire({
@@ -253,18 +206,6 @@ function EditProduct() {
                         <h4>Edit Product {name}</h4>
                         <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
                     </div>
-                    {/* <div>
-                        <h1>Dibawah ini data2nya</h1>
-                        <div>
-                            <h6>{images}</h6>
-                            <h6>{id}</h6>
-                            <h6>{SKU}</h6>
-                            <h6>{name}</h6>
-                            <h6>{category}</h6>
-                            <h6>{price}</h6>
-                            <h6>{total_stock}</h6>
-                        </div>
-                    </div> */}
                     <div className="edit-product-contents-wrap">
                         <div className="edit-images-form-wrap">
                             <div className="edit-images-left-wrap">
@@ -272,25 +213,26 @@ function EditProduct() {
                                 <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
                             </div>
                             <div className="edit-images-right-wrap">
-                                {addImage.map((val, index) => {
+                                {editImage.map((val, index) => {
                                     return (
                                         <div className="edit-images-tile-wrap">
                                             <label 
                                                 htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                className={addImage[index] ? "edit-images-upload-preview" : "edit-images-upload-item"}
+                                                className={editImage[index] ? "edit-images-upload-preview" : "edit-images-upload-item"}
                                             >
                                                 <input 
                                                     type="file" 
                                                     id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
                                                     name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
                                                     accept=".jpg,.jpeg,.png"
-                                                    onChange={(event) => addImageHandler(event, index)} 
-                                                    disabled={addImage[index]}
+                                                    onChange={(event) => editImageHandler(event, index)} 
+                                                    disabled={editImage[index]}
                                                 />
-                                                {addImage[index] ?
+                                                {editImage[index] ?
                                                     <>
                                                         <img 
-                                                            src={URL.createObjectURL(addImage[index])} 
+                                                        src={`${API_URL}/${val}`}
+                                                            // src={URL.createObjectURL(editImage[index])} 
                                                             alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
                                                             className="edit-images-preview"
                                                         />
@@ -299,7 +241,7 @@ function EditProduct() {
                                                     <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
                                                 }
                                             </label>
-                                            {addImage[index] ?
+                                            {editImage[index] ?
                                                 <span 
                                                     className="edit-images-del-icon"
                                                     onClick={(event) => delImgUpload(event, index)}
@@ -325,7 +267,7 @@ function EditProduct() {
                                         id="prod_name" 
                                         name="prod_name" 
                                         value={prod_name}
-                                        onChange={(event) => addProdStringHandler(event)}
+                                        onChange={(event) => editProdStringHandler(event)}
                                         placeholder="Example: Javara (Brand, if any) + Coconut Sugar (Name) + 250gr (Size)"
                                     />
                                 </div>
@@ -339,7 +281,7 @@ function EditProduct() {
                                         id="prod_category"
                                         name="prod_category" 
                                         defaultValue={prod_category}
-                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
+                                        onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
                                         style={{textTransform: "capitalize"}}
                                     >
                                         <option value={0} disabled hidden>Select here</option>
@@ -361,8 +303,8 @@ function EditProduct() {
                                         id="prod_weight" 
                                         name="prod_weight" 
                                         value={prod_weight}
-                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                        onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                        onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
+                                        onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
                                         onWheel={(event) => event.target.blur()}
                                         placeholder="(base weight + packaging)"
                                         min="1"
@@ -380,8 +322,8 @@ function EditProduct() {
                                         id="prod_price" 
                                         name="prod_price" 
                                         value={prod_price}
-                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                        onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                        onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
+                                        onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
                                         onWheel={(event) => event.target.blur()}
                                         placeholder="Input price (minimum: 1)"
                                         min="1"
@@ -399,8 +341,8 @@ function EditProduct() {
                                         id="prod_cost" 
                                         name="prod_cost" 
                                         value={prod_cost}
-                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                        onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
+                                        onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
+                                        onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
                                         onWheel={(event) => event.target.blur()}
                                         placeholder="Product COGS (minimum: 1)"
                                         min="1"
@@ -408,29 +350,6 @@ function EditProduct() {
                                     <p>in Rupiah (Rp)</p>
                                 </div>
                             </div>
-                                {warehouse.map((val, index) => (
-                                    <div className="edit-info-form-item" key={`Gudang-${val.id}`}>
-                                        <div className="edit-info-form-left">
-                                            <label htmlFor={`stock_0${val.id}`}>Stock {val.name}</label>
-                                        </div>
-                                        <div className="edit-info-form-right">
-                                            <input 
-                                                type="number" 
-                                                className="add-stock-input-wrap"
-                                                id={`stock_0${val.id}`}
-                                                name={`stock_0${val.id}`}
-                                                value={val.stock}
-                                                onChange={(event) => addStockHandler(event, index)}
-                                                onKeyUp={(event) => stockNoMinHandler(event, index)}
-                                                onWheel={(event) => event.target.blur()}
-                                                placeholder="Input stock (minimum: 0)"
-                                                min="0"
-                                                disabled={role === "admin"}
-                                            />
-                                            <p>*Only super admin can fill</p>
-                                        </div>
-                                    </div>
-                                ))}
                         </form>
                         <div className="edit-desc-form-wrap">
                             <div className="edit-desc-form-item">
@@ -445,7 +364,7 @@ function EditProduct() {
                                         cols="100"
                                         name="prod_desc" 
                                         value={prod_desc}
-                                        onChange={(event) => addProdStringHandler(event)}
+                                        onChange={(event) => editProdStringHandler(event)}
                                         onKeyUp={(event) => charCounterHandler(event)}
                                         placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
                                         maxlength="2000"
@@ -454,14 +373,18 @@ function EditProduct() {
                                 </div>
                             </div>
                         </div>
+                        <div className="edit-stock-notice-wrap">
+                            <h5>Notice if you need edit stock</h5>
+                            <h6>Edit stock only accessible through Stock Opname page and only eligible for admin/warehouse admin role.</h6>
+                        </div>
                         <div className="edit-product-submission-wrap">
                             <Link to="/admin/manage-product" className="edit-product-cancel-wrap">
                                 <button>Cancel</button>
                             </Link>
                             <button 
                                 className="edit-product-submit-btn"
-                                onClick={onSubmitAddProd}
-                                disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !(warehouse.every(stockTrueChecker)) || !prod_desc}
+                                onClick={onSubmitedEditProd}
+                                disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !prod_desc}
                             >
                                 Submit
                             </button>

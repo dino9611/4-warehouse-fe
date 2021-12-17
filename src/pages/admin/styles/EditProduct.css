@@ -45,7 +45,8 @@
 
 .edit-images-form-wrap,
 .edit-info-form-wrap,
-.edit-desc-form-wrap {
+.edit-desc-form-wrap,
+.edit-stock-notice-wrap {
     background-color: var(--neutral-5th-color);
     border-radius: 12px;
     column-gap: 70px;
@@ -249,6 +250,20 @@ select > option {
     padding: 12px;
 }
 
+.edit-stock-notice-wrap {
+    flex-direction: column;
+    row-gap: 16px;
+}
+
+.edit-stock-notice-wrap > h5 {
+    color: var(--semantic-error);
+}
+
+.edit-stock-notice-wrap > h5,
+.edit-stock-notice-wrap > h6 {
+    margin: 0;
+    text-align: left;
+}
 
 .edit-product-submission-wrap {
     align-items: center;
