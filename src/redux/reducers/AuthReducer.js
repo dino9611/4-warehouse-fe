@@ -1,13 +1,13 @@
 const INITIAL_STATE = {
-    id: null,
-    username: "",
-    email: "",
-    role_id: null,
-    is_login: null,
-    is_verified: null,
-    profile_picture: null,
+  id: null,
+  username: "",
+  email: "",
+  role_id: null,
+  is_login: null,
+  is_verified: null,
+  profile_picture: null,
 };
-  
+
 const authReducers = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "LOGIN":
@@ -21,5 +21,5 @@ const authReducers = (state = INITIAL_STATE, action) => {
       return state;
   }
 };
-  
+
 export default authReducers;
