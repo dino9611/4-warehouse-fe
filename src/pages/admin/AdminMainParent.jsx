@@ -8,6 +8,7 @@ import AdminNavbar from "../../components/admin/AdminNavbar";
 import ManageProduct from "./ManageProduct";
 import AdminAddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
+import ManageWarehouse from "./ManageWarehouse";
 
 const routePath = {
     dashboard: "/admin/dashboard",
@@ -55,7 +56,7 @@ const routes = [
     {
       path: routePath.warehouses,
       exact: true,
-      main: () => <div>Belum ada page manage warehouse</div>
+      main: () => <ManageWarehouse />
     },
     {
       path: routePath.stockRequest,
