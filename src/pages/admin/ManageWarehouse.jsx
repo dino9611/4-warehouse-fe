@@ -11,6 +11,8 @@ import axios from 'axios';
 import {API_URL} from "../../constants/api";
 import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
+import Swal from 'sweetalert2';
+import { successToast, errorToast } from "../../redux/actions/ToastAction";
 
 function ManageWarehouse() {
     const [warehouses, setWarehouses] = useState([]);
@@ -40,7 +42,7 @@ function ManageWarehouse() {
 
     useEffect(() => {
         fetchWarehouse();
-    });
+    }, []);
 
     // RENDER MODAL CREATE WAREHOUSE
     const modalClick = () => {
@@ -94,11 +96,49 @@ function ManageWarehouse() {
                     />
                 </div>
                 <div className="create-wh-modal-foot">
-                    <button>Confirm</button>
+                    <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
                     <button onClick={onCloseModal}>Cancel</button>
                 </div>
             </>
         )
+    };
+
+    const onSubmitNewWh = async (event) => { // Untuk trigger submit button
+        event.preventDefault();
+        document.querySelector("div.create-wh-modal-foot > button").disabled = true;
+        
+        let inputtedNewWh = {
+            warehouse_name: warehouse_name,
+            warehouse_address: warehouse_address,
+        };
+
+        if (warehouse_name && warehouse_address) {
+            try {
+                await axios.post(`${API_URL}/warehouse/add`, inputtedNewWh);
+                setAddWhInput((prevState) => {
+                    return {...prevState, warehouse_name: "", warehouse_address: "", warehouse_lat: "", warehouse_long: ""}
+                });
+                document.querySelector("div.create-wh-modal-foot > button").disabled = false;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Create new warehouse success!',
+                    text: `${inputtedNewWh.warehouse_name}`,
+                    confirmButtonColor: '#B24629',
+                  });
+                fetchWarehouse();
+            } catch (err) {
+                console.log(err);
+                document.querySelector("div.create-wh-modal-foot > button").disabled = false;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...something went wrong, reload/try again',
+                    confirmButtonColor: '#B24629',
+                  });
+            };
+        } else {
+            document.querySelector("div.create-wh-modal-foot > button").disabled = false;
+            errorToast("Pastikan terisi semua (discount price tidak wajib)");
+        };
     };
 
     return (
