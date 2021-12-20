@@ -22,15 +22,16 @@ function ManageWarehouse() {
     const [addWhInput, setAddWhInput] = useState({ // Utk bawa input data warehouse ke BE
         warehouse_name: "",
         warehouse_address: "",
-        warehouse_lat: "",
-        warehouse_long: ""
+        // warehouse_lat: "",
+        // warehouse_long: ""
       });
 
     const fetchWarehouse = async () => { // Utk render data list warehouse
         try {
             const res = await axios.get(`${API_URL}/warehouse/list`);
             res.data.forEach((val) => {
-                val.stock = "";
+                val.latitude = parseFloat(val.latitude);
+                val.longitude = parseFloat(val.longitude);
             });
             setWarehouses(res.data);
         } catch (error) {
@@ -55,8 +56,6 @@ function ManageWarehouse() {
 
     const onCloseModal = () => {
         setToggleModal(false);
-        // setPassForDel("");
-        // setShowPass("password");
     };
 
     const addWhStringHandler = (event) => { // Utk setState data berbentuk string
@@ -88,12 +87,12 @@ function ManageWarehouse() {
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse address"
                     />
-                    <Textbox
+                    {/* <Textbox
                         type="text"
                         label="Warehouse Geolocation"
                         placeholder="CURRENTLY DISABLED"
                         disabled
-                    />
+                    /> */}
                 </div>
                 <div className="create-wh-modal-foot">
                     <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
@@ -116,7 +115,7 @@ function ManageWarehouse() {
             try {
                 await axios.post(`${API_URL}/warehouse/add`, inputtedNewWh);
                 setAddWhInput((prevState) => {
-                    return {...prevState, warehouse_name: "", warehouse_address: "", warehouse_lat: "", warehouse_long: ""}
+                    return {...prevState, warehouse_name: "", warehouse_address: ""}
                 });
                 document.querySelector("div.create-wh-modal-foot > button").disabled = false;
                 Swal.fire({
@@ -144,7 +143,7 @@ function ManageWarehouse() {
     return (
         <div className="manage-wh-main-wrap">
             <div className="manage-wh-header-wrap">
-                <h4>Manage Product</h4>
+                <h4>Manage Warehouse</h4>
                 <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="manage-wh-contents-wrap">
