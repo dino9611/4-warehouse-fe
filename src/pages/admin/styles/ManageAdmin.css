@@ -100,6 +100,26 @@
     row-gap: 16px;
 }
 
+.add-adm-modal-body > div:nth-of-type(2) {
+    position: relative;
+}
+
+.add-adm-modal-body > div:nth-of-type(2) > img {
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 52%;
+}
+
+.add-adm-modal-body > div:last-of-type {
+    align-items: center;
+    display: flex;
+}
+
+.add-adm-modal-body > div:last-of-type > label {
+    margin: 0 16px 0 0;
+}
+
 .add-adm-modal-foot {
     column-gap: 16px;
     display: flex;

@@ -20,6 +20,7 @@ function ManageAdmin() {
     const [adminList, setAdminList] = useState([]);
 
     const [warehouses, setWarehouses] = useState([]);
+    console.log(warehouses);
 
     const [toggleModal, setToggleModal] = useState(false);
 
@@ -51,7 +52,7 @@ function ManageAdmin() {
         }
     };
 
-    const {new_username, new_password, assign_warehouse} = addAdmInput;
+    let {new_username, new_password, assign_warehouse} = addAdmInput;
 
     useEffect(() => {
         fetchAdminList();
@@ -103,7 +104,7 @@ function ManageAdmin() {
                     <Textbox
                         type="text"
                         label="Admin Username"
-                        name="username"
+                        name="new_username"
                         value={new_username}
                         onChange={(event) => addAdmStringHandler(event)}
                         placeholder="Input the new admin username"
@@ -112,10 +113,10 @@ function ManageAdmin() {
                         <Textbox
                             type={showPass}
                             label="Set Password"
-                            name="password"
+                            name="new_password"
                             value={new_password}
                             onChange={(event) => addAdmStringHandler(event)}
-                            placeholder="Input the warehouse address"
+                            placeholder="Set the new admin password"
                         />
                         <img 
                             src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
@@ -132,12 +133,12 @@ function ManageAdmin() {
                             onChange={(event) => addAdmNumberHandler(event)}
                             style={{textTransform: "capitalize"}}
                         >
-                            <option value={0} disabled hidden>Select here</option>
-                            {warehouses.map((val, index) => {
+                            <option value={0} disabled hidden>Select warehouse to assign</option>
+                            {warehouses.map((val) => (
                                 <option value={val.id} key={`00${val.id}-${val.name}`} style={{textTransform: "capitalize"}}>
                                     {`${val.name} (${val.address})`}
                                 </option>
-                            })}
+                            ))}
                         </select>
                     </div>
                 </div>
