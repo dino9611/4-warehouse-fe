@@ -1,0 +1,126 @@
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #5A5A5A;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #F4F4F4;
+    --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+.link-no-decoration {
+    color: inherit;
+}
+
+.link-no-decoration:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.txt-capitalize {
+    text-transform: capitalize;
+}
+
+.manage-adm-main-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.manage-adm-header-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.manage-adm-header-wrap > h4 {
+    margin: 0;
+}
+
+.manage-adm-contents-wrap {
+    margin-top: 24px;
+}
+
+.manage-adm-add-wrap {
+    display: flex;
+    margin: 24px 16px;
+}
+
+.manage-adm-add-wrap:hover {
+    text-decoration: none;
+}
+
+.manage-adm-add-wrap button,
+.add-adm-modal-foot > button {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    font-weight: 600;
+    height: 42px;
+    width: 160px;
+}
+
+.manage-adm-add-wrap button:hover,
+.add-adm-modal-foot > button:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 300ms;
+}
+
+/* CREATE WH MODAL CONTENT */
+.add-adm-modal-head {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 40px;
+    row-gap: 16px;
+}
+
+.add-adm-modal-head > h3 {
+    margin: 0;
+    text-align: center;
+}
+
+.add-adm-modal-body {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+}
+
+.add-adm-modal-foot {
+    column-gap: 16px;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.add-adm-modal-foot > button:disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.add-adm-modal-foot > button:last-child {
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--primary-4th-color);
+    color: var(--primary-4th-color);
+}
+
+.add-adm-modal-foot > button:last-child:hover {
+    border-color: var(--primary-3rd-color);
+    color: var(--primary-3rd-color);
+    transition: 400ms;
+}
