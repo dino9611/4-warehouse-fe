@@ -4,7 +4,6 @@ import {useLocation} from "react-router-dom";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
-import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
@@ -13,7 +12,6 @@ import { errorToast } from "../../redux/actions/ToastAction";
 import {useHistory} from "react-router-dom";
 import editIcon from "../../assets/components/Edit-Icon.svg";
 import Modal from '../../components/Modal';
-import Textbox from "../../components/Textbox";
 
 function EditProduct() {
     const prodIdFromParent = useLocation();
@@ -246,21 +244,11 @@ function EditProduct() {
                                 <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
                             }
                         </label>
-                        {/* {imgCarrier[0] ?
-                            <span 
-                                className="edit-images-icon"
-                                onClick={() => modalClick(index)}
-                            >
-                                <img src={editIcon} />
-                            </span>
-                            :
-                            null
-                        } */}
                     </div>
                 </div>
                 <div className="edit-img-modal-foot">
                     <button onClick={(event) => onSubmitImgCarrier(event)} disabled={!imgCarrier[0]}>Submit Edit</button>
-                    <button>Delete Image</button>
+                    <button disabled={index === 0}>Delete Image File</button>
                     <button onClick={() => onCloseModal(index)}>Cancel</button>
                 </div>
             </>
@@ -340,7 +328,7 @@ function EditProduct() {
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
                     confirmButtonColor: '#B24629',
-                  });
+                });
             };
         } else {
             errorToast("Please make sure all inputs are filled");
@@ -349,12 +337,13 @@ function EditProduct() {
 
     const onSubmitImgCarrier = async (event) => { // Untuk trigger submit button
         event.preventDefault();
+        document.querySelector("div.edit-img-modal-foot > button").disabled = true;
+        document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true;
         
         let imgToChange = imgCarrier[0];
         let prevImgToDelete = prevImgCarrier;
         let imgIdxToChange = imgIndex;
 
-        // ! Ini buat foto aja
         // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
         const formData = new FormData();
         formData.append("images", imgToChange);
@@ -371,8 +360,23 @@ function EditProduct() {
         // Kirim data kategori utk menentukan folder kategori image yang di-upload
         try {
             await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
+            document.querySelector("div.edit-img-modal-foot > button").disabled = false;
+            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
+            Swal.fire({
+                icon: 'success',
+                title: 'Edit product image success!',
+                text: `Product image will refresh`,
+                confirmButtonColor: '#B24629',
+            });
+            setImgCarrier([]);
+            fetchProdToEdit();
         } catch (err) {
             console.log(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...something went wrong, reload/try again',
+                confirmButtonColor: '#B24629',
+            });
         };
     };
 
@@ -421,8 +425,9 @@ function EditProduct() {
                             <ol>
                                 <li>Edit product images & information (ex: name, category, etc.) is separated.</li>
                                 <li>Edit & delete product images have its own submit button, access it by click each image you want to edit.</li>
-                                <li>Make sure you've choose correct product category before edit the image.</li>
                                 <li>Edit product information have its own submit button, located on the bottom of this page.</li>
+                                <li>Make sure you've choose correct product category before edit the image.</li>
+                                <li>Main image cannot be delete because it's mandatory for each product (only edit available).</li>
                                 <li>Edit stock only accessible through Stock Opname page and only eligible for admin/warehouse admin role.</li>
                             </ol>
                         </div>

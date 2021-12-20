@@ -368,18 +368,12 @@ select > option {
     color: var(--neutral-5th-color);
     font-weight: 600;
     height: 42px;
-    width: 160px;
+    width: 176px;
 }
 
 .edit-img-modal-foot > button:hover {
     background-color: var(--primary-3rd-color);
     transition: 300ms;
-}
-
-.edit-img-modal-foot > button:disabled {
-    background-color: var(--neutral-3rd-color);
-    color: var(--neutral-5th-color);
-    cursor: default;
 }
 
 .edit-img-modal-foot > button:nth-of-type(2) {
@@ -402,4 +396,11 @@ select > option {
     border-color: var(--primary-3rd-color);
     color: var(--primary-3rd-color);
     transition: 400ms;
+}
+
+.edit-img-modal-foot > button:disabled,
+.edit-img-modal-foot > button:nth-of-type(2):disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
 }
