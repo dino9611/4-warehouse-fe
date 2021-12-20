@@ -28,6 +28,12 @@ function EditProduct() {
 
     const [editImage, setEditImage] = useState([]);
 
+    const [imgCarrier, setImgCarrier] = useState([]);
+
+    const [prevImgCarrier, setPrevImgCarrier] = useState("");
+
+    const [imgIndex, setImgIndex] = useState(null);
+
     const [testEditImg, setTestEditImg] = useState([]);
 
     const [editProdInput, setEditProdInput] = useState({}); // Utk bawa input edit data produk ke BE
@@ -166,12 +172,34 @@ function EditProduct() {
     // ! Testing edit image
     const editTestImgHandler = (event) => { // Utk setState upload image
         let file = event.target.files[0];
+        console.log("Line 175: ", file);
         if (file) {
             setTestEditImg(file);
         } else {
             setTestEditImg("");
         }
     };
+
+    const editImgHandler = (event, index, prevImg) => { // Utk setState upload image
+        let file = event.target.files[0];
+        console.log("Line 185: ", file);
+        if (file) {
+            setImgCarrier((prevState) => {
+                let newArray = prevState;
+                newArray[0] = file;
+                return [...newArray];
+            });
+            setPrevImgCarrier(prevImg);
+            setImgIndex(index);
+        } else {
+            setImgCarrier("");
+            setImgIndex(null);
+        };
+    };
+
+    console.log("Line 200: ", imgCarrier);
+
+    console.log("Line 202: ", prevImgCarrier);
 
     const editImgModalClick = (event, indexArr) => {
         setEditImage((prevState) => {
@@ -187,30 +215,45 @@ function EditProduct() {
     const editImgModalContent = (imgSrc, index) => {
         return (
             <>
-                <h1>Modal ada</h1>
-                {/* <div className="del-modal-heading-wrap">
-                    <h3>{`Are you sure delete ${prodName} ?`}</h3>
-                    <h6>{`[ ID: ${prodId} | SKU: ${SKU} ]`}</h6>
+                <h1>Modal ada {index}</h1>
+                <div className="edit-images-tile-wrap">
+                    <label 
+                        htmlFor="img_carrier"
+                        className={imgCarrier[0] ? "edit-images-upload-preview" : "edit-images-upload-item"}
+                        // onClick={!editImage[index] ? () => modalClick(index) : null}
+                    >
+                        <input 
+                            type="file" 
+                            id="img_carrier"
+                            name="img_carrier"
+                            accept=".jpg,.jpeg,.png"
+                            onChange={(event) => editImgHandler(event, index, imgSrc)} 
+                            disabled={imgCarrier[0]}
+                        />
+                        {imgCarrier[0] ?
+                            <>
+                                <img 
+                                    src={URL.createObjectURL(imgCarrier[0])} 
+                                    alt="Preview-Image-To-Upload"
+                                    className="edit-images-preview"
+                                />
+                            </>
+                            :
+                            <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                        }
+                    </label>
+                    {/* {imgCarrier[0] ?
+                        <span 
+                            className="edit-images-icon"
+                            onClick={() => modalClick(index)}
+                        >
+                            <img src={editIcon} />
+                        </span>
+                        :
+                        null
+                    } */}
                 </div>
-                <div className="del-modal-body-wrap">
-                    <Textbox
-                        type={showPass}
-                        label="Input Password to confirm delete"
-                        name="passForDel"
-                        value={passForDel}
-                        onChange={(event) => passForDelHandler(event)}
-                        placeholder="Your password"
-                    />
-                    <img 
-                        src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
-                        alt="Show-Pass-Icon" 
-                        onClick={showPassHandler} 
-                    />
-                </div>
-                <div className="del-modal-foot-wrap">
-                    <button onClick={() => onConfirmDelProd(prodId, index)} disabled={!passForDel}>Confirm</button>
-                    <button onClick={() => onCloseModal(index)}>Cancel</button>
-                </div> */}
+                <button onClick={(event) => onSubmitImgCarrier(event)}>Submit</button>
             </>
         )
     };
@@ -237,6 +280,7 @@ function EditProduct() {
             newArray[index] = false;
             return [...newArray];
         });
+        setImgCarrier([]);
     };
     // ! End of Testing edit image
 
@@ -319,7 +363,44 @@ function EditProduct() {
 
         // Kirim data kategori utk menentukan folder kategori image yang di-upload
         try {
-            await axios.patch(`${API_URL}/product/edit/${id}`, formData, config);
+            await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
+        } catch (err) {
+            console.log(err);
+        };
+    };
+
+    const onSubmitImgCarrier = async (event) => { // Untuk trigger submit button
+        event.preventDefault();
+        
+        let imgToChange = imgCarrier[0];
+        let prevImgToDelete = prevImgCarrier;
+        let imgIdxToChange = imgIndex;
+
+        // ! Ini buat foto aja
+        // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
+        const formData = new FormData();
+        formData.append("images", imgToChange);
+        // formData.append("imgToDelete", JSON.stringify(prevImgToDelete));
+        // formData.append("imgDelIndex", JSON.stringify(imgIdxToChange));
+
+        // for (let i = 0; i < uploadedImg.length; i++) {
+        //     if (uploadedImg[i]) {
+        //         formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
+        //     }
+        // }
+
+        let config = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "category_id": category_id,
+                "image_to_del": prevImgToDelete,
+                "img_del_index": imgIdxToChange
+            }
+        };
+
+        // Kirim data kategori utk menentukan folder kategori image yang di-upload
+        try {
+            await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
         } catch (err) {
             console.log(err);
         };
@@ -338,8 +419,9 @@ function EditProduct() {
                             <h4>Important Notice During Edit Product (Read Carefully)</h4>
                             <ol>
                                 <li>Edit product images & information (ex: name, category, etc.) is separated.</li>
-                                <li>Edit product images have its own submit button, access it by click each image you want to edit</li>
-                                <li>Edit product information have its own submit button, located on the bottom of this page</li>
+                                <li>Edit product images have its own submit button, access it by click each image you want to edit.</li>
+                                <li>Make sure you've choose correct product category before edit the image.</li>
+                                <li>Edit product information have its own submit button, located on the bottom of this page.</li>
                                 <li>Edit stock only accessible through Stock Opname page and only eligible for admin/warehouse admin role.</li>
                             </ol>
                         </div>
