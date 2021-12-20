@@ -26,27 +26,27 @@ function EditProduct() {
     const [mainImgCheck, setMainImgCheck] = useState(false);
     const [charCounter, setCharCounter] = useState(2000);
 
-    const [editImage, setEditImage] = useState([]);
+    const [editImage, setEditImage] = useState([]); // State awal image, akan selalu 3 length nya setelah function fetch berjalan
 
-    const [imgCarrier, setImgCarrier] = useState([]);
+    const [imgCarrier, setImgCarrier] = useState([]); // Utk membawa data image baru yang akan menggantikan image sebelumnya ke BE
 
-    const [prevImgCarrier, setPrevImgCarrier] = useState("");
+    const [prevImgCarrier, setPrevImgCarrier] = useState(""); // Utk deteksi image sebelumnya yang akan dihapus di BE
 
-    const [imgIndex, setImgIndex] = useState(null);
+    const [imgIndex, setImgIndex] = useState(null); // Utk deteksi index image keberapa yang di-edit
 
-    const [testEditImg, setTestEditImg] = useState([]);
+    // const [testEditImg, setTestEditImg] = useState([]);
 
-    const [editProdInput, setEditProdInput] = useState({}); // Utk bawa input edit data produk ke BE
+    const [editProdInput, setEditProdInput] = useState({}); // Utk bawa input edit data informasi (bukan image) produk ke BE
 
-    const [modalLength, setModalLength] = useState([]); // Utk atur relation delete modal per produk, sehingga delete unique identik dgn msg2 produk
+    const [modalLength, setModalLength] = useState([]); // Utk atur relation modal edit image per tile image (currently max 3), sehingga unique identik dgn msg2 image
     
-    const getRoleId = useSelector(state => state.auth.id);
+    const getRoleId = useSelector(state => state.auth.id); // ? Blm kepake
 
     let history = useHistory(); // Utk redirect ke manage product page stlh submit edit
 
     const descCharLimit = 2000;
 
-    let {images, product_id, name, category_id, weight, price, product_cost, description} = editProdInput;
+    let {name, category_id, weight, price, product_cost, description} = editProdInput;
 
     const fetchProdToEdit = async () => { // Utk render data produk yang ingin di-edit
         try {
@@ -96,7 +96,7 @@ function EditProduct() {
                 };
             };
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -146,39 +146,39 @@ function EditProduct() {
         }
     };
 
-    const editImageHandler = (event, indexArr) => { // Utk setState upload image
-        let file = event.target.files[0];
-        if (file) {
-            setEditImage((prevState) => {
-                let newArray = prevState;
-                newArray[indexArr] = file;
-                if (indexArr === 0) {
-                    setMainImgCheck(true);
-                }
-                return [...newArray];
-            });
-        } else {
-            setEditImage((prevState) => {
-                let newArray = prevState;
-                newArray[indexArr] = "";
-                if (indexArr === 0) {
-                    setMainImgCheck(false);
-                }
-                return [...newArray];
-            });
-        }
-    };
+    // const editImageHandler = (event, indexArr) => { // Utk setState upload image
+    //     let file = event.target.files[0];
+    //     if (file) {
+    //         setEditImage((prevState) => {
+    //             let newArray = prevState;
+    //             newArray[indexArr] = file;
+    //             if (indexArr === 0) {
+    //                 setMainImgCheck(true);
+    //             }
+    //             return [...newArray];
+    //         });
+    //     } else {
+    //         setEditImage((prevState) => {
+    //             let newArray = prevState;
+    //             newArray[indexArr] = "";
+    //             if (indexArr === 0) {
+    //                 setMainImgCheck(false);
+    //             }
+    //             return [...newArray];
+    //         });
+    //     }
+    // };
 
     // ! Testing edit image
-    const editTestImgHandler = (event) => { // Utk setState upload image
-        let file = event.target.files[0];
-        console.log("Line 175: ", file);
-        if (file) {
-            setTestEditImg(file);
-        } else {
-            setTestEditImg("");
-        }
-    };
+    // const editTestImgHandler = (event) => { // Utk setState upload image
+    //     let file = event.target.files[0];
+    //     console.log("Line 175: ", file);
+    //     if (file) {
+    //         setTestEditImg(file);
+    //     } else {
+    //         setTestEditImg("");
+    //     }
+    // };
 
     const editImgHandler = (event, index, prevImg) => { // Utk setState upload image
         let file = event.target.files[0];
@@ -197,63 +197,72 @@ function EditProduct() {
         };
     };
 
-    console.log("Line 200: ", imgCarrier);
+    // console.log("Line 200: ", imgCarrier);
 
-    console.log("Line 202: ", prevImgCarrier);
+    // console.log("Line 202: ", prevImgCarrier);
 
-    const editImgModalClick = (event, indexArr) => {
-        setEditImage((prevState) => {
-            let newArray = prevState;
-            newArray[indexArr] = "";
-            if (indexArr === 0) {
-                setMainImgCheck(false);
-            }
-            return [...newArray];
-        });
-    };
+    // const editImgModalClick = (event, indexArr) => {
+    //     setEditImage((prevState) => {
+    //         let newArray = prevState;
+    //         newArray[indexArr] = "";
+    //         if (indexArr === 0) {
+    //             setMainImgCheck(false);
+    //         }
+    //         return [...newArray];
+    //     });
+    // };
 
     const editImgModalContent = (imgSrc, index) => {
         return (
             <>
-                <h1>Modal ada {index}</h1>
-                <div className="edit-images-tile-wrap">
-                    <label 
-                        htmlFor="img_carrier"
-                        className={imgCarrier[0] ? "edit-images-upload-preview" : "edit-images-upload-item"}
-                        // onClick={!editImage[index] ? () => modalClick(index) : null}
-                    >
-                        <input 
-                            type="file" 
-                            id="img_carrier"
-                            name="img_carrier"
-                            accept=".jpg,.jpeg,.png"
-                            onChange={(event) => editImgHandler(event, index, imgSrc)} 
-                            disabled={imgCarrier[0]}
-                        />
-                        {imgCarrier[0] ?
-                            <>
-                                <img 
-                                    src={URL.createObjectURL(imgCarrier[0])} 
-                                    alt="Preview-Image-To-Upload"
-                                    className="edit-images-preview"
-                                />
-                            </>
-                            :
-                            <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
-                        }
-                    </label>
-                    {/* {imgCarrier[0] ?
-                        <span 
-                            className="edit-images-icon"
-                            onClick={() => modalClick(index)}
-                        >
-                            <img src={editIcon} />
-                        </span>
-                        :
-                        null
-                    } */}
+                <div className="edit-img-modal-head">
+                    <h3>Edit {index === 0 ? "Main Image" : index === 1 ? "Second Image" : "Third Image"} of {prevName}</h3>
+                    <h6>Please make sure you've choose the correct product category</h6>
+                    <h6>(will effect the upload folder on system)</h6>
                 </div>
-                <button onClick={(event) => onSubmitImgCarrier(event)}>Submit</button>
+                <div className="edit-img-modal-body">
+                    <div className="edit-images-tile-wrap">
+                        <label 
+                            htmlFor="img_carrier"
+                            className={imgCarrier[0] ? "edit-images-upload-preview" : "edit-images-upload-item"}
+                        >
+                            <input 
+                                type="file" 
+                                id="img_carrier"
+                                name="img_carrier"
+                                accept=".jpg,.jpeg,.png"
+                                onChange={(event) => editImgHandler(event, index, imgSrc)}
+                            />
+                            {imgCarrier[0] ?
+                                <>
+                                    <img 
+                                        src={URL.createObjectURL(imgCarrier[0])} 
+                                        alt="Preview-Image-To-Upload"
+                                        className="edit-images-preview"
+                                        style={{cursor: "pointer"}}
+                                    />
+                                </>
+                                :
+                                <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                            }
+                        </label>
+                        {/* {imgCarrier[0] ?
+                            <span 
+                                className="edit-images-icon"
+                                onClick={() => modalClick(index)}
+                            >
+                                <img src={editIcon} />
+                            </span>
+                            :
+                            null
+                        } */}
+                    </div>
+                </div>
+                <div className="edit-img-modal-foot">
+                    <button onClick={(event) => onSubmitImgCarrier(event)} disabled={!imgCarrier[0]}>Submit Edit</button>
+                    <button>Delete Image</button>
+                    <button onClick={() => onCloseModal(index)}>Cancel</button>
+                </div>
             </>
         )
     };
@@ -284,16 +293,16 @@ function EditProduct() {
     };
     // ! End of Testing edit image
 
-    const delImgUpload = (event, indexArr) => {
-            setEditImage((prevState) => {
-            let newArray = prevState;
-            newArray[indexArr] = "";
-            if (indexArr === 0) {
-                setMainImgCheck(false);
-            }
-            return [...newArray];
-        });
-    };
+    // const delImgUpload = (event, indexArr) => {
+    //         setEditImage((prevState) => {
+    //         let newArray = prevState;
+    //         newArray[indexArr] = "";
+    //         if (indexArr === 0) {
+    //             setMainImgCheck(false);
+    //         }
+    //         return [...newArray];
+    //     });
+    // };
 
     const charCounterHandler = (event) => {
         return setCharCounter(descCharLimit - event.target.value.length);
@@ -338,37 +347,6 @@ function EditProduct() {
         };
     };
 
-    const onSubmitTestImg = async (event) => { // Untuk trigger submit button
-        event.preventDefault();
-        
-        let uploadTestImg = testEditImg;
-
-        // ! Ini buat foto aja
-        // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
-        const formData = new FormData();
-        formData.append("images", uploadTestImg);
-
-        // for (let i = 0; i < uploadedImg.length; i++) {
-        //     if (uploadedImg[i]) {
-        //         formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
-        //     }
-        // }
-
-        let config = {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                "category_id": category_id
-            }
-        };
-
-        // Kirim data kategori utk menentukan folder kategori image yang di-upload
-        try {
-            await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
-        } catch (err) {
-            console.log(err);
-        };
-    };
-
     const onSubmitImgCarrier = async (event) => { // Untuk trigger submit button
         event.preventDefault();
         
@@ -380,14 +358,6 @@ function EditProduct() {
         // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
         const formData = new FormData();
         formData.append("images", imgToChange);
-        // formData.append("imgToDelete", JSON.stringify(prevImgToDelete));
-        // formData.append("imgDelIndex", JSON.stringify(imgIdxToChange));
-
-        // for (let i = 0; i < uploadedImg.length; i++) {
-        //     if (uploadedImg[i]) {
-        //         formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
-        //     }
-        // }
 
         let config = {
             headers: {
@@ -406,6 +376,37 @@ function EditProduct() {
         };
     };
 
+    // const onSubmitTestImg = async (event) => { // Untuk trigger submit button
+    //     event.preventDefault();
+        
+    //     let uploadTestImg = testEditImg;
+
+    //     // ! Ini buat foto aja
+    //     // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
+    //     const formData = new FormData();
+    //     formData.append("images", uploadTestImg);
+
+    //     // for (let i = 0; i < uploadedImg.length; i++) {
+    //     //     if (uploadedImg[i]) {
+    //     //         formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
+    //     //     }
+    //     // }
+
+    //     let config = {
+    //         headers: {
+    //             "Content-Type": "multipart/form-data",
+    //             "category_id": category_id
+    //         }
+    //     };
+
+    //     // Kirim data kategori utk menentukan folder kategori image yang di-upload
+    //     try {
+    //         await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
+    //     } catch (err) {
+    //         console.log(err);
+    //     };
+    // };
+
     return (
         <div className="edit-product-main-wrap">
             {!skeletonLoad ?
@@ -419,7 +420,7 @@ function EditProduct() {
                             <h4>Important Notice During Edit Product (Read Carefully)</h4>
                             <ol>
                                 <li>Edit product images & information (ex: name, category, etc.) is separated.</li>
-                                <li>Edit product images have its own submit button, access it by click each image you want to edit.</li>
+                                <li>Edit & delete product images have its own submit button, access it by click each image you want to edit.</li>
                                 <li>Make sure you've choose correct product category before edit the image.</li>
                                 <li>Edit product information have its own submit button, located on the bottom of this page.</li>
                                 <li>Edit stock only accessible through Stock Opname page and only eligible for admin/warehouse admin role.</li>
@@ -439,14 +440,6 @@ function EditProduct() {
                                                 className={editImage[index] ? "edit-images-upload-preview" : "edit-images-upload-item"}
                                                 onClick={!editImage[index] ? () => modalClick(index) : null}
                                             >
-                                                {/* <input 
-                                                    type="file" 
-                                                    id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                    name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                    accept=".jpg,.jpeg,.png"
-                                                    onChange={(event) => editImageHandler(event, index)} 
-                                                    disabled={editImage[index]}
-                                                /> */}
                                                 {editImage[index] ?
                                                     <>
                                                         <img 
@@ -474,7 +467,7 @@ function EditProduct() {
                                     )
                                 })}
                             </div>
-                            <div>
+                            {/* <div>
                                 <input 
                                     type="file" 
                                     id="test_img"
@@ -483,7 +476,7 @@ function EditProduct() {
                                     onChange={(event) => editTestImgHandler(event)}
                                 />
                                 <button onClick={event => onSubmitTestImg(event)}>Submit</button>
-                            </div>
+                            </div> */}
                         </div>
                         <form id="edit-prod-form" className="edit-info-form-wrap">
                             <div className="edit-info-form-item">
@@ -641,7 +634,3 @@ function EditProduct() {
 }
 
 export default EditProduct;
-
-// Edit foto endpoint nya bedain
-// Foto pertama hanya bisa edit
-// Tombol delete foto hanya ada di foto 2 & 3
