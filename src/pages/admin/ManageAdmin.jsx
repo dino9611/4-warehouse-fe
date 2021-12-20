@@ -170,7 +170,7 @@ function ManageAdmin() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Add new admin/warehouse admin success!',
-                    text: `${inputtedAdm.new_username}`,
+                    text: `Username: ${inputtedAdm.new_username}`,
                     confirmButtonColor: '#B24629',
                   });
                 fetchAdminList();
@@ -224,7 +224,7 @@ function ManageAdmin() {
                                     >
                                         {val.id}
                                     </TableCell>
-                                    <TableCell align="left" className="txt-capitalize">{val.username}</TableCell>
+                                    <TableCell align="left">{val.username}</TableCell>
                                     <TableCell align="left" className="txt-capitalize">{(val.role_id === 2) ? `${val.role}/Warehouse Admin` : val.role}</TableCell>
                                     <TableCell align="left" style={{width: "200px"}}>{val.warehouse_id}</TableCell>
                                     <TableCell align="left">{val.warehouse_name}</TableCell>
