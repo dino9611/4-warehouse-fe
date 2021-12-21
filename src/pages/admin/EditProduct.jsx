@@ -15,13 +15,11 @@ import Modal from '../../components/Modal';
 
 function EditProduct() {
     const prodIdFromParent = useLocation();
-    // console.log("Dari edit page: ", prodIdFromParent.state);
 
     const {id, name: prevName} = prodIdFromParent.state; // Utk fetch data produk yang ingin di-edit, sengaja agar saat selesai edit, tampilan akan render ulang
 
     const [skeletonLoad, setSkeletonLoad] = useState(true);
     const [editCategory, setEditCategory] = useState([]);
-    const [mainImgCheck, setMainImgCheck] = useState(false);
     const [charCounter, setCharCounter] = useState(2000);
 
     const [editImage, setEditImage] = useState([]); // State awal image, akan selalu 3 length nya setelah function fetch berjalan
@@ -31,8 +29,6 @@ function EditProduct() {
     const [prevImgCarrier, setPrevImgCarrier] = useState(""); // Utk deteksi image sebelumnya yang akan dihapus di BE
 
     const [imgIndex, setImgIndex] = useState(null); // Utk deteksi index image keberapa yang di-edit
-
-    // const [testEditImg, setTestEditImg] = useState([]);
 
     const [editProdInput, setEditProdInput] = useState({}); // Utk bawa input edit data informasi (bukan image) produk ke BE
 
@@ -98,9 +94,6 @@ function EditProduct() {
         }
     };
 
-    // console.log("Hasil fetchProdToEdit: ", editProdInput);
-    // console.log("Hasil loop setImages: ", editImage);
-
     const fetchCategory = async () => { // Utk render data kategori produk
         try {
             const res = await axios.get(`${API_URL}/product/category`);
@@ -144,43 +137,8 @@ function EditProduct() {
         }
     };
 
-    // const editImageHandler = (event, indexArr) => { // Utk setState upload image
-    //     let file = event.target.files[0];
-    //     if (file) {
-    //         setEditImage((prevState) => {
-    //             let newArray = prevState;
-    //             newArray[indexArr] = file;
-    //             if (indexArr === 0) {
-    //                 setMainImgCheck(true);
-    //             }
-    //             return [...newArray];
-    //         });
-    //     } else {
-    //         setEditImage((prevState) => {
-    //             let newArray = prevState;
-    //             newArray[indexArr] = "";
-    //             if (indexArr === 0) {
-    //                 setMainImgCheck(false);
-    //             }
-    //             return [...newArray];
-    //         });
-    //     }
-    // };
-
-    // ! Testing edit image
-    // const editTestImgHandler = (event) => { // Utk setState upload image
-    //     let file = event.target.files[0];
-    //     console.log("Line 175: ", file);
-    //     if (file) {
-    //         setTestEditImg(file);
-    //     } else {
-    //         setTestEditImg("");
-    //     }
-    // };
-
-    const editImgHandler = (event, index, prevImg) => { // Utk setState upload image
+    const editImgHandler = (event, index, prevImg) => { // Utk setState upload edit image
         let file = event.target.files[0];
-        // console.log("Line 185: ", file);
         if (file) {
             setImgCarrier((prevState) => {
                 let newArray = prevState;
@@ -195,21 +153,11 @@ function EditProduct() {
         };
     };
 
-    // console.log("Line 200: ", imgCarrier);
+    const charCounterHandler = (event) => {
+        return setCharCounter(descCharLimit - event.target.value.length);
+    };
 
-    // console.log("Line 202: ", prevImgCarrier);
-
-    // const editImgModalClick = (event, indexArr) => {
-    //     setEditImage((prevState) => {
-    //         let newArray = prevState;
-    //         newArray[indexArr] = "";
-    //         if (indexArr === 0) {
-    //             setMainImgCheck(false);
-    //         }
-    //         return [...newArray];
-    //     });
-    // };
-
+    // RENDER EDIT IMAGE MODAL SECTION
     const editImgModalContent = (imgSrc, index) => {
         return (
             <>
@@ -279,25 +227,9 @@ function EditProduct() {
         });
         setImgCarrier([]);
     };
-    // ! End of Testing edit image
 
-    // const delImgUpload = (event, indexArr) => {
-    //         setEditImage((prevState) => {
-    //         let newArray = prevState;
-    //         newArray[indexArr] = "";
-    //         if (indexArr === 0) {
-    //             setMainImgCheck(false);
-    //         }
-    //         return [...newArray];
-    //     });
-    // };
-
-    const charCounterHandler = (event) => {
-        return setCharCounter(descCharLimit - event.target.value.length);
-    };
-
-    // CLICK FUNCTION SECTION
-    const onSubmitedEditProd = async (event) => { // Untuk trigger submit button (tanpa image, karena edit image terpisah)
+    // CLICK/SUBMIT FUNCTION SECTION
+    const onSubmitedEditProd = async (event) => { // Untuk trigger submit button informasi produk (tanpa image, karena edit image terpisah)
         event.preventDefault();
         document.querySelector("button.edit-product-submit-btn").disabled = true;
         const successRedirect = () => history.push("/admin/manage-product");
@@ -335,7 +267,7 @@ function EditProduct() {
         };
     };
 
-    const onSubmitImgCarrier = async (event) => { // Untuk trigger submit button
+    const onSubmitImgCarrier = async (event) => { // Untuk trigger submit button pada modal edit image
         event.preventDefault();
         document.querySelector("div.edit-img-modal-foot > button").disabled = true;
         document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true;
@@ -380,7 +312,7 @@ function EditProduct() {
         };
     };
 
-    const onDeleteImg = async (event, index, prevImg) => { // Untuk trigger submit button
+    const onDeleteImg = async (event, index, prevImg) => { // Untuk trigger delete button pada modal edit image
         event.preventDefault();
         document.querySelector("div.edit-img-modal-foot > button").disabled = true;
         document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true;
@@ -406,37 +338,6 @@ function EditProduct() {
             });
         };
     };
-
-    // const onSubmitTestImg = async (event) => { // Untuk trigger submit button
-    //     event.preventDefault();
-        
-    //     let uploadTestImg = testEditImg;
-
-    //     // ! Ini buat foto aja
-    //     // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
-    //     const formData = new FormData();
-    //     formData.append("images", uploadTestImg);
-
-    //     // for (let i = 0; i < uploadedImg.length; i++) {
-    //     //     if (uploadedImg[i]) {
-    //     //         formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
-    //     //     }
-    //     // }
-
-    //     let config = {
-    //         headers: {
-    //             "Content-Type": "multipart/form-data",
-    //             "category_id": category_id
-    //         }
-    //     };
-
-    //     // Kirim data kategori utk menentukan folder kategori image yang di-upload
-    //     try {
-    //         await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
-    //     } catch (err) {
-    //         console.log(err);
-    //     };
-    // };
 
     return (
         <div className="edit-product-main-wrap">
@@ -476,7 +377,6 @@ function EditProduct() {
                                                     <>
                                                         <img 
                                                             src={`${API_URL}/${val}`}
-                                                            // src={URL.createObjectURL(editImage[index])} 
                                                             alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
                                                             className="edit-images-preview"
                                                         />
@@ -499,16 +399,6 @@ function EditProduct() {
                                     )
                                 })}
                             </div>
-                            {/* <div>
-                                <input 
-                                    type="file" 
-                                    id="test_img"
-                                    name="test_img"
-                                    accept=".jpg,.jpeg,.png"
-                                    onChange={(event) => editTestImgHandler(event)}
-                                />
-                                <button onClick={event => onSubmitTestImg(event)}>Submit</button>
-                            </div> */}
                         </div>
                         <form id="edit-prod-form" className="edit-info-form-wrap">
                             <div className="edit-info-form-item">
@@ -629,7 +519,7 @@ function EditProduct() {
                         </div>
                         <div className="edit-product-submission-wrap">
                             <Link to="/admin/manage-product" className="edit-product-cancel-wrap">
-                                <button>Cancel</button>
+                                <button>Cancel/Back</button>
                             </Link>
                             <button 
                                 className="edit-product-submit-btn"
