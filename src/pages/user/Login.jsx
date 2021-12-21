@@ -126,11 +126,11 @@ class Login extends React.Component {
               <h6 className="showpassword">Show Password</h6>
             </div>
             <div className="d-flex">
-              <button className="btn-regis" onClick={this.onLoginCLick}>
+              <button className="btn-login" onClick={this.onLoginCLick}>
                 Masuk
               </button>
               <h6 className="sudah-punya-akun-text">Belum punya akun?</h6>
-              <Link to="/register" className="link-masuk">
+              <Link to="/register" className="link-daftar">
                 Daftar
               </Link>
             </div>

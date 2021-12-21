@@ -57,8 +57,6 @@ function App() {
         <Switch>
           <Route path="/" exact component={Homepage} />
           <Route path="/login" exact component={Login} />
-          <Route path="/register" exact component={Register} />
-          <Route path="/verify-email" exact component={VerifyEmail} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/auth/accept" exact component={VerifyChangeEmail} />
           <Route path="/products" exact component={Product} />
