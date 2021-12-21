@@ -14,10 +14,28 @@ import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Arrow.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Arrow.svg";
 import {Link} from "react-router-dom";
+import deleteTrash from "../../assets/components/Delete-Trash.svg";
+import editIcon from "../../assets/components/Edit-Icon.svg";
+import chevronDown from "../../assets/components/Chevron-Down.svg";
+import Modal from '../../components/Modal';
+import Textbox from "../../components/Textbox";
+import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
+import ShowPassTrue from "../../assets/components/Show-Pass-True.svg";
+import { useSelector } from "react-redux";
+import { successToast, errorToast } from "../../redux/actions/ToastAction";
 
 function ManageProduct() {
-    // Ide: 1. render all product, 2. render per warehouse nnti klik angka stok utk tampilin modal
     const [products, setProducts] = useState([]);
+    
+    const [dropdownLength, setDropdownLength] = useState([]); // Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
+
+    const [modalLength, setModalLength] = useState([]); // Utk atur relation delete modal per produk, sehingga delete unique identik dgn msg2 produk
+    
+    const [passToggle, setPassToggle] = useState(false); // Utk atur showPass pada confirm delete produk
+    
+    const [showPass, setShowPass] = useState("password"); // Utk rubah input type pada modal delete produk
+    
+    const [passForDel, setPassForDel] = useState(""); // Utk kirim pass ke BE melakukan validasi confirm delete
 
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
@@ -49,6 +67,8 @@ function ManageProduct() {
     // }
 
     // FETCH & RENDER SECTION
+    const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
+
     const fetchProdData = async () => {
         try {
             const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
@@ -62,6 +82,19 @@ function ManageProduct() {
     useEffect(() => {
         fetchProdData();
     }, [page, itemPerPage]);
+
+    useEffect(() => { // Utk create array yg identik dengan masing2 dropdown action menu & modal per produk
+        let dropdownArr = [];
+        for (let i = 0; i < products.length; i++) {
+            dropdownArr[i] = false;
+        };
+        setDropdownLength([...dropdownArr]);
+        let modalArr = [];
+        for (let i = 0; i < products.length; i++) {
+            modalArr[i] = false;
+        };
+        setModalLength([...modalArr]);
+    }, [products])
 
     // RENDER PAGE RANGE SECTION
     const renderPageRange = () => {
@@ -114,7 +147,7 @@ function ManageProduct() {
     };
 
     // FILTER ITEM PER PAGE SECTION
-    const rowsPerPageOptions = [1, 3, 5, 10, 50];
+    const rowsPerPageOptions = [5, 10, 50];
 
     const renderRowsOptions = () => {
         return rowsPerPageOptions.map((val) => {
@@ -134,7 +167,7 @@ function ManageProduct() {
         });
     };
 
-    // SELECT FUNCTION SECTION
+    // SELECT PAGE FUNCTION SECTION
     const selectPageFilter = (event) => {
         setItemPerPage(parseInt(event.target.value));
         setPage(1);
@@ -160,6 +193,127 @@ function ManageProduct() {
         }
     };
 
+    // RENDER DROPDOWN ACTION MENU
+    const dropdownClick = (index) => {
+        if (!dropdownLength[index]) {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        };
+    };
+
+    const dropdownBlur = () => {
+        let newArr = dropdownLength.map(() => { // Clickaway action dropdown menu/menutup kembali dropdown bila klik diluar dropdown
+            return false;
+        })
+        setDropdownLength([...newArr]);
+    };
+
+    // RENDER MODAL DELETE PRODUCT
+    const modalClick = (index) => {
+        if (!modalLength[index]) {
+            setModalLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setModalLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        };
+    };
+
+    const onCloseModal = (index) => {
+        setModalLength((prevState) => {
+            let newArray = prevState;
+            newArray[index] = false;
+            return [...newArray];
+        });
+        setPassForDel("");
+        setShowPass("password");
+    };
+
+    const passForDelHandler = (event) => setPassForDel(event.target.value);
+
+    const showPassHandler = () => {
+        setPassToggle(!passToggle);
+        if (passToggle) {
+          setShowPass("text");
+        } else {
+          setShowPass("password");
+        };
+    };
+    
+    const delModalContent = (prodId, SKU, prodName, index) => {
+        return (
+            <>
+                <div className="del-modal-heading-wrap">
+                    <h3>{`Are you sure delete ${prodName} ?`}</h3>
+                    <h6>{`[ ID: ${prodId} | SKU: ${SKU} ]`}</h6>
+                </div>
+                <div className="del-modal-body-wrap">
+                    <Textbox
+                        type={showPass}
+                        label="Input Password to confirm delete"
+                        name="passForDel"
+                        value={passForDel}
+                        onChange={(event) => passForDelHandler(event)}
+                        placeholder="Your password"
+                    />
+                    <img 
+                        src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
+                        alt="Show-Pass-Icon" 
+                        onClick={showPassHandler} 
+                    />
+                </div>
+                <div className="del-modal-foot-wrap">
+                    <button onClick={() => onConfirmDelProd(prodId, index)} disabled={!passForDel}>Confirm</button>
+                    <button onClick={() => onCloseModal(index)}>Cancel</button>
+                </div>
+            </>
+        )
+    };
+
+    const onConfirmDelProd = async (prodId, index) => {
+        let inputtedPass = passForDel;
+        document.querySelector("div.del-modal-foot-wrap > button").disabled = true;
+
+        try {
+            const res = await axios.delete(`${API_URL}/product/delete/${prodId}`, {headers: {username: getUsername, pass: inputtedPass}});
+            if (res.data.message && !res.data.failMessage) {
+                setModalLength((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = false;
+                    return [...newArray];
+                });
+                setPassForDel("");
+                setShowPass("password");
+                successToast(res.data.message);
+                fetchProdData();
+            } else if (res.data.validationMessage) { // Case salah input password
+                errorToast(res.data.validationMessage);
+                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
+            } else {
+                errorToast(res.data.failMessage); // Case product id tidak ditemukan
+                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
+            };
+        } catch (error) {
+            errorToast("Server Error, from ManageProduct");
+            console.log(error);
+        }
+    };
+
     return (
         <div className="adm-products-main-wrap">
             <div className="adm-products-header-wrap">
@@ -167,25 +321,27 @@ function ManageProduct() {
                 <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="adm-products-contents-wrap">
-                <TableContainer component={Paper}>
-                    <Link to="/admin/manage-product/add" className="adm-products-add-wrap">
-                        <button>+ Add Products</button>
-                    </Link>
+                <TableContainer component={Paper} style={{borderRadius: "12px"}}>
+                    <div className="adm-products-add-wrap">
+                        <Link to="/admin/manage-product/add">
+                            <button>+ Add Products</button>
+                        </Link>
+                    </div>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">Image</TableCell>
-                                <TableCell align="center">Product ID</TableCell>
-                                <TableCell align="center">Name</TableCell>
-                                <TableCell align="center">Category</TableCell>
-                                <TableCell align="center">Price</TableCell>
-                                <TableCell align="center">Stock</TableCell>
-                                <TableCell align="center">Action</TableCell>
+                                <TableCell align="left">Product ID</TableCell>
+                                <TableCell align="left">Name</TableCell>
+                                <TableCell align="left">Category</TableCell>
+                                <TableCell align="left">Price</TableCell>
+                                <TableCell align="left">Stock</TableCell>
+                                <TableCell align="center" style={{width: "176px"}}>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {products
-                            .map((val) => (
+                            .map((val, index) => (
                                 <TableRow
                                 key={val.SKU}
                                 >
@@ -201,16 +357,55 @@ function ManageProduct() {
                                         <br />
                                         SKU: {val.SKU}
                                     </TableCell>
-                                    <TableCell align="center" className="txt-capitalize">{val.name}</TableCell>
-                                    <TableCell align="center" className="txt-capitalize">{val.category}</TableCell>
-                                    <TableCell align="right">{`Rp ${thousandSeparator(val.price)}`}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="left" className="txt-capitalize">{val.name}</TableCell>
+                                    <TableCell align="left" className="txt-capitalize">{val.category}</TableCell>
+                                    <TableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</TableCell>
+                                    <TableCell align="left">
                                         <span style={{cursor: "pointer"}}>
                                             {val.total_stock}
                                         </span>
                                     </TableCell>
-                                    <TableCell align="center">
-                                        <button className="btn btn-primary shadow-none">Pilihan</button>
+                                    <TableCell align="center" className="adm-products-action-cell">
+                                        <button 
+                                            className="adm-products-dropdown-btn" 
+                                            onClick={() => dropdownClick(index)}
+                                            onBlur={() => dropdownBlur(index)}
+                                        >
+                                            Pilihan
+                                            <img 
+                                                src={chevronDown} 
+                                                style={{
+                                                    transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
+                                                }}
+                                            />
+                                        </button>
+                                        <ul 
+                                            className="adm-products-dropdown-menu" 
+                                            style={{
+                                                transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
+                                                opacity: dropdownLength[index] ? 1 : 0,
+                                                zIndex: dropdownLength[index] ? 100 : -10,
+                                            }}
+                                        >
+                                            <li>
+                                                <img src={editIcon} />
+                                                <Link 
+                                                    to={{
+                                                        pathname: "/admin/manage-product/edit",
+                                                        state: val
+                                                    }}
+                                                    className="link-no-decoration"
+                                                >
+                                                    Edit
+                                                </Link>
+                                            </li>
+                                            <li 
+                                                onClick={() => modalClick(index)}
+                                            >
+                                                <img src={deleteTrash} />
+                                                Delete
+                                            </li>
+                                        </ul>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -240,6 +435,11 @@ function ManageProduct() {
                         </div>
                     </div>
                 </TableContainer>
+                {products.map((val, index) => (
+                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                        {delModalContent(val.id, val.SKU, val.name, index)}
+                    </Modal>
+                ))}
             </div>
         </div>
     )

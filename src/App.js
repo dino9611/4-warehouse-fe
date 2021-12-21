@@ -31,42 +31,23 @@ function App() {
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector((state) => state.auth.role_id);
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   let token = localStorage.getItem("token");
-  //   if (token) {
-  //     axios
-  //       .get(`${API_URL}/auth/keeplogin`, {
-  //         headers: {
-  //           Authorization: "Bearer" + token,
-  //         },
-  //       })
-  //       .then((res) => {
-  //         this.props.LoginAction(res.data);
-  //       })
-  //       .catch((err) => {});
-  //     }
-  //   }, []);
   useEffect(() => {
     let token = localStorage.getItem("token");
     if (token) {
-      axios
-        .get(`${API_URL}/auth/keeplogin`, {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-        .then((res) => {
-          dispatch(LoginAction(res.data));
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
+        axios.get(`${API_URL}/auth/keeplogin`, {
+            headers: {
+              Authorization: "Bearer " + token
+            }
+          }).then((res) => {
+              dispatch(LoginAction(res.data));
+          }).catch((err) => {
+              console.log(err);
+          }).finally(() => {
+              setLoading(false);
+          });
+      } else {
+        setLoading(false);
+      };
   }, []);
 
   const renderRouting = () => {
