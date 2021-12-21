@@ -118,12 +118,7 @@
   color: #b24629;
   font-weight: 600;
 }
-button:hover {
-  background-color: var(--primary-3rd-color);
-}
-Link:hover {
-  background-color: var(--primary-3rd-color) !important;
-}
+
 .checkbox-form {
   width: 300px;
   margin-left: 1%;
@@ -134,4 +129,11 @@ Link:hover {
 .showpassword {
   margin-left: 2% !important;
   font-family: Poppins;
+}
+
+.btn-regis:hover {
+  background-color: var(--primary-3rd-color);
+}
+.link-masuk:hover {
+  color: var(--primary-3rd-color);
 }

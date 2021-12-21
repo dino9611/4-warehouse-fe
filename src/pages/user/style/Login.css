@@ -84,7 +84,7 @@
   font-family: Poppins;
 }
 
-.btn-regis {
+.btn-login {
   border-radius: 100px;
   background-color: #b24629;
   font-size: 1.1em;
@@ -104,21 +104,12 @@
   margin-top: 10%;
   font-family: Poppins;
 }
-.link-masuk {
+.link-daftar {
   margin-top: 41px;
   margin-left: 4px;
   font-family: Poppins;
   color: #b24629;
   font-weight: 600;
-}
-button:hover {
-  background-color: var(--primary-3rd-color);
-}
-Link:hover {
-  color: var(--primary-3rd-color) !important;
-}
-link:hover {
-  background-color: var(--primary-3rd-color);
 }
 
 .checkbox-form {
@@ -146,4 +137,14 @@ link:hover {
   width: 370px;
   height: 42px;
   margin: 12px 0 16px !important;
+}
+
+.btn-login:hover {
+  background-color: var(--primary-3rd-color);
+}
+.link-daftar:hover {
+  color: var(--primary-3rd-color);
+}
+.link-lupa-password:hover {
+  color: var(--primary-3rd-color);
 }
