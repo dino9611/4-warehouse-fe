@@ -180,7 +180,7 @@ function EditProduct() {
 
     const editImgHandler = (event, index, prevImg) => { // Utk setState upload image
         let file = event.target.files[0];
-        console.log("Line 185: ", file);
+        // console.log("Line 185: ", file);
         if (file) {
             setImgCarrier((prevState) => {
                 let newArray = prevState;
@@ -248,7 +248,7 @@ function EditProduct() {
                 </div>
                 <div className="edit-img-modal-foot">
                     <button onClick={(event) => onSubmitImgCarrier(event)} disabled={!imgCarrier[0]}>Submit Edit</button>
-                    <button disabled={index === 0}>Delete Image File</button>
+                    <button onClick={(event) => onDeleteImg(event, index, imgSrc)} disabled={index === 0 || !imgSrc}>Delete Image File</button>
                     <button onClick={() => onCloseModal(index)}>Cancel</button>
                 </div>
             </>
@@ -360,8 +360,6 @@ function EditProduct() {
         // Kirim data kategori utk menentukan folder kategori image yang di-upload
         try {
             await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
-            document.querySelector("div.edit-img-modal-foot > button").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
             Swal.fire({
                 icon: 'success',
                 title: 'Edit product image success!',
@@ -369,6 +367,35 @@ function EditProduct() {
                 confirmButtonColor: '#B24629',
             });
             setImgCarrier([]);
+            document.querySelector("div.edit-img-modal-foot > button").disabled = false;
+            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
+            fetchProdToEdit();
+        } catch (err) {
+            console.log(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...something went wrong, reload/try again',
+                confirmButtonColor: '#B24629',
+            });
+        };
+    };
+
+    const onDeleteImg = async (event, index, prevImg) => { // Untuk trigger submit button
+        event.preventDefault();
+        document.querySelector("div.edit-img-modal-foot > button").disabled = true;
+        document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true;
+
+        try {
+            await axios.delete(`${API_URL}/product/delete/image/${id}`, {headers: {index_del_img: index, prev_img_path: prevImg}});
+            Swal.fire({
+                icon: 'success',
+                title: 'Delete product image success!',
+                text: `Product image will refresh`,
+                confirmButtonColor: '#B24629',
+            });
+            setImgCarrier([]);
+            document.querySelector("div.edit-img-modal-foot > button").disabled = false;
+            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
             fetchProdToEdit();
         } catch (err) {
             console.log(err);
