@@ -27,6 +27,8 @@ function EditProduct() {
         images[2]
     ]);
 
+    const [testEditImg, setTestEditImg] = useState([]);
+
     const getRoleId = useSelector(state => state.auth.username);
 
     const [editProdInput, setEditProdInput] = useState({ // Utk bawa input edit data produk ke BE
@@ -114,6 +116,17 @@ function EditProduct() {
         }
     };
 
+    // !
+    const editTestImgHandler = (event) => { // Utk setState upload image
+        let file = event.target.files[0];
+        if (file) {
+            setTestEditImg(file);
+        } else {
+            setTestEditImg("");
+        }
+    };
+    // !
+
     const delImgUpload = (event, indexArr) => {
             setEditImage((prevState) => {
             let newArray = prevState;
@@ -143,6 +156,7 @@ function EditProduct() {
             prod_desc: prod_desc
         };
 
+        // ! Ini buat foto aja
         // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
         const formData = new FormData();
         for (let i = 0; i < uploadedImg.length; i++) {
@@ -153,48 +167,80 @@ function EditProduct() {
         formData.append("dataProduct", JSON.stringify(inputtedProd));
         let config = {
             headers: {
-                "Content-Type": "multipart/form-data"
+                "Content-Type": "multipart/form-data",
+                "prod_category": prod_category
             }
         };
 
         // Kirim data kategori utk menentukan folder kategori image yang di-upload
         try {
-            await axios.post(`${API_URL}/product/determine-category`, inputtedProd);
+            await axios.patch(`${API_URL}/product/edit/${id}`, formData, config);
         } catch (err) {
             console.log(err);
         };
 
-        if (mainImgCheck || prod_name || prod_category || prod_weight || prod_price || prod_cost || prod_desc) {
-            try {
-                await axios.patch(`${API_URL}/product/edit/${id}`, formData, config);
-                setEditImage((prevState) => {
-                    let newArray = prevState;
-                    newArray.forEach((val, index) => {
-                        newArray[index] = "";
-                    })
-                    return [...newArray];
-                });
-                setMainImgCheck(false);
-                setEditProdInput((prevState) => {
-                    return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
-                });
-                document.querySelector("button.edit-product-submit-btn").disabled = true;
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Add product success!',
-                    text: `${inputtedProd.prod_name}`,
-                    confirmButtonColor: '#B24629',
-                  });
-            } catch (err) {
-                console.log(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...something went wrong, reload/try again',
-                    confirmButtonColor: '#B24629',
-                  });
-            };
-        } else {
-            alert("Pastikan terisi semua (discount price tidak wajib)");
+        // if (mainImgCheck || prod_name || prod_category || prod_weight || prod_price || prod_cost || prod_desc) {
+        //     try {
+        //         await axios.patch(`${API_URL}/product/edit/${id}`, formData, config);
+        //         setEditImage((prevState) => {
+        //             let newArray = prevState;
+        //             newArray.forEach((val, index) => {
+        //                 newArray[index] = "";
+        //             })
+        //             return [...newArray];
+        //         });
+        //         setMainImgCheck(false);
+        //         setEditProdInput((prevState) => {
+        //             return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
+        //         });
+        //         document.querySelector("button.edit-product-submit-btn").disabled = true;
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: 'Add product success!',
+        //             text: `${inputtedProd.prod_name}`,
+        //             confirmButtonColor: '#B24629',
+        //           });
+        //     } catch (err) {
+        //         console.log(err);
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Oops...something went wrong, reload/try again',
+        //             confirmButtonColor: '#B24629',
+        //           });
+        //     };
+        // } else {
+        //     alert("Pastikan terisi semua (discount price tidak wajib)");
+        // };
+    };
+
+    const onSubmitTestImg = async (event) => { // Untuk trigger submit button
+        event.preventDefault();
+        
+        let uploadTestImg = testEditImg;
+
+        // ! Ini buat foto aja
+        // Menyiapkan data untuk dikirimkan ke backend & melalui multer (BE) karena ada upload images
+        const formData = new FormData();
+        formData.append("images", uploadTestImg);
+
+        // for (let i = 0; i < uploadedImg.length; i++) {
+        //     if (uploadedImg[i]) {
+        //         formData.append("images", uploadedImg[i]); // Key "images" harus sesuai dengan yang di backend & berlaku kebalikannya
+        //     }
+        // }
+
+        let config = {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "prod_category": prod_category
+            }
+        };
+
+        // Kirim data kategori utk menentukan folder kategori image yang di-upload
+        try {
+            await axios.patch(`${API_URL}/product/edit/${id}`, formData, config);
+        } catch (err) {
+            console.log(err);
         };
     };
 
@@ -254,6 +300,16 @@ function EditProduct() {
                                         </div>
                                     )
                                 })}
+                            </div>
+                            <div>
+                                <input 
+                                    type="file" 
+                                    id="test_img"
+                                    name="test_img"
+                                    accept=".jpg,.jpeg,.png"
+                                    onChange={(event) => editTestImgHandler(event)}
+                                />
+                                <button onClick={event => onSubmitTestImg(event)}>Submit</button>
                             </div>
                         </div>
                         <form id="edit-prod-form" className="edit-info-form-wrap">
