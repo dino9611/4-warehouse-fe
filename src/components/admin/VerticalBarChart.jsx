@@ -19,7 +19,7 @@ ChartJS.register(
   Legend
 );
 
-export function VerticalBarChart({
+export default function VerticalBarChart({
   legendDisplay = true, 
   legendPosition = "top", 
   titleDisplay = true,
@@ -54,7 +54,7 @@ export function VerticalBarChart({
                 grid: {
                     display: yGridDisplay
                 }
-            }
+            },
         },
       };
     
