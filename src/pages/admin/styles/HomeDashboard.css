@@ -68,9 +68,14 @@
 .adm-dashboard-contents-2ndRow > div,
 .adm-dashboard-contents-3rdRow > div,
 .adm-dashboard-contents-4thRow > div {
+    align-items: center;
     background-color: var(--neutral-5th-color);
     border-radius: var(--b-rad-root);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     height: 300px;
+    padding: 8px;
     width: 30%;
 
     box-shadow: var(--b-shadow-root);
