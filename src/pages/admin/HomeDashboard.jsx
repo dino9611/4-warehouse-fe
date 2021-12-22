@@ -5,6 +5,7 @@ import {API_URL} from "../../constants/api";
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import VerticalBarChart from '../../components/admin/VerticalBarChart';
 import GroupBarChart from '../../components/admin/GroupBarChart';
+import DonutChart from '../../components/admin/DonutChart';
 
 function HomeDashboard() {
     const [loadData, setLoadData] = useState(true);
@@ -17,18 +18,38 @@ function HomeDashboard() {
     const [potentRevLabels, setPotentRevLabels] = useState([]);
     const [potentRevData, setPotentRevData] = useState([]);
 
+    const [statusContribution, setStatusContribution] = useState({});
+    const [statusContLabels, setStatusContLabels] = useState([]);
+    const [statusContData, setStatusContData] = useState([]);
+
     const [filterYear, setFilterYear] = useState(2021);
 
     const fetchRevenue = async () => {
         try {
             const res01 = await axios.get(`${API_URL}/sales/monthly-revenue`, {headers: {filter_year: filterYear}});
             const res02 = await axios.get(`${API_URL}/sales/potential-revenue`, {headers: {filter_year: filterYear}});
+            const res03 = await axios.get(`${API_URL}/sales/status-contribution`, {headers: {filter_year: filterYear}});
             setMonthlyRevenue(res01.data);
             setMonthRevLabels(Object.keys(res01.data));
             setMonthRevData(Object.values(res01.data));
             setPotentialRevenue(res02.data);
             setPotentRevLabels(Object.keys(res02.data));
             setPotentRevData(Object.values(res02.data));
+            setStatusContribution(res03.data);
+            res03.data.forEach((val, index) => {
+                setStatusContLabels((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = val.status;
+                    return [...newArray];
+                });
+            });
+            res03.data.forEach((val, index) => {
+                setStatusContData((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = parseFloat(val.contribution);
+                    return [...newArray];
+                });
+            });
         } catch (error) {
             console.log(error);
         }
@@ -49,6 +70,9 @@ function HomeDashboard() {
     // console.log(monthlyRevenue);
     // console.log(labels);
     // console.log(monthRevData);
+    console.log(statusContribution);
+    console.log(statusContLabels)
+    console.log(statusContData);
 
     return (
         <div className="adm-dashboard-main-wrap">
@@ -83,7 +107,7 @@ function HomeDashboard() {
                         {!loadData ? 
                             <>
                                 <GroupBarChart 
-                                    titleText={`Potential Revenue (Ongoing & Paid - ${filterYear})`} 
+                                    titleText={`Monthly Achieved Revenue (Ongoing & Paid - ${filterYear})`} 
                                     yGridDisplay={true}
                                     labelsData={potentRevLabels}
                                     chartData01={monthRevData}
@@ -96,11 +120,37 @@ function HomeDashboard() {
                             <h1>Loading Data</h1>
                         }
                     </div>
-                    <div>
-                        Potential & Loss Revenue (Based on Transaction Status)
-                    </div>
                 </div>
                 <div className="adm-dashboard-contents-2ndRow">
+                    <div>
+                        Potential & Loss Revenue (Based on Transaction Status)
+                        {!loadData ? 
+                            <>
+                                <DonutChart 
+                                    labelsData={statusContLabels}
+                                    labelDesc={"Transaction Contribution by Status"}
+                                    chartData={statusContData}
+                                    bgColorArray={[
+                                        "rgba(39, 160, 227, 0.8)", 
+                                        "rgba(67,147,108, 0.8)", 
+                                        "rgba(239,137,67, 0.8)", 
+                                        "rgba(205, 58, 49, 0.8)"
+                                    ]}
+                                    bordColorArray={[
+                                        "rgba(39, 160, 227, 0.8)", 
+                                        "rgba(67,147,108, 0.8)", 
+                                        "rgba(239,137,67, 0.8)", 
+                                        "rgba(205, 58, 49, 0.8)"
+                                    ]}
+                                />
+                            </>
+                            :
+                            <h1>Loading Data</h1>
+                        }
+                    </div>
+                    
+                </div>
+                <div className="adm-dashboard-contents-3rdRow">
                     <div >
                         Total Products Sold
                     </div>
@@ -114,7 +164,7 @@ function HomeDashboard() {
                         Sales Contribution by Category
                     </div>
                 </div>
-                <div className="adm-dashboard-contents-3rdRow">
+                <div className="adm-dashboard-contents-4thRow">
                     <div >
                         Total Users
                     </div>

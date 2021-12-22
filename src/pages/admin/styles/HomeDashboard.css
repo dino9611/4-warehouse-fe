@@ -73,20 +73,29 @@
     border-radius: var(--b-rad-root);
     display: flex;
     flex-direction: column;
-    justify-content: center;
     height: 400px;
-    padding: 8px;
-    width: 30%;
+    padding: 16px;
+    row-gap: 16px;
 
     box-shadow: var(--b-shadow-root);
     -webkit-box-shadow: var(--b-shadow-root);
     -moz-box-shadow: var(--b-shadow-root);
 }
 
+.adm-dashboard-contents-1stRow > div {
+    height: 440px;
+    width: 48%;
+}
+
 .adm-dashboard-contents-2ndRow > div {
+    height: 560px;
+    width: 30%;
+}
+
+.adm-dashboard-contents-3rdRow > div {
     width: 22%;
 }
 
 .adm-dashboard-contents-4thRow > div {
-    width: 100%;
+    width: 30%;
 }
