@@ -26,6 +26,14 @@ import arrowdropdown from "./arrowdropdown.svg";
 import uncheck from "./uncheck.svg";
 import error from "./error.svg";
 import success from "./success.svg";
+import breadcrumb from "./breadcrumb.svg";
+import fotoproduk from "./fotoproduk.svg";
+import listphoto1 from "./listphoto1.svg";
+import up from "./up.svg";
+import down from "./down.svg";
+import plus from "./plus.svg";
+import minus from "./minus.svg";
+import trash from "./trash.svg";
 
 export default {
   logo,
@@ -56,4 +64,12 @@ export default {
   uncheck,
   error,
   success,
+  breadcrumb,
+  fotoproduk,
+  listphoto1,
+  up,
+  down,
+  minus,
+  plus,
+  trash,
 };

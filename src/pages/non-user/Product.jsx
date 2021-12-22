@@ -8,6 +8,7 @@ import { API_URL } from "./../../constants/api.js";
 import images from "./../../assets";
 import { useTransition, animated } from "react-spring";
 import ClickOutside from "../../helpers/ClickOutside";
+import { Link } from "react-router-dom";
 
 function Product() {
   // Product
@@ -205,17 +206,25 @@ function Product() {
     return dataProduct.map((el, index) => {
       return (
         <div key={index} className="product-card">
-          <CardProduct
-            img={el.image}
-            category={
-              el.category.charAt(0).toUpperCase() + el.category.slice(1)
-            }
-            title={`${el.name.charAt(0).toUpperCase() + el.name.slice(1)} ${
-              el.weight
-            }`}
-            price={el.price}
-            btn="Beli"
-          />
+          <Link
+            className="text-link"
+            to={{
+              pathname: `/products/${el.id}`,
+              state: el,
+            }}
+          >
+            <CardProduct
+              img={el.image}
+              category={
+                el.category.charAt(0).toUpperCase() + el.category.slice(1)
+              }
+              title={`${el.name.charAt(0).toUpperCase() + el.name.slice(1)} ${
+                el.weight
+              }`}
+              price={el.price}
+              btn="Beli"
+            />
+          </Link>
         </div>
       );
     });

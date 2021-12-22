@@ -12,10 +12,10 @@ function ProfilePage() {
   return (
     <div className="container mt-5">
       <div className="row">
-        <div className="col-3">
+        <div className="profile-col col-3">
           <ProfileSidebar />
         </div>
-        <div className="col-9">
+        <div className="profile-col col-9 pl-4">
           <div className="profile-container">
             <Switch>
               <Route path="/profile" exact component={Profile} />
@@ -24,11 +24,6 @@ function ProfilePage() {
                 exact
                 component={ProfileRoute}
               />
-              {/* <Route
-                path="/profile/accept"
-                exact
-                component={VerifyChangeEmail}
-              /> */}
             </Switch>
           </div>
         </div>

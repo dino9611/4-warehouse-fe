@@ -490,11 +490,6 @@ function Profile() {
             cursor="pointer"
             onClick={() => dispatch({ type: "OPENCALENDER" })}
           />
-          {/* {calenderData.handleCalender ? (
-            <div ref={} className="profile-dropdown-calender">
-              <CalenderComp  bornDate={`${personalData.date_of_birth}`} />
-            </div>
-          ) : null} */}
           {transitionCalender((style, item) =>
             item ? (
               <animated.div
@@ -522,13 +517,13 @@ function Profile() {
         <ButtonPrimary onClick={onClickInputData}>Simpan</ButtonPrimary>
       </div>
       {
-        <div className="profile-modal">
+        <div className="container-modal">
           <Modal open={handlePassword} close={handleClosePassword}>
             {renderChangePassword()}
           </Modal>
         </div>
       }
-      <div className="profile-modal">
+      <div className="container-modal">
         <Modal open={handleEmail} close={onCloseEmail}>
           {renderEmail()}
         </Modal>

@@ -1,0 +1,30 @@
+.checkout-listadd-wrapper {
+  height: 300px;
+  overflow: auto;
+  font-size: 0.75em;
+}
+
+.checkout-listaddress {
+  border: 1px solid black;
+  padding: 10px 12px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.checkout-main-address {
+  background-color: #b24629;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-top-right-radius: 12px;
+  color: #fff;
+  font-size: 0.75em;
+  padding: 5px 7px;
+}
+
+.checkout-btn-address {
+  border: none;
+  background-color: transparent;
+  color: #b24629;
+  font-size: 0.875em;
+}

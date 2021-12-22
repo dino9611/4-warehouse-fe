@@ -7,6 +7,9 @@ import Product from "./pages/non-user/Product";
 import ProfilePage from "./pages/user/ProfilePage";
 import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
 import AdminMainParent from "./pages/admin/AdminMainParent";
+import DetailedProduct from "./pages/non-user/DetailedProduct";
+import Checkout from "./pages/user/Checkout";
+import Cart from "./pages/user/Cart";
 
 function App() {
   const role = "user";
@@ -21,10 +24,15 @@ function App() {
           <Route path="/profile" component={ProfilePage} />
           <Route path="/auth/accept" exact component={VerifyChangeEmail} />
           <Route path="/products" exact component={Product} />
+          <Route
+            path="/products/:productId"
+            exact
+            component={DetailedProduct}
+          />
           <Route path="/products/:category" exact component="" />
-          <Route path="/products/:productId" exact component="" />
-          <Route path="/checkout" exact component="" />
+          <Route path="/checkout" exact component={Checkout} />
           <Route path="/checkout/payment" exact component="" />
+          <Route path="/cart" exact component={Cart} />
           <Route path="*" exact component="" />
         </Switch>
       );
