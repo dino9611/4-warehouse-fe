@@ -123,7 +123,7 @@ function HomeDashboard() {
                 </div>
                 <div className="adm-dashboard-contents-2ndRow">
                     <div>
-                        Potential & Loss Revenue (Based on Transaction Status)
+                        Transaction Contribution by Status - {filterYear} (%)
                         {!loadData ? 
                             <>
                                 <DonutChart 
@@ -133,14 +133,14 @@ function HomeDashboard() {
                                     bgColorArray={[
                                         "rgba(39, 160, 227, 0.8)", 
                                         "rgba(67,147,108, 0.8)", 
-                                        "rgba(239,137,67, 0.8)", 
-                                        "rgba(205, 58, 49, 0.8)"
+                                        "rgba(205, 58, 49, 0.8)",
+                                        "rgba(239,137,67, 0.8)"
                                     ]}
                                     bordColorArray={[
                                         "rgba(39, 160, 227, 0.8)", 
                                         "rgba(67,147,108, 0.8)", 
-                                        "rgba(239,137,67, 0.8)", 
-                                        "rgba(205, 58, 49, 0.8)"
+                                        "rgba(205, 58, 49, 0.8)",
+                                        "rgba(239,137,67, 0.8)"
                                     ]}
                                 />
                             </>
