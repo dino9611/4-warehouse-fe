@@ -34,6 +34,7 @@ export default function VerticalBarChart({
 }) {
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             display: legendDisplay,
