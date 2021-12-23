@@ -6,6 +6,7 @@ import thousandSeparator from "../../helpers/ThousandSeparator";
 import VerticalBarChart from '../../components/admin/VerticalBarChart';
 import GroupBarChart from '../../components/admin/GroupBarChart';
 import DonutChart from '../../components/admin/DonutChart';
+import HorizontalBarChart from '../../components/admin/HorizontalBarChart';
 
 function HomeDashboard() {
     const [loadData, setLoadData] = useState(true);
@@ -21,6 +22,16 @@ function HomeDashboard() {
     const [statusContribution, setStatusContribution] = useState({});
     const [statusContLabels, setStatusContLabels] = useState([]);
     const [statusContData, setStatusContData] = useState([]);
+
+    const [topProdQty, setTopProdQty] = useState({});
+    const [prodQtyLabels, setProdQtyLabels] = useState([]);
+    const [prodQtyData, setProdQtyData] = useState([]);
+
+    const [topProdValue, setTopProdValue] = useState({});
+    const [prodValLabels, setProdValLabels] = useState([]);
+    const [prodValData, setProdValData] = useState([]);
+
+    const [topUsers, setTopUsers] = useState({});
 
     const [filterYear, setFilterYear] = useState(2021);
 
@@ -55,8 +66,58 @@ function HomeDashboard() {
         }
     };
 
+    const fetchProdPerformance = async () => {
+        try {
+            const res01 = await axios.get(`${API_URL}/sales/top-prod-qty`, {headers: {filter_year: filterYear}});
+            const res02 = await axios.get(`${API_URL}/sales/top-prod-val`, {headers: {filter_year: filterYear}});
+            setTopProdQty(res01.data);
+            res01.data.forEach((val, index) => {
+                setProdQtyLabels((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = val.name;
+                    return [...newArray];
+                });
+            });
+            res01.data.forEach((val, index) => {
+                setProdQtyData((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = parseInt(val.qty_sold);
+                    return [...newArray];
+                });
+            });
+            setTopProdValue(res02.data);
+            res02.data.forEach((val, index) => {
+                setProdValLabels((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = val.name;
+                    return [...newArray];
+                });
+            });
+            res02.data.forEach((val, index) => {
+                setProdValData((prevState) => {
+                    let newArray = prevState;
+                    newArray[index] = parseInt(val.sales_value);
+                    return [...newArray];
+                });
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchUsersInsight = async () => {
+        try {
+            const res01 = await axios.get(`${API_URL}/sales/top-users`, {headers: {filter_year: filterYear}});
+            setTopUsers(res01.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         fetchRevenue();
+        fetchProdPerformance();
+        fetchUsersInsight();
         setLoadData(false);
     }, []);
 
@@ -70,9 +131,16 @@ function HomeDashboard() {
     // console.log(monthlyRevenue);
     // console.log(labels);
     // console.log(monthRevData);
-    console.log(statusContribution);
-    console.log(statusContLabels)
-    console.log(statusContData);
+    // console.log(statusContribution);
+    // console.log(statusContLabels)
+    // console.log(statusContData);
+    // console.log(topProdQty);
+    // console.log(prodQtyLabels);
+    // console.log(prodQtyData);
+    // console.log(topProdValue);
+    // console.log(prodValLabels);
+    // console.log(prodValData);
+    // console.log(topUsers);
 
     return (
         <div className="adm-dashboard-main-wrap">
@@ -148,17 +216,42 @@ function HomeDashboard() {
                             <h1>Loading Data</h1>
                         }
                     </div>
-                    
-                </div>
-                <div className="adm-dashboard-contents-3rdRow">
                     <div >
                         Total Products Sold
                     </div>
+                </div>
+                <div className="adm-dashboard-contents-3rdRow">
                     <div>
-                        Top 5 Selling Product by Qty
+                        {!loadData ? 
+                            <>
+                                <HorizontalBarChart
+                                    legendDisplay={false}
+                                    titleText={"Top 5 Selling Product by Qty"}
+                                    labelsData={prodQtyLabels}
+                                    chartData={prodQtyData}
+                                    barLabel={"Qty"}
+                                />
+                            </>
+                            :
+                            <h1>Loading Data</h1>
+                        }
                     </div>
                     <div>
-                        Top 5 Selling Product by Value
+                        {!loadData ? 
+                            <>
+                                <HorizontalBarChart
+                                    legendDisplay={false}
+                                    titleText={"Top 5 Selling Product by Value"}
+                                    labelsData={prodValLabels}
+                                    chartData={prodValData}
+                                    barLabel={"Value"}
+                                    barColor={"rgba(67,147,108, 0.8)"}
+                                    bordColor={"rgba(67,147,108, 0.8)"}
+                                />
+                            </>
+                            :
+                            <h1>Loading Data</h1>
+                        }
                     </div>
                     <div>
                         Sales Contribution by Category

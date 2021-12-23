@@ -41,6 +41,11 @@ export default function GroupBarChart({
             legend: {
                 display: legendDisplay,
                 position: legendPosition,
+                labels: {
+                    font: {
+                        family: "'Poppins', 'Open Sans', 'sans-serif'"
+                    }
+                }
             },
             title: {
                 display: titleDisplay,
