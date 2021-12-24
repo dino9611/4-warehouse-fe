@@ -41,7 +41,7 @@ function Product() {
 
   // Tes
   const [isChecked, setIsChecked] = useState(false);
-
+  console.log(dataProduct);
   useEffect(() => {
     (async () => {
       try {
@@ -214,7 +214,7 @@ function Product() {
             }}
           >
             <CardProduct
-              img={el.image}
+              img={`${API_URL}/${el.images[0]}`}
               category={
                 el.category.charAt(0).toUpperCase() + el.category.slice(1)
               }

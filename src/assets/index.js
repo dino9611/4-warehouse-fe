@@ -34,6 +34,16 @@ import down from "./down.svg";
 import plus from "./plus.svg";
 import minus from "./minus.svg";
 import trash from "./trash.svg";
+import centangijo from "./centangijo.svg";
+import close from "./close.svg";
+import plusactive from "./plusactive.svg";
+import warning from "./warning.svg";
+import arrowup from "./arrowup.svg";
+import cekkurir from "./cekkurir.svg";
+import mandiri from "./mandiri.png";
+import bca from "./bca.png";
+import bni from "./bni.png";
+import cimb from "./cimb.png";
 
 export default {
   logo,
@@ -72,4 +82,14 @@ export default {
   minus,
   plus,
   trash,
+  centangijo,
+  close,
+  plusactive,
+  warning,
+  arrowup,
+  cekkurir,
+  mandiri,
+  bca,
+  bni,
+  cimb,
 };

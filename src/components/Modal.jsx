@@ -4,7 +4,7 @@ import ClickOutside from "./ClickOutside";
 import { useTransition, animated } from "react-spring";
 import "./styles/modal.css";
 
-function Modal({ open, close, children }) {
+function Modal({ open, close, children, classModal }) {
   const ref = useRef();
 
   // Transition modal
@@ -25,7 +25,11 @@ function Modal({ open, close, children }) {
         <div className="modal-overlay-style"></div>
         {transitionModal((style, item) =>
           item ? (
-            <animated.div style={style} ref={ref} className="modal-style">
+            <animated.div
+              style={style}
+              ref={ref}
+              className={`modal-style ${classModal}`}
+            >
               {children}
             </animated.div>
           ) : null

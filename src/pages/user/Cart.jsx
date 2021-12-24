@@ -10,11 +10,12 @@ import Modal from "./../../components/Modal";
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import { API_URL } from "../../constants/api";
 import images from "./../../assets";
+import assets from "./../../assets";
 
 function Cart() {
   const [dataCart, setDataCart] = useState([]); // Data cart detail
   const [handleDelete, setHandleDelete] = useState(false); // State untuk delete product di cart detail
-  const [errorStock, setErrorStock] = useState([]);
+  const [errorStock, setErrorStock] = useState([]); // Array untuk produk yang melebihi stok pada saat button "Beli" dipencet
 
   // Id dan name product di cart detail untuk delete dan update qty
 
@@ -193,6 +194,7 @@ function Cart() {
 
   // Render list product cart detail yang ada di state dataProduct
 
+  console.log(dataCart);
   const renderListCart = () => {
     return dataCart.map((el, index) => {
       let error = errorStock.findIndex((element) => element == el.product_id);
@@ -200,30 +202,49 @@ function Cart() {
       return (
         <>
           <div key={index} className="d-flex">
-            <img src={images.footer} alt="" className="cart-list-img mr-3" />
+            <div className="mr-4">
+              <img
+                src={`${API_URL}/${el.images[0]}`}
+                alt="photo-prod"
+                className="cart-list-img "
+              />
+            </div>
             <div className="w-100 d-flex justify-content-between">
-              <div className="d-flex flex-column justify-content-between">
-                <div>
-                  <div className="cart-categoryprod">
-                    {el.category.charAt(0).toUpperCase() + el.category.slice(1)}
-                  </div>
-                  <div className="cart-nameprod">
-                    {el.name.charAt(0).toUpperCase() + el.name.slice(1)}
-                  </div>
+              <div className="d-flex flex-column justify-content-center">
+                <div className="cart-categoryprod">
+                  {el.total_stock < 10 ? (
+                    <>
+                      <img
+                        src={assets.warning}
+                        alt="warning"
+                        className="mr-1"
+                      />
+                      <span>{`Tersisa ${el.total_stock} barang. Pesan segera!`}</span>
+                    </>
+                  ) : null}
+                </div>
+                <div className="cart-nameprod my-2">
+                  {el.name.length.length > 45
+                    ? el.name.charAt(0).toUpperCase() +
+                      el.name.slice(1, 45) +
+                      "..."
+                    : el.name.charAt(0).toUpperCase() + el.name.slice(1, 60)}
                 </div>
                 <div className="cart-priceprod">
                   {`Rp ${thousandSeparator(el.price)}`}{" "}
                 </div>
               </div>
-              <div className="d-flex flex-column justify-content-between align-items-end">
-                <div
-                  className="align-self-end"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => openModalDelete(el.id, el.name)}
-                >
-                  <img src={images.trash} alt="trash" />
+              <div className="d-flex flex-column justify-content-end w-25">
+                <div className="align-self-end">
+                  <button
+                    className="cart-delete"
+                    onClick={() => openModalDelete(el.id, el.name)}
+                  >
+                    <span className="mr-1">Hapus</span>
+                    <img src={images.trash} alt="trash" />
+                  </button>
                 </div>
-                <div className="cart-qty d-flex align-self-end">
+                <div className="cart-inputqty d-flex w-100 p-2 mt-2">
                   <button
                     className="cart-btn"
                     onClick={() =>
@@ -232,24 +253,33 @@ function Cart() {
                   >
                     <img src={images.minus} alt="minus" />
                   </button>
-                  <input
-                    type="number"
-                    className="cart-inputqty d-flex justify-content-center w-100"
-                    value={el.qty}
-                    onChange={(e) =>
-                      onChangeInputQty(e, index, el.id, el.qty, el.total_stock)
-                    }
-                    onBlur={(e) =>
-                      onBlurInputQty(e, index, el.id, el.qty, el.total_stock)
-                    }
-                  />
-                  <button
-                    className="cart-btn"
-                    onClick={() =>
-                      onClickPlusQty(index, el.id, el.qty, el.total_stock)
-                    }
-                  >
-                    <img src={images.plus} alt="plus" />
+                  <div>
+                    <input
+                      type="number"
+                      className="cart-qty w-100"
+                      value={el.qty}
+                      onChange={(e) =>
+                        onChangeInputQty(
+                          e,
+                          index,
+                          el.id,
+                          el.qty,
+                          el.total_stock
+                        )
+                      }
+                      onBlur={(e) =>
+                        onBlurInputQty(e, index, el.id, el.qty, el.total_stock)
+                      }
+                    />
+                  </div>
+                  <button className="cart-btn">
+                    <img
+                      src={images.plusactive}
+                      alt="plus"
+                      onClick={() =>
+                        onClickPlusQty(index, el.id, el.qty, el.total_stock)
+                      }
+                    />
                   </button>
                 </div>
               </div>
@@ -303,44 +333,76 @@ function Cart() {
     }
   };
 
-  // if (!res.data.length) {
-  //   <Redirect to="/checkout" />;
-  // }
+  // Render kolom sebelah kiri dari page cart
+
+  const renderLeftSide = () => {
+    return (
+      <div className="cart-left col-8 ">
+        <div className="cart-left-container p-4">
+          <div className="cart-title mb-4">Keranjang</div>
+          <div className="cart-list-wrapper">{renderListCart()}</div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render kolom sebelah kanan dari page cart
+
+  const renderRightSide = () => {
+    return (
+      <div className="cart-right col-4">
+        <div className="cart-right-container p-4">
+          <div className="cart-title mb-4">Ringkasan Pembelian</div>
+          <div>
+            <div className="cart-promo-text d-flex align-items-center justify-content-between mb-2">
+              Apakah Anda memiliki kode promo?
+              <span>
+                <img src={assets.arrowup} alt="" />
+              </span>
+            </div>
+            <div className="cart-promo-show align-items-center d-flex justify-content-between">
+              <input
+                type="text"
+                className="cart-promo-input"
+                placeholder="Masukkan kode promo"
+                disabled
+              />
+              <span className="cart-terapkan">Terapkan</span>
+            </div>
+          </div>
+          <div className="cart-border mt-4 mb-3"></div>
+          <div className="d-flex justify-content-between mb-2">
+            <div className="cart-totalprice">{`Total harga (${totalItem()} barang)`}</div>
+            <div className="cart-totalprice">{`Rp ${thousandSeparator(
+              totalPrice()
+            )}`}</div>
+          </div>
+          <div className="d-flex justify-content-between">
+            <div className="cart-totalprice">Total diskon</div>
+            <div className="cart-totalprice">Rp 0</div>
+          </div>
+          <div className="cart-border my-3"></div>
+          <div className="d-flex justify-content-between mb-4">
+            <div className="cart-total">{`Total harga`}</div>
+            <div className="cart-total">{`Rp ${thousandSeparator(
+              totalPrice()
+            )}`}</div>
+          </div>
+          <div>
+            <ButtonPrimary width="w-100" onClick={checkStock}>
+              Beli
+            </ButtonPrimary>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="container mt-5">
       <div className="row">
-        <div className="cart-left col-8">
-          <div className="cart-left-container">
-            <div className="cart-title">Keranjang</div>
-            <div className="cart-border my-3"></div>
-            <div className="cart-list-wrapper">{renderListCart()}</div>
-          </div>
-        </div>
-        <div className="cart-right col-4">
-          <div className="cart-right-container">
-            <div className="cart-title">Ringkasan belanja</div>
-            <div className="cart-border my-3"></div>
-            <div className="d-flex justify-content-between">
-              <div className="cart-totalprice">{`Total harga (${totalItem()} barang)`}</div>
-              <div className="cart-totalprice">{`Rp ${thousandSeparator(
-                totalPrice()
-              )}`}</div>
-            </div>
-            <div className="cart-border my-3"></div>
-            <div className="d-flex justify-content-between mb-3">
-              <div className="cart-total">{`Total harga`}</div>
-              <div className="cart-total">{`Rp ${thousandSeparator(
-                totalPrice()
-              )}`}</div>
-            </div>
-            <div>
-              <ButtonPrimary width="w-100" onClick={checkStock}>
-                Beli
-              </ButtonPrimary>
-            </div>
-          </div>
-        </div>
+        {renderLeftSide()}
+        {renderRightSide()}
       </div>
       <div className="container-modal">
         <Modal open={handleDelete} close={() => setHandleDelete(false)}>

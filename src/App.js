@@ -10,8 +10,37 @@ import AdminMainParent from "./pages/admin/AdminMainParent";
 import DetailedProduct from "./pages/non-user/DetailedProduct";
 import Checkout from "./pages/user/Checkout";
 import Cart from "./pages/user/Cart";
+import { useEffect } from "react";
+import axios from "axios";
+import { API_URL } from "./constants/api";
+import { useDispatch } from "react-redux";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let resCart = await axios.get(
+          `${API_URL}/transaction/get/cart-detail/2`
+        ); // userId harusnya dari auth user redux
+        let resProfile = await axios.get(`${API_URL}/profile/personal-data/2`); // User id sementara ( nanti dari redux)
+
+        dispatch({
+          type: "PICKIMAGE",
+          payload: {
+            profile_picture: resProfile.data[0].profile_picture,
+            username: resProfile.data[0].username,
+          },
+        });
+
+        dispatch({ type: "DATACART", payload: resCart.data });
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
   const role = "user";
 
   const renderRouting = () => {

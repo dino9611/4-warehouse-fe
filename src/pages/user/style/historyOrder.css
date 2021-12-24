@@ -25,3 +25,79 @@
   bottom: 0;
   border-bottom: 2px solid #cacaca;
 }
+
+.history-list-order {
+  border: 1px solid #cacaca;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.history-list-pesanan {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.history-list-border {
+  border-right: 1px solid #5a5a5a;
+  height: 12px;
+}
+
+.history-list-tanggal {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #070707;
+}
+
+.history-list-status-diproses {
+  font-size: 0.625em;
+  font-weight: 500;
+  background: rgba(67, 147, 108, 0.25);
+  border-radius: 8px;
+  color: #43936c;
+}
+
+.history-list-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.history-list-price {
+  font-size: 0.625em;
+  font-weight: 500;
+  color: #0a4d3c;
+}
+
+.history-list-nameprod {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #5a5a5a;
+}
+
+.history-list-otherprod {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+  border: none;
+  background-color: transparent;
+}
+
+.history-list-total {
+  padding: 12px 26px 12px 16px;
+  border-radius: 8px;
+  background: #f4f4f4;
+}
+
+.history-list-totalbelanja {
+  font-size: 0.625em;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.history-list-grand {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #070707;
+}

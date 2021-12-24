@@ -10,67 +10,111 @@
 .cart-right-container {
   background-color: #fff;
   border-radius: 12px;
-  padding: 15px 20px;
 }
 
 .cart-title {
-  font-size: 1.25em;
+  font-size: 1em;
   font-weight: 600;
+  color: #0a4d3c;
 }
 
 .cart-border {
-  border-bottom: 1px solid rgb(199, 198, 198);
+  border-bottom: 1px solid #f4f4f4;
 }
 
 .cart-list-img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  object-fit: cover !important;
 }
 
 .cart-categoryprod {
   font-size: 0.75em;
-  color: #979797;
+  color: #ef8943;
 }
 
 .cart-nameprod,
 .cart-priceprod {
   font-size: 0.875em;
-  font-weight: 500;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.cart-qty {
-  width: 45%;
-  border: 1px solid #cacaca;
-  box-sizing: border-box;
-  border-radius: 8px;
-  overflow: hidden;
+.cart-priceprod {
+  color: #0a4d3c;
 }
 
-.cart-btn {
-  padding: 3px;
+.cart-delete {
   border: none;
-  background-color: #fff;
-  cursor: pointer;
+  background-color: transparent;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
 }
 
 .cart-inputqty {
-  border: none;
-  font-size: 0.875em;
-  color: #b24629;
-  text-align: center;
-  cursor: text;
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
 }
 
-.cart-inputqty:enabled {
+.cart-btn {
+  border: none;
+  background-color: transparent;
+}
+
+.cart-qty {
+  font-size: 0.875em;
+  border: none;
+  color: #b24629;
+  text-align: center;
+}
+
+.cart-qty:enabled {
   outline-color: transparent;
 }
 
-.cart-totalprice {
+.cart-promo-text {
   font-size: 0.875em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.cart-promo-show {
+  padding: 12px;
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+  font-size: 0.875em;
+  cursor: pointer;
+}
+
+.cart-promo-input {
+  font-size: 0.875em;
+  border: none;
+  cursor: pointer;
+}
+
+.cart-promo-input:enabled {
+  outline-color: transparent;
+}
+
+.cart-terapkan {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #cacaca;
+}
+
+.cart-totalprice {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #5a5a5a;
 }
 
 .cart-total {
-  font-size: 1em;
-  font-weight: 600;
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #070707;
 }

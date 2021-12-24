@@ -1,3 +1,32 @@
+.checkout-col {
+  padding: 0;
+}
+
+.checkout-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 1px 12px 0 rgba(161, 132, 87, 0.16);
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.checkout-title {
+  font-size: 1em;
+  font-weight: 600;
+  color: #0a4d3c;
+}
+
+.checkout-datalist {
+  padding: 12px;
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+  font-size: 0.875em;
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
 .checkout-listadd-wrapper {
   height: 300px;
   overflow: auto;
@@ -27,4 +56,151 @@
   background-color: transparent;
   color: #b24629;
   font-size: 0.875em;
+}
+
+.checkout-label-input {
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+.checkout-input-address {
+  font-size: 0.875em;
+  padding: 12px;
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+}
+
+.checkout-mainadd {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.checkout-address {
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+}
+
+.checkout-recipient {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #0a4d3c;
+}
+
+.checkout-detail-add {
+  font-size: 0.625em;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.checkout-chooseadd {
+  border: none;
+  background-color: transparent;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+}
+
+.checkout-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.checkout-priceprod {
+  font-size: 0.625em;
+  font-weight: 500;
+  color: #0a4d3c;
+}
+
+.checkout-nameprod {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #5a5a5a;
+}
+
+.checkout-border {
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.checkout-total {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #070707;
+}
+
+.checkout-kurir {
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  background-color: #fff;
+}
+
+.checkout-kurir-active {
+  border: solid 1px #b24629 !important;
+}
+
+.checkout-pricekurir {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #000;
+  max-width: 25%;
+  min-width: 25%;
+}
+
+.checkout-jeniskurir {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.checkout-desckurir {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.checkout-bank-wrapper {
+  border-radius: 8px;
+  border: solid 1px #f4f4f4;
+}
+
+.checkout-bank-img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.checkout-list-bank {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.checkout-bank-active {
+  color: #b24629 !important;
+}
+
+.checkout-border-bank {
+  border-bottom: solid 1px #f4f4f4;
+}
+
+.checkout-prod-payment {
+  font-size: 0.625em;
+  color: #5a5a5a;
+}
+
+.checkout-payment-total {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.checkout-grand-total {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #070707;
+  background-color: #f4f4f4;
 }

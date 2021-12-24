@@ -145,7 +145,58 @@
   right: -10%;
 }
 
+.header-dd-top {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+}
+
 .header-modal {
   position: relative;
   z-index: 1;
+}
+
+.header-dd-cart {
+  position: absolute;
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  border-radius: 12px;
+  right: 0;
+  margin-top: 100%;
+  cursor: initial;
+}
+
+.header-cart-title {
+  width: 250px !important;
+  font-size: 0.75em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.header-dd-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.header-dd-nameprod {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #070707;
+}
+
+.header-dd-seecart {
+  border: none;
+  background-color: transparent;
+  font-size: 0.675em;
+  font-weight: 500;
+  color: #b24629;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-dd-list {
+  max-height: 240px;
+  overflow: auto;
+  border-radius: 8px !important;
 }
