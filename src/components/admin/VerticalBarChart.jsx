@@ -20,6 +20,7 @@ ChartJS.register(
 );
 
 export default function VerticalBarChart({
+  maintainAspectRatio = false,
   legendDisplay = true, 
   legendPosition = "top", 
   titleDisplay = true,
@@ -34,11 +35,16 @@ export default function VerticalBarChart({
 }) {
     const options = {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: maintainAspectRatio,
         plugins: {
           legend: {
             display: legendDisplay,
             position: legendPosition,
+            labels: {
+              font: {
+                  family: "'Poppins', 'Open Sans', 'sans-serif'"
+              }
+            }
           },
           title: {
             display: titleDisplay,

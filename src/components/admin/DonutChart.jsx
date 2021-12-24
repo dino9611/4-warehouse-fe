@@ -5,6 +5,7 @@ import { Doughnut } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function DonutChart({
+  maintainAspectRatio = false,
   labelsData = ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
   labelDesc = "# of Examples",
   chartData = [12, 19, 3, 5, 2, 3],
@@ -26,6 +27,20 @@ export default function DonutChart({
   ],
   bordWidth = 1
 }) {
+  const options = {
+      plugins: {
+          legend: {
+              labels: {
+                  font: {
+                      family: "'Poppins', 'Open Sans', 'sans-serif'"
+                  }
+              }
+          },
+      },
+      responsive: true,
+      maintainAspectRatio: maintainAspectRatio,
+  };
+
   const data = {
     labels: labelsData,
     datasets: [
@@ -39,5 +54,5 @@ export default function DonutChart({
     ],
   };
 
-  return <Doughnut data={data} />;
+  return <Doughnut options={options} data={data} />;
 }

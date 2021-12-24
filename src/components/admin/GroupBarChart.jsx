@@ -24,6 +24,7 @@ export default function GroupBarChart({
     legendPosition = "top", 
     titleDisplay = true,
     titleText = "Insert text here",
+    maintainAspectRatio = false,
     xStacked = true,
     yStacked = false,
     xGridDisplay = false,
@@ -53,6 +54,7 @@ export default function GroupBarChart({
             }
         },
         responsive: true,
+        maintainAspectRatio: maintainAspectRatio,
         interaction: {
             mode: 'index',
             intersect: true,

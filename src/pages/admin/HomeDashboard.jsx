@@ -14,8 +14,17 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+    TableContainer: {
+      height: "100%"
+    }
+});
 
 function HomeDashboard() {
+    const classes = useStyles();
+    
     const [loadData, setLoadData] = useState(true);
     
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
@@ -183,202 +192,224 @@ function HomeDashboard() {
             </div>
             <div className="adm-dashboard-contents-wrap">
                 <div className="adm-dashboard-contents-1stRow">
-                    <div className="adm-dashboard-1stR-left">
-                        <div>
-                            <h6>Total Users</h6>
-                            <h4>{totalUsers}</h4>
+                    <div className="adm-dashboard-1stRow-left">
+                        <div className="dashboard-1stRow-left-top">
+                            <div>
+                                <h6>Total Users</h6>
+                                <h4>{totalUsers}</h4>
+                            </div>
+                            <div>
+                                <h6>Avg. User Transaction</h6>
+                                
+                            </div>
                         </div>
-                        <div>
-                            <h6>Avg. User Transaction</h6>
-                            
-                        </div>
-                        <div>
-                            <h6>Yearly Revenue</h6>
-                            <h4>{`Rp ${thousandSeparator(yearlyRevenue)}`}</h4>
-                        </div>
-                        <div>
-                            <h6>Products Sold {filterYear}</h6>
-                            <h4>{totalProdSold}</h4>
+                        <div className="dashboard-1stRow-left-bottom">
+                            <div>
+                                <h6>Yearly Revenue</h6>
+                                <h4>{`Rp ${thousandSeparator(yearlyRevenue)}`}</h4>
+                            </div>
+                            <div>
+                                <h6>Products Sold {filterYear}</h6>
+                                <h4>{totalProdSold}</h4>
+                            </div>
                         </div>
                     </div>
-                    <div className="adm-dashboard-1stR-right">
+                    <div className="adm-dashboard-1stRow-right">
                         {!loadData ? 
                             <>
-                                <VerticalBarChart 
-                                    legendDisplay={false} 
-                                    titleText={`Monthly Revenue (Done Transaction - ${filterYear})`} 
-                                    yGridDisplay={true}
-                                    labelsData={monthRevLabels}
-                                    chartData={monthRevData}
-                                    barLabel={"Revenue"}
-                                    />
-                                {(monthlyRevenue.November < monthlyRevenue.December) ? 
-                                    <span style={{color: "#43936C"}}>+ {lastMontRevGrow}% Since last month</span>
+                                <div className="dashboard-1stRow-right-heading">
+                                    <h6>{`Monthly Revenue (Finished Transaction - ${filterYear})`}</h6>
+                                    {(monthlyRevenue.November < monthlyRevenue.December) ? 
+                                    <h6 style={{color: "#43936C"}}>+ {lastMontRevGrow}% Since last month</h6>
                                     : 
-                                    <span style={{color: "#CB3A31"}}>- {lastMontRevGrow}% Since last month</span>
+                                    <h6 style={{color: "#CB3A31"}}>- {lastMontRevGrow}% Since last month</h6>
                                 }
+                                </div>
+                                <div className="dashboard-1stRow-right-chart">
+                                    <VerticalBarChart 
+                                        legendDisplay={false} 
+                                        titleDisplay={false}
+                                        labelsData={monthRevLabels}
+                                        chartData={monthRevData}
+                                        barLabel={"Revenue"}
+                                    />
+                                </div>
                             </>
                             :
                             <h1>Loading Data</h1>
                         }
                     </div>
                 </div>
-                {/* <div className="adm-dashboard-contents-1stRow">
-                    <div >
-                        {!loadData ? 
-                            <>
-                                <VerticalBarChart 
-                                    legendDisplay={false} 
-                                    titleText={`Monthly Revenue (Done Transaction - ${filterYear})`} 
-                                    yGridDisplay={true}
-                                    labelsData={monthRevLabels}
-                                    chartData={monthRevData}
-                                    barLabel={"Revenue"}
-                                    />
-                                {(monthlyRevenue.November < monthlyRevenue.December) ? 
-                                    <span style={{color: "#43936C"}}>+ {lastMontRevGrow}% Since last month</span>
-                                    : 
-                                    <span style={{color: "#CB3A31"}}>- {lastMontRevGrow}% Since last month</span>
-                                }
-                            </>
-                            :
-                            <h1>Loading Data</h1>
-                        }
-                    </div>
-                    <div>
-                        {!loadData ? 
-                            <>
-                                <GroupBarChart 
-                                    titleText={`Monthly Achieved Revenue (Ongoing & Paid - ${filterYear})`} 
-                                    yGridDisplay={true}
-                                    labelsData={potentRevLabels}
-                                    chartData01={monthRevData}
-                                    chartData02={potentRevData}
-                                    barLabel01={"Actual Revenue"}
-                                    barLabel02={"Potential"}
-                                />
-                            </>
-                            :
-                            <h1>Loading Data</h1>
-                        }
-                    </div>
-                </div> */}
                 <div className="adm-dashboard-contents-2ndRow">
-                    <div>
-                        Transaction Contribution by Status - {filterYear} (%)
+                    <div className="adm-dashboard-2ndRow-left">
                         {!loadData ? 
                             <>
-                                <DonutChart 
-                                    labelsData={statusContLabels}
-                                    labelDesc={"Transaction Contribution by Status"}
-                                    chartData={statusContData}
-                                    bgColorArray={[
-                                        "rgba(39, 160, 227, 0.8)", 
-                                        "rgba(67,147,108, 0.8)", 
-                                        "rgba(205, 58, 49, 0.8)",
-                                        "rgba(239,137,67, 0.8)"
-                                    ]}
-                                    bordColorArray={[
-                                        "rgba(39, 160, 227, 0.8)", 
-                                        "rgba(67,147,108, 0.8)", 
-                                        "rgba(205, 58, 49, 0.8)",
-                                        "rgba(239,137,67, 0.8)"
-                                    ]}
-                                />
+                                <div className="dashboard-2ndRow-left-heading">
+                                    <h6>{`Monthly Achieved Revenue (Ongoing & Paid - ${filterYear})`}</h6>
+                                </div>
+                                <div className="dashboard-2ndRow-left-chart">
+                                    <GroupBarChart 
+                                        titleDisplay={false}
+                                        yGridDisplay={true}
+                                        labelsData={potentRevLabels}
+                                        chartData01={monthRevData}
+                                        chartData02={potentRevData}
+                                        barLabel01={"Actual Revenue"}
+                                        barLabel02={"Potential"}
+                                    />
+                                </div>
                             </>
                             :
                             <h1>Loading Data</h1>
                         }
                     </div>
-                    <div >
-                        Total Products Sold
+                    <div className="adm-dashboard-2ndRow-right">
+                        {!loadData ? 
+                            <>
+                                <div className="dashboard-2ndRow-right-heading">
+                                    <h6>{`Transaction Contribution by Status - ${filterYear} (%)`}</h6>
+                                </div>
+                                <div className="dashboard-2ndRow-right-chart">
+                                    <DonutChart 
+                                        labelsData={statusContLabels}
+                                        labelDesc={"Transaction Contribution by Status"}
+                                        chartData={statusContData}
+                                        bgColorArray={[
+                                            "rgba(39, 160, 227, 0.8)", 
+                                            "rgba(67,147,108, 0.8)", 
+                                            "rgba(205, 58, 49, 0.8)",
+                                            "rgba(239,137,67, 0.8)"
+                                        ]}
+                                        bordColorArray={[
+                                            "rgba(39, 160, 227, 0.8)", 
+                                            "rgba(67,147,108, 0.8)", 
+                                            "rgba(205, 58, 49, 0.8)",
+                                            "rgba(239,137,67, 0.8)"
+                                        ]}
+                                    />
+                                </div>
+                            </>
+                            :
+                            <h1>Loading Data</h1>
+                        }
                     </div>
-                </div>
-                <div>
-                    <TableContainer component={Paper} style={{borderRadius: "12px"}}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left" style={{width: "80px"}}>Rank</TableCell>
-                                    <TableCell align="left">Username</TableCell>
-                                    <TableCell align="left">Total Transaction Value</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {!loadData ?
-                                    topUsers.map((val, index) => (
-                                        <TableRow
-                                        key={`0${val.index}-${val.user_id}`}
-                                        >
-                                            <TableCell align="left" component="th" scope="row">
-                                                {index + 1}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {val.username}
-                                            </TableCell>
-                                            <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
-                                        </TableRow>
-                                    ))
-                                    :
-                                    <h1>Loading Data</h1>
-                                }
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
                 </div>
                 <div className="adm-dashboard-contents-3rdRow">
-                    <div>
-                        {!loadData ? 
-                            <>
-                                <HorizontalBarChart
-                                    legendDisplay={false}
-                                    titleText={"Top 5 Selling Product by Qty"}
-                                    labelsData={prodQtyLabels}
-                                    chartData={prodQtyData}
-                                    barLabel={"Qty"}
-                                />
-                            </>
-                            :
-                            <h1>Loading Data</h1>
-                        }
+                    <div className="adm-dashboard-3rdRow-left">
+                        <div>
+                            {!loadData ? 
+                                <>
+                                    <div className="dashboard-3rdRow-left-heading">
+                                        <h6>{`Top 5 Selling Product by Qty`}</h6>
+                                    </div>
+                                    <div className="dashboard-3rdRow-left-chart">
+                                        <HorizontalBarChart
+                                            legendDisplay={false}
+                                            titleDisplay={false}
+                                            labelsData={prodQtyLabels}
+                                            chartData={prodQtyData}
+                                            barLabel={"Qty"}
+                                        />
+                                    </div>
+                                </>
+                                :
+                                <h1>Loading Data</h1>
+                            }
+                        </div>
+                        <div>
+                            {!loadData ? 
+                                <>
+                                    <div className="dashboard-3rdRow-left-heading">
+                                        <h6>{`Top 5 Selling Product by Value`}</h6>
+                                    </div>
+                                    <div className="dashboard-3rdRow-left-chart">
+                                        <HorizontalBarChart
+                                            legendDisplay={false}
+                                            titleDisplay={false}
+                                            labelsData={prodValLabels}
+                                            chartData={prodValData}
+                                            barLabel={"Value"}
+                                            barColor={"rgba(67,147,108, 0.8)"}
+                                            bordColor={"rgba(67,147,108, 0.8)"}
+                                        />
+                                    </div>
+                                </>
+                                :
+                                <h1>Loading Data</h1>
+                            }
+                        </div>
                     </div>
-                    <div>
-                        {!loadData ? 
-                            <>
-                                <HorizontalBarChart
-                                    legendDisplay={false}
-                                    titleText={"Top 5 Selling Product by Value"}
-                                    labelsData={prodValLabels}
-                                    chartData={prodValData}
-                                    barLabel={"Value"}
-                                    barColor={"rgba(67,147,108, 0.8)"}
-                                    bordColor={"rgba(67,147,108, 0.8)"}
-                                />
-                            </>
-                            :
-                            <h1>Loading Data</h1>
-                        }
+                    <div className="adm-dashboard-3rdRow-mid">
+                        <div className="dashboard-3rdRow-mid-heading">
+                            <h6>{`Sales Contribution by Category`}</h6>
+                        </div>
+                        <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
+                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
+                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
+                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {!loadData ?
+                                        topUsers.map((val, index) => (
+                                            <TableRow
+                                            key={`0${val.index}-${val.user_id}`}
+                                            >
+                                                <TableCell align="left" component="th" scope="row">
+                                                    {index + 1}
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    {val.username}
+                                                </TableCell>
+                                                <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
+                                            </TableRow>
+                                        ))
+                                        :
+                                        <h1>Loading Data</h1>
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </div>
-                    <div>
-                        Sales Contribution by Category
+                    <div className="adm-dashboard-3rdRow-right">
+                        <div className="dashboard-3rdRow-right-heading">
+                            <h6>{`Top 5 Users by Transaction`}</h6>
+                        </div>
+                        <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
+                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
+                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
+                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {!loadData ?
+                                        topUsers.map((val, index) => (
+                                            <TableRow
+                                            key={`0${val.index}-${val.user_id}`}
+                                            >
+                                                <TableCell align="left" component="th" scope="row">
+                                                    {index + 1}
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    {val.username}
+                                                </TableCell>
+                                                <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
+                                            </TableRow>
+                                        ))
+                                        :
+                                        <h1>Loading Data</h1>
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </div>
                 </div>
-                <div className="adm-dashboard-contents-4thRow">
-                    <div >
-                        Total Users
-                    </div>
-                    <div>
-                        Top 5 Users (By Transaction Value)
-                    </div>
-                    <div>
-                        Average Users Transaction
-                    </div>
-                </div>
-                {/* <div className="adm-dashboard-contents-4thRow">
-                    <div >
-                        Other Additional Report (if any)
-                    </div>
-                </div> */}
             </div>
         </div>
     )
