@@ -1,0 +1,232 @@
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #5A5A5A;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #F4F4F4;
+    --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+.adm-login-main-wrap {
+    align-items: center;
+    background-color: var(--primary-5th-color);
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    width: 100vw;
+}
+
+.adm-login-main-wrap * {
+    box-sizing: border-box;
+}
+
+.adm-login-sub-wrap {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-root);
+    display: flex;
+    height: 75%;
+    margin: 0 200px;
+    max-width: calc(1600px - 400px); /* * Start size suitable for > 1280px viewport */
+    min-width: calc(1600px - 400px);
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-login-left-img,
+.adm-login-right-form {
+    height: 100%;
+    width: 50%;
+}
+
+.adm-login-left-img > img {
+    height: 100%;
+    width: 100%;
+}
+
+.adm-login-right-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 64px;
+    row-gap: 40px;
+}
+
+.adm-login-heading-wrap {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+}
+
+.adm-login-heading-wrap > h1,
+.adm-login-heading-wrap > p {
+    margin: 0;
+    text-align: start;
+}
+
+.adm-login-form-wrap {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.adm-login-form-wrap > p {
+    margin: 0 0 8px;
+}
+
+.adm-login-form-wrap > input {
+    margin-bottom: 16px;
+}
+
+.adm-login-input-wrap {
+    margin-bottom: 40px;
+    position: relative;
+    width: 100%;
+}
+
+.adm-login-input-wrap > img {
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 21%;
+}
+
+.adm-login-form-wrap > input,
+.adm-login-input-wrap > input {
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: 12px;
+    height: 40px;
+    padding: 0 12px;
+    width: 100%;
+}
+
+.adm-login-input-wrap > input {
+    padding-right: 52px;
+}
+
+.adm-login-form-wrap > input:focus,
+.adm-login-input-wrap > input:focus {
+    border-color: var(--primary-4th-color);
+    outline: none;
+}
+
+.adm-login-form-wrap > input::placeholder,
+.adm-login-input-wrap > input::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    font-size: 0.9em;
+    font-weight: 300;
+    opacity: 1; /* Firefox fix */
+}
+
+
+.adm-login-form-wrap > input:-ms-input-placeholder,
+.adm-login-input-wrap > input:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    font-size: 0.9em;
+    font-weight: 300;
+}
+
+.adm-login-form-wrap > input::-ms-input-placeholder,
+.adm-login-input-wrap > input::-ms-input-placeholder {
+    /* Microsoft Edge */
+    font-size: 0.9em;
+    font-weight: 300;
+}
+
+.adm-login-form-wrap > input:disabled,
+.adm-login-input-wrap > input:disabled {
+    color: var(--neutral-3rd-color);
+    background-color: var(--neutral-4th-color);
+}
+
+.adm-login-btn-wrap {
+    display: flex;
+    width: 100%;
+}
+
+.adm-login-btn {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    cursor: pointer;
+    height: 48px;
+    width: 160px;
+}
+
+.adm-login-btn:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 400ms;
+}
+
+.adm-login-btn:disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+/* EXTRA LARGE SCREEN XL */
+@media (max-width: 1280px) {
+    .adm-login-sub-wrap {
+        height: 60%;
+        margin: 0 160px;
+        max-width: calc(1280px - 360px);
+        min-width: calc(1280px - 360px);
+
+    }
+}
+
+/* DESKTOP SIZE LG */
+@media (max-width: 1024px) {
+    .adm-login-sub-wrap {
+        height: 52%;
+        margin: 0 120px;
+        max-width: calc(1024px - 240px);
+        min-width: calc(1024px - 240px);
+    }
+
+    .adm-login-right-form h1 {
+        font-size: 2em;
+    }
+
+    .adm-login-right-form p {
+        font-size: 0.85em;
+    }
+
+    .adm-login-form-wrap > input::placeholder,
+    .adm-login-input-wrap > input::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        font-size: 0.85em;
+    }
+
+
+    .adm-login-form-wrap > input:-ms-input-placeholder,
+    .adm-login-input-wrap > input:-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        font-size: 0.85em;
+    }
+
+    .adm-login-form-wrap > input::-ms-input-placeholder,
+    .adm-login-input-wrap > input::-ms-input-placeholder {
+        /* Microsoft Edge */
+        font-size: 0.85em;
+    }
+}

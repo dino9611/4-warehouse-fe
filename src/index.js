@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App";
-import { extendTheme, ChakraProvider } from "@chakra-ui/react";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import Thunk from "redux-thunk";

@@ -11,17 +11,21 @@ function ProfileSidebar() {
   // Untuk url nesting route
   let { url } = useRouteMatch();
   const data = useSelector((state) => state.ProfileReducer);
-
+  console.log(data);
   const [file, setFile] = useState(null);
 
   useEffect(() => {
     if (file) {
       (async () => {
         try {
+          if (!file) {
+            return;
+          }
+
           const formData = new FormData();
           formData.append("image", file);
 
-          await axios.patch(`${API_URL}/profile/upload-photo/1`, formData, {
+          await axios.patch(`${API_URL}/profile/upload-photo/2`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -45,7 +49,7 @@ function ProfileSidebar() {
                 src={
                   file
                     ? URL.createObjectURL(file)
-                    : `${API_URL}/${data.profile_picture}`
+                    : `${API_URL}${data.profile_picture}`
                 }
                 alt="photo-profile"
                 className="profile-photo"

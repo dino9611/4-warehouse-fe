@@ -65,7 +65,7 @@ function Profile() {
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios.get(`${API_URL}/profile/personal-data/1`);
+        let res = await axios.get(`${API_URL}/profile/personal-data/2`);
 
         const date = new Date(`${res.data[0].date_of_birth}`);
         let formatDate = `${date.getFullYear()}-${
@@ -73,13 +73,13 @@ function Profile() {
         }-${date.getDate()}`;
 
         setPersonalData({ ...res.data[0], date_of_birth: formatDate });
-        dispatch({
-          type: "PICKIMAGE",
-          payload: {
-            profile_picture: res.data[0].profile_picture,
-            username: res.data[0].username,
-          },
-        });
+        // dispatch({
+        //   type: "PICKIMAGE",
+        //   payload: {
+        //     profile_picture: res.data[0].profile_picture,
+        //     username: res.data[0].username,
+        //   },
+        // });
       } catch (error) {
         console.log(error);
       }
@@ -98,7 +98,7 @@ function Profile() {
   // Transition gender
 
   const transition = useTransition(handleGender, {
-    config: { mass: 1, tension: 500, friction: 60, clamp: true },
+    config: { mass: 1, tension: 2000, friction: 60, clamp: true },
     from: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
     enter: { x: 0, y: 0, opacity: 1, PointerEvent: "all" },
     leave: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
@@ -108,7 +108,7 @@ function Profile() {
   // Transition Calender
 
   const transitionCalender = useTransition(calenderData.handleCalender, {
-    config: { mass: 1, tension: 500, friction: 60, clamp: true },
+    config: { mass: 1, tension: 2000, friction: 60, clamp: true },
     from: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
     enter: { x: 0, y: 0, opacity: 1, PointerEvent: "all" },
     leave: { x: 0, y: -10, opacity: 0, PointerEvent: "none" },
@@ -125,7 +125,7 @@ function Profile() {
     console.log(sendPersonalData);
     try {
       await axios.post(
-        `${API_URL}/profile/edit/personal-data/1`,
+        `${API_URL}/profile/edit/personal-data/2`,
         sendPersonalData
       );
 
@@ -148,7 +148,6 @@ function Profile() {
     return transition((style, item) =>
       item ? (
         <animated.div
-          ref={genderRef}
           style={style}
           className="profile-dropdown-gender w-100 d-flex flex-column justify-content-between"
         >
@@ -464,7 +463,11 @@ function Profile() {
         />
       </div>
       <div className="d-flex w-100 justify-content-between mb-4">
-        <div className="w-100 mr-4" style={{ position: "relative" }}>
+        <div
+          ref={genderRef}
+          className="w-100 mr-4"
+          style={{ position: "relative" }}
+        >
           <Textbox
             label="Jenis Kelamin"
             placeholder="Jenis Kelamin"
@@ -478,7 +481,11 @@ function Profile() {
           {/* {handleGender ? renderInputGender() : null} */}
           {renderInputGender()}
         </div>
-        <div className="w-100" style={{ position: "relative" }}>
+        <div
+          ref={calenderRef}
+          className="w-100"
+          style={{ position: "relative" }}
+        >
           <Textbox
             label="Tanggal Lahir"
             placeholder="Tanggal Lahir"
@@ -490,18 +497,9 @@ function Profile() {
             cursor="pointer"
             onClick={() => dispatch({ type: "OPENCALENDER" })}
           />
-          {/* {calenderData.handleCalender ? (
-            <div ref={} className="profile-dropdown-calender">
-              <CalenderComp  bornDate={`${personalData.date_of_birth}`} />
-            </div>
-          ) : null} */}
           {transitionCalender((style, item) =>
             item ? (
-              <animated.div
-                ref={calenderRef}
-                style={style}
-                className="profile-dropdown-calender"
-              >
+              <animated.div style={style} className="profile-dropdown-calender">
                 <CalenderComp bornDate={`${personalData.date_of_birth}`} />
               </animated.div>
             ) : null
@@ -522,13 +520,13 @@ function Profile() {
         <ButtonPrimary onClick={onClickInputData}>Simpan</ButtonPrimary>
       </div>
       {
-        <div className="profile-modal">
+        <div className="container-modal">
           <Modal open={handlePassword} close={handleClosePassword}>
             {renderChangePassword()}
           </Modal>
         </div>
       }
-      <div className="profile-modal">
+      <div className="container-modal">
         <Modal open={handleEmail} close={onCloseEmail}>
           {renderEmail()}
         </Modal>
