@@ -43,6 +43,7 @@ function HomeDashboard() {
     const [statusContData, setStatusContData] = useState([]);
     
     const [yearlyRevenue, setYearlyRevenue] = useState(0);
+    const [netSales, setNetSales] = useState(0);
 
     const [topProdQty, setTopProdQty] = useState({});
     const [prodQtyLabels, setProdQtyLabels] = useState([]);
@@ -70,6 +71,7 @@ function HomeDashboard() {
             const res02 = await axios.get(`${API_URL}/sales/potential-revenue`, {headers: {filter_year: filterYear}});
             const res03 = await axios.get(`${API_URL}/sales/status-contribution`, {headers: {filter_year: filterYear}});
             const res04 = await axios.get(`${API_URL}/sales/yearly-revenue`, {headers: {filter_year: filterYear}});
+            const res05 = await axios.get(`${API_URL}/sales/net-sales`, {headers: {filter_year: filterYear}});
             setMonthlyRevenue(res01.data);
             setMonthRevLabels(Object.keys(res01.data));
             setMonthRevData(Object.values(res01.data));
@@ -92,6 +94,7 @@ function HomeDashboard() {
                 });
             });
             setYearlyRevenue(res04.data.total_yearly);
+            setNetSales(res05.data.net_sales);
         } catch (error) {
             console.log(error);
         }
@@ -201,7 +204,7 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Total Users</h6>
+                                        <h6>All Time Total Users</h6>
                                         <h4>{totalUsers}</h4>
                                     </>
                                     :
@@ -226,8 +229,8 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Yearly Revenue</h6>
-                                        <h4>{`Rp ${thousandSeparator(yearlyRevenue)}`}</h4>
+                                        <h6>Net Sales {filterYear}</h6>
+                                        <h4>{`Rp ${thousandSeparator(netSales)}`}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -283,6 +286,7 @@ function HomeDashboard() {
                             <>
                                 <div className="dashboard-2ndRow-left-heading">
                                     <h6>{`Monthly Achieved Revenue (Actual & Potential - ${filterYear})`}</h6>
+                                    <h6 style={{color: "#B24629"}}>{`[ Total Revenue ${filterYear} = Rp ${thousandSeparator(yearlyRevenue)} ]`}</h6>
                                 </div>
                                 <div className="dashboard-2ndRow-left-chart">
                                     <LineChart 
@@ -408,7 +412,7 @@ function HomeDashboard() {
                                                     <TableCell align="left" component="th" scope="row">
                                                         {index + 1}
                                                     </TableCell>
-                                                    <TableCell align="left">
+                                                    <TableCell align="left" style={{width: "80px"}}>
                                                         {val.category}
                                                     </TableCell>
                                                     <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.amount)}`}</TableCell>
