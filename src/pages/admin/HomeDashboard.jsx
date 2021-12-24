@@ -190,6 +190,7 @@ function HomeDashboard() {
     // console.log(totalUsers);
     // console.log(categoryContribution);
     // console.log(potentialRevenue);
+    console.log(statusContribution);
 
     return (
         <div className="adm-dashboard-main-wrap">
