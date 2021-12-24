@@ -1,6 +1,6 @@
 // Uncomment this part for Development
 const DOMAIN = "localhost";
-const PORT = "3004";
+const PORT = "2004";
 
 export const API_URL = `http://${DOMAIN}:${PORT}`;
 

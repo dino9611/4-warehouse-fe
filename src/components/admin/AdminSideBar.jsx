@@ -7,10 +7,12 @@ import {
   } from "react-router-dom";
 import {FiHome} from "react-icons/fi";
 import { useRef } from "react";
+import logoWhite from "../../assets/logo-footer.svg";
 
 function AdminSideBar(props) {
     const {routes} = props;
 
+    // ? Testing klo page nya lg sesuai url, text button akan ter-higlight bold putih (blm berhasil)
     const divRef1 = useRef();
     const divRef2 = useRef();
     const divRef3 = useRef();
@@ -28,11 +30,12 @@ function AdminSideBar(props) {
         let element = ref.current;
         element.classList.remove("test-add");
     };
+    // ? END OF SECTION
 
     return (
         <div className="adm-sidebar-main-wrap">
             <div className="adm-sidebar-brand-wrap">
-                <h2>The Local</h2>
+                <img src={logoWhite} alt="The-Local-Logo"/>
             </div>
             <div className="adm-sidebar-list-wrap">
                 <Link to={routes.dashboard} className="link-no-decoration">
@@ -57,28 +60,28 @@ function AdminSideBar(props) {
                         <h5>Manage Product</h5>
                     </div>
                 </Link>
-                <Link to={routes.editProduct} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <FiHome className="adm-sidebar-icon"/>
-                        <h5>Edit Product</h5>
-                    </div>
-                </Link>
                 <Link to={routes.transactions} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>
                         <h5>Manage Transaction</h5>
                     </div>
                 </Link>
-                <Link to={routes.warehouses} className="link-no-decoration">
+                <Link to={routes.stockOpname} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>
-                        <h5>Manage Warehouse</h5>
+                        <h5>Stock Opname</h5>
                     </div>
                 </Link>
                 <Link to={routes.stockRequest} className="link-no-decoration">
                     <div className="adm-sidebar-item-wrap">
                         <FiHome className="adm-sidebar-icon"/>
                         <h5>Stock Request</h5>
+                    </div>
+                </Link>
+                <Link to={routes.warehouses} className="link-no-decoration">
+                    <div className="adm-sidebar-item-wrap">
+                        <FiHome className="adm-sidebar-icon"/>
+                        <h5>Manage Warehouse</h5>
                     </div>
                 </Link>
                 <Link to={routes.manageAdmin} className="link-no-decoration">

@@ -1,0 +1,81 @@
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #5A5A5A;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #F4F4F4;
+    --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+.adm-404-main-wrap * {
+    box-sizing: border-box;
+}
+
+.link-no-decoration {
+    color: inherit;
+}
+
+.link-no-decoration:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.adm-404-main-wrap {
+    align-items: center;
+    background-color: var(--primary-5th-color);
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    width: 100vw;
+}
+
+.adm-404-sub-wrap {
+    display: flex;
+    flex-direction: column;
+    height: max-content;
+    row-gap: 32px;
+    width: max-content;
+}
+
+.adm-404-sub-wrap h2 {
+    margin: 0;
+}
+
+.adm-404-img-wrap {
+    border-radius: 12px;
+    height: 502px;
+    overflow: hidden;
+    width: 894px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-404-img-wrap > img {
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+}
+
+.adm-404-cstm-link {
+    color: var(--primary-4th-color);
+}
+
+.adm-404-cstm-link:hover {
+    color: var(--primary-3rd-color);
+    transition: 250ms;
+}
