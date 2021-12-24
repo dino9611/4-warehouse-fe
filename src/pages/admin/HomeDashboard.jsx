@@ -5,6 +5,7 @@ import {API_URL} from "../../constants/api";
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import VerticalBarChart from '../../components/admin/VerticalBarChart';
 import GroupBarChart from '../../components/admin/GroupBarChart';
+import LineChart from '../../components/admin/LineChart';
 import DonutChart from '../../components/admin/DonutChart';
 import HorizontalBarChart from '../../components/admin/HorizontalBarChart';
 import Table from '@mui/material/Table';
@@ -15,6 +16,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -183,6 +186,7 @@ function HomeDashboard() {
     // console.log(topUsers);
     // console.log(totalUsers);
     // console.log(categoryContribution);
+    // console.log(potentialRevenue);
 
     return (
         <div className="adm-dashboard-main-wrap">
@@ -195,22 +199,53 @@ function HomeDashboard() {
                     <div className="adm-dashboard-1stRow-left">
                         <div className="dashboard-1stRow-left-top">
                             <div>
-                                <h6>Total Users</h6>
-                                <h4>{totalUsers}</h4>
+                                {!loadData ? 
+                                    <>
+                                        <h6>Total Users</h6>
+                                        <h4>{totalUsers}</h4>
+                                    </>
+                                    :
+                                    <div className="dashboard-spinner-wrap">
+                                        <CircularProgress />
+                                    </div>
+                                }
                             </div>
                             <div>
-                                <h6>Avg. User Transaction</h6>
-                                
+                                {!loadData ? 
+                                    <>
+                                        <h6>Avg. User Transaction</h6>
+                                    </>
+                                    :
+                                    <div className="dashboard-spinner-wrap">
+                                        <CircularProgress />
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div className="dashboard-1stRow-left-bottom">
                             <div>
-                                <h6>Yearly Revenue</h6>
-                                <h4>{`Rp ${thousandSeparator(yearlyRevenue)}`}</h4>
+                                {!loadData ? 
+                                    <>
+                                        <h6>Yearly Revenue</h6>
+                                        <h4>{`Rp ${thousandSeparator(yearlyRevenue)}`}</h4>
+                                    </>
+                                    :
+                                    <div className="dashboard-spinner-wrap">
+                                        <CircularProgress />
+                                    </div>
+                                }
                             </div>
                             <div>
-                                <h6>Products Sold {filterYear}</h6>
-                                <h4>{totalProdSold}</h4>
+                                {!loadData ? 
+                                    <>
+                                        <h6>Products Sold {filterYear}</h6>
+                                        <h4>{totalProdSold}</h4>
+                                    </>
+                                    :
+                                    <div className="dashboard-spinner-wrap">
+                                        <CircularProgress />
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -236,7 +271,9 @@ function HomeDashboard() {
                                 </div>
                             </>
                             :
-                            <h1>Loading Data</h1>
+                            <div className="dashboard-spinner-wrap">
+                                <CircularProgress />
+                            </div>
                         }
                     </div>
                 </div>
@@ -245,12 +282,12 @@ function HomeDashboard() {
                         {!loadData ? 
                             <>
                                 <div className="dashboard-2ndRow-left-heading">
-                                    <h6>{`Monthly Achieved Revenue (Ongoing & Paid - ${filterYear})`}</h6>
+                                    <h6>{`Monthly Achieved Revenue (Actual & Potential - ${filterYear})`}</h6>
                                 </div>
                                 <div className="dashboard-2ndRow-left-chart">
-                                    <GroupBarChart 
+                                    <LineChart 
                                         titleDisplay={false}
-                                        yGridDisplay={true}
+                                        yGridDisplay={false}
                                         labelsData={potentRevLabels}
                                         chartData01={monthRevData}
                                         chartData02={potentRevData}
@@ -260,7 +297,9 @@ function HomeDashboard() {
                                 </div>
                             </>
                             :
-                            <h1>Loading Data</h1>
+                            <div className="dashboard-spinner-wrap">
+                                <CircularProgress />
+                            </div>
                         }
                     </div>
                     <div className="adm-dashboard-2ndRow-right">
@@ -290,7 +329,9 @@ function HomeDashboard() {
                                 </div>
                             </>
                             :
-                            <h1>Loading Data</h1>
+                            <div className="dashboard-spinner-wrap">
+                                <CircularProgress />
+                            </div>
                         }
                     </div>
                 </div>
@@ -313,7 +354,9 @@ function HomeDashboard() {
                                     </div>
                                 </>
                                 :
-                                <h1>Loading Data</h1>
+                                <div className="dashboard-spinner-wrap">
+                                    <CircularProgress />
+                                </div>
                             }
                         </div>
                         <div>
@@ -335,79 +378,91 @@ function HomeDashboard() {
                                     </div>
                                 </>
                                 :
-                                <h1>Loading Data</h1>
+                                <div className="dashboard-spinner-wrap">
+                                    <CircularProgress />
+                                </div>
                             }
                         </div>
                     </div>
                     <div className="adm-dashboard-3rdRow-mid">
-                        <div className="dashboard-3rdRow-mid-heading">
-                            <h6>{`Sales Contribution by Category`}</h6>
-                        </div>
-                        <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
-                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
-                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
-                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {!loadData ?
-                                        topUsers.map((val, index) => (
-                                            <TableRow
-                                            key={`0${val.index}-${val.user_id}`}
-                                            >
-                                                <TableCell align="left" component="th" scope="row">
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    {val.username}
-                                                </TableCell>
-                                                <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
+                        {!loadData ? 
+                            <>
+                                <div className="dashboard-3rdRow-mid-heading">
+                                    <h6>{`Sales Contribution by Category`}</h6>
+                                </div>
+                                <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
+                                    <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="left" style={{color: "#5A5A5A", width: "56px"}}>Rank</TableCell>
+                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Category</TableCell>
+                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Total Sales</TableCell>
+                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Contribution</TableCell>
                                             </TableRow>
-                                        ))
-                                        :
-                                        <h1>Loading Data</h1>
-                                    }
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                        </TableHead>
+                                        <TableBody>
+                                            {categoryContribution.map((val, index) => (
+                                                <TableRow
+                                                key={`0${val.index}-${val.category}`}
+                                                >
+                                                    <TableCell align="left" component="th" scope="row">
+                                                        {index + 1}
+                                                    </TableCell>
+                                                    <TableCell align="left">
+                                                        {val.category}
+                                                    </TableCell>
+                                                    <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.amount)}`}</TableCell>
+                                                    <TableCell align="left" className="txt-capitalize">{val.contribution}%</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </>
+                            :
+                            <div className="dashboard-spinner-wrap">
+                                <CircularProgress />
+                            </div>
+                        }
                     </div>
                     <div className="adm-dashboard-3rdRow-right">
-                        <div className="dashboard-3rdRow-right-heading">
-                            <h6>{`Top 5 Users by Transaction`}</h6>
-                        </div>
-                        <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
-                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
-                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
-                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {!loadData ?
-                                        topUsers.map((val, index) => (
-                                            <TableRow
-                                            key={`0${val.index}-${val.user_id}`}
-                                            >
-                                                <TableCell align="left" component="th" scope="row">
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    {val.username}
-                                                </TableCell>
-                                                <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
+                    {!loadData ? 
+                            <>
+                                <div className="dashboard-3rdRow-right-heading">
+                                    <h6>{`Top 5 Users by Transaction`}</h6>
+                                </div>
+                                <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
+                                    <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
+                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
+                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
                                             </TableRow>
-                                        ))
-                                        :
-                                        <h1>Loading Data</h1>
-                                    }
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                        </TableHead>
+                                        <TableBody>
+                                            {topUsers.map((val, index) => (
+                                                <TableRow
+                                                key={`0${val.index}-${val.user_id}`}
+                                                >
+                                                    <TableCell align="left" component="th" scope="row">
+                                                        {index + 1}
+                                                    </TableCell>
+                                                    <TableCell align="left">
+                                                        {val.username}
+                                                    </TableCell>
+                                                    <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </>
+                            :
+                            <div className="dashboard-spinner-wrap">
+                                <CircularProgress />
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

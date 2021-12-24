@@ -33,6 +33,14 @@
     text-transform: capitalize;
 }
 
+.dashboard-spinner-wrap {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+
 .adm-dashboard-main-wrap {
     display: flex;
     flex-direction: column;
