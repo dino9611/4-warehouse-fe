@@ -1,23 +1,23 @@
 :root {
-  --primary-1st-color: #0A4D3C;
-  --primary-2nd-color: #FCB537;
-  --primary-3rd-color: #8D280C;
-  --primary-4th-color: #B24629;
-  --primary-5th-color: #F1EDE7;
+  --primary-1st-color: #0a4d3c;
+  --primary-2nd-color: #fcb537;
+  --primary-3rd-color: #8d280c;
+  --primary-4th-color: #b24629;
+  --primary-5th-color: #f1ede7;
 
   --neutral-1st-color: #070707;
-  --neutral-2nd-color: #5A5A5A;
-  --neutral-3rd-color: #CACACA;
-  --neutral-4th-color: #F4F4F4;
-  --neutral-5th-color: #FFFFFF;
+  --neutral-2nd-color: #5a5a5a;
+  --neutral-3rd-color: #cacaca;
+  --neutral-4th-color: #f4f4f4;
+  --neutral-5th-color: #ffffff;
 
-  --semantic-error: #CB3A31;
-  --semantic-warning: #EF8943;
-  --semantic-success: #43936C;
-  --semantic-info: #27A0E3;
+  --semantic-error: #cb3a31;
+  --semantic-warning: #ef8943;
+  --semantic-success: #43936c;
+  --semantic-info: #27a0e3;
 
   --b-rad-root: 12px;
-  --b-shadow-root: 0px 1px 6px #D7D7D8;
+  --b-shadow-root: 0px 1px 6px #d7d7d8;
 
   /* REACT TOASTIFY ROOT STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
   --toastify-toast-width: 400px !important;
@@ -64,6 +64,7 @@ body {
   color: var(--neutral-1st-color) !important;
 }
 
-.Toastify__close-button:hover, .Toastify__close-button:focus {
+.Toastify__close-button:hover,
+.Toastify__close-button:focus {
   color: var(--neutral-2nd-color) !important;
 }
