@@ -193,23 +193,20 @@ function HomeDashboard() {
     // console.log(netSales[nowMonth]);
     // console.log(netSales[prevMonth]);
 
-    // console.log(netSales);
-    // console.log(labels);
-    // console.log(monthRevData);
-    // console.log(statusContribution);
-    // console.log(statusContLabels)
-    // console.log(statusContData);
-    // console.log(topProdQty);
-    // console.log(prodQtyLabels);
-    // console.log(prodQtyData);
-    // console.log(topProdValue);
-    // console.log(prodValLabels);
-    // console.log(prodValData);
-    // console.log(topUsers);
-    // console.log(totalUsers);
-    // console.log(categoryContribution);
-    // console.log(potentialRevenue);
-    // console.log(statusContribution);
+    const isAllNull = (value) => value === null;
+
+    console.log(totalUsers);
+    console.log(totalProdSold);
+    console.log(yearlyRevenue);
+    console.log(userAvgTransaction);
+    console.log(Object.values(netSales).every(isAllNull));
+    console.log(potentialRevenue);
+    console.log(monthlyRevenue);
+    console.log("line 205", statusContribution);
+    console.log(topProdQty);
+    console.log(topProdValue);
+    console.log(categoryContribution);
+    console.log(topUsers);
 
     return (
         <div className="adm-dashboard-main-wrap">
@@ -276,19 +273,27 @@ function HomeDashboard() {
                     <div className="adm-dashboard-1stRow-right">
                         {!loadData ? 
                             <>
-                                <div className="dashboard-1stRow-right-heading">
-                                    <h6>{`Monthly Net Sales (Delivered Transaction - ${filterYear})`}</h6>
-                                    <h6 style={{color: "#43936C"}}>{`Total: Rp ${thousandSeparator(yearNetSales)}`}</h6>
-                                </div>
-                                <div className="dashboard-1stRow-right-chart">
-                                    <VerticalBarChart 
-                                        legendDisplay={false} 
-                                        titleDisplay={false}
-                                        labelsData={netSalesLabels}
-                                        chartData={netSalesData}
-                                        barLabel={"Net Sales"}
-                                    />
-                                </div>
+                                {!(Object.values(netSales).every(isAllNull)) ?
+                                    <>
+                                        <div className="dashboard-1stRow-right-heading">
+                                            <h6>{`Monthly Net Sales (Delivered Transaction - ${filterYear})`}</h6>
+                                            <h6 style={{color: "#43936C"}}>{`Total: Rp ${thousandSeparator(yearNetSales)}`}</h6>
+                                        </div>
+                                        <div className="dashboard-1stRow-right-chart">
+                                            <VerticalBarChart 
+                                                legendDisplay={false} 
+                                                titleDisplay={false}
+                                                labelsData={netSalesLabels}
+                                                chartData={netSalesData}
+                                                barLabel={"Net Sales"}
+                                            />
+                                        </div>
+                                    </>
+                                    :
+                                    <div className="empty-state-center">
+                                        <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                    </div>
+                                }
                             </>
                             :
                             <div className="dashboard-spinner-wrap">
@@ -301,25 +306,33 @@ function HomeDashboard() {
                     <div className="adm-dashboard-2ndRow-left">
                         {!loadData ? 
                             <>
-                                <div className="dashboard-2ndRow-left-heading">
-                                    <h6>{`Monthly Actual vs Potential Revenue ${filterYear}`}</h6>
-                                    {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
-                                        <h6 style={{color: "#43936C"}}>+ {lastMonthRevGrow}% Actual rev. vs last month</h6>
-                                        : 
-                                        <h6 style={{color: "#CB3A31"}}>- {lastMonthRevGrow}% Actual rev. vs last month</h6>
-                                    }
-                                </div>
-                                <div className="dashboard-2ndRow-left-chart">
-                                    <LineChart 
-                                        titleDisplay={false}
-                                        yGridDisplay={false}
-                                        labelsData={potentRevLabels}
-                                        chartData01={monthRevData}
-                                        chartData02={potentRevData}
-                                        barLabel01={"Actual Revenue"}
-                                        barLabel02={"Potential"}
-                                    />
-                                </div>
+                                {!(Object.values(potentialRevenue).every(isAllNull)) && !(Object.values(monthlyRevenue).every(isAllNull)) ?
+                                    <>
+                                        <div className="dashboard-2ndRow-left-heading">
+                                            <h6>{`Monthly Actual vs Potential Revenue ${filterYear}`}</h6>
+                                            {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
+                                                <h6 style={{color: "#43936C"}}>+ {lastMonthRevGrow}% Actual rev. vs last month</h6>
+                                                : 
+                                                <h6 style={{color: "#CB3A31"}}>- {lastMonthRevGrow}% Actual rev. vs last month</h6>
+                                            }
+                                        </div>
+                                        <div className="dashboard-2ndRow-left-chart">
+                                            <LineChart 
+                                                titleDisplay={false}
+                                                yGridDisplay={false}
+                                                labelsData={potentRevLabels}
+                                                chartData01={monthRevData}
+                                                chartData02={potentRevData}
+                                                barLabel01={"Actual Revenue"}
+                                                barLabel02={"Potential"}
+                                            />
+                                        </div>
+                                    </>
+                                    :
+                                    <div className="empty-state-center">
+                                        <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                    </div>
+                                }
                             </>
                             :
                             <div className="dashboard-spinner-wrap">
@@ -330,35 +343,42 @@ function HomeDashboard() {
                     <div className="adm-dashboard-2ndRow-right">
                         {!loadData ? 
                             <>
-                                <div className="dashboard-2ndRow-right-heading">
-                                    <h6>Transaction by Status From <span style={{color: "#43936C"}}>Total {totalOrders} Orders</span> - {filterYear} (%)</h6>
-                                    {/* <h6>{`Transaction by Status from ${totalOrders} Orders - ${filterYear} (%)`}</h6> */}
-                                </div>
-                                <div className="dashboard-2ndRow-right-chart">
-                                    <DonutChart 
-                                        labelsData={statusContLabels}
-                                        labelDesc={"Transaction Contribution by Status"}
-                                        chartData={statusContData}
-                                        bgColorArray={[
-                                            "rgba(202,202,202, 0.8)", 
-                                            "rgba(90,90,90, 0.8)", 
-                                            "rgba(252, 179, 87, 0.8)",
-                                            "rgba(39, 160, 227, 0.8)",
-                                            "rgba(67,147,108, 0.8)", 
-                                            "rgba(205, 58, 49, 0.8)", 
-                                            "rgba(239,137,67, 0.8)",
-                                        ]}
-                                        bordColorArray={[
-                                            "rgba(202,202,202, 0.8)", 
-                                            "rgba(90,90,90, 0.8)", 
-                                            "rgba(252, 179, 87, 0.8)",
-                                            "rgba(39, 160, 227, 0.8)",
-                                            "rgba(67,147,108, 0.8)", 
-                                            "rgba(205, 58, 49, 0.8)", 
-                                            "rgba(239,137,67, 0.8)",
-                                        ]}
-                                    />
-                                </div>
+                                {(statusContribution.length) ?
+                                    <>
+                                        <div className="dashboard-2ndRow-right-heading">
+                                            <h6>Transaction by Status From <span style={{color: "#43936C"}}>Total {totalOrders} Orders</span> - {filterYear} (%)</h6>
+                                        </div>
+                                        <div className="dashboard-2ndRow-right-chart">
+                                            <DonutChart 
+                                                labelsData={statusContLabels}
+                                                labelDesc={"Transaction Contribution by Status"}
+                                                chartData={statusContData}
+                                                bgColorArray={[
+                                                    "rgba(202,202,202, 0.8)", 
+                                                    "rgba(90,90,90, 0.8)", 
+                                                    "rgba(252, 179, 87, 0.8)",
+                                                    "rgba(39, 160, 227, 0.8)",
+                                                    "rgba(67,147,108, 0.8)", 
+                                                    "rgba(205, 58, 49, 0.8)", 
+                                                    "rgba(239,137,67, 0.8)",
+                                                ]}
+                                                bordColorArray={[
+                                                    "rgba(202,202,202, 0.8)", 
+                                                    "rgba(90,90,90, 0.8)", 
+                                                    "rgba(252, 179, 87, 0.8)",
+                                                    "rgba(39, 160, 227, 0.8)",
+                                                    "rgba(67,147,108, 0.8)", 
+                                                    "rgba(205, 58, 49, 0.8)", 
+                                                    "rgba(239,137,67, 0.8)",
+                                                ]}
+                                            />
+                                        </div>
+                                    </>
+                                    :
+                                    <div className="empty-state-center">
+                                        <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                    </div>               
+                                }
                             </>
                             :
                             <div className="dashboard-spinner-wrap">
@@ -372,18 +392,26 @@ function HomeDashboard() {
                         <div>
                             {!loadData ? 
                                 <>
-                                    <div className="dashboard-3rdRow-left-heading">
-                                        <h6>{`Top 5 Selling Product by Qty`}</h6>
-                                    </div>
-                                    <div className="dashboard-3rdRow-left-chart">
-                                        <HorizontalBarChart
-                                            legendDisplay={false}
-                                            titleDisplay={false}
-                                            labelsData={prodQtyLabels}
-                                            chartData={prodQtyData}
-                                            barLabel={"Qty"}
-                                        />
-                                    </div>
+                                    {(topProdQty.length) ?
+                                        <>
+                                            <div className="dashboard-3rdRow-left-heading">
+                                                <h6>{`Top 5 Selling Product by Qty`}</h6>
+                                            </div>
+                                            <div className="dashboard-3rdRow-left-chart">
+                                                <HorizontalBarChart
+                                                    legendDisplay={false}
+                                                    titleDisplay={false}
+                                                    labelsData={prodQtyLabels}
+                                                    chartData={prodQtyData}
+                                                    barLabel={"Qty"}
+                                                />
+                                            </div>
+                                        </>
+                                        :
+                                        <div className="empty-state-center">
+                                            <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                        </div>  
+                                    }
                                 </>
                                 :
                                 <div className="dashboard-spinner-wrap">
@@ -394,20 +422,28 @@ function HomeDashboard() {
                         <div>
                             {!loadData ? 
                                 <>
-                                    <div className="dashboard-3rdRow-left-heading">
-                                        <h6>{`Top 5 Selling Product by Value`}</h6>
-                                    </div>
-                                    <div className="dashboard-3rdRow-left-chart">
-                                        <HorizontalBarChart
-                                            legendDisplay={false}
-                                            titleDisplay={false}
-                                            labelsData={prodValLabels}
-                                            chartData={prodValData}
-                                            barLabel={"Value"}
-                                            barColor={"rgba(67,147,108, 0.8)"}
-                                            bordColor={"rgba(67,147,108, 0.8)"}
-                                        />
-                                    </div>
+                                    {(topProdValue.length) ?
+                                        <>
+                                            <div className="dashboard-3rdRow-left-heading">
+                                                <h6>{`Top 5 Selling Product by Value`}</h6>
+                                            </div>
+                                            <div className="dashboard-3rdRow-left-chart">
+                                                <HorizontalBarChart
+                                                    legendDisplay={false}
+                                                    titleDisplay={false}
+                                                    labelsData={prodValLabels}
+                                                    chartData={prodValData}
+                                                    barLabel={"Value"}
+                                                    barColor={"rgba(67,147,108, 0.8)"}
+                                                    bordColor={"rgba(67,147,108, 0.8)"}
+                                                />
+                                            </div>
+                                        </>
+                                        :
+                                        <div className="empty-state-center">
+                                            <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                        </div>  
+                                    }
                                 </>
                                 :
                                 <div className="dashboard-spinner-wrap">
@@ -419,37 +455,45 @@ function HomeDashboard() {
                     <div className="adm-dashboard-3rdRow-mid">
                         {!loadData ? 
                             <>
-                                <div className="dashboard-3rdRow-mid-heading">
-                                    <h6>{`Sales Contribution by Category`}</h6>
-                                </div>
-                                <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
-                                    <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align="left" style={{color: "#5A5A5A", width: "56px"}}>Rank</TableCell>
-                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Category</TableCell>
-                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Total Sales</TableCell>
-                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Contribution</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {categoryContribution.map((val, index) => (
-                                                <TableRow
-                                                key={`0${val.index}-${val.category}`}
-                                                >
-                                                    <TableCell align="left" component="th" scope="row">
-                                                        {index + 1}
-                                                    </TableCell>
-                                                    <TableCell align="left" style={{width: "80px"}}>
-                                                        {val.category}
-                                                    </TableCell>
-                                                    <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.amount)}`}</TableCell>
-                                                    <TableCell align="left" className="txt-capitalize">{val.contribution}%</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                {(categoryContribution.length) ?
+                                    <>
+                                        <div className="dashboard-3rdRow-mid-heading">
+                                            <h6>{`Sales Contribution by Category`}</h6>
+                                        </div>
+                                        <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
+                                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell align="left" style={{color: "#5A5A5A", width: "56px"}}>Rank</TableCell>
+                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Category</TableCell>
+                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Sales</TableCell>
+                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Contribution</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {categoryContribution.map((val, index) => (
+                                                        <TableRow
+                                                        key={`0${val.index}-${val.category}`}
+                                                        >
+                                                            <TableCell align="left" component="th" scope="row">
+                                                                {index + 1}
+                                                            </TableCell>
+                                                            <TableCell align="left" style={{width: "80px"}}>
+                                                                {val.category}
+                                                            </TableCell>
+                                                            <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.amount)}`}</TableCell>
+                                                            <TableCell align="left" className="txt-capitalize">{val.contribution}%</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </>
+                                    :
+                                    <div className="empty-state-center">
+                                        <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                    </div>                                                          
+                                }
                             </>
                             :
                             <div className="dashboard-spinner-wrap">
@@ -460,35 +504,43 @@ function HomeDashboard() {
                     <div className="adm-dashboard-3rdRow-right">
                     {!loadData ? 
                             <>
-                                <div className="dashboard-3rdRow-right-heading">
-                                    <h6>{`Top 5 Users by Transaction`}</h6>
-                                </div>
-                                <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
-                                    <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
-                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
-                                                <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {topUsers.map((val, index) => (
-                                                <TableRow
-                                                key={`0${val.index}-${val.user_id}`}
-                                                >
-                                                    <TableCell align="left" component="th" scope="row">
-                                                        {index + 1}
-                                                    </TableCell>
-                                                    <TableCell align="left">
-                                                        {val.username}
-                                                    </TableCell>
-                                                    <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                {(topUsers.length) ?
+                                    <>
+                                        <div className="dashboard-3rdRow-right-heading">
+                                            <h6>{`Top 5 Users by Transaction`}</h6>
+                                        </div>
+                                        <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
+                                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
+                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
+                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {topUsers.map((val, index) => (
+                                                        <TableRow
+                                                        key={`0${val.index}-${val.user_id}`}
+                                                        >
+                                                            <TableCell align="left" component="th" scope="row">
+                                                                {index + 1}
+                                                            </TableCell>
+                                                            <TableCell align="left">
+                                                                {val.username}
+                                                            </TableCell>
+                                                            <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </>
+                                    :
+                                    <div className="empty-state-center">
+                                        <h2 style={{color: "#5A5A5A", margin: 0}}>Data Not Available</h2>
+                                    </div>                                                          
+                                }
                             </>
                             :
                             <div className="dashboard-spinner-wrap">

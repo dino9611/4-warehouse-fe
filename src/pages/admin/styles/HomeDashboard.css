@@ -33,6 +33,13 @@
     text-transform: capitalize;
 }
 
+.empty-state-center {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+}
+
 .dashboard-spinner-wrap {
     align-items: center;
     display: flex;
