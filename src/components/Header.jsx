@@ -15,7 +15,7 @@ import asset from "./../assets/index";
 import axios from "axios";
 
 function Header() {
-  const [dataCategory, setDataCategory] = useState([]);
+  const [dataCategory, setDataCategory] = useState([]); // State untuk menyimpan data produk dari database
   const [handlerCategory, setHandlerCategory] = useState(false); // State untuk kondisi dropdown category
   const [handlerProfile, setHandlerProfile] = useState(false); // State untuk kondisi dropdown profile
 
