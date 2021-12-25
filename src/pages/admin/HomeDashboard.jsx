@@ -4,7 +4,6 @@ import axios from 'axios';
 import {API_URL} from "../../constants/api";
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import VerticalBarChart from '../../components/admin/VerticalBarChart';
-import GroupBarChart from '../../components/admin/GroupBarChart';
 import LineChart from '../../components/admin/LineChart';
 import DonutChart from '../../components/admin/DonutChart';
 import HorizontalBarChart from '../../components/admin/HorizontalBarChart';
@@ -17,7 +16,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -44,10 +42,11 @@ function HomeDashboard() {
     
     const [yearlyRevenue, setYearlyRevenue] = useState(0);
 
+    const [yearNetSales, setYearNetSales] = useState(0);
+
     const [netSales, setNetSales] = useState({});
     const [netSalesLabels, setNetSalesLabels] = useState([]);
     const [netSalesData, setNetSalesData] = useState([]);
-    // const [netSales, setNetSales] = useState(0);
 
     const [topProdQty, setTopProdQty] = useState({});
     const [prodQtyLabels, setProdQtyLabels] = useState([]);
@@ -58,8 +57,8 @@ function HomeDashboard() {
     const [prodValData, setProdValData] = useState([]);
 
     const [categoryContribution, setCategoryContribution] = useState({});
-    const [categoryContLabels, setCategoryContLabels] = useState([]);
-    const [categoryContData, setCategoryContData] = useState([]);
+    // const [categoryContLabels, setCategoryContLabels] = useState([]);
+    // const [categoryContData, setCategoryContData] = useState([]);
 
     const [totalProdSold, setTotalProdSold] = useState(0);
 
@@ -80,6 +79,7 @@ function HomeDashboard() {
             const res03 = await axios.get(`${API_URL}/sales/status-contribution`, {headers: {filter_year: filterYear}});
             const res04 = await axios.get(`${API_URL}/sales/yearly-revenue`, {headers: {filter_year: filterYear}});
             const res05 = await axios.get(`${API_URL}/sales/net-sales`, {headers: {filter_year: filterYear}});
+            const res06 = await axios.get(`${API_URL}/sales/year-net-sales`, {headers: {filter_year: filterYear}});
             setMonthlyRevenue(res01.data);
             setMonthRevLabels(Object.keys(res01.data));
             setMonthRevData(Object.values(res01.data));
@@ -105,6 +105,7 @@ function HomeDashboard() {
             setNetSales(res05.data);
             setNetSalesLabels(Object.keys(res05.data));
             setNetSalesData(Object.values(res05.data));
+            setYearNetSales(res06.data.total_yearly);
         } catch (error) {
             console.log(error);
         }
@@ -186,7 +187,7 @@ function HomeDashboard() {
     const date = new Date();
     const nowMonth = date.toLocaleString('default', { month: 'long' });
     const prevMonth = monthNames[(date.getMonth() - 1)];
-    const lastMonthRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[nowMonth]) * 100).toFixed(1);
+    const lastMonthRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[prevMonth]) * 100).toFixed(1);
     // console.log(nowMonth);
     // console.log(prevMonth);
     // console.log(netSales[nowMonth]);
@@ -235,8 +236,8 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Total Orders {filterYear}</h6>
-                                        <h4>{totalOrders}</h4>
+                                        <h6>Product Solds {filterYear}</h6>
+                                        <h4>{totalProdSold}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -277,6 +278,7 @@ function HomeDashboard() {
                             <>
                                 <div className="dashboard-1stRow-right-heading">
                                     <h6>{`Monthly Net Sales (Delivered Transaction - ${filterYear})`}</h6>
+                                    <h6 style={{color: "#43936C"}}>{`Total: Rp ${thousandSeparator(yearNetSales)}`}</h6>
                                 </div>
                                 <div className="dashboard-1stRow-right-chart">
                                     <VerticalBarChart 
@@ -329,7 +331,8 @@ function HomeDashboard() {
                         {!loadData ? 
                             <>
                                 <div className="dashboard-2ndRow-right-heading">
-                                    <h6>{`Transaction Contribution by Status - ${filterYear} (%)`}</h6>
+                                    <h6>Transaction by Status From <span style={{color: "#43936C"}}>Total {totalOrders} Orders</span> - {filterYear} (%)</h6>
+                                    {/* <h6>{`Transaction by Status from ${totalOrders} Orders - ${filterYear} (%)`}</h6> */}
                                 </div>
                                 <div className="dashboard-2ndRow-right-chart">
                                     <DonutChart 
@@ -337,16 +340,22 @@ function HomeDashboard() {
                                         labelDesc={"Transaction Contribution by Status"}
                                         chartData={statusContData}
                                         bgColorArray={[
-                                            "rgba(39, 160, 227, 0.8)", 
+                                            "rgba(202,202,202, 0.8)", 
+                                            "rgba(90,90,90, 0.8)", 
+                                            "rgba(252, 179, 87, 0.8)",
+                                            "rgba(39, 160, 227, 0.8)",
                                             "rgba(67,147,108, 0.8)", 
-                                            "rgba(205, 58, 49, 0.8)",
-                                            "rgba(239,137,67, 0.8)"
+                                            "rgba(205, 58, 49, 0.8)", 
+                                            "rgba(239,137,67, 0.8)",
                                         ]}
                                         bordColorArray={[
-                                            "rgba(39, 160, 227, 0.8)", 
+                                            "rgba(202,202,202, 0.8)", 
+                                            "rgba(90,90,90, 0.8)", 
+                                            "rgba(252, 179, 87, 0.8)",
+                                            "rgba(39, 160, 227, 0.8)",
                                             "rgba(67,147,108, 0.8)", 
-                                            "rgba(205, 58, 49, 0.8)",
-                                            "rgba(239,137,67, 0.8)"
+                                            "rgba(205, 58, 49, 0.8)", 
+                                            "rgba(239,137,67, 0.8)",
                                         ]}
                                     />
                                 </div>
