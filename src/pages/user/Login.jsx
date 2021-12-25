@@ -77,7 +77,7 @@ class Login extends React.Component {
   // );
   render() {
     const { showpassword, username, password } = this.state;
-    if (this.props.is_login) {
+    if (this.props.isLogin) {
       return <Redirect to="/" />;
     }
     return (

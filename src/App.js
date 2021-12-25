@@ -145,7 +145,6 @@ function App() {
 
   return (
     <div className="App">
-      {" "}
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
       {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
       {loading ? <div>Loading</div> : renderRouting()}

@@ -44,6 +44,10 @@ import mandiri from "./mandiri.png";
 import bca from "./bca.png";
 import bni from "./bni.png";
 import cimb from "./cimb.png";
+import profpic from "./profpic.svg";
+import history from "./history.svg";
+import alamat from "./alamat.svg";
+import logout from "./logout.svg";
 
 export default {
   logo,
@@ -92,4 +96,8 @@ export default {
   bca,
   bni,
   cimb,
+  profpic,
+  history,
+  alamat,
+  logout,
 };
