@@ -171,13 +171,13 @@ function HomeDashboard() {
     };
 
     useEffect(() => {
-        const test = async () => {
+        const fetchData = async () => {
             await fetchRevenue();
             await fetchProdPerformance();
             await fetchUsersInsight();
             await setLoadData(false);
         }
-        test();
+        fetchData();
     }, [filterYear]);
 
     // CALCULATE GROWTH SECTION
