@@ -16,6 +16,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@mui/material/CircularProgress';
+import chevronDown from "../../assets/components/Chevron-Down.svg";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -26,7 +27,11 @@ const useStyles = makeStyles({
 function HomeDashboard() {
     const classes = useStyles();
     
+    const [filterYear, setFilterYear] = useState(2021);
+
     const [loadData, setLoadData] = useState(true);
+
+    const [toggleDropdown, setToggleDropwdown] = useState(false);
     
     const [monthlyRevenue, setMonthlyRevenue] = useState({});
     const [monthRevLabels, setMonthRevLabels] = useState([]);
@@ -57,8 +62,6 @@ function HomeDashboard() {
     const [prodValData, setProdValData] = useState([]);
 
     const [categoryContribution, setCategoryContribution] = useState({});
-    // const [categoryContLabels, setCategoryContLabels] = useState([]);
-    // const [categoryContData, setCategoryContData] = useState([]);
 
     const [totalProdSold, setTotalProdSold] = useState(0);
 
@@ -69,8 +72,6 @@ function HomeDashboard() {
     const [userAvgTransaction, setUserAvgTransaction] = useState(0);
 
     const [totalOrders, setTotalOrders] = useState(0);
-
-    const [filterYear, setFilterYear] = useState(2021);
 
     const fetchRevenue = async () => {
         try {
@@ -177,10 +178,7 @@ function HomeDashboard() {
             await setLoadData(false);
         }
         test();
-    }, []);
-
-    // Bisa coba react lazy loading & suspense
-    // react query & useSwr
+    }, [filterYear]);
 
     // CALCULATE GROWTH SECTION
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -188,31 +186,72 @@ function HomeDashboard() {
     const nowMonth = date.toLocaleString('default', { month: 'long' });
     const prevMonth = monthNames[(date.getMonth() - 1)];
     const lastMonthRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[prevMonth]) * 100).toFixed(1);
-    // console.log(nowMonth);
-    // console.log(prevMonth);
-    // console.log(netSales[nowMonth]);
-    // console.log(netSales[prevMonth]);
 
+    // RENDER DROPDOWN FILTER YEAR
+    const filterYearLimit = 4;
+
+    const nowYear = date.getFullYear();
+
+    let yearRange = Array(filterYearLimit).fill(null).map((val, index) => nowYear - index); // Itung range filter year yang bisa dipilih
+
+    const dropdownClick = () => {
+        setToggleDropwdown(!toggleDropdown);
+    };
+
+    const dropdownBlur = () => {
+        setToggleDropwdown(false)
+    };
+
+    const selectFilterYear = (yearValue) => {
+        setFilterYear(yearValue);
+        setToggleDropwdown(false);
+        setLoadData(true);
+    };
+
+    // CHECK CONDITION FOR DATA AVAILABILITY
     const isAllNull = (value) => value === null;
-
-    console.log(totalUsers);
-    console.log(totalProdSold);
-    console.log(yearlyRevenue);
-    console.log(userAvgTransaction);
-    console.log(Object.values(netSales).every(isAllNull));
-    console.log(potentialRevenue);
-    console.log(monthlyRevenue);
-    console.log("line 205", statusContribution);
-    console.log(topProdQty);
-    console.log(topProdValue);
-    console.log(categoryContribution);
-    console.log(topUsers);
 
     return (
         <div className="adm-dashboard-main-wrap">
             <div className="adm-dashboard-header-wrap">
                 <h4>Dashboard</h4>
-                <h4>Filter Year {filterYear}</h4>
+                <div className="adm-dashboard-header-right">
+                    <h4>Filter Year</h4>
+                    <div className="adm-dashboard-dropdown-wrap">
+                        <button 
+                            className="adm-dashboard-dropdown-btn" 
+                            onClick={dropdownClick}
+                            onBlur={dropdownBlur}
+                        >
+                            {filterYear}
+                            <img 
+                                src={chevronDown} 
+                                style={{
+                                    transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                }}
+                            />
+                        </button>
+                        <ul 
+                            className="adm-dashboard-dropdown-menu" 
+                            style={{
+                                transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
+                                opacity: toggleDropdown ? 1 : 0,
+                                zIndex: toggleDropdown ? 100 : -10,
+                            }}
+                        >
+                            {yearRange.map((val) => (
+                                val === filterYear ? 
+                                <li className="adm-dashboard-dropdown-selected">{val}</li> 
+                                : 
+                                <li
+                                    onClick={() => selectFilterYear(val)}
+                                >
+                                    {val}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div className="adm-dashboard-contents-wrap">
                 <div className="adm-dashboard-contents-1stRow">
@@ -555,3 +594,25 @@ function HomeDashboard() {
 }
 
 export default HomeDashboard;
+
+// TESTING PURPOSE
+// const [categoryContLabels, setCategoryContLabels] = useState([]);
+// const [categoryContData, setCategoryContData] = useState([]);
+// console.log(nowMonth);
+// console.log(prevMonth);
+// console.log(netSales[nowMonth]);
+// console.log(netSales[prevMonth]);
+// console.log(totalUsers);
+// console.log(totalProdSold);
+// console.log(yearlyRevenue);
+// console.log(userAvgTransaction);
+// console.log(Object.values(netSales).every(isAllNull));
+// console.log(potentialRevenue);
+// console.log(monthlyRevenue);
+// console.log("line 205", statusContribution);
+// console.log(topProdQty);
+// console.log(topProdValue);
+// console.log(categoryContribution);
+// console.log(topUsers);
+// Bisa coba react lazy loading & suspense
+// react query & useSwr
