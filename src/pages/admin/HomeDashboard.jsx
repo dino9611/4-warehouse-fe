@@ -43,7 +43,11 @@ function HomeDashboard() {
     const [statusContData, setStatusContData] = useState([]);
     
     const [yearlyRevenue, setYearlyRevenue] = useState(0);
-    const [netSales, setNetSales] = useState(0);
+
+    const [netSales, setNetSales] = useState({});
+    const [netSalesLabels, setNetSalesLabels] = useState([]);
+    const [netSalesData, setNetSalesData] = useState([]);
+    // const [netSales, setNetSales] = useState(0);
 
     const [topProdQty, setTopProdQty] = useState({});
     const [prodQtyLabels, setProdQtyLabels] = useState([]);
@@ -98,7 +102,9 @@ function HomeDashboard() {
                 });
             });
             setYearlyRevenue(res04.data.total_yearly);
-            setNetSales(res05.data.net_sales);
+            setNetSales(res05.data);
+            setNetSalesLabels(Object.keys(res05.data));
+            setNetSalesData(Object.values(res05.data));
         } catch (error) {
             console.log(error);
         }
@@ -180,13 +186,13 @@ function HomeDashboard() {
     const date = new Date();
     const nowMonth = date.toLocaleString('default', { month: 'long' });
     const prevMonth = monthNames[(date.getMonth() - 1)];
-    const lastMontRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[nowMonth]) * 100).toFixed(1);
-    console.log(nowMonth);
-    console.log(prevMonth);
-    console.log(monthlyRevenue[nowMonth]);
-    console.log(monthlyRevenue[prevMonth]);
+    const lastMonthRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[nowMonth]) * 100).toFixed(1);
+    // console.log(nowMonth);
+    // console.log(prevMonth);
+    // console.log(netSales[nowMonth]);
+    // console.log(netSales[prevMonth]);
 
-    console.log(monthlyRevenue);
+    // console.log(netSales);
     // console.log(labels);
     // console.log(monthRevData);
     // console.log(statusContribution);
@@ -229,8 +235,8 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Avg. User Transaction</h6>
-                                        <h4>{`Rp ${thousandSeparator(userAvgTransaction)}`}</h4>
+                                        <h6>Total Orders {filterYear}</h6>
+                                        <h4>{totalOrders}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -243,8 +249,8 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Net Sales {filterYear}</h6>
-                                        <h4>{`Rp ${thousandSeparator(netSales)}`}</h4>
+                                        <h6>Total Revenue {filterYear}</h6>
+                                        <h4>{`Rp ${thousandSeparator(yearlyRevenue)}`}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -255,8 +261,8 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Total Orders {filterYear}</h6>
-                                        <h4>{totalOrders}</h4>
+                                        <h6>Avg. User Transaction</h6>
+                                        <h4>{`Rp ${thousandSeparator(userAvgTransaction)}`}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -270,20 +276,15 @@ function HomeDashboard() {
                         {!loadData ? 
                             <>
                                 <div className="dashboard-1stRow-right-heading">
-                                    <h6>{`Monthly Revenue (Finished Transaction - ${filterYear})`}</h6>
-                                    {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
-                                    <h6 style={{color: "#43936C"}}>+ {lastMontRevGrow}% Since last month</h6>
-                                    : 
-                                    <h6 style={{color: "#CB3A31"}}>- {lastMontRevGrow}% Since last month</h6>
-                                }
+                                    <h6>{`Monthly Net Sales (Delivered Transaction - ${filterYear})`}</h6>
                                 </div>
                                 <div className="dashboard-1stRow-right-chart">
                                     <VerticalBarChart 
                                         legendDisplay={false} 
                                         titleDisplay={false}
-                                        labelsData={monthRevLabels}
-                                        chartData={monthRevData}
-                                        barLabel={"Revenue"}
+                                        labelsData={netSalesLabels}
+                                        chartData={netSalesData}
+                                        barLabel={"Net Sales"}
                                     />
                                 </div>
                             </>
@@ -299,8 +300,12 @@ function HomeDashboard() {
                         {!loadData ? 
                             <>
                                 <div className="dashboard-2ndRow-left-heading">
-                                    <h6>{`Monthly Achieved Revenue (Actual & Potential - ${filterYear})`}</h6>
-                                    <h6 style={{color: "#B24629"}}>{`[ Total Revenue ${filterYear} = Rp ${thousandSeparator(yearlyRevenue)} ]`}</h6>
+                                    <h6>{`Monthly Actual vs Potential Revenue ${filterYear}`}</h6>
+                                    {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
+                                        <h6 style={{color: "#43936C"}}>+ {lastMonthRevGrow}% Actual rev. vs last month</h6>
+                                        : 
+                                        <h6 style={{color: "#CB3A31"}}>- {lastMonthRevGrow}% Actual rev. vs last month</h6>
+                                    }
                                 </div>
                                 <div className="dashboard-2ndRow-left-chart">
                                     <LineChart 
