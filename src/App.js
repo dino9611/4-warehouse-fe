@@ -20,10 +20,6 @@ import AdminMainParent from "./pages/admin/AdminMainParent";
 import DetailedProduct from "./pages/non-user/DetailedProduct";
 import Checkout from "./pages/user/Checkout";
 import Cart from "./pages/user/Cart";
-import { useEffect } from "react";
-import axios from "axios";
-import { API_URL } from "./constants/api";
-import { useDispatch } from "react-redux";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
 
@@ -62,7 +58,6 @@ function App() {
 
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector((state) => state.auth.role_id);
-  const dispatch = useDispatch();
   useEffect(() => {
     let token = localStorage.getItem("token");
     if (token) {
@@ -130,9 +125,13 @@ function App() {
             <Route path="/login" exact component={Login} />
             <Route path="/register" exact component={Register} />
             <Route path="/verify-email" exact component={VerifyEmail} />
-            <Route path="/products" exact component="" />
+            <Route path="/products" exact component={Product} />
+            <Route
+              path="/products/:productId"
+              exact
+              component={DetailedProduct}
+            />
             <Route path="/products/:category" exact component="" />
-            <Route path="/products/:productId" exact component="" />
             <Route path="/admin" exact component={AdminLogin} />{" "}
             {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
             <Route path="*" component={NotFound} />
@@ -146,7 +145,6 @@ function App() {
 
   return (
     <div className="App">
-      {" "}
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
       {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
       {loading ? <div>Loading</div> : renderRouting()}
