@@ -63,6 +63,10 @@ function HomeDashboard() {
 
     const [totalUsers, setTotalUsers] = useState(0);
 
+    const [userAvgTransaction, setUserAvgTransaction] = useState(0);
+
+    const [totalOrders, setTotalOrders] = useState(0);
+
     const [filterYear, setFilterYear] = useState(2021);
 
     const fetchRevenue = async () => {
@@ -147,8 +151,12 @@ function HomeDashboard() {
         try {
             const res01 = await axios.get(`${API_URL}/sales/top-users`, {headers: {filter_year: filterYear}});
             const res02 = await axios.get(`${API_URL}/sales/total-users`);
+            const res03 = await axios.get(`${API_URL}/sales/average-transaction`, {headers: {filter_year: filterYear}});
+            const res04 = await axios.get(`${API_URL}/sales/total-orders`, {headers: {filter_year: filterYear}});
             setTopUsers(res01.data);
             setTotalUsers(res02.data.total_users);
+            setUserAvgTransaction(res03.data.avg_transaction);
+            setTotalOrders(res04.data.total_orders)
         } catch (error) {
             console.log(error);
         }
@@ -172,9 +180,13 @@ function HomeDashboard() {
     const date = new Date();
     const nowMonth = date.toLocaleString('default', { month: 'long' });
     const prevMonth = monthNames[(date.getMonth() - 1)];
-    const lastMontRevGrow = ((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[nowMonth]) * 100;
+    const lastMontRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[nowMonth]) * 100).toFixed(1);
+    console.log(nowMonth);
+    console.log(prevMonth);
+    console.log(monthlyRevenue[nowMonth]);
+    console.log(monthlyRevenue[prevMonth]);
 
-    // console.log(monthlyRevenue);
+    console.log(monthlyRevenue);
     // console.log(labels);
     // console.log(monthRevData);
     // console.log(statusContribution);
@@ -190,7 +202,7 @@ function HomeDashboard() {
     // console.log(totalUsers);
     // console.log(categoryContribution);
     // console.log(potentialRevenue);
-    console.log(statusContribution);
+    // console.log(statusContribution);
 
     return (
         <div className="adm-dashboard-main-wrap">
@@ -218,6 +230,7 @@ function HomeDashboard() {
                                 {!loadData ? 
                                     <>
                                         <h6>Avg. User Transaction</h6>
+                                        <h4>{`Rp ${thousandSeparator(userAvgTransaction)}`}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -242,8 +255,8 @@ function HomeDashboard() {
                             <div>
                                 {!loadData ? 
                                     <>
-                                        <h6>Products Sold {filterYear}</h6>
-                                        <h4>{totalProdSold}</h4>
+                                        <h6>Total Orders {filterYear}</h6>
+                                        <h4>{totalOrders}</h4>
                                     </>
                                     :
                                     <div className="dashboard-spinner-wrap">
@@ -258,7 +271,7 @@ function HomeDashboard() {
                             <>
                                 <div className="dashboard-1stRow-right-heading">
                                     <h6>{`Monthly Revenue (Finished Transaction - ${filterYear})`}</h6>
-                                    {(monthlyRevenue.November < monthlyRevenue.December) ? 
+                                    {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
                                     <h6 style={{color: "#43936C"}}>+ {lastMontRevGrow}% Since last month</h6>
                                     : 
                                     <h6 style={{color: "#CB3A31"}}>- {lastMontRevGrow}% Since last month</h6>
