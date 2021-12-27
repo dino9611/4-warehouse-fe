@@ -15,6 +15,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useSelector } from "react-redux";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -97,6 +98,10 @@ function ManageTransaction() {
         fetchData();
     }, [value])
 
+    const getRoleId = useSelector((state) => state.auth);
+
+    console.log(getRoleId)
+
     const renderTransactionTable = (arrayToMap) => {
         return (
             <>
@@ -136,17 +141,6 @@ function ManageTransaction() {
                                                         :
                                                         "adm-fail"
                                                     }
-                                                    // style={{
-                                                    //     color: val.status_id === 1 || val.status_id === 2 ? "#FCB537"
-                                                    //     :
-                                                    //     val.status_id === 3 ? "#B24629"
-                                                    //     :
-                                                    //     val.status_id === 4 ? "#27A0E3"
-                                                    //     :
-                                                    //     val.status_id === 5 ? "#43936C"
-                                                    //     :
-                                                    //     "#CB3A31"
-                                                    // }}
                                                 >
                                                     {val.status}
                                                 </div>
