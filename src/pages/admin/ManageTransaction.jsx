@@ -18,7 +18,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
-import AdmBtnSecondary from '../../components/admin/AdmBtnSecondary';
+import chevronDown from "../../assets/components/Chevron-Down.svg";
+import AcceptIcon from "../../assets/centangijo.svg";
+import RejectIcon from "../../assets/close.svg";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,6 +62,8 @@ function ManageTransaction() {
 
     const [value, setValue] = React.useState(0);
 
+    const [dropdownLength, setDropdownLength] = useState([]); // Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
+
     const [modalLength, setModalLength] = useState([]);
 
     const handleChange = (event, newValue) => {
@@ -98,6 +102,12 @@ function ManageTransaction() {
         } catch (error) {
             console.log(error);
         } finally {
+            let dropdownArr = [];
+            for (let i = 0; i < transactions.length; i++) {
+                dropdownArr[i] = false;
+            };
+            setDropdownLength([...dropdownArr]);
+
             let modalArr = [];
             for (let i = 0; i < transactions.length; i++) {
                 modalArr[i] = false;
@@ -177,16 +187,13 @@ function ManageTransaction() {
                                                     Detail
                                                 </span>
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" style={{width: "176px"}}>
                                                 {val.status_id === 2 ?
-                                                    <>
-                                                        <AdmBtnPrimary>Accept</AdmBtnPrimary>
-                                                        <AdmBtnSecondary>Reject</AdmBtnSecondary>
-                                                    </>
+                                                    renderDropdown(index)
                                                     : val.status_id === 3 ?
-                                                    <button>Send</button>
+                                                    <AdmBtnPrimary width={"6rem"}>Send</AdmBtnPrimary>
                                                     :
-                                                    <button disabled>No Action</button>
+                                                    <AdmBtnPrimary width={"6rem"} disabled={true}>No Action</AdmBtnPrimary>
                                                 }
                                             </TableCell>
                                         </TableRow>
@@ -201,6 +208,67 @@ function ManageTransaction() {
                     </div>
                 }
             </>
+        )
+    };
+
+    // RENDER DROPDOWN ACTION MENU
+    const dropdownClick = (index) => {
+        if (!dropdownLength[index]) {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setDropdownLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        };
+    };
+
+    const dropdownBlur = () => {
+        let newArr = dropdownLength.map(() => { // Clickaway action dropdown menu/menutup kembali dropdown bila klik diluar dropdown
+            return false;
+        })
+        setDropdownLength([...newArr]);
+    };
+
+    const renderDropdown = (index) => {
+        return (
+            <div className="adm-transaction-dropdown-parent">
+                <button 
+                    className="adm-transaction-dropdown-btn" 
+                    onClick={() => dropdownClick(index)}
+                    onBlur={() => dropdownBlur(index)}
+                >
+                    Options
+                    <img 
+                        src={chevronDown} 
+                        style={{
+                            transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
+                        }}
+                    />
+                </button>
+                <ul 
+                    className="adm-transaction-dropdown-menu" 
+                    style={{
+                        transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
+                        opacity: dropdownLength[index] ? 1 : 0,
+                        zIndex: dropdownLength[index] ? 100 : -10,
+                    }}
+                >
+                    <li className="acc-hover">
+                        <img src={AcceptIcon} />
+                        Accept
+                    </li>
+                    <li className="reject-hover">
+                        <img src={RejectIcon} />
+                        Reject
+                    </li>
+                </ul>
+            </div>
         )
     };
 
@@ -248,7 +316,7 @@ function ManageTransaction() {
                     />
                 </div>
                 <div className="payproof-modal-foot-wrap">
-                    <AdmBtnPrimary onClick={() => onCloseModal(index)} width={"6rem"}>Back</AdmBtnPrimary>
+                    <AdmBtnPrimary width={"6rem"} onClick={() => onCloseModal(index)}>Back</AdmBtnPrimary>
                 </div>
             </>
         )

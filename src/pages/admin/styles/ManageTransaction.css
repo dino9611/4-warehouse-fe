@@ -96,6 +96,76 @@
     color: var(--neutral-5th-color);
 }
 
+/* ACTION DROPDOWN MENU */
+.adm-transaction-dropdown-parent {
+    position: relative;
+}
+
+.adm-transaction-dropdown-btn {
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: 8px;
+    color: var(--neutral-1st-color);
+    cursor: pointer;
+    height: calc(2.5rem + 2px);
+    width: 6rem;
+}
+
+.adm-transaction-dropdown-btn:hover {
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-dropdown-btn > img {
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    left: 14.5%;
+    list-style: none;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 6.5rem;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-transaction-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    padding: 8px;
+    width: 100%;
+}
+
+.acc-hover:hover {
+    color: var(--semantic-success);
+    transition: 300ms;
+}
+
+.reject-hover:hover {
+    color: var(--semantic-error);
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-menu > li > img {
+    margin-right: 0.5rem;
+}
+
 /* PAYMENT PRROF MODAL CONTENT */
 .payproof-modal-heading-wrap {
     align-items: center;
