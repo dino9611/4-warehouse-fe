@@ -122,29 +122,8 @@
     width: 30rem;
 }
 
-.payproof-modal-foot-wrap > button {
-    background-color: var(--primary-4th-color);
-    border: none;
-    border-radius: 100px;
-    color: var(--neutral-5th-color);
-    font-weight: 600;
-    height: calc(2.5rem + 2px);
-    width: 7rem;
-}
-
-.payproof-modal-foot-wrap > button:hover {
-    background-color: var(--primary-3rd-color);
-    transition: 300ms;
-}
-
 .payproof-modal-foot-wrap {
     display: flex;
     justify-content: center;
     margin-top: 2.5rem;
-}
-
-.payproof-modal-foot-wrap > button:disabled {
-    background-color: var(--neutral-3rd-color);
-    color: var(--neutral-5th-color);
-    cursor: default;
 }

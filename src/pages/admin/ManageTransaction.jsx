@@ -17,6 +17,8 @@ import thousandSeparator from "../../helpers/ThousandSeparator";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
+import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
+import AdmBtnSecondary from '../../components/admin/AdmBtnSecondary';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -178,8 +180,8 @@ function ManageTransaction() {
                                             <TableCell align="center">
                                                 {val.status_id === 2 ?
                                                     <>
-                                                        <button>Accept</button>
-                                                        <button>Reject</button>
+                                                        <AdmBtnPrimary>Accept</AdmBtnPrimary>
+                                                        <AdmBtnSecondary>Reject</AdmBtnSecondary>
                                                     </>
                                                     : val.status_id === 3 ?
                                                     <button>Send</button>
@@ -240,13 +242,13 @@ function ManageTransaction() {
                 </div>
                 <div className="payproof-modal-body-wrap">
                     <img 
-                        src={`${API_URL}/${paymentProof}`}
+                        src={`${API_URL}${paymentProof}`}
                         alt={`Payment-Proof-Order-${orderId}`}
                         onError={renderImgError}
                     />
                 </div>
                 <div className="payproof-modal-foot-wrap">
-                    <button onClick={() => onCloseModal(index)}>Back</button>
+                    <AdmBtnPrimary onClick={() => onCloseModal(index)} width={"6rem"}>Back</AdmBtnPrimary>
                 </div>
             </>
         )
