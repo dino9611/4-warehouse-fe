@@ -134,7 +134,7 @@ function ManageTransaction() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align="left" width="106px">Order ID</TableCell>
-                                        <TableCell align="left" width="280px">Date</TableCell>
+                                        <TableCell align="left" width="280px">Transaction Date</TableCell>
                                         <TableCell align="left" width="160px">Status</TableCell>
                                         <TableCell align="left">Total</TableCell>
                                         <TableCell align="left">Warehouse ID</TableCell>
