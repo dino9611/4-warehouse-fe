@@ -1,41 +1,54 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./style/profile.css";
-import axios from "axios";
 
 // Component
 
 import ButtonPrimary from "../../components/ButtonPrimary";
-import Textbox from "../../components/Textbox";
 import CalenderComp from "./../../components/CalenderComp";
 import ClickOutside from "./../../components/ClickOutside";
-import Modal from "../../components/Modal";
+import Textbox from "../../components/Textbox";
 import { API_URL } from "../../constants/api";
+import Modal from "../../components/Modal";
+import images from "./../../assets";
 
-// Import redux
+// Library
 
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import qs from "query-string";
+import axios from "axios";
 
 //Transition
 
 import { useTransition, animated } from "react-spring";
+import { Spinner } from "reactstrap";
 
 function Profile() {
   // Redux
 
-  const dispatch = useDispatch();
-  const calenderData = useSelector((state) => state.ProfileReducer);
+  const dispatch = useDispatch(); // Memanggil fungsi dispatch redux
+  const calenderData = useSelector((state) => state.ProfileReducer); // Mengambil data calender dari profile reducer
+  const dataUser = useSelector((state) => state.auth); // Mengambil data auth user dari redux
+
+  const location = useLocation(); // Use location untuk mengambil params dari sebuah url
 
   // Handle dan input untuk personal data
 
-  const [personalData, setPersonalData] = useState({});
-  const [handleGender, setHandleGender] = useState(false);
+  const [initialData, setInitialData] = useState({}); // Reset data ketika tombol batal edit ditekan
+  const [personalData, setPersonalData] = useState({}); // Personal data dari user
+  const [handleGender, setHandleGender] = useState(false); // Handle untuk membuka dropdown gender
+  const [handleEmail, setHandleEmail] = useState(false); // Handle untuk membuka dan menutup modal email
+  const [handleUbahData, setHandleUbahData] = useState(false); // Handle untuk user edit personal data
+  const [loading, setLoading] = useState(false); // Handle loading pada saat user submit data
   const [handlePassword, setHandlePassword] = useState(false);
-  const [handleEmail, setHandleEmail] = useState(false);
   const [dataPassword, setDataPassword] = useState({
     currentPass: "",
     newPass: "",
   });
+
+  // State ganti photo profile
+
+  const [file, setFile] = useState(null);
 
   // Handle dan input untuk change password
 
@@ -65,35 +78,34 @@ function Profile() {
   useEffect(() => {
     (async () => {
       try {
-        let res = await axios.get(`${API_URL}/profile/personal-data/2`);
+        let res = await axios.get(
+          `${API_URL}/profile/personal-data/${dataUser.id}`
+        );
 
         const date = new Date(`${res.data[0].date_of_birth}`);
-        let formatDate = `${date.getFullYear()}-${
-          date.getMonth() + 1
-        }-${date.getDate()}`;
+        let formatDateUser;
 
-        setPersonalData({ ...res.data[0], date_of_birth: formatDate });
-        // dispatch({
-        //   type: "PICKIMAGE",
-        //   payload: {
-        //     profile_picture: res.data[0].profile_picture,
-        //     username: res.data[0].username,
-        //   },
-        // });
+        if (res.data[0].date_of_birth) {
+          formatDateUser = `${date.getFullYear()}-${
+            date.getMonth() + 1
+          }-${date.getDate()}`;
+        } else {
+          formatDateUser = null;
+        }
+
+        setPersonalData({
+          ...res.data[0],
+          phone_number: res.data[0].phone_number.slice(3),
+          date_of_birth: formatDateUser,
+        });
+        setInitialData({ ...res.data[0], date_of_birth: formatDateUser });
+
+        dispatch({ type: "PICKDATE", payload: formatDateUser });
       } catch (error) {
         console.log(error);
       }
     })();
   }, []);
-
-  // Ubah personal data ke state
-
-  const onChangeData = (e) => {
-    setPersonalData({
-      ...personalData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   // Transition gender
 
@@ -117,24 +129,6 @@ function Profile() {
 
   // Submit data untuk disimpan ke dalam database
 
-  const onClickInputData = async () => {
-    const sendPersonalData = {
-      ...personalData,
-      date_of_birth: calenderData.chooseDate || personalData.date_of_birth,
-    };
-    console.log(sendPersonalData);
-    try {
-      await axios.post(
-        `${API_URL}/profile/edit/personal-data/2`,
-        sendPersonalData
-      );
-
-      alert("Berhasil input data");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // Handle untuk memilih gender
 
   const onClickGender = (e) => {
@@ -142,97 +136,76 @@ function Profile() {
     setHandleGender(false);
   };
 
-  // Render untuk dropdown gender
-
-  const renderInputGender = () => {
-    return transition((style, item) =>
-      item ? (
-        <animated.div
-          style={style}
-          className="profile-dropdown-gender w-100 d-flex flex-column justify-content-between"
-        >
-          <div className="profile-gender p-1" onClick={onClickGender}>
-            Male
-          </div>
-          <div className="profile-dropdown-border w-100 my-2"></div>
-          <div className="profile-gender p-1" onClick={onClickGender}>
-            Female
-          </div>
-        </animated.div>
-      ) : null
-    );
-  };
-
   // Render untuk change password
 
-  const renderChangePassword = () => {
-    return (
-      <div>
-        <div className="mb-3 d-flex align-items-center justify-content-center">
-          <h5>Ubah Password</h5>
-        </div>
-        <div>
-          <Textbox
-            type="password"
-            label="Masukkan password Anda saat ini"
-            placeholder="Password Anda"
-            name="currentPass"
-            onChange={onChangePassword}
-            value={dataPassword.currentPass}
-            error={
-              (dataPassword.newPass || isPassFilled) && isPassCorrect ? null : 1
-            }
-            errormsg={
-              !isPassCorrect
-                ? "Password lama anda salah"
-                : "Password harus diisi"
-            }
-          />
-        </div>
-        <div className="my-3">
-          <Textbox
-            type="text"
-            label="Masukkan password baru Anda"
-            placeholder="Password Baru"
-            name="newPass"
-            onChange={onChangePassword}
-            value={dataPassword.newPass}
-            onBlur={onBlurPassword}
-            error={
-              (dataPassword.newPass || isPassFilled) && isPassTrue ? null : 1
-            }
-            errormsg={
-              !isPassTrue
-                ? "Password harus lebih dari 8 karakter"
-                : "Password harus diisi"
-            }
-          />
-        </div>
-        <div className="mb-3">
-          <Textbox
-            type="password"
-            label="Ketik ulang password baru Anda"
-            placeholder="Password Baru"
-            name="confirmNewPass"
-            onChange={(e) => setConfirmNewPass(e.target.value)}
-            value={confirmNewPass}
-            error={(confirmNewPass || isPassFilled) && isPassMatch ? null : 1}
-            errormsg={
-              !isPassMatch ? "Password belum sesuai" : "Password harus diisi"
-            }
-          />
-        </div>
-        <div className="d-flex justify-content-end">
-          <div className="mr-3">
-            <ButtonPrimary onClick={onClickChangePassword}>
-              Simpan
-            </ButtonPrimary>
-          </div>
-          <ButtonPrimary onClick={handleClosePassword}>Kembali</ButtonPrimary>
-        </div>
-      </div>
-    );
-  };
+  // const renderChangePassword = () => {
+  //   return (
+  //     <div>
+  //       <div className="mb-3 d-flex align-items-center justify-content-center">
+  //         <h5>Ubah Password</h5>
+  //       </div>
+  //       <div>
+  //         <Textbox
+  //           type="password"
+  //           label="Masukkan password Anda saat ini"
+  //           placeholder="Password Anda"
+  //           name="currentPass"
+  //           onChange={onChangePassword}
+  //           value={dataPassword.currentPass}
+  //           error={
+  //             (dataPassword.newPass || isPassFilled) && isPassCorrect ? null : 1
+  //           }
+  //           errormsg={
+  //             !isPassCorrect
+  //               ? "Password lama anda salah"
+  //               : "Password harus diisi"
+  //           }
+  //         />
+  //       </div>
+  //       <div className="my-3">
+  //         <Textbox
+  //           type="text"
+  //           label="Masukkan password baru Anda"
+  //           placeholder="Password Baru"
+  //           name="newPass"
+  //           onChange={onChangePassword}
+  //           value={dataPassword.newPass}
+  //           onBlur={onBlurPassword}
+  //           error={
+  //             (dataPassword.newPass || isPassFilled) && isPassTrue ? null : 1
+  //           }
+  //           errormsg={
+  //             !isPassTrue
+  //               ? "Password harus lebih dari 8 karakter"
+  //               : "Password harus diisi"
+  //           }
+  //         />
+  //       </div>
+  //       <div className="mb-3">
+  //         <Textbox
+  //           type="password"
+  //           label="Ketik ulang password baru Anda"
+  //           placeholder="Password Baru"
+  //           name="confirmNewPass"
+  //           onChange={(e) => setConfirmNewPass(e.target.value)}
+  //           value={confirmNewPass}
+  //           error={(confirmNewPass || isPassFilled) && isPassMatch ? null : 1}
+  //           errormsg={
+  //             !isPassMatch ? "Password belum sesuai" : "Password harus diisi"
+  //           }
+  //         />
+  //       </div>
+  //       <div className="d-flex justify-content-end">
+  //         <div className="mr-3">
+  //           <ButtonPrimary onClick={onClickChangePassword}>
+  //             Simpan
+  //           </ButtonPrimary>
+  //         </div>
+  //         <ButtonPrimary onClick={handleClosePassword}>Kembali</ButtonPrimary>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   // Handle menutup dropdown password
 
@@ -426,111 +399,411 @@ function Profile() {
     }
   };
 
-  // RETURN
+  // EVENT
 
-  return (
-    <div className="about-container">
-      <h5 className="mb-5">Data Diri</h5>
-      <div className="d-flex w-100 justify-content-between mb-4">
-        <div className="w-100 mr-4">
-          <Textbox
-            label="Nama Depan"
-            placeholder="Nama Depan"
-            name="first_name"
-            onChange={onChangeData}
-            value={personalData.first_name}
-          />
-        </div>
-        <div className="w-100">
-          <Textbox
-            label="Nama Belakang"
-            placeholder="Nama Belakang"
-            name="last_name"
-            onChange={onChangeData}
-            value={personalData.last_name}
-          />
-        </div>
+  const onClickSimpanData = async () => {
+    const sendPersonalData = {
+      ...personalData,
+      phone_number: `+62${personalData.phone_number}`,
+      date_of_birth: calenderData.chooseDate || personalData.date_of_birth,
+    };
+
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("data", JSON.stringify(sendPersonalData));
+
+      let res = await axios.post(
+        `${API_URL}/profile/edit/personal-data/${dataUser.id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      dispatch({ type: "EDITDATA", payload: res.data.message });
+
+      alert("Berhasil input data");
+
+      setLoading(false);
+      setHandleUbahData(false);
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  };
+
+  // Onclick untuk menghapus foto
+
+  const onClickHapusFoto = () => {
+    setPersonalData({ ...personalData, profile_picture: null });
+    setFile(null);
+  };
+
+  // Ubah personal data ke state
+
+  const onChangeData = (e) => {
+    setPersonalData({
+      ...personalData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // RENDERING
+
+  // Render tab profile
+
+  const renderTab = () => {
+    return (
+      <div className="profile-tab mb-3">
+        <Link to="/profile" className="text-link">
+          <button
+            className={`profile-list-tab pb-2 px-2 ${
+              qs.parse(location.search).q === "change-password"
+                ? null
+                : "profile-tab-active"
+            }`}
+          >
+            Data diri
+          </button>
+        </Link>
+        <Link to="/profile?q=change-password">
+          <button
+            className={`profile-list-tab pb-2 px-2 ${
+              qs.parse(location.search).q === "change-password"
+                ? "profile-tab-active"
+                : null
+            }`}
+          >
+            Ganti password
+          </button>
+        </Link>
+        <div className="profile-tab-border"></div>
       </div>
-      <div className="mb-4">
-        <Textbox
-          label="Email"
-          placeholder="Email"
-          disabled="disabled"
-          backgroundColor="#fff"
-          cursor="pointer"
-          value={personalData.email}
-          onClick={() => setHandleEmail(!handleEmail)}
+    );
+  };
+
+  // Render foto profil user
+
+  const renderPhotoProfile = () => {
+    return file || personalData.profile_picture ? (
+      <div>
+        <img
+          src={
+            file
+              ? URL.createObjectURL(file)
+              : `${API_URL}${personalData.profile_picture}`
+          }
+          alt="profpic"
+          className="profile-userpp"
         />
       </div>
-      <div className="d-flex w-100 justify-content-between mb-4">
-        <div
-          ref={genderRef}
-          className="w-100 mr-4"
-          style={{ position: "relative" }}
-        >
-          <Textbox
-            label="Jenis Kelamin"
-            placeholder="Jenis Kelamin"
-            name="gender"
-            value={personalData.gender}
-            disabled="disabled"
-            backgroundColor="#fff"
-            cursor="pointer"
-            onClick={() => setHandleGender(!handleGender)}
+    ) : (
+      <div className="profile-pp d-flex align-items-center justify-content-center">
+        <img
+          src={images.profpic}
+          alt="profpic"
+          style={{ width: "160px", height: "160px" }}
+        />
+      </div>
+    );
+  };
+
+  // Render button untuk mengganti foto profil
+
+  const renderBtnChangePhoto = () => {
+    return (
+      <div className="mt-4 w-100">
+        <div className="d-flex align-items-center w-100">
+          <label
+            htmlFor="photo-profile"
+            className={`d-flex align-items-center w-100 mr-2 ${
+              handleUbahData
+                ? "profile-btn-editpp profile-btn-edit-active"
+                : "profile-btn-editpp-disabled"
+            }`}
+          >
+            <img src={images.camera} alt="kamera" className="mr-1" />
+            Pilih foto
+          </label>
+          <input
+            type="file"
+            id="photo-profile"
+            style={{ display: "none" }}
+            accept="image/png, image/jpeg"
+            disabled={handleUbahData ? false : true}
+            onChange={(e) => setFile(e.target.files[0])}
           />
-          {/* {handleGender ? renderInputGender() : null} */}
-          {renderInputGender()}
+          <button
+            className="profile-btn-editpp d-flex align-items-center w-100 ml-2"
+            disabled={
+              (file || personalData.profile_picture) && handleUbahData
+                ? false
+                : true
+            }
+            onClick={onClickHapusFoto}
+          >
+            <img src={images.trashpolos} alt="hapus" className="mr-1" />
+            Hapus foto
+          </button>
         </div>
-        <div
-          ref={calenderRef}
-          className="w-100"
-          style={{ position: "relative" }}
-        >
+      </div>
+    );
+  };
+
+  // Render data user first name, last name, dll
+
+  const renderDataUser = () => {
+    return (
+      <div className="d-flex flex-column w-100">
+        <div className="d-flex justify-content-between mb-3">
+          <div className="flex-fill mr-3">
+            <Textbox
+              label="Nama depan"
+              placeholder="Masukkan nama depan"
+              name="first_name"
+              onChange={onChangeData}
+              value={personalData.first_name}
+              disabled={!handleUbahData}
+              backgroundColor="#fff"
+              color={handleUbahData ? null : "#CACACA"}
+            />
+          </div>
+          <div className="flex-fill">
+            <Textbox
+              label="Nama belakang"
+              placeholder="Masukkan nama belakang"
+              name="last_name"
+              onChange={onChangeData}
+              value={personalData.last_name}
+              disabled={!handleUbahData}
+              backgroundColor="#fff"
+              color={handleUbahData ? null : "#CACACA"}
+            />
+          </div>
+        </div>
+        <div className="mb-3">
           <Textbox
-            label="Tanggal Lahir"
-            placeholder="Tanggal Lahir"
-            name="date_of_birth"
-            onChange={onChangeData}
-            value={calenderData.chooseDate || personalData.date_of_birth}
+            label="Username"
+            name="username"
+            disabled={true}
+            backgroundColor="#fff"
+            value={dataUser.username}
+            color="#CACACA"
+          />
+        </div>
+        <div className="mb-3">
+          <Textbox
+            label="Alamat email"
+            placeholder="Email"
             disabled="disabled"
             backgroundColor="#fff"
             cursor="pointer"
-            onClick={() => dispatch({ type: "OPENCALENDER" })}
+            value={dataUser.email}
+            onClick={() => setHandleEmail(!handleEmail)}
+            color="#CACACA"
           />
-          {transitionCalender((style, item) =>
-            item ? (
-              <animated.div style={style} className="profile-dropdown-calender">
-                <CalenderComp bornDate={`${personalData.date_of_birth}`} />
-              </animated.div>
-            ) : null
+        </div>
+        <div className="d-flex justify-content-between mb-3">
+          {renderGenderUser()}
+          {renderDataBirthUser()}
+        </div>
+        <div className="mb-3 mr-3">{renderPhoneNumber()}</div>
+        <div className="mt-3 ">
+          {handleUbahData ? (
+            renderBtnEdit()
+          ) : (
+            <ButtonPrimary width="px-5" onClick={() => setHandleUbahData(true)}>
+              Ubah data
+            </ButtonPrimary>
           )}
         </div>
       </div>
-      <div>
+    );
+  };
+
+  // Render tanggal lahir dari user
+
+  const renderDataBirthUser = () => {
+    return (
+      <div
+        ref={calenderRef}
+        className="flex-fill"
+        style={{ position: "relative" }}
+      >
         <Textbox
-          label="Password"
-          placeholder="Ubah Password"
-          disabled="disabled"
-          backgroundColor="#fff"
           cursor="pointer"
-          onClick={() => setHandlePassword(!handlePassword)}
+          disabled="disabled"
+          name="date_of_birth"
+          label="Tanggal lahir"
+          backgroundColor="#fff"
+          placeholder="Pilih tanggal lahir"
+          onChange={onChangeData}
+          onClick={
+            handleUbahData ? () => dispatch({ type: "OPENCALENDER" }) : null
+          }
+          changeMessage={<img src={images.calendar} alt="calendar" />}
+          value={calenderData.chooseDate || personalData.date_of_birth}
+          color={handleUbahData ? null : "#CACACA"}
         />
+        {transitionCalender((style, item) =>
+          item ? (
+            <animated.div
+              style={style}
+              className="profile-dropdown-calender w-100 pr-1 pl-1 py-1 pt-2"
+            >
+              <CalenderComp
+                bornDate={`${
+                  personalData.date_of_birth ||
+                  calenderData.chooseDate ||
+                  `${new Date().getFullYear()}-${
+                    new Date().getMonth() + 1
+                  }-${new Date().getDate()}`
+                }`}
+              />
+            </animated.div>
+          ) : null
+        )}
       </div>
-      <div className="mt-4 w-100 d-flex justify-content-end">
-        <ButtonPrimary onClick={onClickInputData}>Simpan</ButtonPrimary>
+    );
+  };
+
+  // Render jenis kelamin user
+
+  const renderGenderUser = () => {
+    return (
+      <div
+        ref={genderRef}
+        className="flex-fill mr-3"
+        style={{ position: "relative" }}
+      >
+        <Textbox
+          name="gender"
+          cursor="pointer"
+          disabled="disabled"
+          label="Jenis kelamin"
+          backgroundColor="#fff"
+          placeholder="Pilih jenis kelamin"
+          value={
+            personalData.gender?.charAt(0).toUpperCase() +
+              personalData.gender?.slice(1) || null
+          }
+          color={handleUbahData ? null : "#CACACA"}
+          changeMessage={<img src={images.arrowdropdown} alt="dd" />}
+          onClick={handleUbahData ? () => setHandleGender(!handleGender) : null}
+        />
+        {renderInputGender()}
       </div>
-      {
-        <div className="container-modal">
-          <Modal open={handlePassword} close={handleClosePassword}>
-            {renderChangePassword()}
-          </Modal>
+    );
+  };
+
+  // Render untuk dropdown gender
+
+  const renderInputGender = () => {
+    return transition((style, item) =>
+      item ? (
+        <animated.div
+          style={style}
+          className="profile-dropdown-gender d-flex flex-column justify-content-between w-100"
+        >
+          <div className="profile-gender p-1" onClick={onClickGender}>
+            Male
+          </div>
+          <div className="profile-dropdown-border w-100 my-2"></div>
+          <div className="profile-gender p-1" onClick={onClickGender}>
+            Female
+          </div>
+        </animated.div>
+      ) : null
+    );
+  };
+
+  // Render nomor handphone user
+
+  const renderPhoneNumber = () => {
+    return (
+      <>
+        <label htmlFor="phone-number" className="profile-fs14-600-black">
+          Nomer ponsel
+        </label>
+        <div className="profile-phonenumber d-flex align-items-center w-50">
+          <div className="profile-fs14-400-black mr-1">+62</div>
+          <input
+            type="number"
+            id="phone-number"
+            placeholder="Nomer ponsel"
+            className="profile-phonenumber-input"
+            disabled={!handleUbahData}
+            name="phone_number"
+            style={{ color: handleUbahData ? null : "#CACACA" }}
+            value={personalData.phone_number}
+            onChange={onChangeData}
+          />
         </div>
-      }
-      <div className="container-modal">
-        <Modal open={handleEmail} close={onCloseEmail}>
-          {renderEmail()}
-        </Modal>
+      </>
+    );
+  };
+
+  // Render button cancel dan simpan jika state ubah data menjadi true
+
+  const renderBtnEdit = () => {
+    return (
+      <div>
+        <button
+          className="profile-btn-cancel profile-btn-width mr-4"
+          onClick={() => setHandleUbahData(false)}
+        >
+          Batal
+        </button>
+        <ButtonPrimary
+          width="profile-btn-width"
+          onClick={onClickSimpanData}
+          disabled={loading ? true : false}
+        >
+          {loading ? (
+            <Spinner color="light" size="sm">
+              Loading...
+            </Spinner>
+          ) : (
+            "Simpan"
+          )}
+        </ButtonPrimary>
       </div>
+    );
+  };
+
+  // Render keseluruhan untuk edit personal data
+
+  const renderChangePersonalData = () => {
+    return (
+      <div className="d-flex">
+        <div className="mr-4">
+          <div className="profile-fs14-600-black mb-2">Foto Profil</div>
+          {renderPhotoProfile()}
+          {renderBtnChangePhoto()}
+        </div>
+        {renderDataUser()}
+      </div>
+    );
+  };
+
+  // Render untuk page ganti password
+
+  const renderChangePassword = () => {
+    return <div>asdasd</div>;
+  };
+
+  // RETURN
+
+  return (
+    <div>
+      {renderTab()}
+      {qs.parse(location.search).q === "change-password"
+        ? renderChangePassword()
+        : renderChangePersonalData()}
     </div>
   );
 }

@@ -48,6 +48,10 @@ import profpic from "./profpic.svg";
 import history from "./history.svg";
 import alamat from "./alamat.svg";
 import logout from "./logout.svg";
+import editProfile from "./editprofile.svg";
+import camera from "./camera.svg";
+import trashpolos from "./trashpolos.svg";
+import calendar from "./calendar.svg";
 
 export default {
   logo,
@@ -100,4 +104,8 @@ export default {
   history,
   alamat,
   logout,
+  editProfile,
+  camera,
+  trashpolos,
+  calendar,
 };

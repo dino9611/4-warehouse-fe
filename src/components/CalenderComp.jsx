@@ -90,7 +90,7 @@ function Calender({
 
     return calender.map((el, index) => {
       return (
-        <div key={index} className="row d-flex justify-content-between">
+        <div key={index} className="row p-0 d-flex justify-content-between">
           {el.map((elDate, indexDate) => {
             let warna = "lightslategray";
             let className =
@@ -243,7 +243,7 @@ function Calender({
     >
       <div className="d-flex flex-column" style={{ height: "30px" }}>
         <div className="container">
-          <div className="row d-flex justify-content-between">
+          <div className="row profile-col d-flex justify-content-between">
             <div
               className="ml-2 d-flex align-items-center justify-content-center"
               style={{
@@ -260,20 +260,20 @@ function Calender({
               className="mr-1 d-flex justify-content-end "
               style={{ fontSize: "1.1em", color: "dimgray" }}
             >
-              <div className="d-flex align-items-center mr-2">
+              <button className="calender-btn-hover d-flex align-items-center justify-content-end mr-2">
                 <MdKeyboardArrowLeft
-                  className="calender-hover"
+                  className="calender-hover d-flex"
                   style={{ cursor: "pointer" }}
                   onClick={handlePrevMonth}
                 />
-              </div>
-              <div className="d-flex align-items-center ">
+              </button>
+              <button className="calender-btn-hover d-flex align-items-center ">
                 <MdKeyboardArrowRight
                   className="calender-hover"
                   style={{ cursor: "pointer" }}
                   onClick={handleNextMonth}
                 />
-              </div>
+              </button>
             </div>
           </div>
         </div>

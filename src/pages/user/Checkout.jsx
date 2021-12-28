@@ -462,7 +462,7 @@ function Checkout(props) {
   };
 
   // Render modal pilih alamat lain
-  console.log(listAddress);
+
   const renderModalAddress = () => {
     return (
       <div className="w-100">

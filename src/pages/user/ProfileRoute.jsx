@@ -12,9 +12,6 @@ function ProfileRoute(props) {
   } else if (subProfile === "address") {
     return <Address />;
   }
-  // else if (subProfile === "accept") {
-  //   return <VerifyChangeEmail />;
-  // }
 }
 
 export default ProfileRoute;

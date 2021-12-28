@@ -14,6 +14,8 @@ const authReducers = (state = INITIAL_STATE, action) => {
       return { ...state, ...action.payload, is_login: true };
     case "AFTER_VERIFIED":
       return { ...state, ...action.payload, is_login: true };
+    case "EDITDATA":
+      return { ...state, profile_picture: action.payload };
     case "LOGOUT":
       return INITIAL_STATE;
 
