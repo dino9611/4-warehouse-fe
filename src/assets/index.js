@@ -26,6 +26,28 @@ import arrowdropdown from "./arrowdropdown.svg";
 import uncheck from "./uncheck.svg";
 import error from "./error.svg";
 import success from "./success.svg";
+import breadcrumb from "./breadcrumb.svg";
+import fotoproduk from "./fotoproduk.svg";
+import listphoto1 from "./listphoto1.svg";
+import up from "./up.svg";
+import down from "./down.svg";
+import plus from "./plus.svg";
+import minus from "./minus.svg";
+import trash from "./trash.svg";
+import centangijo from "./centangijo.svg";
+import close from "./close.svg";
+import plusactive from "./plusactive.svg";
+import warning from "./warning.svg";
+import arrowup from "./arrowup.svg";
+import cekkurir from "./cekkurir.svg";
+import mandiri from "./mandiri.png";
+import bca from "./bca.png";
+import bni from "./bni.png";
+import cimb from "./cimb.png";
+import profpic from "./profpic.svg";
+import history from "./history.svg";
+import alamat from "./alamat.svg";
+import logout from "./logout.svg";
 
 export default {
   logo,
@@ -56,4 +78,26 @@ export default {
   uncheck,
   error,
   success,
+  breadcrumb,
+  fotoproduk,
+  listphoto1,
+  up,
+  down,
+  minus,
+  plus,
+  trash,
+  centangijo,
+  close,
+  plusactive,
+  warning,
+  arrowup,
+  cekkurir,
+  mandiri,
+  bca,
+  bni,
+  cimb,
+  profpic,
+  history,
+  alamat,
+  logout,
 };

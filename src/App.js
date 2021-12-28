@@ -17,6 +17,9 @@ import ProfilePage from "./pages/user/ProfilePage";
 import VerifyChangeEmail from "./pages/user/VerifyChangeEmail";
 import { useDispatch, useSelector } from "react-redux";
 import AdminMainParent from "./pages/admin/AdminMainParent";
+import DetailedProduct from "./pages/non-user/DetailedProduct";
+import Checkout from "./pages/user/Checkout";
+import Cart from "./pages/user/Cart";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
 
@@ -25,29 +28,57 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let resCart = await axios.get(
+          `${API_URL}/transaction/get/cart-detail/2`
+        ); // userId harusnya dari auth user redux
+        let resProfile = await axios.get(`${API_URL}/profile/personal-data/2`); // User id sementara ( nanti dari redux)
+
+        dispatch({
+          type: "PICKIMAGE",
+          payload: {
+            profile_picture: resProfile.data[0].profile_picture,
+            username: resProfile.data[0].username,
+          },
+        });
+
+        dispatch({ type: "DATACART", payload: resCart.data });
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
   const role = "user";
   const [loading, setLoading] = useState(true);
 
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector((state) => state.auth.role_id);
-  const dispatch = useDispatch();
   useEffect(() => {
     let token = localStorage.getItem("token");
     if (token) {
-        axios.get(`${API_URL}/auth/keeplogin`, {
-            headers: {
-              Authorization: "Bearer " + token
-            }
-          }).then((res) => {
-              dispatch(LoginAction(res.data));
-          }).catch((err) => {
-              console.log(err);
-          }).finally(() => {
-              setLoading(false);
-          });
-      } else {
-        setLoading(false);
-      };
+      axios
+        .get(`${API_URL}/auth/keeplogin`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((res) => {
+          dispatch(LoginAction(res.data));
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const renderRouting = () => {
@@ -60,11 +91,16 @@ function App() {
           <Route path="/profile" component={ProfilePage} />
           <Route path="/auth/accept" exact component={VerifyChangeEmail} />
           <Route path="/products" exact component={Product} />
+          <Route
+            path="/products/:productId"
+            exact
+            component={DetailedProduct}
+          />
           <Route path="/products/:category" exact component="" />
-          <Route path="/products/:productId" exact component="" />
-          <Route path="/checkout" exact component="" />
+          <Route path="/checkout" exact component={Checkout} />
           <Route path="/checkout/payment" exact component="" />
-          <Route path="*" component="" />
+          <Route path="/cart" exact component={Cart} />
+          <Route path="*" exact component="" />
         </Switch>
       );
     } else if (getRoleId === 1 || getRoleId === 2) {
@@ -89,9 +125,13 @@ function App() {
             <Route path="/login" exact component={Login} />
             <Route path="/register" exact component={Register} />
             <Route path="/verify-email" exact component={VerifyEmail} />
-            <Route path="/products" exact component="" />
+            <Route path="/products" exact component={Product} />
+            <Route
+              path="/products/:productId"
+              exact
+              component={DetailedProduct}
+            />
             <Route path="/products/:category" exact component="" />
-            <Route path="/products/:productId" exact component="" />
             <Route path="/admin" exact component={AdminLogin} />{" "}
             {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
             <Route path="*" component={NotFound} />
@@ -105,7 +145,6 @@ function App() {
 
   return (
     <div className="App">
-      {" "}
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
       {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
       {loading ? <div>Loading</div> : renderRouting()}

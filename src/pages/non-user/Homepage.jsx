@@ -65,6 +65,7 @@ function Homepage() {
           </div>
           <div>
             <CarouselCard>
+              <div className=""></div>
               <div className="">
                 <CardProduct
                   img={produk1}

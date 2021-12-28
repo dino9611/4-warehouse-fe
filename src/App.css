@@ -34,9 +34,9 @@
 }
 
 /* ? Cek bagian ini, apakah ada yang mempengaruhi/tidak */
-/* .App {
-  text-align: center;
-} */
+.App {
+  /* text-align: center; */
+}
 
 body {
   margin: 0;

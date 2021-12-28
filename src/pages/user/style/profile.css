@@ -34,7 +34,7 @@
   font-weight: 500;
 }
 
-.profile-modal {
+.container-modal {
   position: relative;
   z-index: 1;
 }

@@ -1,5 +1,5 @@
 .modal-style {
-  width: 35%;
+  min-width: 35%;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -21,4 +21,8 @@
 }
 .modal-address {
   min-width: 100% !important;
+}
+
+.checkout-modal {
+  width: 50% !important;
 }
