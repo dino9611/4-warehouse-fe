@@ -33,14 +33,18 @@ function Textbox({
         </label>
       ) : null}
       <div
-        className="textbox-styling d-flex align-items-center"
+        className={`textbox-styling d-flex align-items-center ${
+          error ? "textbox-error" : null
+        }`}
         onClick={onClick}
         style={{ cursor }}
       >
         <input
           type={type}
           placeholder={placeholder}
-          className={`textbox-input-styling ${error ? "textbox-error" : null}`}
+          className={`textbox-input-styling ${
+            error ? "textbox-error-input" : null
+          }`}
           style={{
             width,
             height,

@@ -31,6 +31,16 @@
   background-color: #fbefef !important;
 }
 
+.textbox-error-input {
+  background-color: #fbefef !important;
+  border: none;
+}
+
+.textbox-error-input:enabled {
+  background-color: #fbefef !important;
+  outline: none;
+}
+
 .textbox-error-msg {
   font-size: 0.75em;
   color: #cb3a31;

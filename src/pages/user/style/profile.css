@@ -106,7 +106,7 @@
 
 .profile-phonenumber {
   padding: 10px 12px;
-  background: #ffffff;
+  background-color: #ffffff;
   border: 1px solid #cacaca;
   box-sizing: border-box;
   border-radius: 8px;
@@ -116,6 +116,7 @@
   border: none;
   font-size: 0.875em;
   color: #5a5a5a;
+  background-color: #ffffff;
 }
 
 .profile-phonenumber-input:enabled {

@@ -9,6 +9,10 @@
   transition: all 0.3s;
 }
 
+.button-primary-disabled {
+  background-color: #cacaca !important;
+}
+
 .button-primary:hover {
   background-color: #8d280c;
 }
