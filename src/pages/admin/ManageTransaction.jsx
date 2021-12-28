@@ -16,6 +16,7 @@ import Paper from '@mui/material/Paper';
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useSelector } from "react-redux";
+import Modal from '../../components/Modal';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,14 +58,21 @@ function ManageTransaction() {
 
     const [value, setValue] = React.useState(0);
 
+    const [modalLength, setModalLength] = useState([]);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const getAuthData = useSelector((state) => state.auth);
+
+    const {warehouse_id} = getAuthData;
 
     const fetchTransactions = async () => {
         try {
             if (value === 0) {
                 const res = await axios.get(`${API_URL}/transaction/all-transactions`);
+                // console.log(res.data)
                 setTransactions(res.data);
             } else if (value === 1) {
                 const res = await axios.get(`${API_URL}/transaction/wait-pay-transactions`);
@@ -87,7 +95,13 @@ function ManageTransaction() {
             } 
         } catch (error) {
             console.log(error);
-        }
+        } finally {
+            let modalArr = [];
+            for (let i = 0; i < transactions.length; i++) {
+                modalArr[i] = false;
+            };
+            setModalLength([...modalArr]);
+        };
     };
 
     useEffect(() => {
@@ -97,10 +111,6 @@ function ManageTransaction() {
         }
         fetchData();
     }, [value])
-
-    const getRoleId = useSelector((state) => state.auth);
-
-    console.log(getRoleId)
 
     const renderTransactionTable = (arrayToMap) => {
         return (
@@ -115,8 +125,10 @@ function ManageTransaction() {
                                         <TableCell align="left" width="280px">Date</TableCell>
                                         <TableCell align="left" width="160px">Status</TableCell>
                                         <TableCell align="left">Total</TableCell>
+                                        <TableCell align="left">Warehouse ID</TableCell>
+                                        <TableCell align="left">Stock Status</TableCell>
                                         <TableCell align="left">Payment Proof</TableCell>
-                                        <TableCell align="left">Action</TableCell>
+                                        <TableCell align="center">Action</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -145,9 +157,36 @@ function ManageTransaction() {
                                                     {val.status}
                                                 </div>
                                             </TableCell>
-                                            <TableCell align="left">{`Rp ${thousandSeparator(val.transaction_amount)}`}</TableCell>
-                                            <TableCell align="left">Click to see payment proof</TableCell>
-                                            <TableCell align="left">Action</TableCell>
+                                            <TableCell align="left">
+                                                {`Rp ${thousandSeparator(val.transaction_amount)}`}
+                                                <br />
+                                                {`Shipping: Rp ${thousandSeparator(val.shipping_fee)}`}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {val.warehouse_id}
+                                                <br />
+                                                {val.warehouse_name}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                Sufficient/Not Sufficient
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <span className="adm-transaction-payproof-action" onClick={() => modalClick(index)}>
+                                                    Detail
+                                                </span>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                {val.status_id === 2 ?
+                                                    <>
+                                                        <button>Accept</button>
+                                                        <button>Reject</button>
+                                                    </>
+                                                    : val.status_id === 3 ?
+                                                    <button>Send</button>
+                                                    :
+                                                    <button disabled>No Action</button>
+                                                }
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -159,6 +198,56 @@ function ManageTransaction() {
                         <CircularProgress />
                     </div>
                 }
+            </>
+        )
+    };
+
+    // RENDER MODAL SHOW PAYMENT PROOF
+    const modalClick = (index) => {
+        if (!modalLength[index]) {
+            setModalLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setModalLength((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        };
+    };
+
+    const onCloseModal = (index) => {
+        setModalLength((prevState) => {
+            let newArray = prevState;
+            newArray[index] = false;
+            return [...newArray];
+        });
+    };
+
+    const renderImgError = () => {
+        const errPath = "/assets/images/Test_Broken_Img.png"
+        document.querySelector("div.payproof-modal-body-wrap > img").src=`${API_URL}${errPath}`;
+    };
+
+    const payProofModal = (orderId, paymentProof, index) => {
+        return (
+            <>
+                <div className="payproof-modal-heading-wrap">
+                    <h4>{`Order ID ${orderId} - Payment Proof`}</h4>
+                </div>
+                <div className="payproof-modal-body-wrap">
+                    <img 
+                        src={`${API_URL}/${paymentProof}`}
+                        alt={`Payment-Proof-Order-${orderId}`}
+                        onError={renderImgError}
+                    />
+                </div>
+                <div className="payproof-modal-foot-wrap">
+                    <button onClick={() => onCloseModal(index)}>Back</button>
+                </div>
             </>
         )
     };
@@ -217,6 +306,11 @@ function ManageTransaction() {
                         </TabPanel>
                     </Box>
                 </div>
+                {transactions.map((val, index) => (
+                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                        {payProofModal(val.id, val.payment_proof, index)}
+                    </Modal>
+                ))}
             </div>
         </div>
     )

@@ -50,6 +50,15 @@
     width: 100%;
 }
 
+.adm-transaction-payproof-action {
+    color: var(--primary-4th-color);
+    cursor: pointer;
+}
+
+.adm-transaction-payproof-action:hover {
+    color: var(--primary-3rd-color);
+}
+
 /* STATUS BADGE SECTION */
 #adm-status-label {
     align-items: center;
@@ -85,4 +94,57 @@
 #adm-status-label.adm-fail {
     background-color: var(--semantic-error);
     color: var(--neutral-5th-color);
+}
+
+/* PAYMENT PRROF MODAL CONTENT */
+.payproof-modal-heading-wrap {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    row-gap: 1rem;
+}
+
+.payproof-modal-heading-wrap > h4,
+.payproof-modal-heading-wrap > h6 {
+    margin: 0;
+}
+
+.payproof-modal-body-wrap {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.payproof-modal-body-wrap > img {
+    height: 30rem;
+    width: 30rem;
+}
+
+.payproof-modal-foot-wrap > button {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    font-weight: 600;
+    height: calc(2.5rem + 2px);
+    width: 7rem;
+}
+
+.payproof-modal-foot-wrap > button:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 300ms;
+}
+
+.payproof-modal-foot-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+.payproof-modal-foot-wrap > button:disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
 }

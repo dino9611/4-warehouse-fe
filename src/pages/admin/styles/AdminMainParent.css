@@ -24,6 +24,16 @@
     width: 100vw;
 }
 
+.adm-main-parent-wrap h1,
+.adm-main-parent-wrap h2,
+.adm-main-parent-wrap h3,
+.adm-main-parent-wrap h4,
+.adm-main-parent-wrap h5,
+.adm-main-parent-wrap h6
+.adm-main-parent-wrap p {
+    margin: 0;
+}
+
 .control-zIndex {
     z-index: 1;
 }
