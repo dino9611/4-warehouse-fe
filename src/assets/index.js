@@ -52,6 +52,7 @@ import editProfile from "./editprofile.svg";
 import camera from "./camera.svg";
 import trashpolos from "./trashpolos.svg";
 import calendar from "./calendar.svg";
+import minusactive from "./minusactive.svg";
 
 export default {
   logo,
@@ -108,4 +109,5 @@ export default {
   camera,
   trashpolos,
   calendar,
+  minusactive,
 };

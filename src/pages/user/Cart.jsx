@@ -11,6 +11,8 @@ import thousandSeparator from "../../helpers/ThousandSeparator";
 import { API_URL } from "../../constants/api";
 import images from "./../../assets";
 import assets from "./../../assets";
+import { useSelector } from "react-redux";
+import SnackbarCart from "../../components/SnackbarCart";
 
 function Cart() {
   const [dataCart, setDataCart] = useState([]); // Data cart detail
@@ -22,6 +24,8 @@ function Cart() {
   const [idProd, setIdProd] = useState("");
   const [nameProd, setNameProd] = useState("");
 
+  const dataUser = useSelector((state) => state.auth);
+
   // Use history
 
   const history = useHistory();
@@ -32,7 +36,9 @@ function Cart() {
     (async () => {
       try {
         if (!handleDelete) {
-          let res = await axios.get(`${API_URL}/transaction/get/cart-detail/2`); // User id menggunakan redux (sementara seperti ini)
+          let res = await axios.get(
+            `${API_URL}/transaction/get/cart-detail/${dataUser.id}`
+          );
 
           setDataCart(res.data);
         }
@@ -321,7 +327,9 @@ function Cart() {
 
   const checkStock = async () => {
     try {
-      let res = await axios.get(`${API_URL}/transaction/check-stock/2`); // :userId dapat dari auth user di redux
+      let res = await axios.get(
+        `${API_URL}/transaction/check-stock/${dataUser.id}`
+      ); // :userId dapat dari auth user di redux
 
       setErrorStock(res.data);
 
