@@ -180,23 +180,29 @@ function ManageTransaction() {
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 1) {
-                const res = await axios.get(`${API_URL}/transaction/wait-pay-transactions`);
+                const res = await axios.get(`${API_URL}/transaction/wait-pay-transactions?page=${page - 1}&limit=${itemPerPage}`);
                 setTransactions(res.data);
+                setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 2) {
-                const res = await axios.get(`${API_URL}/transaction/wait-confirm-transactions`);
+                const res = await axios.get(`${API_URL}/transaction/wait-confirm-transactions?page=${page - 1}&limit=${itemPerPage}`);
                 setTransactions(res.data);
+                setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 3) {
-                const res = await axios.get(`${API_URL}/transaction/onprocess-transactions`);
+                const res = await axios.get(`${API_URL}/transaction/onprocess-transactions?page=${page - 1}&limit=${itemPerPage}`);
                 setTransactions(res.data);
+                setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 4) {
-                const res = await axios.get(`${API_URL}/transaction/delivery-transactions`);
+                const res = await axios.get(`${API_URL}/transaction/delivery-transactions?page=${page - 1}&limit=${itemPerPage}`);
                 setTransactions(res.data);
+                setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 5) {
-                const res = await axios.get(`${API_URL}/transaction/received-transactions`);
+                const res = await axios.get(`${API_URL}/transaction/received-transactions?page=${page - 1}&limit=${itemPerPage}`);
                 setTransactions(res.data);
+                setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else {
-                const res = await axios.get(`${API_URL}/transaction/fail-transactions`);
+                const res = await axios.get(`${API_URL}/transaction/fail-transactions?page=${page - 1}&limit=${itemPerPage}`);
                 setTransactions(res.data);
+                setTransactionLength(parseInt(res.headers["x-total-count"]));
             } 
         } catch (error) {
             console.log(error);
@@ -255,13 +261,9 @@ function ManageTransaction() {
                                                 <div
                                                     id="adm-status-label"
                                                     className={
-                                                        val.status_id === 1 || val.status_id === 2 ? "adm-wait"
+                                                        val.status_id === 1 || val.status_id === 2 ||  val.status_id === 3 ? "adm-process"
                                                         :
-                                                        val.status_id === 3 ? "adm-process"
-                                                        :
-                                                        val.status_id === 4 ? "adm-deliver"
-                                                        :
-                                                        val.status_id === 5 ? "adm-received"
+                                                        val.status_id === 4 ||  val.status_id === 5 ? "adm-success"
                                                         :
                                                         "adm-fail"
                                                     }

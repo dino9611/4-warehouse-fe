@@ -75,38 +75,29 @@
 /* STATUS BADGE SECTION */
 #adm-status-label {
     align-items: center;
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
-    font-size: 0.9em;
+    font-size: 0.7em;
     font-weight: 500;
+    height: 1.5rem;
     justify-content: center;
-    padding: 8px 16px;
-}
-
-#adm-status-label.adm-wait {
-    background-color: var(--primary-2nd-color);
-    color: var(--neutral-1st-color);
+    padding: 0.25rem 0.5rem;
+    width: fit-content;
 }
 
 #adm-status-label.adm-process {
-    background-color: var(--primary-4th-color);
-    color: var(--neutral-5th-color);
+    background-color: #FEF0D7;
+    color: var(--semantic-warning);
 }
 
-#adm-status-label.adm-deliver {
-    background-color: var(--semantic-info);
-    color: var(--neutral-5th-color);
+#adm-status-label.adm-success {
+    background-color: #D0E4DA;
+    color: var(--semantic-success);
 }
-
-#adm-status-label.adm-received {
-    background-color: var(--semantic-success);
-    color: var(--neutral-5th-color);
-}
-
 
 #adm-status-label.adm-fail {
-    background-color: var(--semantic-error);
-    color: var(--neutral-5th-color);
+    background-color: #F0DAD4;
+    color: var(--semantic-error);
 }
 
 /* DROPDOWN MENU PRODUCT PER PAGE */
