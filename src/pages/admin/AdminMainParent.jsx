@@ -20,6 +20,7 @@ const routePath = {
     editProduct: "/admin/manage-product/edit",
     stockOpname: "/admin/stock-opname",
     transactions: "/admin/manage-transaction",
+    detailTransaction: "/admin/manage-transaction/detail",
     warehouses: "/admin/manage-warehouse",
     stockRequest: "/admin/stock-request",
     manageAdmin: "/admin/manage-admin",
@@ -55,6 +56,11 @@ const routes = [
       path: routePath.transactions,
       exact: true,
       main: () => <ManageTransaction />
+    },
+    {
+      path: routePath.detailTransaction,
+      exact: true,
+      main: () => <h1>Detail transakssiiii</h1>
     },
     {
       path: routePath.warehouses,

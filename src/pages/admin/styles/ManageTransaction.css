@@ -20,6 +20,17 @@
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
+/* UTILITY CLASS */
+.adm-table-style-override {
+    border-radius: var(--b-rad-root) !important;
+
+    box-shadow: var(--b-shadow-root) !important;
+    -webkit-box-shadow: var(--b-shadow-root) !important;
+    -moz-box-shadow: var(--b-shadow-root) !important;
+}
+
+
+/* MAIN SECTION */
 .adm-transaction-spinner-wrap {
     align-items: center;
     display: flex;
@@ -50,12 +61,14 @@
     width: 100%;
 }
 
-.adm-transaction-payproof-action {
+.adm-transaction-payproof-action,
+.adm-transaction-detail-action {
     color: var(--primary-4th-color);
     cursor: pointer;
 }
 
-.adm-transaction-payproof-action:hover {
+.adm-transaction-payproof-action:hover,
+.adm-transaction-detail-action:hover {
     color: var(--primary-3rd-color);
 }
 
@@ -96,8 +109,152 @@
     color: var(--neutral-5th-color);
 }
 
+/* DROPDOWN MENU PRODUCT PER PAGE */
+.adm-transaction-pagination {
+    display: flex;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.adm-transaction-pagination-item {
+    align-items: center;
+    column-gap: 8px;
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.adm-transaction-dropdown-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 8px;
+    color: var(--neutral-1st-color);
+    cursor: pointer;
+    height: 30px;
+    width: 88px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-transaction-dropdown-btn:hover {
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-dropdown-btn > img {
+    margin-top: -2.2px;
+    margin-left: 4px;
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-menu {
+    align-items: center;
+    background-color: var(--neutral-5th-color);
+    border-radius: 8px;
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    list-style: none;
+    margin: auto;
+    overflow: hidden;
+    padding: 0;
+    transition: 300ms;
+    width: 88px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-transaction-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    width: 100%;
+}
+
+.adm-transaction-dropdown-menu > li:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-selected {
+    color: var(--primary-4th-color) !important;
+    cursor: default !important;
+}
+
+.adm-transaction-pagination-btn {
+    background-color: var(--neutral-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    height: 48px;
+    width: 40px;
+}
+
+.adm-transaction-pagination-btn:hover {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-pagination-btn:disabled {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.adm-transaction-prev-btn,
+.adm-transaction-next-btn {
+    background-color: var(--neutral-4th-color);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    height: 48px;
+    width: 88px;
+}
+
+.adm-transaction-prev-btn:hover > img,
+.adm-transaction-next-btn:hover > img {
+    transform: translateY(-2px);
+    transition: 300ms;
+}
+
+.adm-transaction-prev-btn:disabled,
+.adm-transaction-next-btn:disabled {
+    cursor: default;
+    opacity: 50%;
+}
+
+.adm-transaction-prev-btn:disabled:hover > img,
+.adm-transaction-next-btn:disabled:hover > img {
+    transform: translateY(0);
+    transition: none;
+}
+
+.adm-transaction-pagination-item {
+    align-items: center;
+    column-gap: 8px;
+    display: flex;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.adm-transaction-pagination-item > p {
+    margin: 0;
+}
+
 /* ACTION DROPDOWN MENU */
-.adm-transaction-dropdown-parent {
+/* .adm-transaction-dropdown-parent {
     position: relative;
 }
 
@@ -164,7 +321,7 @@
 
 .adm-transaction-dropdown-menu > li > img {
     margin-right: 0.5rem;
-}
+} */
 
 /* PAYMENT PRROF MODAL CONTENT */
 .payproof-modal-heading-wrap {
