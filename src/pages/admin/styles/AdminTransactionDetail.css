@@ -17,5 +17,109 @@
     --semantic-info: #27A0E3;
 
     --b-rad-root: 12px;
+    --b-rad-table: 8px;
     --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+.adm-transaction-detail-main-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 1.5rem;
+    row-gap: 1.5rem;
+}
+
+.adm-transaction-detail-header-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.adm-transaction-detail-contents-wrap {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5rem;
+}
+
+.adm-transaction-detail-status {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.adm-transaction-detail-1stRow,
+.adm-transaction-detail-2ndRow  {
+    column-gap: 1.5rem;
+    display: flex;
+}
+
+.adm-transaction-detail-1stRow h5,
+.adm-transaction-detail-2ndRow h5 {
+    font-weight: 600;
+}
+
+.transaction-detail-1stRow-left {
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    row-gap: 1rem;
+    width: 70%;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.transaction-detail-1stRow-right {
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    row-gap: 1rem;
+    width: 30%;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-transaction-detail-2ndRow h5,
+.adm-transaction-detail-2ndRow p {
+    color: var(--neutral-2nd-color);
+    margin: 0;
+}
+
+.adm-transaction-detail-2ndRow p {
+    font-size: 0.875em;
+}
+
+.transaction-detail-2ndRow-left,
+.transaction-detail-2ndRow-mid,
+.transaction-detail-2ndRow-right {
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    row-gap: 1rem;
+    width: 33.33%;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.transaction-detail-2ndRow-left > div,
+.transaction-detail-2ndRow-mid > div,
+.transaction-detail-2ndRow-right > div {
+    line-height: 1.5rem;
+}
+
+.adm-transaction-detail-submission {
+    align-items: center;
+    column-gap: 16px;
+    display: flex;
+    justify-content: flex-end;
 }

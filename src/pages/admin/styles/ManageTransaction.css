@@ -17,12 +17,14 @@
     --semantic-info: #27A0E3;
 
     --b-rad-root: 12px;
+    --b-rad-table: 8px;
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
 /* UTILITY CLASS */
 .adm-table-style-override {
-    border-radius: var(--b-rad-root) !important;
+    border-radius: var(--b-rad-table) !important;
+    padding: 1.5rem;
 
     box-shadow: var(--b-shadow-root) !important;
     -webkit-box-shadow: var(--b-shadow-root) !important;
@@ -114,7 +116,11 @@
     column-gap: 8px;
     display: flex;
     justify-content: center;
-    margin: 1rem 0;
+    margin: 1rem 0 0;
+}
+
+.adm-transaction-pagination-item > p {
+    margin: 0;
 }
 
 .adm-transaction-dropdown-btn {
@@ -230,18 +236,6 @@
 .adm-transaction-next-btn:disabled:hover > img {
     transform: translateY(0);
     transition: none;
-}
-
-.adm-transaction-pagination-item {
-    align-items: center;
-    column-gap: 8px;
-    display: flex;
-    justify-content: center;
-    margin: 16px 0;
-}
-
-.adm-transaction-pagination-item > p {
-    margin: 0;
 }
 
 /* ACTION DROPDOWN MENU */
