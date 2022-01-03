@@ -95,6 +95,10 @@ function ManageTransaction() {
 
     const [transactionLength, setTransactionLength] = useState(0);
 
+    const [showTransactionCounter, setShowTransactionCounter] = useState([1, itemPerPage])
+
+    let transactionsRange = Array(transactionLength).fill(null).map((val, index) => index + 1);
+
     let pageCountTotal = Math.ceil(transactionLength / itemPerPage); // Itung total jumlah page yg tersedia
 
     let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); // Itung range page yang bisa di-klik
@@ -165,6 +169,48 @@ function ManageTransaction() {
                 {!loadData ?
                     <>
                         <TableContainer component={Paper} className="adm-table-style-override">
+                            <div className="adm-transaction-filter">
+                                <div className="adm-transaction-filter-item">
+                                    <p>Showing x - x of {transactionLength} transactions</p>
+                                </div>
+                                <div className="adm-transaction-filter-item">
+                                    <p>Product per Page:</p>
+                                    <div className="adm-transaction-dropdown-wrap">
+                                        <button 
+                                            className="adm-transaction-dropdown-btn" 
+                                            onClick={dropdownClick}
+                                            onBlur={dropdownBlur}
+                                        >
+                                            {itemPerPage}
+                                            <img 
+                                                src={chevronDown} 
+                                                style={{
+                                                    transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                                }}
+                                            />
+                                        </button>
+                                        <ul 
+                                            className="adm-transaction-dropdown-menu" 
+                                            style={{
+                                                transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
+                                                opacity: toggleDropdown ? 1 : 0,
+                                                zIndex: toggleDropdown ? 100 : -10,
+                                            }}
+                                        >
+                                            {rowsPerPageOptions.map((val) => (
+                                                val === itemPerPage ? 
+                                                <li className="adm-transaction-dropdown-selected">{val}</li> 
+                                                : 
+                                                <li
+                                                    onClick={() => filterItemPerPage(val)}
+                                                >
+                                                    {val}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                             <Table sx={{ minWidth: 650 }} aria-label="manage transaction table">
                                 <TableHead>
                                     <TableRow style={{backgroundColor: "#FCB537"}}>
@@ -225,61 +271,26 @@ function ManageTransaction() {
                                     ))}
                                 </TableBody>
                             </Table>
-                            <div className="adm-transaction-pagination">
-                                <div className="adm-transaction-pagination-item">
-                                    <p>Product per Page:</p>
-                                    <button 
-                                        className="adm-transaction-dropdown-btn" 
-                                        onClick={dropdownClick}
-                                        onBlur={dropdownBlur}
-                                    >
-                                        {itemPerPage}
-                                        <img 
-                                            src={chevronDown} 
-                                            style={{
-                                                transform: toggleDropdown ? "rotate(90deg)" : "rotate(-90deg)"
-                                            }}
-                                        />
-                                    </button>
-                                    <ul 
-                                        className="adm-transaction-dropdown-menu" 
-                                        style={{
-                                            transform: toggleDropdown ? "translateX(0)" : "translateX(-5px)",
-                                            opacity: toggleDropdown ? 1 : 0,
-                                            zIndex: toggleDropdown ? 100 : -10,
-                                        }}
-                                    >
-                                        {rowsPerPageOptions.map((val) => (
-                                            val === itemPerPage ? 
-                                            <li className="adm-transaction-dropdown-selected">{val}</li> 
-                                            : 
-                                            <li
-                                                onClick={() => filterItemPerPage(val)}
-                                            >
-                                                {val}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="adm-transaction-pagination-item">
-                                    <button 
-                                        className="adm-transaction-prev-btn" 
-                                        disabled={page === 1} 
-                                        onClick={prevPage}
-                                    >
-                                        <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />
-                                    </button>
-                                    {renderPageRange()}
-                                    <button 
-                                        className="adm-transaction-next-btn" 
-                                        disabled={page === pageCountTotal} 
-                                        onClick={nextPage}
-                                    >
-                                        <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />
-                                    </button>
-                                </div>
-                            </div>
                         </TableContainer>
+                        <div className="adm-transaction-pagination">
+                            <div className="adm-transaction-pagination-item">
+                                <button 
+                                    className="adm-transaction-prev-btn" 
+                                    disabled={page === 1} 
+                                    onClick={prevPage}
+                                >
+                                    <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />
+                                </button>
+                                {renderPageRange()}
+                                <button 
+                                    className="adm-transaction-next-btn" 
+                                    disabled={page === pageCountTotal} 
+                                    onClick={nextPage}
+                                >
+                                    <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />
+                                </button>
+                            </div>
+                        </div>
                     </>    
                     :
                     <div className="adm-transaction-spinner-wrap">
@@ -288,6 +299,21 @@ function ManageTransaction() {
                 }
             </>
         )
+    };
+
+    // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
+    const dropdownClick = () => {
+        setToggleDropwdown(!toggleDropdown);
+    };
+
+    const dropdownBlur = () => {
+        setToggleDropwdown(false)
+    };
+
+    const filterItemPerPage = (yearValue) => {
+        setItemPerPage(yearValue);
+        setToggleDropwdown(false);
+        setLoadData(true);
     };
 
     // RENDER MODAL TO SHOW PAYMENT PROOF
@@ -338,21 +364,6 @@ function ManageTransaction() {
                 </div>
             </>
         )
-    };
-
-    // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
-    const dropdownClick = () => {
-        setToggleDropwdown(!toggleDropdown);
-    };
-
-    const dropdownBlur = () => {
-        setToggleDropwdown(false)
-    };
-
-    const filterItemPerPage = (yearValue) => {
-        setItemPerPage(yearValue);
-        setToggleDropwdown(false);
-        setLoadData(true);
     };
 
     // RENDER PAGE RANGE FOR PAGINATION SECTION

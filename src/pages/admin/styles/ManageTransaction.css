@@ -59,7 +59,9 @@
 
 .adm-transaction-tabpanel-wrap {
     display: flex;
-    margin-top: 24px;
+    flex-direction: column;
+    margin-top: 1.5rem;
+    row-gap: 1.5rem;
     width: 100%;
 }
 
@@ -102,212 +104,6 @@
     color: var(--semantic-error);
 }
 
-/* DROPDOWN MENU PRODUCT PER PAGE */
-.adm-transaction-pagination {
-    display: flex;
-    justify-content: space-between;
-    min-height: 48px;
-    padding: 0 1.5rem;
-    width: 100%;
-}
-
-.adm-transaction-pagination-item {
-    align-items: center;
-    column-gap: 8px;
-    display: flex;
-    justify-content: center;
-    margin: 1rem 0 0;
-}
-
-.adm-transaction-pagination-item > p {
-    margin: 0;
-}
-
-.adm-transaction-dropdown-btn {
-    background-color: var(--neutral-5th-color);
-    border: none;
-    border-radius: 8px;
-    color: var(--neutral-1st-color);
-    cursor: pointer;
-    height: 30px;
-    width: 88px;
-
-    box-shadow: var(--b-shadow-root);
-    -webkit-box-shadow: var(--b-shadow-root);
-    -moz-box-shadow: var(--b-shadow-root);
-}
-
-.adm-transaction-dropdown-btn:hover {
-    border-color: var(--primary-4th-color);
-    color: var(--primary-4th-color);
-    transition: 400ms;
-}
-
-.adm-transaction-dropdown-btn > img {
-    margin-top: -2.2px;
-    margin-left: 4px;
-    transition: 300ms;
-}
-
-.adm-transaction-dropdown-menu {
-    align-items: center;
-    background-color: var(--neutral-5th-color);
-    border-radius: 8px;
-    display: flex;
-    height: 30px;
-    justify-content: center;
-    list-style: none;
-    margin: auto;
-    overflow: hidden;
-    padding: 0;
-    transition: 300ms;
-    width: 88px;
-
-    box-shadow: var(--b-shadow-root);
-    -webkit-box-shadow: var(--b-shadow-root);
-    -moz-box-shadow: var(--b-shadow-root);
-}
-
-.adm-transaction-dropdown-menu > li {
-    align-items: center;
-    color: var(--neutral-2nd-color);
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    padding: 8px;
-    width: 100%;
-}
-
-.adm-transaction-dropdown-menu > li:hover {
-    color: var(--primary-4th-color);
-    transition: 300ms;
-}
-
-.adm-transaction-dropdown-selected {
-    color: var(--primary-4th-color) !important;
-    cursor: default !important;
-}
-
-.adm-transaction-pagination-btn {
-    background-color: var(--neutral-4th-color);
-    border: none;
-    border-radius: 100px;
-    color: var(--neutral-2nd-color);
-    cursor: pointer;
-    height: 48px;
-    width: 40px;
-}
-
-.adm-transaction-pagination-btn:hover {
-    background-color: var(--primary-4th-color);
-    color: var(--neutral-5th-color);
-    transition: 400ms;
-}
-
-.adm-transaction-pagination-btn:disabled {
-    background-color: var(--primary-4th-color);
-    color: var(--neutral-5th-color);
-    cursor: default;
-}
-
-.adm-transaction-prev-btn,
-.adm-transaction-next-btn {
-    background-color: var(--neutral-4th-color);
-    border: none;
-    border-radius: 100px;
-    cursor: pointer;
-    height: 48px;
-    width: 88px;
-}
-
-.adm-transaction-prev-btn:hover > img,
-.adm-transaction-next-btn:hover > img {
-    transform: translateY(-2px);
-    transition: 300ms;
-}
-
-.adm-transaction-prev-btn:disabled,
-.adm-transaction-next-btn:disabled {
-    cursor: default;
-    opacity: 50%;
-}
-
-.adm-transaction-prev-btn:disabled:hover > img,
-.adm-transaction-next-btn:disabled:hover > img {
-    transform: translateY(0);
-    transition: none;
-}
-
-/* ACTION DROPDOWN MENU */
-/* .adm-transaction-dropdown-parent {
-    position: relative;
-}
-
-.adm-transaction-dropdown-btn {
-    background-color: var(--neutral-5th-color);
-    border: 1px solid var(--neutral-3rd-color);
-    border-radius: 8px;
-    color: var(--neutral-1st-color);
-    cursor: pointer;
-    height: calc(2.5rem + 2px);
-    width: 6rem;
-}
-
-.adm-transaction-dropdown-btn:hover {
-    border-color: var(--primary-4th-color);
-    color: var(--primary-4th-color);
-    transition: 400ms;
-}
-
-.adm-transaction-dropdown-btn > img {
-    transition: 300ms;
-}
-
-.adm-transaction-dropdown-menu {
-    align-items: flex-start;
-    background-color: var(--neutral-5th-color);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    left: 14.5%;
-    list-style: none;
-    margin-top: 5px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    transition: 300ms;
-    width: 6.5rem;
-
-    box-shadow: var(--b-shadow-root);
-    -webkit-box-shadow: var(--b-shadow-root);
-    -moz-box-shadow: var(--b-shadow-root);
-}
-
-.adm-transaction-dropdown-menu > li {
-    align-items: center;
-    color: var(--neutral-2nd-color);
-    cursor: pointer;
-    display: flex;
-    justify-content: flex-start;
-    padding: 8px;
-    width: 100%;
-}
-
-.acc-hover:hover {
-    color: var(--semantic-success);
-    transition: 300ms;
-}
-
-.reject-hover:hover {
-    color: var(--semantic-error);
-    transition: 300ms;
-}
-
-.adm-transaction-dropdown-menu > li > img {
-    margin-right: 0.5rem;
-} */
-
 /* PAYMENT PRROF MODAL CONTENT */
 .payproof-modal-heading-wrap {
     align-items: center;
@@ -338,4 +134,169 @@
     display: flex;
     justify-content: center;
     margin-top: 2.5rem;
+}
+
+/* DROPDOWN MENU FILTER PRODUCT PER PAGE */
+.adm-transaction-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    min-height: fit-content;
+    width: 100%;
+}
+
+.adm-transaction-filter-item {
+    align-items: center;
+    column-gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.adm-transaction-filter-item > p {
+    color: var(--neutral-2nd-color);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.adm-transaction-dropdown-wrap {
+    position: relative;
+}
+
+.adm-transaction-dropdown-btn {
+    align-items: center;
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    color: var(--neutral-3rd-color);
+    cursor: pointer;
+    display: flex;
+    height: 32px;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    width: 72px;
+}
+
+.adm-transaction-dropdown-btn:hover {
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-dropdown-btn > img {
+    margin-top: -2.2px;
+    margin-left: 4px;
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    list-style: none;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 72px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-transaction-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    width: 100%;
+}
+
+.adm-transaction-dropdown-menu > li:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-selected {
+    color: var(--primary-4th-color) !important;
+    cursor: default !important;
+}
+
+/* PAGINATION SECTION */
+.adm-transaction-pagination {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.adm-transaction-pagination-item {
+    align-items: center;
+    column-gap: 8px;
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0 0;
+}
+
+.adm-transaction-pagination-item > p {
+    margin: 0;
+}
+
+.adm-transaction-pagination-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    height: 48px;
+    width: 40px;
+}
+
+.adm-transaction-pagination-btn:hover {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-pagination-btn:disabled {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.adm-transaction-prev-btn,
+.adm-transaction-next-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    height: 48px;
+    width: 88px;
+}
+
+.adm-transaction-prev-btn:hover > img,
+.adm-transaction-next-btn:hover > img {
+    transform: translateY(-2px);
+    transition: 300ms;
+}
+
+.adm-transaction-prev-btn:disabled,
+.adm-transaction-next-btn:disabled {
+    background-color: var(--neutral-3rd-color);
+    cursor: default;
+    opacity: 50%;
+}
+
+.adm-transaction-prev-btn:disabled:hover > img,
+.adm-transaction-next-btn:disabled:hover > img {
+    transform: translateY(0);
+    transition: none;
 }
