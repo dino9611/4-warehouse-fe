@@ -13,6 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdmBtnPrimary from "../../components/admin/AdmBtnPrimary";
+import { successToast, errorToast } from "../../redux/actions/ToastAction";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -47,8 +48,6 @@ function AdminTransactionDetail() {
 
     const {recipient, address, phone_number, email, bank_name, account_number, courier} = shippingInfo;
 
-    console.log(parentId)
-
     const fetchTransactionDetail = async () => { // Utk render data produk yang dibeli
         try {
             const res = await axios.get(`${API_URL}/transaction/detail?id=${parentId}`);
@@ -72,6 +71,34 @@ function AdminTransactionDetail() {
         fetchShippingInfo();
     }, []);
 
+    const confirmTransactionPay = async (transactionId) => {
+        document.querySelector("div.adm-transaction-detail-submission > button").disabled = true;
+
+        try {
+            const res = await axios.patch(`${API_URL}/transaction/confirm-payment/${transactionId}`);
+            successToast(res.data.message);
+            fetchShippingInfo();
+        } catch (error) {
+            errorToast("Server Error, from AdminTransactionDetail");
+            console.log(error);
+            document.querySelector("div.adm-transaction-detail-submission > button").disabled = false;
+        }
+    };
+
+    const confirmTransactionDelivery = async (transactionId) => {
+        document.querySelector("div.adm-transaction-detail-submission > button").disabled = true;
+
+        try {
+            const res = await axios.patch(`${API_URL}/transaction/confirm-delivery/${transactionId}`);
+            successToast(res.data.message);
+            fetchShippingInfo();
+        } catch (error) {
+            errorToast("Server Error, from AdminTransactionDetail");
+            console.log(error);
+            document.querySelector("div.adm-transaction-detail-submission > button").disabled = false;
+        }
+    };
+
     return (
         <div className="adm-transaction-detail-main-wrap">
             <div className="adm-transaction-detail-header-wrap">
@@ -79,7 +106,29 @@ function AdminTransactionDetail() {
                 <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="adm-transaction-detail-status">
-                Status: {parentStatus}
+                <div className={parentStatusId >= 1 && parentStatusId < 6 ? "active" : "non-active"}>
+                    Wait Payment
+                </div>
+                <div className={parentStatusId > 1 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={parentStatusId >= 2 && parentStatusId < 6 ? "active" : "non-active"}>
+                    Wait Confirm
+                </div>
+                <div className={parentStatusId > 2 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={parentStatusId >= 3 && parentStatusId < 6 ? "active" : "non-active"}>
+                    On Process
+                </div>
+                <div className={parentStatusId > 3 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={parentStatusId >= 4 && parentStatusId < 6 ? "active" : "non-active"}>
+                    On Delivery
+                </div>
+                <div className={parentStatusId > 4 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={parentStatusId >= 5 && parentStatusId < 6 ? "active" : "non-active"}>
+                    Received
+                </div>
+                <div className={parentStatusId > 5 ? "active" : "non-active"}>{`OR`}</div>
+                <div className={parentStatusId >= 6 ? "active" : "non-active"}>
+                    Rejected & Expired
+                </div>
             </div>
             <div className="adm-transaction-detail-contents-wrap">
                 <div className="adm-transaction-detail-1stRow">
@@ -189,15 +238,19 @@ function AdminTransactionDetail() {
                 </div>
             </div>
             <div className="adm-transaction-detail-submission">
-                <AdmBtnPrimary 
-                >
-                    Request Stock
-                </AdmBtnPrimary >
-                <AdmBtnPrimary 
-                    disabled={parentStatusId !== 2 || parentStatusId !== 3}
-                >
-                    Submit
-                </AdmBtnPrimary >
+                {parentStatusId === 2 ?
+                    <AdmBtnPrimary width={"136px"} onClick={() => confirmTransactionPay(parentId)}>
+                        Accept
+                    </AdmBtnPrimary >
+                    : parentStatusId === 3 ?
+                    <AdmBtnPrimary width={"136px"} onClick={() => confirmTransactionDelivery(parentId)}>
+                        Send
+                    </AdmBtnPrimary >
+                    :
+                    <AdmBtnPrimary width={"136px"} disabled={true}>
+                        No Action
+                    </AdmBtnPrimary >
+                }
             </div>
         </div>
     )

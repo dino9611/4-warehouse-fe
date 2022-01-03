@@ -44,6 +44,56 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    padding: 1rem;
+}
+
+.adm-transaction-detail-status > div {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.75rem;
+    justify-content: center;
+    text-align: center;
+    width: calc(100% / 11);
+}
+
+.adm-transaction-detail-status > div:nth-of-type(odd) {
+    border-radius: var(--b-rad-table);
+    height: 100%;
+    padding: 0.5rem;
+}
+
+.adm-transaction-detail-status > div:nth-of-type(odd).active {
+    background-color: var(--semantic-info);
+    color: var(--neutral-5th-color);
+}
+
+.adm-transaction-detail-status > div:nth-of-type(even).active {
+    color: var(--semantic-info);
+}
+
+.adm-transaction-detail-status > div:nth-of-type(9).active {
+    background-color: var(--semantic-success);
+    color: var(--neutral-5th-color);
+}
+
+.adm-transaction-detail-status > div:nth-of-type(10).active {
+    color: var(--semantic-error);
+}
+
+.adm-transaction-detail-status > div:last-of-type.active {
+    background-color: var(--semantic-error);
+    color: var(--neutral-5th-color);
+}
+
+
+.adm-transaction-detail-status > div:nth-of-type(odd).non-active {
+    background-color: var(--neutral-4th-color);
+    color: var(--neutral-3rd-color);
+}
+
+.adm-transaction-detail-status > div:nth-of-type(even).non-active {
+    color: var(--neutral-3rd-color);
 }
 
 .adm-transaction-detail-1stRow,
