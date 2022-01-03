@@ -12,6 +12,7 @@ import ManageWarehouse from "./ManageWarehouse";
 import ManageAdmin from "./ManageAdmin";
 import HomeDashboard from "./HomeDashboard";
 import ManageTransaction from "./ManageTransaction";
+import AdminTransactionDetail from "./AdminTransactionDetail";
 
 const routePath = {
     dashboard: "/admin/dashboard",
@@ -60,7 +61,7 @@ const routes = [
     {
       path: routePath.detailTransaction,
       exact: true,
-      main: () => <h1>Detail transakssiiii</h1>
+      main: () => <AdminTransactionDetail />
     },
     {
       path: routePath.warehouses,

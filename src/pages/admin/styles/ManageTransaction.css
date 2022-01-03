@@ -63,13 +63,13 @@
 
 .adm-transaction-payproof-action,
 .adm-transaction-detail-action {
-    color: var(--primary-4th-color);
+    color: var(--primary-4th-color) !important;
     cursor: pointer;
 }
 
 .adm-transaction-payproof-action:hover,
 .adm-transaction-detail-action:hover {
-    color: var(--primary-3rd-color);
+    color: var(--primary-3rd-color) !important;
 }
 
 /* STATUS BADGE SECTION */
