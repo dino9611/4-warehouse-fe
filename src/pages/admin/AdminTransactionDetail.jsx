@@ -143,10 +143,10 @@ function AdminTransactionDetail() {
                                 <TableHead>
                                     <TableRow style={{backgroundColor: "#FCB537"}}>
                                         <StyledTableCell align="left">Item</StyledTableCell>
-                                        <StyledTableCell align="left">Quantity</StyledTableCell>
+                                        <StyledTableCell align="left">Purchase Qty</StyledTableCell>
                                         <StyledTableCell align="left">Warehouse Stock</StyledTableCell>
                                         <StyledTableCell align="left">Stock Status</StyledTableCell>
-                                        <StyledTableCell align="left">Price</StyledTableCell>
+                                        <StyledTableCell align="left">Price @</StyledTableCell>
                                         <StyledTableCell align="left">Total</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
