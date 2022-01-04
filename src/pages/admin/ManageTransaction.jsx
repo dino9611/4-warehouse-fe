@@ -74,7 +74,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
     '&:nth-of-type(even)': {
       backgroundColor: "#F4F4F4",
-    }
+    },
+    // Show last border
+    '&:last-child td, &:last-child th': {
+      borderBottom: "1px solid #CACACA"
+    },
 }));
 
 function ManageTransaction() {

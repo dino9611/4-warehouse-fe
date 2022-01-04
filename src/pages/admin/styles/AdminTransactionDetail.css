@@ -121,6 +121,22 @@
     -moz-box-shadow: var(--b-shadow-root);
 }
 
+.transaction-detail-sufficient-label {
+    background-color: #D0E4DA;
+    border-radius: var(--b-rad-table);
+    color: var(--semantic-success);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.transaction-detail-insufficient-label {
+    background-color: #F0DAD4;
+    border-radius: var(--b-rad-table);
+    color: var(--semantic-error);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
 .transaction-detail-1stRow-right {
     background-color: var(--neutral-5th-color);
     border-radius: var(--b-rad-table);

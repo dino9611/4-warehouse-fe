@@ -32,7 +32,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
     '&:nth-of-type(even)': {
       backgroundColor: "#F4F4F4",
-    }
+    },
+    // Show last border
+    '&:last-child td, &:last-child th': {
+      borderBottom: "1px solid #CACACA"
+    },
 }));
 
 function AdminTransactionDetail() {
@@ -50,7 +54,7 @@ function AdminTransactionDetail() {
 
     const fetchTransactionDetail = async () => { // Utk render data produk yang dibeli
         try {
-            const res = await axios.get(`${API_URL}/transaction/detail?id=${parentId}`);
+            const res = await axios.get(`${API_URL}/transaction/detail?whid=${parentWhId}&id=${parentId}`);
             setTransactionDetail(res.data);
         } catch (error) {
             console.log(error);
@@ -162,10 +166,14 @@ function AdminTransactionDetail() {
                                                 {val.qty}
                                             </StyledTableCell>
                                             <StyledTableCell align="left" component="th" scope="row">
-                                                Test
+                                                {val.total_stock}
                                             </StyledTableCell>
                                             <StyledTableCell align="left" component="th" scope="row">
-                                                Test
+                                                {val.stock_status === "Sufficient" ?
+                                                    <span className="transaction-detail-sufficient-label">{val.stock_status}</span>
+                                                    :
+                                                    <span className="transaction-detail-insufficient-label">{val.stock_status}</span>
+                                                }
                                             </StyledTableCell>
                                             <StyledTableCell align="left" component="th" scope="row">
                                                 Rp {thousandSeparator(val.product_price)}
