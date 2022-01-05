@@ -29,6 +29,17 @@
     row-gap: 1.5rem;
 }
 
+.adm-transaction-detail-breadcrumb-wrap {
+    align-items: center;
+    display: flex;
+}
+
+.adm-transaction-detail-breadcrumb-wrap li { 
+    /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
+    align-items: center;
+    display: flex;
+ }
+
 .adm-transaction-detail-header-wrap {
     display: flex;
     justify-content: space-between;

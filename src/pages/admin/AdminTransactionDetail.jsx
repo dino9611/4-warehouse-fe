@@ -4,6 +4,11 @@ import {useLocation} from "react-router-dom";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
 import { styled } from '@mui/material/styles';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
+import {Link} from "react-router-dom";
+import Stack from '@mui/material/Stack';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -42,13 +47,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function AdminTransactionDetail() {
     const transactionFromParent = useLocation();
 
-    const {id: parentId, status_id: parentStatusId, status: parentStatus, warehouse_id: parentWhId, transaction_amount: parentTransactionAmount, shipping_fee: parentShipFee} = transactionFromParent.state;
+    const {id: parentId, warehouse_id: parentWhId, transaction_amount: parentTransactionAmount, shipping_fee: parentShipFee} = transactionFromParent.state;
 
     const [transactionDetail, setTransactionDetail] = useState([]);
+
+    const [statusIdData, setStatusIdData] = useState({}); // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const [shippingInfo, setShippingInfo] = useState({});
 
     const transactionSummDesc = ["Items Total", "Shipping Fee", "Grand Total"];
+
+    const {status_id: fetchedStatusId} = statusIdData; // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const {recipient, address, phone_number, email, bank_name, account_number, courier} = shippingInfo;
 
@@ -56,6 +65,7 @@ function AdminTransactionDetail() {
         try {
             const res = await axios.get(`${API_URL}/transaction/detail?whid=${parentWhId}&id=${parentId}`);
             setTransactionDetail(res.data);
+            setStatusIdData(res.data[0])
         } catch (error) {
             console.log(error);
         }
@@ -74,6 +84,18 @@ function AdminTransactionDetail() {
         fetchTransactionDetail();
         fetchShippingInfo();
     }, []);
+
+    const breadcrumbs = [
+        <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
+          Dashboard
+        </Link>,
+        <Link to="/admin/manage-transaction" key="2" className="link-no-decoration adm-breadcrumb-modifier">
+          Manage Transaction
+        </Link>,
+        <Typography key="3" color="#070707" style={{fontSize: "0.75rem", margin: "auto"}}>
+          Order Details
+        </Typography>,
+    ];
 
     const confirmTransactionPay = async (transactionId) => {
         document.querySelector("div.adm-transaction-detail-submission > button").disabled = true;
@@ -105,32 +127,41 @@ function AdminTransactionDetail() {
 
     return (
         <div className="adm-transaction-detail-main-wrap">
+            <div className="adm-transaction-detail-breadcrumb-wrap">
+                <Stack spacing={2}>
+                    <Breadcrumbs
+                        separator={<NavigateNextIcon fontSize="small" />}
+                        aria-label="transaction detail breadcrumb"
+                    >
+                        {breadcrumbs}
+                    </Breadcrumbs>
+                </Stack>
+            </div>
             <div className="adm-transaction-detail-header-wrap">
                 <h4>Order #{parentId} Details</h4>
-                <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="adm-transaction-detail-status">
-                <div className={parentStatusId >= 1 && parentStatusId < 6 ? "active" : "non-active"}>
+                <div className={fetchedStatusId >= 1 && fetchedStatusId < 6 ? "active" : "non-active"}>
                     Wait Payment
                 </div>
-                <div className={parentStatusId > 1 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={parentStatusId >= 2 && parentStatusId < 6 ? "active" : "non-active"}>
+                <div className={fetchedStatusId > 1 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={fetchedStatusId >= 2 && fetchedStatusId < 6 ? "active" : "non-active"}>
                     Wait Confirm
                 </div>
-                <div className={parentStatusId > 2 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={parentStatusId >= 3 && parentStatusId < 6 ? "active" : "non-active"}>
+                <div className={fetchedStatusId > 2 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={fetchedStatusId >= 3 && fetchedStatusId < 6 ? "active" : "non-active"}>
                     On Process
                 </div>
-                <div className={parentStatusId > 3 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={parentStatusId >= 4 && parentStatusId < 6 ? "active" : "non-active"}>
+                <div className={fetchedStatusId > 3 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={fetchedStatusId >= 4 && fetchedStatusId < 6 ? "active" : "non-active"}>
                     On Delivery
                 </div>
-                <div className={parentStatusId > 4 && parentStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={parentStatusId >= 5 && parentStatusId < 6 ? "active" : "non-active"}>
+                <div className={fetchedStatusId > 4 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
+                <div className={fetchedStatusId >= 5 && fetchedStatusId < 6 ? "active" : "non-active"}>
                     Received
                 </div>
-                <div className={parentStatusId > 5 ? "active" : "non-active"}>{`OR`}</div>
-                <div className={parentStatusId >= 6 ? "active" : "non-active"}>
+                <div className={fetchedStatusId > 5 ? "active" : "non-active"}>{`OR`}</div>
+                <div className={fetchedStatusId >= 6 ? "active" : "non-active"}>
                     Rejected & Expired
                 </div>
             </div>
@@ -246,11 +277,11 @@ function AdminTransactionDetail() {
                 </div>
             </div>
             <div className="adm-transaction-detail-submission">
-                {parentStatusId === 2 ?
+                {fetchedStatusId === 2 ?
                     <AdmBtnPrimary width={"136px"} onClick={() => confirmTransactionPay(parentId)}>
                         Accept
                     </AdmBtnPrimary >
-                    : parentStatusId === 3 ?
+                    : fetchedStatusId === 3 ?
                     <AdmBtnPrimary width={"136px"} onClick={() => confirmTransactionDelivery(parentId)}>
                         Send
                     </AdmBtnPrimary >
