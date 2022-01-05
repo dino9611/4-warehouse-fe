@@ -156,23 +156,23 @@ function AdminTransactionDetail() {
 
     const renderImgError = () => {
         const errPath = "/assets/images/Test_Broken_Img.png"
-        document.querySelector("div.payproof-modal-body-wrap > img").src=`${API_URL}${errPath}`;
+        document.querySelector("div.detailTrx-payproof-modal-body > img").src=`${API_URL}${errPath}`;
     };
 
     const payProofModal = (orderId, paymentProof) => {
         return (
             <>
-                <div className="payproof-modal-heading-wrap">
+                <div className="detailTrx-payproof-modal-heading">
                     <h4>{`Order ID ${orderId} - Payment Proof`}</h4>
                 </div>
-                <div className="payproof-modal-body-wrap">
+                <div className="detailTrx-payproof-modal-body">
                     <img 
                         src={`${API_URL}${paymentProof}`}
                         alt={`Payment-Proof-Order-${orderId}`}
                         onError={renderImgError}
                     />
                 </div>
-                <div className="payproof-modal-foot-wrap">
+                <div className="detailTrx-payproof-modal-foot">
                     <AdmBtnPrimary width={"6rem"} onClick={onCloseModal}>Back</AdmBtnPrimary>
                 </div>
             </>

@@ -20,8 +20,10 @@ import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import chevronDown from "../../assets/components/Chevron-Down.svg";
-import paginationPrevArrow from "../../assets/components/Pagination-Prev-Arrow.svg";
-import paginationNextArrow from "../../assets/components/Pagination-Next-Arrow.svg";
+import paginationPrevArrow from "../../assets/components/Pagination-Prev-Bg-White.svg";
+import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-White.svg";
+import paginationPrevArrowInactive from "../../assets/components/Pagination-Prev-Bg-Gray.svg";
+import paginationNextArrowInactive from "../../assets/components/Pagination-Next-Bg-Gray.svg";
 import {Link} from "react-router-dom";
 
 function TabPanel(props) {
@@ -283,7 +285,7 @@ function ManageTransaction() {
                                     disabled={page === 1} 
                                     onClick={prevPage}
                                 >
-                                    <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />
+                                    {page === 1 ? <img src={paginationPrevArrowInactive} alt="Pagination-Prev-Arrow" /> : <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />}
                                 </button>
                                 {renderPageRange()}
                                 <button 
@@ -291,7 +293,7 @@ function ManageTransaction() {
                                     disabled={page === pageCountTotal} 
                                     onClick={nextPage}
                                 >
-                                    <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />
+                                    {page === pageCountRange.length ? <img src={paginationNextArrowInactive} alt="Pagination-Next-Arrow" /> : <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />}
                                 </button>
                             </div>
                         </div>

@@ -277,3 +277,35 @@
     display: flex;
     justify-content: space-between;
 }
+
+/* ? PAYMENT PRROF MODAL CONTENT */
+.detailTrx-payproof-modal-heading {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    row-gap: 1rem;
+}
+
+.detailTrx-payproof-modal-heading > h4,
+.detailTrx-payproof-modal-heading > h6 {
+    margin: 0;
+}
+
+.detailTrx-payproof-modal-body {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.detailTrx-payproof-modal-body > img {
+    height: 30rem;
+    width: 30rem;
+}
+
+.detailTrx-payproof-modal-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
