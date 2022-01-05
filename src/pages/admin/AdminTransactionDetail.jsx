@@ -18,7 +18,9 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdmBtnPrimary from "../../components/admin/AdmBtnPrimary";
+import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
+import inactiveNextArrow from "../../assets/arrorprofile.svg"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -55,11 +57,27 @@ function AdminTransactionDetail() {
 
     const [shippingInfo, setShippingInfo] = useState({});
 
+    const [statusesList, setStatusesList] = useState([]);
+
     const transactionSummDesc = ["Items Total", "Shipping Fee", "Grand Total"];
 
     const {status_id: fetchedStatusId} = statusIdData; // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const {recipient, address, phone_number, email, bank_name, account_number, courier} = shippingInfo;
+
+    const renderCurrentStatus = () => { // Utk render tampilan current order status
+        if (fetchedStatusId <= 2) {
+            return statusesList.slice(0, 3); // Utk ambil 3 status pertama pada array
+        } else if (fetchedStatusId === 3) {
+            return statusesList.slice(1, 4); // Utk ambil 3 status tengah pada array
+        } else if (fetchedStatusId === 6) {
+            return ["Rejected"] // Utk tampilkan status rejected bila statusId = 6
+        } else if (fetchedStatusId === 7) {
+            return ["Expired"] // Utk tampilkan status expired bila statusId = 7
+        } else {
+            return statusesList.slice(2, 5); // Utk ambil 3 status terakhir pada array
+        }
+    };
 
     const fetchTransactionDetail = async () => { // Utk render data produk yang dibeli
         try {
@@ -80,9 +98,23 @@ function AdminTransactionDetail() {
         }
     };
 
+    const fetchTransactionStatuses = async () => { // Utk render data status_order
+        try {
+            const res = await axios.get(`${API_URL}/transaction/statuses`);
+            setStatusesList(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // console.log("105", statusesId);
+    // console.log("106", statuses);
+    // console.log("107", statusesList);
+
     useEffect(() => {
         fetchTransactionDetail();
         fetchShippingInfo();
+        fetchTransactionStatuses();
     }, []);
 
     const breadcrumbs = [
@@ -138,37 +170,67 @@ function AdminTransactionDetail() {
                 </Stack>
             </div>
             <div className="adm-transaction-detail-header-wrap">
-                <h4>Order #{parentId} Details</h4>
-            </div>
-            <div className="adm-transaction-detail-status">
-                <div className={fetchedStatusId >= 1 && fetchedStatusId < 6 ? "active" : "non-active"}>
-                    Wait Payment
-                </div>
-                <div className={fetchedStatusId > 1 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={fetchedStatusId >= 2 && fetchedStatusId < 6 ? "active" : "non-active"}>
-                    Wait Confirm
-                </div>
-                <div className={fetchedStatusId > 2 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={fetchedStatusId >= 3 && fetchedStatusId < 6 ? "active" : "non-active"}>
-                    On Process
-                </div>
-                <div className={fetchedStatusId > 3 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={fetchedStatusId >= 4 && fetchedStatusId < 6 ? "active" : "non-active"}>
-                    On Delivery
-                </div>
-                <div className={fetchedStatusId > 4 && fetchedStatusId < 6 ? "active" : "non-active"}>{`> > > > > >`}</div>
-                <div className={fetchedStatusId >= 5 && fetchedStatusId < 6 ? "active" : "non-active"}>
-                    Received
-                </div>
-                <div className={fetchedStatusId > 5 ? "active" : "non-active"}>{`OR`}</div>
-                <div className={fetchedStatusId >= 6 ? "active" : "non-active"}>
-                    Rejected & Expired
+                <h4>Order Details</h4>
+                <div className="adm-transaction-detail-status">
+                    <div 
+                        className={(fetchedStatusId === 2 || fetchedStatusId === 3) ? 
+                            "transaction-detail-status-top status-top-actionable-modifier"
+                            :
+                            "transaction-detail-status-top"
+                        }
+                    >
+                        {renderCurrentStatus().map((val, index) => (
+                            (val.id === fetchedStatusId) ?
+                            <>
+                                <h6 className="status-active">{val.status}</h6>
+                                {(val.id <= fetchedStatusId && fetchedStatusId < 5) ? 
+                                    <img src={inactiveNextArrow} style={{transform: "rotate(-90deg"}}/>
+                                    : 
+                                    null
+                                }
+                            </>
+                            : (fetchedStatusId >= 6) ?
+                            <h6 className="status-fail">{val}</h6>
+                            :
+                            <>
+                                <h6 className="status-inactive">{val.status}</h6>
+                                {(index < 2) ? 
+                                    <img src={inactiveNextArrow} style={{transform: "rotate(-90deg"}}/>
+                                    : 
+                                    null
+                                }
+                            </>
+                        ))}
+                    </div>
+                    {(fetchedStatusId === 2) ?
+                        <>
+                            <div className="transaction-detail-status-bottom">
+                                <h6>Confirm Order #{parentId}</h6>
+                                <div>
+                                    <AdmBtnSecondary fontSize="0.75rem" height="32px" width="72px">Reject</AdmBtnSecondary>
+                                    <AdmBtnPrimary fontSize="0.75rem" height="32px" width="72px">Accept</AdmBtnPrimary>
+                                </div>
+                            </div>
+                        </>
+                        : (fetchedStatusId === 3) ?
+                        <>
+                            <div className="transaction-detail-status-bottom">
+                                <h6>Delivery Action</h6>
+                                <div>
+                                    <AdmBtnSecondary fontSize="0.75rem" height="32px" width="72px">Reject</AdmBtnSecondary>
+                                    <AdmBtnPrimary fontSize="0.75rem" height="32px" width="72px">Send</AdmBtnPrimary>
+                                </div>
+                            </div>
+                        </>
+                        :
+                        null
+                    }
                 </div>
             </div>
             <div className="adm-transaction-detail-contents-wrap">
                 <div className="adm-transaction-detail-1stRow">
                     <div className="transaction-detail-1stRow-left">
-                        <h5>Items Detail</h5>
+                        <h5>Items From Order #{parentId}</h5>
                         <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
                             <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
                                 <TableHead>
@@ -275,21 +337,6 @@ function AdminTransactionDetail() {
                         </div>
                     </div>                     
                 </div>
-            </div>
-            <div className="adm-transaction-detail-submission">
-                {fetchedStatusId === 2 ?
-                    <AdmBtnPrimary width={"136px"} onClick={() => confirmTransactionPay(parentId)}>
-                        Accept
-                    </AdmBtnPrimary >
-                    : fetchedStatusId === 3 ?
-                    <AdmBtnPrimary width={"136px"} onClick={() => confirmTransactionDelivery(parentId)}>
-                        Send
-                    </AdmBtnPrimary >
-                    :
-                    <AdmBtnPrimary width={"136px"} disabled={true}>
-                        No Action
-                    </AdmBtnPrimary >
-                }
             </div>
         </div>
     )

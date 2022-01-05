@@ -3,7 +3,10 @@ import "./styles/AdmBtnSecondary.css";
 function AdmBtnSecondary({
   children,
   customClass,
+  alignItems,
   color,
+  display,
+  justifyContent,
   fontSize,
   fontWeight,
   height,
@@ -19,10 +22,13 @@ function AdmBtnSecondary({
       onClick={onClick}
       onBlur={onBlur}
       style={{ 
+        alignItems: alignItems,
         color: color, 
+        display: display,
         fontSize: fontSize, 
         fontWeight: fontWeight,
         height: height, 
+        justifyContent: justifyContent,
         padding: padding,
         width: width, 
       }}

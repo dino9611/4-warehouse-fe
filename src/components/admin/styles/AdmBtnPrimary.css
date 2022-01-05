@@ -21,15 +21,18 @@
 }
 
 .adm-btn-primary {
+  align-items: center;
   background-color: var(--primary-4th-color);
   border: none;
   border-radius: 100px;
   box-sizing: border-box;
   color: var(--neutral-5th-color);
-  font-size: calc(1rem - 2px);
+  display: flex;
+  font-size: 0.875rem;
   font-weight: 600;
   height: calc(2.5rem + 2px);
-  padding: 10px 12px;
+  justify-content: center;
+  padding: 0.625rem 0.75rem;
 }
 
 .adm-btn-primary:hover {
