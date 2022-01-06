@@ -112,8 +112,6 @@ function ManageTransaction() {
     
     let showMaxRange = 10; // Tentuin default max range yg tampil/di-render berapa buah
 
-    console.log("114", transactions)
-
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [10, 50];
 

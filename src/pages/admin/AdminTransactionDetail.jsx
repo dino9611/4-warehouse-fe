@@ -67,14 +67,12 @@ function AdminTransactionDetail() {
     const getRoleId = useSelector((state) => state.auth.role_id);
 
     const [transactionDetail, setTransactionDetail] = useState([]);
-    console.log(transactionDetail);
 
     const [statusIdData, setStatusIdData] = useState({}); // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const [shippingInfo, setShippingInfo] = useState({});
 
     const [customerPayProof, setCustomerPayProof] = useState("");
-    console.log("77", customerPayProof.length)
 
     const [statusesList, setStatusesList] = useState([]);
 
@@ -193,6 +191,8 @@ function AdminTransactionDetail() {
         document.querySelector("div.transaction-detail-status-bottom button:last-of-type").disabled = false;
     };
 
+    const isAllSufficient = (currentValue) => currentValue.stock_status === "Sufficient";
+
     const confirmTransactionPay = async (event, transactionId) => {
         disableButton();
 
@@ -217,18 +217,34 @@ function AdminTransactionDetail() {
         };
     };
 
-    const confirmTransactionDelivery = async (transactionId) => {
-        document.querySelector("div.adm-transaction-detail-submission > button").disabled = true;
+    const confirmTransactionDelivery = async (event, transactionId) => {
+        disableButton();
 
-        try {
-            const res = await axios.patch(`${API_URL}/transaction/confirm-delivery/${transactionId}`);
-            successToast(res.data.message);
-            fetchShippingInfo();
-        } catch (error) {
-            errorToast("Server Error, from AdminTransactionDetail");
-            console.log(error);
-            document.querySelector("div.adm-transaction-detail-submission > button").disabled = false;
+        let actionIdentifier;
+        (event.target.innerText === "Send") ? actionIdentifier = 1 : actionIdentifier = 0;
+
+        let dataValidation = {
+            actionIdentifier: actionIdentifier,
+            warehouseId: parentWhId,
+            orderId: parentId
         }
+
+        if (transactionDetail.every(isAllSufficient) || !actionIdentifier) {
+            try {
+                const res = await axios.patch(`${API_URL}/transaction/confirm-delivery/${transactionId}`, dataValidation);
+                successToast(res.data.message);
+                fetchTransactionDetail();
+                fetchShippingInfo();
+                activateButton();
+            } catch (error) {
+                errorToast("Server Error, from AdminTransactionDetail");
+                console.log(error);
+                activateButton();
+            }
+        } else {
+            errorToast("Stock not sufficient to deliver!");
+            activateButton();
+        };
     };
 
     return (
@@ -255,6 +271,11 @@ function AdminTransactionDetail() {
                         <div className="detailTrx-header-left-notice">
                             <img src={infoIcon} alt="Info-Icon"/>
                             <h6>Please double check customer payment proof on billing information</h6>
+                        </div>
+                        : (getRoleId === 2 && fetchedStatusId === 3) ?
+                        <div className="detailTrx-header-left-notice">
+                            <img src={infoIcon} alt="Info-Icon"/>
+                            <h6>You only able to send order when all stock status <span style={{color: "#43936C"}}>"Sufficient"</span></h6>
                         </div>
                         :
                         null
@@ -326,6 +347,7 @@ function AdminTransactionDetail() {
                                         fontSize="0.75rem" 
                                         height="32px" 
                                         width="72px"
+                                        onClick={(event) => confirmTransactionDelivery(event, parentId)}
                                         disabled={getRoleId === 1}
                                     >
                                         Reject
@@ -334,7 +356,8 @@ function AdminTransactionDetail() {
                                         fontSize="0.75rem" 
                                         height="32px" 
                                         width="72px"
-                                        disabled={getRoleId === 1}
+                                        onClick={(event) => confirmTransactionDelivery(event, parentId)}
+                                        disabled={getRoleId === 1 || !transactionDetail.every(isAllSufficient)}
                                     >
                                         Send
                                     </AdmBtnPrimary>
