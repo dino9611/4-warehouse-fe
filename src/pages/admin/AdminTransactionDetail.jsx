@@ -67,10 +67,14 @@ function AdminTransactionDetail() {
     const getRoleId = useSelector((state) => state.auth.role_id);
 
     const [transactionDetail, setTransactionDetail] = useState([]);
+    console.log(transactionDetail);
 
     const [statusIdData, setStatusIdData] = useState({}); // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const [shippingInfo, setShippingInfo] = useState({});
+
+    const [customerPayProof, setCustomerPayProof] = useState("");
+    console.log("77", customerPayProof.length)
 
     const [statusesList, setStatusesList] = useState([]);
 
@@ -98,9 +102,11 @@ function AdminTransactionDetail() {
 
     const fetchTransactionDetail = async () => { // Utk render data produk yang dibeli
         try {
-            const res = await axios.get(`${API_URL}/transaction/detail?whid=${parentWhId}&id=${parentId}`);
-            setTransactionDetail(res.data);
-            setStatusIdData(res.data[0])
+            const res01 = await axios.get(`${API_URL}/transaction/detail?whid=${parentWhId}&id=${parentId}`);
+            const res02 = await axios.get(`${API_URL}/transaction/payment-proof/${parentId}`);
+            setTransactionDetail(res01.data);
+            setStatusIdData(res01.data[0]);
+            setCustomerPayProof(res02.data);
         } catch (error) {
             console.log(error);
         }
@@ -123,10 +129,6 @@ function AdminTransactionDetail() {
             console.log(error);
         }
     };
-
-    // console.log("105", statusesId);
-    // console.log("106", statuses);
-    // console.log("107", statusesList);
 
     useEffect(() => {
         fetchTransactionDetail();
@@ -181,18 +183,38 @@ function AdminTransactionDetail() {
     };
 
     // CLICK FUNCTION SECTION
-    const confirmTransactionPay = async (transactionId) => {
-        document.querySelector("div.adm-transaction-detail-submission > button").disabled = true;
+    const disableButton = () => {
+        document.querySelector("div.transaction-detail-status-bottom button:first-of-type").disabled = true;
+        document.querySelector("div.transaction-detail-status-bottom button:last-of-type").disabled = true;
+    };
 
-        try {
-            const res = await axios.patch(`${API_URL}/transaction/confirm-payment/${transactionId}`);
-            successToast(res.data.message);
-            fetchShippingInfo();
-        } catch (error) {
-            errorToast("Server Error, from AdminTransactionDetail");
-            console.log(error);
-            document.querySelector("div.adm-transaction-detail-submission > button").disabled = false;
-        }
+    const activateButton = () => {
+        document.querySelector("div.transaction-detail-status-bottom button:first-of-type").disabled = false;
+        document.querySelector("div.transaction-detail-status-bottom button:last-of-type").disabled = false;
+    };
+
+    const confirmTransactionPay = async (event, transactionId) => {
+        disableButton();
+
+        let actionIdentifier;
+        (event.target.innerText === "Accept") ? actionIdentifier = 1 : actionIdentifier = 0;
+
+        if (customerPayProof || !actionIdentifier) {
+            try {
+                const res = await axios.patch(`${API_URL}/transaction/confirm-payment/${transactionId}`, {actionIdentifier: actionIdentifier});
+                successToast(res.data.message);
+                fetchTransactionDetail();
+                fetchShippingInfo();
+                activateButton();
+            } catch (error) {
+                errorToast("Server Error, from AdminTransactionDetail");
+                console.log(error);
+                activateButton();
+            }
+        } else {
+            errorToast("Customer haven't upload payment receipt");
+            activateButton();
+        };
     };
 
     const confirmTransactionDelivery = async (transactionId) => {
@@ -224,10 +246,15 @@ function AdminTransactionDetail() {
             <div className="adm-transaction-detail-header-wrap">
                 <div className="adm-transaction-detail-header-left">
                     <h4>Order Details</h4>
-                    {(getRoleId === 1 && fetchedStatusId === 2 || fetchedStatusId === 3) ?
+                    {(getRoleId === 1 && (fetchedStatusId === 2 || fetchedStatusId === 3)) ?
                         <div className="detailTrx-header-left-notice">
                             <img src={infoIcon} alt="Info-Icon"/>
-                            <h6>Notes: Only warehouse admin eligible to accept/reject order & request stock</h6>
+                            <h6>Only warehouse admin eligible to accept/reject order & request stock</h6>
+                        </div>
+                        : (getRoleId === 2 && fetchedStatusId === 2) ?
+                        <div className="detailTrx-header-left-notice">
+                            <img src={infoIcon} alt="Info-Icon"/>
+                            <h6>Please double check customer payment proof on billing information</h6>
                         </div>
                         :
                         null
@@ -273,6 +300,7 @@ function AdminTransactionDetail() {
                                         fontSize="0.75rem" 
                                         height="32px" 
                                         width="72px"
+                                        onClick={(event) => confirmTransactionPay(event, parentId)}
                                         disabled={getRoleId === 1}
                                     >
                                         Reject
@@ -281,6 +309,7 @@ function AdminTransactionDetail() {
                                         fontSize="0.75rem" 
                                         height="32px" 
                                         width="72px"
+                                        onClick={(event) => confirmTransactionPay(event, parentId)}
                                         disabled={getRoleId === 1}
                                     >
                                         Accept
@@ -473,7 +502,7 @@ function AdminTransactionDetail() {
                 </div>
             </div>
             <Modal open={modalToggle} close={onCloseModal}>
-                {payProofModal(parentId, parentPayProof)}
+                {payProofModal(parentId, customerPayProof)}
             </Modal>
         </div>
     )
