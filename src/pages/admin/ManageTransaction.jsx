@@ -30,6 +30,7 @@ import Typography from '@mui/material/Typography';
 import {Link} from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { errorToast } from "../../redux/actions/ToastAction";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,7 +50,7 @@ function TabPanel(props) {
       )}
     </div>
   );
-}
+};
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -156,6 +157,7 @@ function ManageTransaction() {
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } 
         } catch (error) {
+            errorToast("Server Error, from ManageTransaction");
             console.log(error);
         }
     };
@@ -192,7 +194,7 @@ function ManageTransaction() {
     // SELECT TABBING HANDLER
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        setPage(1); //* Utk ganti page ke 1, setiap kali ganti tabbing status
+        setPage(1); //* Utk ganti page balik default ke 1, setiap kali ganti tabbing status
     };
 
     // RENDER TRANSACTIONS LIST TABLE

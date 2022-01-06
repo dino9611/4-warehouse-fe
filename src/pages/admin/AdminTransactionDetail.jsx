@@ -61,44 +61,43 @@ function AdminTransactionDetail() {
         warehouse_name: parentWhName, 
         transaction_amount: parentTransactionAmount, 
         shipping_fee: parentShipFee,
-        payment_proof: parentPayProof
     } = transactionFromParent.state;
 
     const getRoleId = useSelector((state) => state.auth.role_id);
 
     const [transactionDetail, setTransactionDetail] = useState([]);
 
-    const [statusIdData, setStatusIdData] = useState({}); // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
+    const [statusIdData, setStatusIdData] = useState({}); //* Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const [shippingInfo, setShippingInfo] = useState({});
 
     const [customerPayProof, setCustomerPayProof] = useState("");
 
-    const [statusesList, setStatusesList] = useState([]);
+    const [statusesList, setStatusesList] = useState([]); //* Bikin array sebagai sumber render data status order
 
-    const [modalToggle, setModalToggle] = useState(false);
+    const [modalToggle, setModalToggle] = useState(false); //* Atur buka tutup modal payment proof
 
-    const transactionSummDesc = ["Items Total", "Shipping Fee", "Grand Total"];
+    const transactionSummDesc = ["Items Total", "Shipping Fee", "Grand Total"]; //* Utk label kolom Description pd tabel order summary
 
-    const {status_id: fetchedStatusId} = statusIdData; // Buat render ulang klo status berubah (ex: stlh accept/send/reject)
+    const {status_id: fetchedStatusId} = statusIdData; //* Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
     const {recipient, address, phone_number, email, bank_name, account_number, courier} = shippingInfo;
 
-    const renderCurrentStatus = () => { // Utk render tampilan current order status
+    const renderCurrentStatus = () => { //* Utk render tampilan current order status
         if (fetchedStatusId <= 2) {
-            return statusesList.slice(0, 3); // Utk ambil 3 status pertama pada array
+            return statusesList.slice(0, 3); //* Utk ambil 3 status pertama pada array
         } else if (fetchedStatusId === 3) {
-            return statusesList.slice(1, 4); // Utk ambil 3 status tengah pada array
+            return statusesList.slice(1, 4); //* Utk ambil 3 status tengah pada array
         } else if (fetchedStatusId === 6) {
-            return ["Rejected"] // Utk tampilkan status rejected bila statusId = 6
+            return ["Rejected"] //* Utk tampilkan status rejected bila statusId = 6
         } else if (fetchedStatusId === 7) {
-            return ["Expired"] // Utk tampilkan status expired bila statusId = 7
+            return ["Expired"] //* Utk tampilkan status expired bila statusId = 7
         } else {
-            return statusesList.slice(2, 5); // Utk ambil 3 status terakhir pada array
+            return statusesList.slice(2, 5); //* Utk ambil 3 status terakhir pada array
         }
     };
 
-    const fetchTransactionDetail = async () => { // Utk render data produk yang dibeli
+    const fetchTransactionDetail = async () => { //* Utk render data produk yang dibeli
         try {
             const res01 = await axios.get(`${API_URL}/transaction/detail?whid=${parentWhId}&id=${parentId}`);
             const res02 = await axios.get(`${API_URL}/transaction/payment-proof/${parentId}`);
@@ -106,24 +105,27 @@ function AdminTransactionDetail() {
             setStatusIdData(res01.data[0]);
             setCustomerPayProof(res02.data);
         } catch (error) {
+            errorToast("Server Error, from AdminTransactionDetail - Trx Detail");
             console.log(error);
         }
     };
 
-    const fetchShippingInfo = async () => { // Utk render data detail pengiriman & pembayaran
+    const fetchShippingInfo = async () => { //* Utk render data detail pengiriman & pembayaran
         try {
             const res = await axios.get(`${API_URL}/transaction/detail-shipping?id=${parentId}`);
             setShippingInfo(res.data);
         } catch (error) {
+            errorToast("Server Error, from AdminTransactionDetail - Shipping");
             console.log(error);
         }
     };
 
-    const fetchTransactionStatuses = async () => { // Utk render data status_order
+    const fetchTransactionStatuses = async () => { //* Utk render data status_order
         try {
             const res = await axios.get(`${API_URL}/transaction/statuses`);
             setStatusesList(res.data);
         } catch (error) {
+            errorToast("Server Error, from AdminTransactionDetail - Statuses");
             console.log(error);
         }
     };
@@ -155,12 +157,12 @@ function AdminTransactionDetail() {
         setModalToggle(false);
     };
 
-    const renderImgError = () => {
+    const renderImgError = () => { //* Render img cadangan bila payment proof img tidak ada/error/gagal load
         const errPath = "/assets/images/Test_Broken_Img.png"
         document.querySelector("div.detailTrx-payproof-modal-body > img").src=`${API_URL}${errPath}`;
     };
 
-    const payProofModal = (orderId, paymentProof) => {
+    const payProofModal = (orderId, paymentProof) => { //* Render modal utk tampilkan payment proof customer
         return (
             <>
                 <div className="detailTrx-payproof-modal-heading">
@@ -181,19 +183,19 @@ function AdminTransactionDetail() {
     };
 
     // CLICK FUNCTION SECTION
-    const disableButton = () => {
+    const disableButton = () => { //* Disable button saat proses async berjalan, mencegah klik submit berkali2 oleh user
         document.querySelector("div.transaction-detail-status-bottom button:first-of-type").disabled = true;
         document.querySelector("div.transaction-detail-status-bottom button:last-of-type").disabled = true;
     };
 
-    const activateButton = () => {
+    const activateButton = () => { //* Aktivasi button saat proses async selesai, agar bisa di-klik lagi
         document.querySelector("div.transaction-detail-status-bottom button:first-of-type").disabled = false;
         document.querySelector("div.transaction-detail-status-bottom button:last-of-type").disabled = false;
     };
 
-    const isAllSufficient = (currentValue) => currentValue.stock_status === "Sufficient";
+    const isAllSufficient = (currentValue) => currentValue.stock_status === "Sufficient"; //* Utk validasi seluruh stock status mencukupi
 
-    const confirmTransactionPay = async (event, transactionId) => {
+    const confirmTransactionPay = async (event, transactionId) => { //* Function submit saat order status = Wait Confirm
         disableButton();
 
         let actionIdentifier;
@@ -217,7 +219,7 @@ function AdminTransactionDetail() {
         };
     };
 
-    const confirmTransactionDelivery = async (event, transactionId) => {
+    const confirmTransactionDelivery = async (event, transactionId) => { //* Function submit saat order status = On Process
         disableButton();
 
         let actionIdentifier;
@@ -227,7 +229,7 @@ function AdminTransactionDetail() {
             actionIdentifier: actionIdentifier,
             warehouseId: parentWhId,
             orderId: parentId
-        }
+        };
 
         if (transactionDetail.every(isAllSufficient) || !actionIdentifier) {
             try {
