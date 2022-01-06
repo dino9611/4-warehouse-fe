@@ -23,6 +23,7 @@ import { successToast, errorToast } from "../../redux/actions/ToastAction";
 import inactiveNextArrow from "../../assets/arrorprofile.svg"
 import stockRequestIcon from "../../assets/components/Stock-Request.svg"
 import stockRequestInactiveIcon from "../../assets/components/Stock-Request-Inactive.svg"
+import infoIcon from "../../assets/components/Info.svg"
 import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
 
@@ -223,8 +224,11 @@ function AdminTransactionDetail() {
             <div className="adm-transaction-detail-header-wrap">
                 <div className="adm-transaction-detail-header-left">
                     <h4>Order Details</h4>
-                    {getRoleId === 1 ?
-                        <h6>Notes: Only warehouse admin eligible to accept/reject order & request stock</h6>
+                    {(getRoleId === 1 && fetchedStatusId === 2 || fetchedStatusId === 3) ?
+                        <div className="detailTrx-header-left-notice">
+                            <img src={infoIcon} alt="Info-Icon"/>
+                            <h6>Notes: Only warehouse admin eligible to accept/reject order & request stock</h6>
+                        </div>
                         :
                         null
                     }
@@ -289,8 +293,22 @@ function AdminTransactionDetail() {
                             <div className="transaction-detail-status-bottom">
                                 <h6>Delivery Action</h6>
                                 <div>
-                                    <AdmBtnSecondary fontSize="0.75rem" height="32px" width="72px">Reject</AdmBtnSecondary>
-                                    <AdmBtnPrimary fontSize="0.75rem" height="32px" width="72px">Send</AdmBtnPrimary>
+                                    <AdmBtnSecondary 
+                                        fontSize="0.75rem" 
+                                        height="32px" 
+                                        width="72px"
+                                        disabled={getRoleId === 1}
+                                    >
+                                        Reject
+                                    </AdmBtnSecondary>
+                                    <AdmBtnPrimary 
+                                        fontSize="0.75rem" 
+                                        height="32px" 
+                                        width="72px"
+                                        disabled={getRoleId === 1}
+                                    >
+                                        Send
+                                    </AdmBtnPrimary>
                                 </div>
                             </div>
                         </>
@@ -304,7 +322,8 @@ function AdminTransactionDetail() {
                     <div className="transaction-detail-1stRow-left">
                         <div>
                             <h5>Items From Order #{parentId}</h5>
-                            {getRoleId === 1 ?
+                            {(fetchedStatusId === 2 || fetchedStatusId === 3) ?
+                                (getRoleId === 1) ?
                                 <button disabled>
                                     <img src={stockRequestInactiveIcon} alt="stock-request-icon"/>                        
                                     Request Stock
@@ -316,6 +335,8 @@ function AdminTransactionDetail() {
                                         Request Stock
                                     </button>
                                 </Link>
+                                :
+                                null
                             }
                         </div>
                         <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
@@ -349,8 +370,14 @@ function AdminTransactionDetail() {
                                                 {val.total_stock}
                                             </StyledTableCell>
                                             <StyledTableCell align="left">
-                                                {val.stock_status === "Sufficient" ?
+                                                {(val.stock_status === "Sufficient" && fetchedStatusId < 4) ?
                                                     <span className="transaction-detail-sufficient-label">{val.stock_status}</span>
+                                                    : fetchedStatusId === 4 ?
+                                                    <span className="transaction-detail-done-label">On Delivery</span>
+                                                    : fetchedStatusId === 5 ?
+                                                    <span className="transaction-detail-done-label">Delivered</span>
+                                                    : fetchedStatusId > 5 ?
+                                                    <span className="transaction-detail-insufficient-label">Cancelled</span>
                                                     :
                                                     <span className="transaction-detail-insufficient-label">{val.stock_status}</span>
                                                 }

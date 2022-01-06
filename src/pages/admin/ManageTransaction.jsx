@@ -316,8 +316,9 @@ function ManageTransaction() {
         setToggleDropwdown(false)
     };
 
-    const filterItemPerPage = (yearValue) => {
-        setItemPerPage(yearValue);
+    const filterItemPerPage = (itemValue) => {
+        setItemPerPage(itemValue);
+        setPage(1);
         setToggleDropwdown(false);
         setLoadData(true);
     };
