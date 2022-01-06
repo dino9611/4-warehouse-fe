@@ -55,6 +55,19 @@
     padding: 24px;
 }
 
+/* ? BREADCRUMB WRAP & CONTENTS SECTION */
+.adm-transaction-breadcrumb-wrap {
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.adm-transaction-breadcrumb-wrap li { 
+    /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
+    align-items: center;
+    display: flex;
+}
+
 /* ? HEADER WRAP & CONTENTS SECTION */
 .adm-transaction-header-wrap {
     display: flex;

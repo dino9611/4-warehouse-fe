@@ -25,7 +25,11 @@ import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-Whit
 import paginationPrevArrowInactive from "../../assets/components/Pagination-Prev-Bg-Gray.svg";
 import paginationNextArrowInactive from "../../assets/components/Pagination-Next-Bg-Gray.svg";
 import emptyState from "../../assets/components/Empty-Orders.svg";
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
 import {Link} from "react-router-dom";
+import Stack from '@mui/material/Stack';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -175,6 +179,15 @@ function ManageTransaction() {
     useEffect(() => {
         transactionRangeSlice();
     }, [transactionLength, value, page, itemPerPage]);
+
+    const breadcrumbs = [
+        <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
+          Dashboard
+        </Link>,
+        <Typography key="2" color="#070707" style={{fontSize: "0.75rem", margin: "auto"}}>
+          Manage Transaction
+        </Typography>,
+    ];
 
     // SELECT TABBING HANDLER
     const handleChange = (event, newValue) => {
@@ -472,9 +485,18 @@ function ManageTransaction() {
 
     return (
         <div className="adm-transaction-main-wrap">
+            <div className="adm-transaction-breadcrumb-wrap">
+                <Stack spacing={2}>
+                    <Breadcrumbs
+                        separator={<NavigateNextIcon fontSize="small" />}
+                        aria-label="transaction detail breadcrumb"
+                    >
+                        {breadcrumbs}
+                    </Breadcrumbs>
+                </Stack>
+            </div>
             <div className="adm-transaction-header-wrap">
                 <h4>Manage Transaction</h4>
-                <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
             </div>
             <div className="adm-transaction-contents-wrap">
                 <div>

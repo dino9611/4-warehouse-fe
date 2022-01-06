@@ -41,7 +41,7 @@
     /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
     align-items: center;
     display: flex;
- }
+}
 
 /* ? HEADER WRAP & CONTENTS SECTION */
 .adm-transaction-detail-header-wrap {
