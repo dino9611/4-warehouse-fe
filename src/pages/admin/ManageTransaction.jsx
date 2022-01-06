@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import "./styles/ManageTransaction.css";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
@@ -87,30 +87,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function ManageTransaction() {
     const [loadData, setLoadData] = useState(true);
 
-    const [transactions, setTransactions] = useState([]); // Data utama render tabel transactions
+    const [transactions, setTransactions] = useState([]); //* Data utama render tabel transactions
 
-    const [value, setValue] = React.useState(0); // Atur value tabbing
+    const [value, setValue] = React.useState(0); //* Atur value tabbing
 
-    const [modalLength, setModalLength] = useState([]); // Atur length dropdown payment proof agar dinamis
+    const [modalLength, setModalLength] = useState([]); //* Atur length dropdown payment proof agar dinamis
 
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
 
-    const [toggleDropdown, setToggleDropwdown] = useState(false); // Atur toggle dropdown filter product per page
+    const [toggleDropdown, setToggleDropwdown] = useState(false); //* Atur toggle dropdown filter product per page
 
     const [itemPerPage, setItemPerPage] = useState(10);
 
     const [transactionLength, setTransactionLength] = useState(0);
 
-    const [showTransactionCounter, setShowTransactionCounter] = useState([1, itemPerPage])
+    const [slicedTransactions, setSlicedTransactions] = useState([]); //* Utk render tampilan data item keberapa sampai keberapa dari total seluruh data
 
-    let transactionsRange = Array(transactionLength).fill(null).map((val, index) => index + 1);
+    let transactionsRange = Array(transactionLength).fill(null).map((val, index) => index + 1); //* Utk bikin array berisi angka urut dari total data transaksi
 
-    let pageCountTotal = Math.ceil(transactionLength / itemPerPage); // Itung total jumlah page yg tersedia
+    let pageCountTotal = Math.ceil(transactionLength / itemPerPage); //* Itung total jumlah page yg tersedia
 
-    let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); // Itung range page yang bisa di-klik
+    let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); //* Itung range page yang bisa di-klik
     
-    let showMaxRange = 10; // Tentuin default max range yg tampil/di-render berapa buah
+    let showMaxRange = 10; //* Tentuin default max range yg tampil/di-render berapa buah
 
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [10, 50];
@@ -156,18 +156,30 @@ function ManageTransaction() {
         }
     };
 
+    const transactionRangeSlice = () => { //* Utk setSlicedTransaction berdasarkan value page yg aktif & filter itemPerPage
+        if (page === 1) {
+            setSlicedTransactions(transactionsRange.slice(0, itemPerPage));
+        } else {
+            setSlicedTransactions(transactionsRange.slice(itemPerPage * page - itemPerPage, itemPerPage * page));
+        };
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             await fetchTransactions();
             await setLoadData(false);
-        }
+        };
         fetchData();
-    }, [value, page, itemPerPage])
+    }, [value, page, itemPerPage]);
+
+    useEffect(() => {
+        transactionRangeSlice();
+    }, [transactionLength, value, page, itemPerPage]);
 
     // SELECT TABBING HANDLER
     const handleChange = (event, newValue) => {
         setValue(newValue);
-        setPage(1)
+        setPage(1); //* Utk ganti page ke 1, setiap kali ganti tabbing status
     };
 
     // RENDER TRANSACTIONS LIST TABLE
@@ -179,7 +191,7 @@ function ManageTransaction() {
                         <TableContainer component={Paper} className="adm-table-style-override">
                             <div className="adm-transaction-filter">
                                 <div className="adm-transaction-filter-item">
-                                    <p>Showing x - x of {transactionLength} transactions</p>
+                                    <p>Showing {slicedTransactions[0]} - {slicedTransactions.slice(-1)} of {transactionLength} transactions</p>
                                 </div>
                                 <div className="adm-transaction-filter-item">
                                     <p>Product per Page:</p>
@@ -317,15 +329,15 @@ function ManageTransaction() {
     };
 
     // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
-    const dropdownClick = () => {
+    const dropdownClick = () => { //* Buka tutup menu dropdown
         setToggleDropwdown(!toggleDropdown);
     };
 
-    const dropdownBlur = () => {
+    const dropdownBlur = () => { //* Tutup menu dropdown ketika click diluar wrap menu dropdown
         setToggleDropwdown(false)
     };
 
-    const filterItemPerPage = (itemValue) => {
+    const filterItemPerPage = (itemValue) => { //* Atur value filter item per page & behavior dropdown stlh action terjadi
         setItemPerPage(itemValue);
         setPage(1);
         setToggleDropwdown(false);
@@ -357,7 +369,7 @@ function ManageTransaction() {
         });
     };
 
-    const renderImgError = () => {
+    const renderImgError = () => { //* Render img cadangan bila payment proof img tidak ada/error/gagal load
         const errPath = "/assets/images/Test_Broken_Img.png"
         document.querySelector("div.payproof-modal-body-wrap > img").src=`${API_URL}${errPath}`;
     };
@@ -383,8 +395,8 @@ function ManageTransaction() {
     };
 
     // RENDER PAGE RANGE FOR PAGINATION SECTION
-    const renderPageRange = () => {
-        const disabledBtn = (value) => {
+    const renderPageRange = () => { //* Utk render button select page pagination
+        const disabledBtn = (value) => { //* Button page pagination yg saat ini aktif
             return (
                 <button className="adm-transaction-pagination-btn" value={value} onClick={(event) => selectPage(event)} disabled>
                     {value}
@@ -392,7 +404,7 @@ function ManageTransaction() {
             );
         };
 
-        const clickableBtn = (value) => {
+        const clickableBtn = (value) => { //* Button page pagination yg tdk aktif & bisa di-klik
             return (
                 <button className="adm-transaction-pagination-btn" value={value} onClick={(event) => selectPage(event)}>
                     {value}
@@ -402,7 +414,7 @@ function ManageTransaction() {
 
         if (pageCountRange.length <= showMaxRange) {
             return pageCountRange.map((val, index) => {
-                if (val === page) {
+                if (val === page) { //* Bila value button = value page --> aktif saat ini
                     return disabledBtn(val);
                 } else {
                     return clickableBtn(val);
@@ -412,16 +424,17 @@ function ManageTransaction() {
             let filteredArr;
 
             if (page <= 5) {
-                filteredArr = pageCountRange.slice(0, 0 + 5)
+                filteredArr = pageCountRange.slice(0, 0 + 5); //* Slice array utk tampilan button select page pagination bila <= 5 buah
             } else {
-                let slicingCounter = page - 6
-                filteredArr = pageCountRange.slice(2 + slicingCounter, slicingCounter + 2 + 5)
+                let slicingCounter = page - 6;
+                filteredArr = pageCountRange.slice(2 + slicingCounter, slicingCounter + 2 + 5);
+                //* Slice array utk tampilan button select page pagination tengah2 (ex: 2-3-*4*-5, klik 5 jadi, 3-4-*5*-6)
             };
     
             return filteredArr.map((val, index) => {
                 if (val === page) {
                     return disabledBtn(val);
-                } else if (index >= showMaxRange) {
+                } else if (index >= showMaxRange) { //* Bila index >= range maksimum = tidak render
                     return
                 } else if (index > showMaxRange && index < pageCountTotal - 1) {
                     return
@@ -433,11 +446,11 @@ function ManageTransaction() {
     };
 
     // SELECT PAGE FUNCTION FOR PAGINATION SECTION
-    const selectPage = (event) => {
+    const selectPage = (event) => { //* Rubah value page sesuai value button pagination yg di-klik
         setPage(parseInt(event.target.value));
     };
     
-    const prevPage = () => {
+    const prevPage = () => { //* Ganti value page ketika klik previous arrow pagination
         if (page <= 0) {
             return
         } else {
@@ -445,7 +458,7 @@ function ManageTransaction() {
         }
     };
 
-    const nextPage = () => {
+    const nextPage = () => { //* Ganti value page ketika klik next arrow pagination
         if (page >= pageCountTotal) {
             return
         } else {
