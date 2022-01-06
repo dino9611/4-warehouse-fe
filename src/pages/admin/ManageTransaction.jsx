@@ -191,7 +191,11 @@ function ManageTransaction() {
                         <TableContainer component={Paper} className="adm-table-style-override">
                             <div className="adm-transaction-filter">
                                 <div className="adm-transaction-filter-item">
-                                    <p>Showing {slicedTransactions[0]} - {slicedTransactions.slice(-1)} of {transactionLength} transactions</p>
+                                    {slicedTransactions.length ?
+                                        <p>Showing {slicedTransactions[0]} - {slicedTransactions.slice(-1)} of {transactionLength} transactions</p>
+                                        :
+                                        <p>Showing 0 of {transactionLength} transactions</p>
+                                    }
                                 </div>
                                 <div className="adm-transaction-filter-item">
                                     <p>Product per Page:</p>
