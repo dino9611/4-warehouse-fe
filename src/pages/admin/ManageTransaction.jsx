@@ -24,6 +24,7 @@ import paginationPrevArrow from "../../assets/components/Pagination-Prev-Bg-Whit
 import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-White.svg";
 import paginationPrevArrowInactive from "../../assets/components/Pagination-Prev-Bg-Gray.svg";
 import paginationNextArrowInactive from "../../assets/components/Pagination-Next-Bg-Gray.svg";
+import emptyState from "../../assets/components/Empty-Orders.svg";
 import {Link} from "react-router-dom";
 
 function TabPanel(props) {
@@ -111,42 +112,44 @@ function ManageTransaction() {
     
     let showMaxRange = 10; // Tentuin default max range yg tampil/di-render berapa buah
 
+    console.log("114", transactions)
+
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [10, 50];
 
     // FETCH & useEFFECT SECTION
     const getAuthData = useSelector((state) => state.auth);
 
-    const {warehouse_id} = getAuthData;
+    const {role_id, warehouse_id} = getAuthData;
     
     const fetchTransactions = async () => {
         try {
             if (value === 0) {
-                const res = await axios.get(`${API_URL}/transaction/all-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/all-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 1) {
-                const res = await axios.get(`${API_URL}/transaction/wait-pay-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/wait-pay-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 2) {
-                const res = await axios.get(`${API_URL}/transaction/wait-confirm-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/wait-confirm-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 3) {
-                const res = await axios.get(`${API_URL}/transaction/onprocess-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/onprocess-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 4) {
-                const res = await axios.get(`${API_URL}/transaction/delivery-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/delivery-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else if (value === 5) {
-                const res = await axios.get(`${API_URL}/transaction/received-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/received-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } else {
-                const res = await axios.get(`${API_URL}/transaction/fail-transactions?page=${page - 1}&limit=${itemPerPage}`);
+                const res = await axios.get(`${API_URL}/transaction/fail-transactions?page=${page - 1}&limit=${itemPerPage}&roleid=${role_id}&whid=${warehouse_id}`);
                 setTransactions(res.data);
                 setTransactionLength(parseInt(res.headers["x-total-count"]));
             } 
@@ -166,6 +169,7 @@ function ManageTransaction() {
     // SELECT TABBING HANDLER
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        setPage(1)
     };
 
     // RENDER TRANSACTIONS LIST TABLE
@@ -230,51 +234,58 @@ function ManageTransaction() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {arrayToMap
-                                    .map((val, index) => (
-                                        <StyledTableRow key={`transaction-0${val.id}`}>
-                                            <StyledTableCell align="left" component="th" scope="row">
-                                                {val.id}
-                                            </StyledTableCell>
-                                            <StyledTableCell align="left">{val.transaction_date}</StyledTableCell>
-                                            <StyledTableCell align="left" className="txt-capitalize">
-                                                <div
-                                                    id="adm-status-label"
-                                                    className={
-                                                        val.status_id === 1 || val.status_id === 2 ||  val.status_id === 3 ? "adm-process"
-                                                        :
-                                                        val.status_id === 4 ||  val.status_id === 5 ? "adm-success"
-                                                        :
-                                                        "adm-fail"
-                                                    }
-                                                >
-                                                    {val.status}
-                                                </div>
-                                            </StyledTableCell>
-                                            <StyledTableCell align="left">
-                                                {`Rp ${thousandSeparator(val.transaction_amount + val.shipping_fee)}`}
-                                            </StyledTableCell>
-                                            <StyledTableCell align="left">
-                                                {val.warehouse_name}
-                                            </StyledTableCell>
-                                            <StyledTableCell align="left">
-                                                <span className="adm-transaction-payproof-action" onClick={() => modalClick(index)}>
-                                                    Detail
-                                                </span>
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center" style={{width: "176px"}}>
-                                                <Link 
-                                                    to={{
-                                                        pathname: "/admin/manage-transaction/detail",
-                                                        state: val
-                                                    }}
-                                                    className="link-no-decoration adm-transaction-detail-action"
-                                                >
-                                                    Transaction Detail
-                                                </Link>
-                                            </StyledTableCell>
-                                        </StyledTableRow>
-                                    ))}
+                                    {arrayToMap.length ?
+                                        arrayToMap
+                                        .map((val, index) => (
+                                            <StyledTableRow key={`transaction-0${val.id}`}>
+                                                <StyledTableCell align="left" component="th" scope="row">
+                                                    {val.id}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="left">{val.transaction_date}</StyledTableCell>
+                                                <StyledTableCell align="left" className="txt-capitalize">
+                                                    <div
+                                                        id="adm-status-label"
+                                                        className={
+                                                            val.status_id === 1 || val.status_id === 2 ||  val.status_id === 3 ? "adm-process"
+                                                            :
+                                                            val.status_id === 4 ||  val.status_id === 5 ? "adm-success"
+                                                            :
+                                                            "adm-fail"
+                                                        }
+                                                    >
+                                                        {val.status}
+                                                    </div>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="left">
+                                                    {`Rp ${thousandSeparator(val.transaction_amount + val.shipping_fee)}`}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="left">
+                                                    {val.warehouse_name}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="left">
+                                                    <span className="adm-transaction-payproof-action" onClick={() => modalClick(index)}>
+                                                        Detail
+                                                    </span>
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center" style={{width: "176px"}}>
+                                                    <Link 
+                                                        to={{
+                                                            pathname: "/admin/manage-transaction/detail",
+                                                            state: val
+                                                        }}
+                                                        className="link-no-decoration adm-transaction-detail-action"
+                                                    >
+                                                        Transaction Detail
+                                                    </Link>
+                                                </StyledTableCell>
+                                            </StyledTableRow>
+                                        ))
+                                        :
+                                        <td colspan="7" className="adm-transaction-empty-state">
+                                            <img src={emptyState} alt="Data Empty" />
+                                            <h6>No data available</h6>
+                                        </td>
+                                    }
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -290,10 +301,10 @@ function ManageTransaction() {
                                 {renderPageRange()}
                                 <button 
                                     className="adm-transaction-next-btn" 
-                                    disabled={page === pageCountTotal} 
+                                    disabled={page === pageCountTotal || !transactions.length} 
                                     onClick={nextPage}
                                 >
-                                    {page === pageCountRange.length ? <img src={paginationNextArrowInactive} alt="Pagination-Next-Arrow" /> : <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />}
+                                    {(page === pageCountRange.length || !transactions.length) ? <img src={paginationNextArrowInactive} alt="Pagination-Next-Arrow" /> : <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />}
                                 </button>
                             </div>
                         </div>

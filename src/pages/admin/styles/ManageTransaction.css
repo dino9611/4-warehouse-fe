@@ -21,7 +21,7 @@
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
-/* UTILITY CLASS */
+/* ? UTILITY CLASS */
 .adm-table-style-override {
     border-radius: var(--b-rad-table) !important;
     padding: 1.5rem;
@@ -31,8 +31,6 @@
     -moz-box-shadow: var(--b-shadow-root) !important;
 }
 
-
-/* MAIN SECTION */
 .adm-transaction-spinner-wrap {
     align-items: center;
     display: flex;
@@ -41,6 +39,15 @@
     width: 100%;
 }
 
+/* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
+.payproof-modal-heading-wrap > h4,
+.payproof-modal-heading-wrap > h6,
+.adm-transaction-pagination-item > p,
+.adm-transaction-empty-state > h6 {
+    margin: 0;
+}
+
+/* ? MAIN WRAPPER SECTION */
 .adm-transaction-main-wrap {
     display: flex;
     flex-direction: column;
@@ -48,15 +55,13 @@
     padding: 24px;
 }
 
+/* ? HEADER WRAP & CONTENTS SECTION */
 .adm-transaction-header-wrap {
     display: flex;
     justify-content: space-between;
 }
 
-.adm-transaction-contents-wrap {
-    margin-top: 24px;
-}
-
+/* ? TABBING PANEL & CONTENTS SECTION */
 .adm-transaction-tabpanel-wrap {
     display: flex;
     flex-direction: column;
@@ -65,6 +70,12 @@
     width: 100%;
 }
 
+/* ? CONTENTS/BODY WRAP & CONTENTS SECTION */
+.adm-transaction-contents-wrap {
+    margin-top: 24px;
+}
+
+/* * ACTIONS CELL & CONTENTS ON CONTENTS/BODY SECTION */
 .adm-transaction-payproof-action,
 .adm-transaction-detail-action {
     color: var(--primary-4th-color) !important;
@@ -76,7 +87,17 @@
     color: var(--primary-3rd-color) !important;
 }
 
-/* STATUS BADGE SECTION */
+/* * EMPTY STATE & CONTENTS ON CONTENTS/BODY SECTION */
+.adm-transaction-empty-state {
+    height: 40vh;
+    text-align: center;
+}
+
+.adm-transaction-empty-state > img {
+    margin-bottom: 1rem;
+}
+
+/* ? STATUS BADGE SECTION */
 #adm-status-label {
     align-items: center;
     border-radius: 8px;
@@ -104,7 +125,7 @@
     color: var(--semantic-error);
 }
 
-/* PAYMENT PRROF MODAL CONTENT */
+/* ? PAYMENT PRROF MODAL CONTENT */
 .payproof-modal-heading-wrap {
     align-items: center;
     display: flex;
@@ -112,11 +133,6 @@
     justify-content: center;
     margin-bottom: 2.5rem;
     row-gap: 1rem;
-}
-
-.payproof-modal-heading-wrap > h4,
-.payproof-modal-heading-wrap > h6 {
-    margin: 0;
 }
 
 .payproof-modal-body-wrap {
@@ -136,7 +152,7 @@
     margin-top: 2.5rem;
 }
 
-/* DROPDOWN MENU FILTER PRODUCT PER PAGE */
+/* ? DROPDOWN MENU FILTER PRODUCT PER PAGE */
 .adm-transaction-filter {
     display: flex;
     justify-content: space-between;
@@ -228,7 +244,7 @@
     cursor: default !important;
 }
 
-/* PAGINATION SECTION */
+/* ? PAGINATION SECTION */
 .adm-transaction-pagination {
     align-items: center;
     display: flex;
@@ -244,10 +260,6 @@
     display: flex;
     justify-content: center;
     margin: 1rem 0 0;
-}
-
-.adm-transaction-pagination-item > p {
-    margin: 0;
 }
 
 .adm-transaction-pagination-btn {
