@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./styles/detailedProduct.css";
 
@@ -26,6 +26,7 @@ function DetailedProduct(props) {
   const [handleSnackbarCart, setHandleSnackbarCart] = useState(false);
   const [loading, setLoading] = useState(false); // Loading pada saat add to cart
 
+  const dispatch = useDispatch();
   const dataUser = useSelector((state) => state.auth);
 
   const location = useLocation(); // Location untuk params product Id
@@ -280,6 +281,12 @@ function DetailedProduct(props) {
       setLoading(true);
 
       await axios.post(`${API_URL}/transaction/addtocart`, dataInsert);
+
+      let resTotalItem = await axios.get(
+        `${API_URL}/transaction/get/total-item/${dataUser.id}`
+      );
+
+      dispatch({ type: "DATACART", payload: resTotalItem.data });
 
       setLoading(false);
 

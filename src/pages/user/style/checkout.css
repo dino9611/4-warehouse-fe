@@ -71,6 +71,10 @@ input::-webkit-calendar-picker-indicator {
   background-color: #fff;
 }
 
+.checkout-input-address:enabled {
+  outline-color: #b24629;
+}
+
 .checkout-mainadd {
   font-size: 0.75em;
   font-weight: 500;
@@ -203,4 +207,23 @@ input::-webkit-calendar-picker-indicator {
   font-weight: 600;
   color: #070707;
   background-color: #f4f4f4;
+}
+
+textarea[name="address"] {
+  resize: none;
+}
+
+.checkout-address-note {
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #b24629;
+}
+
+.checkout-close-modal {
+  border: none;
+  background-color: transparent;
+}
+
+.checkout-modal {
+  width: 50% !important;
 }

@@ -47,6 +47,7 @@ function Carousel() {
         {images.map((el, idx) => {
           return (
             <div
+              key={idx}
               className={idx === imageIndex ? "slide active-slide" : "slide"}
             >
               <img src={el} alt={el} className="carousel-img" />

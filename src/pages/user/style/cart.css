@@ -118,3 +118,28 @@
   font-weight: 500;
   color: #070707;
 }
+
+.cart-errorstock {
+  background-color: #fbefef;
+  border-radius: 8px;
+}
+
+.cart-del-modal {
+  min-width: 25% !important;
+  max-width: 25% !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.cart-del-content {
+  font-size: 0.875em;
+  font-weight: 400;
+}
+
+.cart-del-btn {
+  border: 1px solid #cacaca;
+  background-color: transparent;
+  padding: 10px 12px;
+  font-size: 0.875em;
+  /* font-weight: 500; */
+}

@@ -53,6 +53,8 @@ import camera from "./camera.svg";
 import trashpolos from "./trashpolos.svg";
 import calendar from "./calendar.svg";
 import minusactive from "./minusactive.svg";
+import copy from "./copy.svg";
+import copycolor from "./copycolor.svg";
 
 export default {
   logo,
@@ -110,4 +112,6 @@ export default {
   trashpolos,
   calendar,
   minusactive,
+  copy,
+  copycolor,
 };

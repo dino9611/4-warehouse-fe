@@ -1,18 +1,75 @@
 import React, { useEffect, useState } from "react";
-import "./style/historyOrder.css";
-import qs from "query-string";
+
+// Library react
 
 import { useHistory, useLocation } from "react-router-dom";
-
-import images from "./../../assets";
+import { useSelector } from "react-redux";
 import axios from "axios";
-import { API_URL } from "../../constants/api";
+
+// Components
+
 import thousandSeparator from "../../helpers/ThousandSeparator";
+import { API_URL } from "../../constants/api";
+import "./style/historyOrder.css";
+import { Pagination } from "@mui/material";
+import usePrevious from "../../helpers/UsePrevious";
+import ModalOrderDetail from "../../components/ModalOrderDetail";
 
 function HistoryOrder() {
-  // React router dom
-  const history = useHistory();
-  const location = useLocation();
+  const dataUser = useSelector((state) => state.auth);
+
+  // STATE
+
+  const [tab, setTab] = useState(1);
+  const [dataHistory, setDataHistory] = useState([]);
+  const [dataStatus, setDataStatus] = useState([]);
+  const [handleModal, setHandleModal] = useState(false);
+  const [ordersId, setOrdersId] = useState(null);
+  const [limit, setLimit] = useState(5);
+  const [page, setPage] = useState(1);
+  const [totalOrder, setTotalOrder] = useState(null);
+
+  // Use Previous untuk menyimpan state sebelumnya
+
+  const prevTab = usePrevious(tab);
+
+  // Use effect untuk get status order
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let resStatus = await axios.get(`${API_URL}/history/get/status-order`);
+
+        setDataStatus(resStatus.data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  // Untuk re-rendering list order berdasarkan status, page, dan upload payment
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (prevTab !== tab) {
+          setPage(1);
+        }
+
+        let url = `${API_URL}/history/get/orders/${
+          dataUser.id
+        }?status=${tab}&limit=${limit}&page=${page - 1}`;
+
+        let res = await axios.get(url);
+
+        setTotalOrder(res.headers["x-total-order"]);
+
+        setDataHistory(res.data);
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    })();
+  }, [tab, page]);
 
   const months = [
     "Januari",
@@ -29,21 +86,30 @@ function HistoryOrder() {
     "Desember",
   ];
 
-  const [dataHistory, setDataHistory] = useState([]);
+  const arrayStatus = [
+    "Menunggu pembayaran",
+    "Menunggu konfirmasi",
+    "Diproses",
+    "Dikirim",
+    "Sampai tujuan",
+    "Dibatalkan",
+    "Kadaluwarsa",
+  ];
 
-  useEffect(() => {
-    (async () => {
-      try {
-        // qs.parse(location.search).q;
+  // EVENT
 
-        let res = await axios.get(`${API_URL}/history/get/diproses/2`); // user id dari redux harusnya
+  // Open modal detail order
 
-        setDataHistory(res.data);
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    })();
-  }, []);
+  const openModalDetailOrder = (orderId) => {
+    setHandleModal(true);
+    setOrdersId(orderId);
+  };
+
+  // OnChange halaman order
+
+  const onChangePage = (e, value) => {
+    setPage(value);
+  };
 
   // RENDERING
 
@@ -52,63 +118,83 @@ function HistoryOrder() {
   const renderTab = () => {
     return (
       <div className="history-tab">
-        <div>
-          <button
-            className="history-btn-tab pb-2 px-2"
-            onClick={() =>
-              history.push({
-                pathname: "/profile/history",
-                search: "q=diproses",
-              })
-            }
-          >
-            Diproses
-          </button>
-          <button
-            className="history-btn-tab pb-2 px-2"
-            onClick={() =>
-              history.push({
-                pathname: "/profile/history",
-                search: "?q=dikirim",
-              })
-            }
-          >
-            Sedang dikirim
-          </button>
-          <button
-            className="history-btn-tab pb-2 px-2"
-            onClick={() =>
-              history.push({
-                pathname: "/profile/history",
-                search: "?q=sampai",
-              })
-            }
-          >
-            Sampai tujuan
-          </button>
-        </div>
+        <div>{renderListTab()}</div>
         <div className="history-border-tab"></div>
       </div>
+    );
+  };
+
+  // Render list tab
+
+  const renderListTab = () => {
+    return dataStatus.map((el, index) => {
+      return (
+        <button
+          className={`history-btn-tab pb-2 px-2 ${
+            tab === parseInt(el.id) ? "history-btn-active" : null
+          }`}
+          value={el.id}
+          onClick={(e) => setTab(parseInt(e.target.value))}
+        >
+          {arrayStatus[index]}
+        </button>
+      );
+    });
+  };
+
+  // Render modal order detail
+
+  const renderModalOrderDetail = () => {
+    return (
+      <ModalOrderDetail
+        id={ordersId}
+        open={handleModal}
+        close={() => setHandleModal(false)}
+      />
     );
   };
 
   // Render list order
 
   const renderListOrder = () => {
+    const colorFont = ["#EF8943", "#43936C", "#CB3A31"];
+
+    const bgColor = ["#FEF0D7", "#D0E4DA", "#F0DAD4"];
+
     return dataHistory?.map((el, index) => {
       let date = new Date(el.create_on);
+      let color;
+      let backgroundColor;
+
+      if (el.status_id === 1 || el.status_id === 2 || el.status_id === 3) {
+        color = colorFont[0];
+        backgroundColor = bgColor[0];
+      } else if (el.status_id === 4 || el.status_id === 5) {
+        color = colorFont[1];
+        backgroundColor = bgColor[1];
+      } else {
+        color = colorFont[2];
+        backgroundColor = bgColor[2];
+      }
 
       return (
-        <div className="history-list-order d-flex align-items-center justify-content-between px-4 py-3 mb-3">
+        <div
+          key={index}
+          className="history-list-order d-flex align-items-center justify-content-between px-4 py-3 mb-3"
+          onClick={() => openModalDetailOrder(el.orders_id)}
+        >
           <div>
             <div className="d-flex align-items-center">
-              <div className="history-list-pesanan">Pesanan #AWUSER345</div>
+              <div className="history-list-pesanan">{`Pesanan #TLU${date.getTime()}`}</div>
               <div className="history-list-border mx-2"></div>
               <div className="history-list-tanggal mr-2">{`${date.getDate()} ${
                 months[date.getMonth()]
               } ${date.getFullYear()}`}</div>
-              <div className="history-list-status-diproses d-flex align-items-center justify-content-center py-1 px-2">
-                {el.status.charAt(0).toUpperCase() + el.status.slice(1)}
+              <div
+                className="history-list-status d-flex align-items-center justify-content-center py-1 px-2"
+                style={{ color, backgroundColor }}
+              >
+                {arrayStatus[el.status_id - 1]}
               </div>
             </div>
             <div className="d-flex align-items-center mt-2">
@@ -128,9 +214,11 @@ function HistoryOrder() {
                 </div>
               </div>
             </div>
-            <button className="history-list-otherprod mt-3">
-              {`+${el.total_barang} produk lainnya`}
-            </button>
+            {el.total_barang - 1 === 0 ? null : (
+              <button className="history-list-otherprod mt-3">
+                {`+${el.total_barang - 1} produk lainnya`}
+              </button>
+            )}
           </div>
           <div className="history-list-total">
             <div className="history-list-totalbelanja">Total belanja</div>
@@ -147,6 +235,12 @@ function HistoryOrder() {
     <div>
       {renderTab()}
       <div className="mt-3">{renderListOrder()}</div>
+      <Pagination
+        count={Math.ceil(totalOrder / limit)}
+        page={page}
+        onChange={onChangePage}
+      />
+      {renderModalOrderDetail()}
     </div>
   );
 }

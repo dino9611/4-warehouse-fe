@@ -1,25 +1,19 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import images from "./../assets";
 import "./styles/footerBottom.css";
 
-const {
-  produk1,
-  buah,
-  coklat,
-  kacang,
-  kopi,
-  rempah,
-  sayur,
-  susu,
-  teh,
-  footer,
-  facebook,
-  instagram,
-  wa,
-  call,
-} = images;
+const { footer, facebook, instagram, wa, call } = images;
 
 function Footer() {
+  const location = useLocation();
+
+  if (
+    location.pathname === "/checkout" ||
+    location.pathname === "/checkout/payment"
+  )
+    return null;
+
   return (
     <div>
       <div

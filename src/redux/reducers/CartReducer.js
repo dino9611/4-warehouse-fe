@@ -1,11 +1,13 @@
 const INITIAL_STATE = {
-  cart: [],
+  totalItem: null,
 };
 
 const cartReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "DATACART":
-      return { ...state, cart: action.payload };
+      return { ...state, totalItem: action.payload };
+    case "TOTALNULL":
+      return { ...state, totalItem: null };
 
     default:
       return state;

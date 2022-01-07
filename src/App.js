@@ -22,6 +22,7 @@ import Checkout from "./pages/user/Checkout";
 import Cart from "./pages/user/Cart";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
+import Payment from "./pages/user/Payment";
 
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
@@ -30,30 +31,8 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let resCart = await axios.get(
-          `${API_URL}/transaction/get/cart-detail/2`
-        ); // userId harusnya dari auth user redux
-        let resProfile = await axios.get(`${API_URL}/profile/personal-data/2`); // User id sementara ( nanti dari redux)
-
-        dispatch({
-          type: "PICKIMAGE",
-          payload: {
-            profile_picture: resProfile.data[0].profile_picture,
-            username: resProfile.data[0].username,
-          },
-        });
-
-        dispatch({ type: "DATACART", payload: resCart.data });
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
-
-  const role = "user";
+  const dataUser = useSelector((state) => state.auth);
+  const dataCart = useSelector((state) => state.cartReducer);
   const [loading, setLoading] = useState(true);
 
   // GET ROLE_ID DATA FROM REDUX STORE
@@ -69,6 +48,17 @@ function App() {
         })
         .then((res) => {
           dispatch(LoginAction(res.data));
+
+          // Get cart detail user
+
+          axios
+            .get(`${API_URL}/transaction/get/total-item/${res.data.id}`)
+            .then((resCart) => {
+              dispatch({ type: "DATACART", payload: resCart.data });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((err) => {
           console.log(err);
@@ -98,7 +88,7 @@ function App() {
           />
           <Route path="/products/:category" exact component="" />
           <Route path="/checkout" exact component={Checkout} />
-          <Route path="/checkout/payment" exact component="" />
+          <Route path="/checkout/payment" exact component={Payment} />
           <Route path="/cart" exact component={Cart} />
           <Route path="*" exact component="" />
         </Switch>
