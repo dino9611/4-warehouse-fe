@@ -1,16 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import "./styles/AdminSideBar.css";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    useLocation
-  } from "react-router-dom";
-import { useSelector } from "react-redux";
-import {FiHome} from "react-icons/fi";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import logoWhite from "../../assets/logo-footer.svg";
-import chevronDown from "../../assets/components/Chevron-Down-White.svg";
+import { logoutAction } from "../../redux/actions";
 
 function AdminSideBar(props) {
     const {routes} = props;
@@ -26,6 +19,18 @@ function AdminSideBar(props) {
     const [inventoryToggle, setInventoryToggle] = useState(false);
     
     const getRoleId = useSelector((state) => state.auth.role_id);
+
+    const dispatch = useDispatch();
+
+    let history = useHistory(); //* Utk redirect ke homepage stlh logout
+
+    const logoutRedirect = () => history.push("/"); //* Utk redirect ke homepage stlh logout
+
+    const onLogout = () => {
+        localStorage.removeItem("token");
+        dispatch(logoutAction());
+        logoutRedirect();
+    };
 
     const ecommToggleClick = () => {
         setEcommToggle(!ecommToggle)
@@ -206,7 +211,11 @@ function AdminSideBar(props) {
                 }
             </div>
             <div className="adm-sidebar-foot-wrap">
-                Test
+                <div className="adm-sidebar-foot-profile">Profile</div>
+                <div className="adm-sidebar-foot-logout">
+                    <div className="adm-logout-icon" />
+                    <button onClick={onLogout}>Logout</button>
+                </div>
             </div>
         </div>
     );

@@ -21,6 +21,14 @@
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
+/* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
+.adm-sidebar-item-label,
+.adm-sidebar-foot-logout {
+    align-items: center;
+    column-gap: 0.5rem;
+    display: flex;
+}
+
 /* ? MAIN WRAPPER SECTION */
 .adm-sidebar-main-wrap {
     background-color:  var(--primary-1st-color);
@@ -30,6 +38,7 @@
     height: 100vh;
     min-width: 15%;
     padding: 2.5rem 0;
+    position: relative;
 }
 
 /* ? BRAND LOGO WRAP SECTION */
@@ -73,21 +82,6 @@
     color: var(--primary-2nd-color) !important;
 }
 
-/* .adm-sidebar-item-wrap button {
-    background: none;
-    border: none;
-    color: var(--neutral-5th-color);
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0;
-} */
-
-.adm-sidebar-item-label {
-    align-items: center;
-    column-gap: 0.5rem;
-    display: flex;
-}
-
 .adm-sidebar-item-wrap:hover h6,
 a.sidebar-active:hover,
 .adm-sidebar-dropdown-menu a:hover {
@@ -100,15 +94,6 @@ a.sidebar-active:hover,
     display: flex;
     flex-direction: column;
 }
-
-/* .adm-sidebar-dropdown-menu button {
-    background: none;
-    border: none;
-    color: var(--neutral-5th-color);
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0;
-} */
 
 .adm-sidebar-dropdown-menu {
     display: flex;
@@ -257,4 +242,31 @@ a.sidebar-active:hover,
     transition: 400ms;
 }
 
+/* * LOGOUT ICON */
+.adm-logout-icon {
+    background: url("../../../assets/components/Logout.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -1px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
 /* ? SIDEBAR NAVIGATION FOOT WRAP & CONTENTS SECTION */
+.adm-sidebar-foot-wrap {
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4.5rem;
+    padding: 0 1rem 0 1.5rem;
+    position: absolute;
+    row-gap: 2rem;
+    width: 100%;
+}
+
+.adm-sidebar-foot-logout > button {
+    background: none;
+    border: none;
+    color: var(--neutral-5th-color);
+    font-size: 0.875rem;
+    padding: 0;
+}
