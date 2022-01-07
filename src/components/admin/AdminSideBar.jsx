@@ -14,50 +14,27 @@ import chevronDown from "../../assets/components/Chevron-Down-White.svg";
 
 function AdminSideBar(props) {
     const {routes} = props;
-    console.log("sidebar", routes);
 
     const DetectPath = () => {
         return useLocation().pathname;
     };
 
-    console.log("sidebar 23", DetectPath());
-
     let currentPath = DetectPath();
-
-    const [navValue, setNavValue] = useState("dashboard");
 
     const [ecommToggle, setEcommToggle] = useState(false);
 
-    const activateNav = (event) => {
-        let selectedValue = event.target.innerText.toLowerCase();
-        setNavValue(selectedValue);
-    };
+    const [inventoryToggle, setInventoryToggle] = useState(false);
+    
+    const getRoleId = useSelector((state) => state.auth.role_id);
 
     const ecommToggleClick = () => {
         setEcommToggle(!ecommToggle)
     };
 
-    const getRoleId = useSelector((state) => state.auth.role_id);
-
-    // ? Testing klo page nya lg sesuai url, text button akan ter-higlight bold putih (blm berhasil)
-    const divRef1 = useRef();
-    const divRef2 = useRef();
-    const divRef3 = useRef();
-
-    const testClick = (event, ref) => {
-        // console.log(event);
-        // console.log(ref.current);
-        let element = ref.current;
-        element.classList.add("test-add");
+    const inventoryToggleClick = () => {
+        setInventoryToggle(!inventoryToggle)
     };
 
-    const remove = (event, ref) => {
-        // console.log(event);
-        // console.log(ref.current);
-        let element = ref.current;
-        element.classList.remove("test-add");
-    };
-    // ? END OF SECTION
 
     return (
         <div className="adm-sidebar-main-wrap">
@@ -72,7 +49,6 @@ function AdminSideBar(props) {
                         : 
                         "link-no-decoration adm-sidebar-item-wrap"
                     }
-                    onClick={(event) => activateNav(event)}
                 >
                     <div className="adm-sidebar-item-label">
                         <div className="adm-dashboard-icon" />
@@ -113,7 +89,7 @@ function AdminSideBar(props) {
                                 opacity: ecommToggle ? 1 : 0, 
                                 zIndex: ecommToggle ? 1 : -1
                             }}
-                            onClick={(event) => activateNav(event)}
+    
                         >
                             Manage Products
                             {currentPath.includes(routes.manageProduct) ? <div className="adm-sidebar-active-nav" /> : null}
@@ -129,67 +105,108 @@ function AdminSideBar(props) {
                                 opacity: ecommToggle ? 1 : 0, 
                                 zIndex: ecommToggle ? 1 : -1
                             }}
-                            onClick={(event) => activateNav(event)}
+    
                         >
                             Manage Transaction
                             {currentPath.includes(routes.transactions) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
                     </div>
                 </div>
-                {/* <Link to={routes.manageProduct} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap"
-                        // tabIndex="0" 
-                        // ref={divRef2} 
-                        // onClick={(event) => testClick(event, divRef2)} 
-                        // onBlur={(event) => remove(event, divRef2)}
+                <div className="adm-sidebar-dropdown-wrap">
+                    <div 
+                        className={currentPath.includes(routes.stockRequest) ? 
+                            "adm-sidebar-item-wrap sidebar-active" 
+                            : 
+                            "adm-sidebar-item-wrap"
+                        }
+                        onClick={inventoryToggleClick}
                     >
-                        <div className="adm-ecommerce-icon"></div>
-                        <h6>eCommerce</h6>
+                        <div className="adm-sidebar-item-label">
+                            <div className="adm-inventory-icon" />
+                            <h6>Inventory</h6>
+                        </div>
+                        <div className="adm-toggle-icon" style={{transform: inventoryToggle ? "rotate(-180deg)" : "rotate(0deg)"}} />
                     </div>
-                </Link>
-                <Link to={routes.transactions} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <FiHome className="adm-sidebar-icon"/>
-                        <h6>Manage Transaction</h6>
+                    <div 
+                        className="adm-sidebar-dropdown-menu"
+                        style={{
+                            height: inventoryToggle ? "100%" : 0, 
+                            paddingTop: inventoryToggle ? "1rem" : 0,
+                        }}
+                    >
+                        <Link 
+                            to={routes.stockRequest}
+                            className="link-no-decoration"
+                            style={{
+                                color: currentPath.includes(routes.stockRequest) ? "#FCB537" : null, 
+                                fontSize: inventoryToggle ? "0.75rem" : 0,
+                                marginLeft: inventoryToggle ? 0 : "-20%",
+                                marginTop: inventoryToggle ? 0 : "-10%",
+                                opacity: inventoryToggle ? 1 : 0, 
+                                zIndex: inventoryToggle ? 1 : -1
+                            }}
+    
+                        >
+                            Stock Request
+                            {currentPath.includes(routes.stockRequest) ? <div className="adm-sidebar-active-nav" /> : null}
+                        </Link>
+                        {/* <Link //? Fitur stock opname utk warehouse admin blm ada
+                            to={routes.stockOpname} className="link-no-decoration"
+                            className="link-no-decoration"
+                            style={{
+                                color: currentPath.includes(routes.stockOpname) ? "#FCB537" : null,
+                                marginLeft: inventoryToggle ? 0 : "-20%",
+                                fontSize: inventoryToggle ? "0.75rem" : 0,
+                                marginTop: inventoryToggle ? 0 : "-10%",
+                                opacity: inventoryToggle ? 1 : 0, 
+                                zIndex: inventoryToggle ? 1 : -1
+                            }}
+    
+                        >
+                            Manage Transaction
+                            {currentPath.includes(routes.stockOpname) ? <div className="adm-sidebar-active-nav" /> : null}
+                        </Link> */}
                     </div>
-                </Link> */}
-                {/* Fitur stock opname utk warehouse admin blm ada */}
-                {/* <Link to={routes.stockOpname} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <FiHome className="adm-sidebar-icon"/>
-                        <h6>Stock Opname</h6>
-                    </div>
-                </Link> */}
-                <Link to={routes.warehouses} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <div className="adm-inventory-icon" />
-                        <h6>Inventory</h6>
-                    </div>
-                </Link>
-                <Link to={routes.stockRequest} className="link-no-decoration">
-                    <div className="adm-sidebar-item-wrap">
-                        <FiHome className="adm-sidebar-icon"/>
-                        <h6>Stock Request</h6>
-                    </div>
-                </Link>
+                </div>
                 {getRoleId === 1 ?
                     <>
-                        <Link to={routes.warehouses} className="link-no-decoration">
-                            <div className="adm-sidebar-item-wrap">
+                        <Link 
+                            to={routes.warehouses} 
+                            className={currentPath.includes(routes.warehouses) ? 
+                                "link-no-decoration adm-sidebar-item-wrap sidebar-active" 
+                                : 
+                                "link-no-decoration adm-sidebar-item-wrap"
+                            }
+    
+                        >
+                            <div className="adm-sidebar-item-label">
                                 <div className="adm-warehouse-icon" />
                                 <h6>Manage Warehouse</h6>
                             </div>
+                            {currentPath.includes(routes.warehouses) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
-                        <Link to={routes.manageAdmin} className="link-no-decoration">
-                            <div className="adm-sidebar-item-wrap">
+                        <Link 
+                            to={routes.manageAdmin} 
+                            className={currentPath.includes(routes.manageAdmin) ? 
+                                "link-no-decoration adm-sidebar-item-wrap sidebar-active" 
+                                : 
+                                "link-no-decoration adm-sidebar-item-wrap"
+                            }
+    
+                        >
+                            <div className="adm-sidebar-item-label">
                                 <div className="adm-admins-icon" />
                                 <h6>Manage Admin</h6>
                             </div>
+                            {currentPath.includes(routes.manageAdmin) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
                     </>
                     :
                     null
                 }
+            </div>
+            <div className="adm-sidebar-foot-wrap">
+                Test
             </div>
         </div>
     );

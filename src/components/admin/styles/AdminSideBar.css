@@ -209,6 +209,11 @@ a.sidebar-active:hover,
     width: 24px;
 }
 
+.sidebar-active .adm-inventory-icon {
+    background: url("../../../assets/components/Inventory-Main-Yellow.svg");
+    transition: 400ms;
+}
+
 .adm-sidebar-item-wrap:hover .adm-inventory-icon {
     background: url("../../../assets/components/Inventory-Yellow.svg");
     transition: 400ms;
@@ -221,6 +226,11 @@ a.sidebar-active:hover,
     margin-top: -3.5px; /* Utk centering icon dgn text */
     min-width: 24px;
     width: 24px;
+}
+
+.sidebar-active .adm-warehouse-icon {
+    background: url("../../../assets/components/Warehouse-Main-Yellow.svg");
+    transition: 400ms;
 }
 
 .adm-sidebar-item-wrap:hover .adm-warehouse-icon {
@@ -237,22 +247,14 @@ a.sidebar-active:hover,
     width: 24px;
 }
 
+.sidebar-active .adm-admins-icon {
+    background: url("../../../assets/components/Admin-Main-Yellow.svg");
+    transition: 400ms;
+}
+
 .adm-sidebar-item-wrap:hover .adm-admins-icon {
     background: url("../../../assets/components/Admin-Yellow.svg");
     transition: 400ms;
 }
 
-/* ! TESTING SECTION */
-.test-add {
-    color: var(--neutral-5th-color);
-}
-
-.adm-sidebar-item-wrap > h5 {
-    margin: 0;
-    text-align: start;
-    
-}
-
-.adm-sidebar-icon {
-    margin-right: 16px;
-}
+/* ? SIDEBAR NAVIGATION FOOT WRAP & CONTENTS SECTION */
