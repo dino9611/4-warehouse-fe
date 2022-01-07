@@ -26,7 +26,17 @@
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
-/* UTILITY CLASS */
+/* ? UTILITY CLASS & USED IN CHILD COMPONENTS */
+.adm-main-parent-wrap h1,
+.adm-main-parent-wrap h2,
+.adm-main-parent-wrap h3,
+.adm-main-parent-wrap h4,
+.adm-main-parent-wrap h5,
+.adm-main-parent-wrap h6
+.adm-main-parent-wrap p {
+    margin: 0;
+}
+
 .txt-capitalize {
     text-transform: capitalize;
 }
@@ -53,25 +63,16 @@
     transition: 300ms;
 }
 
+.control-zIndex {
+    z-index: 1;
+}
+
+/* ? MAIN WRAPPER & CONTENTS SECTION */
 .adm-main-parent-wrap {
     display: flex;
     height: 100%;
     position: relative;
     width: 100vw;
-}
-
-.adm-main-parent-wrap h1,
-.adm-main-parent-wrap h2,
-.adm-main-parent-wrap h3,
-.adm-main-parent-wrap h4,
-.adm-main-parent-wrap h5,
-.adm-main-parent-wrap h6
-.adm-main-parent-wrap p {
-    margin: 0;
-}
-
-.control-zIndex {
-    z-index: 1;
 }
 
 .adm-main-content-wrap {

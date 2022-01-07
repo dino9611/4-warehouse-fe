@@ -1,10 +1,6 @@
 import "./styles/AdminMainParent.css";
-import {
-    Switch,
-    Route
-} from "react-router-dom";
+import { Switch,Route } from "react-router-dom";
 import AdminSideBar from "../../components/admin/AdminSideBar";
-import AdminNavbar from "../../components/admin/AdminNavbar";
 import ManageProduct from "./ManageProduct";
 import AdminAddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
@@ -85,7 +81,6 @@ function AdminMainParent() {
       <div className="adm-main-parent-wrap">
           <AdminSideBar routes={routePath} className="control-zIndex"/>
           <div className="adm-main-content-wrap">
-              <AdminNavbar/>
               <Switch>
                   {routes.map((route, index) => (
                       <Route
