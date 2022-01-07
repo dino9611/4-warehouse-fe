@@ -19,7 +19,7 @@ const routePath = {
     manageProduct: "/admin/manage-product",
     addProduct: "/admin/manage-product/add",
     editProduct: "/admin/manage-product/edit",
-    stockOpname: "/admin/stock-opname",
+    // stockOpname: "/admin/stock-opname", //? Fitur stock opname utk warehouse admin blm ada
     transactions: "/admin/manage-transaction",
     detailTransaction: "/admin/manage-transaction/detail",
     warehouses: "/admin/manage-warehouse",
@@ -48,11 +48,11 @@ const routes = [
       exact: true,
       main: () => <EditProduct />
     },
-    {
-      path: routePath.stockOpname,
-      exact: true,
-      main: () => <div>Belum ada page stock opname</div>
-    },
+    // { //? Fitur stock opname utk warehouse admin blm ada
+    //   path: routePath.stockOpname,
+    //   exact: true,
+    //   main: () => <div>Belum ada page stock opname</div>
+    // },
     {
       path: routePath.transactions,
       exact: true,
