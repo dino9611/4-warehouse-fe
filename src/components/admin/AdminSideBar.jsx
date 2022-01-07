@@ -4,6 +4,7 @@ import { Link, useLocation, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import logoWhite from "../../assets/logo-footer.svg";
 import { logoutAction } from "../../redux/actions";
+import profileIcon from "../../assets/profpic.svg";
 
 function AdminSideBar(props) {
     const {routes} = props;
@@ -17,8 +18,10 @@ function AdminSideBar(props) {
     const [ecommToggle, setEcommToggle] = useState(false);
 
     const [inventoryToggle, setInventoryToggle] = useState(false);
-    
-    const getRoleId = useSelector((state) => state.auth.role_id);
+
+    const getAuthData = useSelector((state) => state.auth);
+
+    const {role_id, username, warehouse_name} = getAuthData;
 
     const dispatch = useDispatch();
 
@@ -173,7 +176,7 @@ function AdminSideBar(props) {
                         </Link> */}
                     </div>
                 </div>
-                {getRoleId === 1 ?
+                {role_id === 1 ?
                     <>
                         <Link 
                             to={routes.warehouses} 
@@ -211,7 +214,16 @@ function AdminSideBar(props) {
                 }
             </div>
             <div className="adm-sidebar-foot-wrap">
-                <div className="adm-sidebar-foot-profile">Profile</div>
+                <div className="adm-sidebar-foot-profile">
+                    <div className="adm-sidebar-foot-profile-pic">
+                        <img src={profileIcon} alt="admin-profile-picture" />
+                    </div>
+                    <div className="adm-sidebar-foot-profile-info">
+                        <div>{username}</div>
+                        <div>{role_id === 1 ? "Super Admin" : "Warehouse Admin"}</div>
+                        {warehouse_name ? <div>{warehouse_name}</div> : null}
+                    </div>
+                </div>
                 <div className="adm-sidebar-foot-logout">
                     <div className="adm-logout-icon" />
                     <button onClick={onLogout}>Logout</button>

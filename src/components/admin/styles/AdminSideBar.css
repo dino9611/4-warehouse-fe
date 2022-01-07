@@ -84,7 +84,8 @@
 
 .adm-sidebar-item-wrap:hover h6,
 a.sidebar-active:hover,
-.adm-sidebar-dropdown-menu a:hover {
+.adm-sidebar-dropdown-menu a:hover,
+.adm-sidebar-foot-logout:hover > button {
     color: #fcb537cc !important;
     transition: 400ms;
 }
@@ -251,16 +252,65 @@ a.sidebar-active:hover,
     width: 24px;
 }
 
+.adm-sidebar-foot-logout:hover .adm-logout-icon {
+    background: url("../../../assets/components/Logout-Yellow.svg");
+    transition: 400ms;
+}
+
 /* ? SIDEBAR NAVIGATION FOOT WRAP & CONTENTS SECTION */
 .adm-sidebar-foot-wrap {
     bottom: 0;
     display: flex;
     flex-direction: column;
     margin-bottom: 4.5rem;
-    padding: 0 1rem 0 1.5rem;
+    padding: 0 1.375rem 0 1.5rem;
     position: absolute;
     row-gap: 2rem;
     width: 100%;
+}
+
+.adm-sidebar-foot-profile {
+    background: var(--neutral-5th-color);
+    border-radius: var(--b-rad-root);
+    column-gap: 0.5rem;
+    display: flex;
+    padding: 0.675rem;
+}
+
+.adm-sidebar-foot-profile-pic {
+    align-items: center;
+    background: var(--primary-2nd-color);
+    border: none;
+    border-radius: var(--b-rad-table);
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    width: 17%;
+}
+
+.adm-sidebar-foot-profile-pic > img {
+    height: 80%;
+    width: 80%;
+}
+
+.adm-sidebar-foot-profile-info {
+    color: var(--primary-3rd-color);
+    display: flex;
+    flex-direction: column;
+    width: 83%;
+}
+
+.adm-sidebar-foot-profile-info > div:first-of-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.adm-sidebar-foot-profile-info > div:not(:nth-of-type(1)) {
+    font-size: 0.625rem;
+}
+
+.adm-sidebar-foot-logout { /* * Struktur utama wrap nya ada di grouped utility class */
+    width: fit-content;
 }
 
 .adm-sidebar-foot-logout > button {
