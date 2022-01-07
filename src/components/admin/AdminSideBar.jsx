@@ -14,13 +14,15 @@ import chevronDown from "../../assets/components/Chevron-Down-White.svg";
 
 function AdminSideBar(props) {
     const {routes} = props;
-    // console.log("sidebar", routes);
+    console.log("sidebar", routes);
 
     const DetectPath = () => {
         return useLocation().pathname;
     };
 
-    // console.log("sidebar 21", DetectPath());
+    console.log("sidebar 23", DetectPath());
+
+    let currentPath = DetectPath();
 
     const [navValue, setNavValue] = useState("dashboard");
 
@@ -65,17 +67,28 @@ function AdminSideBar(props) {
             <div className="adm-sidebar-list-wrap">
                 <Link 
                     to={routes.dashboard} 
-                    className="link-no-decoration adm-sidebar-item-wrap"
+                    className={currentPath.includes(routes.dashboard) ? 
+                        "link-no-decoration adm-sidebar-item-wrap sidebar-active" 
+                        : 
+                        "link-no-decoration adm-sidebar-item-wrap"
+                    }
                     onClick={(event) => activateNav(event)}
                 >
                     <div className="adm-sidebar-item-label">
                         <div className="adm-dashboard-icon" />
                         <h6>Dashboard</h6>
                     </div>
-                    {navValue === "dashboard" ? <div className="adm-sidebar-active-nav" /> : null}
+                    {currentPath.includes(routes.dashboard) ? <div className="adm-sidebar-active-nav" /> : null}
                 </Link>
                 <div className="adm-sidebar-dropdown-wrap">
-                    <div className="adm-sidebar-item-wrap" onClick={ecommToggleClick}>
+                    <div 
+                        className={(currentPath.includes(routes.manageProduct) ||  currentPath.includes(routes.transactions)) ? 
+                            "adm-sidebar-item-wrap sidebar-active" 
+                            : 
+                            "adm-sidebar-item-wrap"
+                        }
+                        onClick={ecommToggleClick}
+                    >
                         <div className="adm-sidebar-item-label">
                             <div className="adm-ecommerce-icon" />
                             <h6>eCommerce</h6>
@@ -90,10 +103,27 @@ function AdminSideBar(props) {
                         }}
                     >
                         <Link 
-                            to={routes.manageProduct} className="link-no-decoration" 
+                            to={routes.manageProduct}
+                            className="link-no-decoration"
                             style={{
+                                color: currentPath.includes(routes.manageProduct) ? "#FCB537" : null, 
+                                fontSize: ecommToggle ? "0.75rem" : 0,
                                 marginLeft: ecommToggle ? 0 : "-20%",
-                                // transform: ecommToggle ? "scaleY(1)" : "scaleY(0)",
+                                marginTop: ecommToggle ? 0 : "-10%",
+                                opacity: ecommToggle ? 1 : 0, 
+                                zIndex: ecommToggle ? 1 : -1
+                            }}
+                            onClick={(event) => activateNav(event)}
+                        >
+                            Manage Products
+                            {currentPath.includes(routes.manageProduct) ? <div className="adm-sidebar-active-nav" /> : null}
+                        </Link>
+                        <Link 
+                            to={routes.transactions} className="link-no-decoration"
+                            className="link-no-decoration"
+                            style={{
+                                color: currentPath.includes(routes.transactions) ? "#FCB537" : null,
+                                marginLeft: ecommToggle ? 0 : "-20%",
                                 fontSize: ecommToggle ? "0.75rem" : 0,
                                 marginTop: ecommToggle ? 0 : "-10%",
                                 opacity: ecommToggle ? 1 : 0, 
@@ -101,24 +131,8 @@ function AdminSideBar(props) {
                             }}
                             onClick={(event) => activateNav(event)}
                         >
-                            {/* <button value={3}>Manage Products</button> */}
-                            Manage Products
-                            {navValue === 3 ? <div className="adm-sidebar-active-nav" /> : null}
-                        </Link>
-                        <Link 
-                            to={routes.transactions} className="link-no-decoration" 
-                            style={{
-                                marginLeft: ecommToggle ? 0 : "-20%",
-                                // transform: ecommToggle ? "scaleY(1)" : "scaleY(0)",
-                                fontSize: ecommToggle ? "0.75rem" : 0,
-                                marginTop: ecommToggle ? 0 : "-10%",
-                                opacity: ecommToggle ? 1 : 0, 
-                                zIndex: ecommToggle ? 1 : -1
-                            }}
-                        >
-                            {/* <button value={4} >Manage Transaction</button> */}
                             Manage Transaction
-                            {navValue === 4 ? <div className="adm-sidebar-active-nav" /> : null}
+                            {currentPath.includes(routes.transactions) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
                     </div>
                 </div>

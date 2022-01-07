@@ -45,7 +45,7 @@
     width: 100%;
 }
 
-/* ? SIDEBAR NAVIGATION WRAP & LISTS SECTION */
+/* ? SIDEBAR NAVIGATION LISTS WRAP & CONTENTS SECTION */
 .adm-sidebar-list-wrap {
     display: flex;
     flex-direction: column;
@@ -69,6 +69,10 @@
     width: 100%;
 }
 
+.sidebar-active h6 {
+    color: var(--primary-2nd-color) !important;
+}
+
 /* .adm-sidebar-item-wrap button {
     background: none;
     border: none;
@@ -84,9 +88,10 @@
     display: flex;
 }
 
-.adm-sidebar-list-wrap h6:hover,
+.adm-sidebar-item-wrap:hover h6,
+a.sidebar-active:hover,
 .adm-sidebar-dropdown-menu a:hover {
-    color: #fcb537cc;
+    color: #fcb537cc !important;
     transition: 400ms;
 }
 
@@ -96,14 +101,14 @@
     flex-direction: column;
 }
 
-.adm-sidebar-dropdown-menu button {
+/* .adm-sidebar-dropdown-menu button {
     background: none;
     border: none;
     color: var(--neutral-5th-color);
     font-size: 0.75rem;
     font-weight: 500;
     padding: 0;
-}
+} */
 
 .adm-sidebar-dropdown-menu {
     display: flex;
@@ -129,10 +134,6 @@
     z-index: -1;
 }
 
-/* .adm-sidebar-dropdown-menu > a:last-of-type {
-    transition: 450ms;
-} */
-
 .adm-sidebar-active-nav {
     background: var(--primary-2nd-color);
     border-radius: var(--b-rad-table) 0 0 var(--b-rad-table);
@@ -141,11 +142,19 @@
 }
 
 /* ? SIDEBAR NAVIGATION ICON SECTION */
+
+/* * ARROW TOGGLE ICON */
 .adm-toggle-icon {
     background: url("../../../assets/components/Chevron-Down-White.svg") no-repeat 0 0;
     height: 24px;
+    margin-right: 1rem;
     min-width: 24px;
     width: 24px;
+}
+
+.sidebar-active .adm-toggle-icon {
+    background: url("../../../assets/components/Chevron-Down-Main-Yellow.svg");
+    transition: 400ms;
 }
 
 .adm-sidebar-item-wrap:hover .adm-toggle-icon {
@@ -153,6 +162,7 @@
     transition: 400ms;
 }
 
+/* * DASHBOARD ICON */
 .adm-dashboard-icon {
     background: url("../../../assets/components/Dashboard.svg") no-repeat 0 0;
     height: 24px;
@@ -161,11 +171,17 @@
     width: 24px;
 }
 
+.sidebar-active .adm-dashboard-icon {
+    background: url("../../../assets/components/Dashboard-Main-Yellow.svg");
+    transition: 400ms;
+}
+
 .adm-sidebar-item-wrap:hover .adm-dashboard-icon {
     background: url("../../../assets/components/Dashboard-Yellow.svg");
     transition: 400ms;
 }
 
+/* * ECOMMERCE ICON */
 .adm-ecommerce-icon {
     background: url("../../../assets/components/Ecommerce.svg") no-repeat 0 0;
     height: 24px;
@@ -174,11 +190,17 @@
     width: 24px;
 }
 
+.sidebar-active .adm-ecommerce-icon {
+    background: url("../../../assets/components/Ecommerce-Main-Yellow.svg");
+    transition: 400ms;
+}
+
 .adm-sidebar-item-wrap:hover .adm-ecommerce-icon {
     background: url("../../../assets/components/Ecommerce-Yellow.svg");
     transition: 400ms;
 }
 
+/* * INVENTORY ICON */
 .adm-inventory-icon {
     background: url("../../../assets/components/Inventory.svg") no-repeat 0 0;
     height: 24px;
@@ -192,6 +214,7 @@
     transition: 400ms;
 }
 
+/* * MANAGE WAREHOUSE ICON */
 .adm-warehouse-icon {
     background: url("../../../assets/components/Warehouse.svg") no-repeat 0 0;
     height: 24px;
@@ -205,6 +228,7 @@
     transition: 400ms;
 }
 
+/* * MANAGE ADMIN ICON */
 .adm-admins-icon {
     background: url("../../../assets/components/Admin.svg") no-repeat 0 0;
     height: 24px;
