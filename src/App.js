@@ -100,7 +100,7 @@ function App() {
           <Route path="/checkout" exact component={Checkout} />
           <Route path="/checkout/payment" exact component="" />
           <Route path="/cart" exact component={Cart} />
-          <Route path="*" exact component="" />
+          <Route path="*" component={NotFound} />
         </Switch>
       );
     } else if (getRoleId === 1 || getRoleId === 2) {
