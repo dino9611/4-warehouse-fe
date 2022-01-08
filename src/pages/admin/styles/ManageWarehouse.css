@@ -17,22 +17,11 @@
     --semantic-info: #27A0E3;
 
     --b-rad-root: 12px;
+    --b-rad-table: 8px;
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
-.link-no-decoration {
-    color: inherit;
-}
-
-.link-no-decoration:hover {
-    color: inherit;
-    text-decoration: none;
-}
-
-.txt-capitalize {
-    text-transform: capitalize;
-}
-
+/* ? MAIN WRAPPER SECTION */
 .manage-wh-main-wrap {
     display: flex;
     flex-direction: column;
@@ -40,29 +29,46 @@
     padding: 24px;
 }
 
+/* ? BREADCRUMB WRAP & CONTENTS SECTION */
+.manage-wh-breadcrumb-wrap {
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.manage-wh-breadcrumb-wrap li { 
+    /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
+    align-items: center;
+    display: flex;
+}
+
+/* ? HEADER WRAP & CONTENTS SECTION */
 .manage-wh-header-wrap {
+    align-items: center;
     display: flex;
     justify-content: space-between;
 }
 
-.manage-wh-header-wrap > h4 {
-    margin: 0;
-}
-
 .manage-wh-contents-wrap {
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
     margin-top: 24px;
+    padding: 1.5rem;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
 }
 
-.manage-wh-add-wrap {
+/* .manage-wh-add-wrap {
     display: flex;
-    margin: 24px 16px;
 }
 
 .manage-wh-add-wrap:hover {
     text-decoration: none;
-}
+} */
 
-.manage-wh-add-wrap button,
+.manage-wh-header-wrap button,
 .create-wh-modal-foot > button {
     background-color: var(--primary-4th-color);
     border: none;
@@ -73,7 +79,7 @@
     width: 208px;
 }
 
-.manage-wh-add-wrap button:hover,
+.manage-wh-header-wrap button:hover,
 .create-wh-modal-foot > button:hover {
     background-color: var(--primary-3rd-color);
     transition: 300ms;
@@ -124,3 +130,25 @@
     color: var(--primary-3rd-color);
     transition: 400ms;
 }
+
+/* .adm-swal-btn-override {
+    background-color: var(--primary-4th-color) !important;
+    border: none !important;
+    border-radius: 100px !important;
+    box-shadow: none !important;
+    outline: none !important;
+} */
+
+/* .btn-test:active {
+    background-color: var(--primary-4th-color) !important;
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.btn-test:focus {
+    background-color: var(--primary-4th-color) !important;
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+} */
