@@ -25,7 +25,7 @@ function NotFoundPage() {
                 </div>
                 <div className="adm-404-foot-wrap">
                     <AdmBtnPrimary padding={"0.625rem 1rem"} onClick={backToHome}>
-                        {(getRoleId === 1 || getRoleId === 2) ? "Back to home" : "Back to homepage"}
+                        {(getRoleId === 1 || getRoleId === 2) ? "Back to dashboard" : "Back to homepage"}
                     </AdmBtnPrimary>
                 </div>
             </div>
