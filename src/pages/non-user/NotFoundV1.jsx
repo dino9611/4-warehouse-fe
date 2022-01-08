@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AdmBtnPrimary from "../../components/admin/AdmBtnPrimary";
 
-function AdminNotFound() {
+function NotFoundPage() {
     const getRoleId = useSelector((state) => state.auth.role_id);
 
     let history = useHistory();
@@ -33,4 +33,4 @@ function AdminNotFound() {
     )
 }
 
-export default AdminNotFound;
+export default NotFoundPage;

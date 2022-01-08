@@ -82,6 +82,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
 }
 
 .adm-404-body-wrap > h2 {

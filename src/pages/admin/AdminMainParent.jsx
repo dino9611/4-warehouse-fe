@@ -9,6 +9,7 @@ import ManageAdmin from "./ManageAdmin";
 import HomeDashboard from "./HomeDashboard";
 import ManageTransaction from "./ManageTransaction";
 import AdminTransactionDetail from "./AdminTransactionDetail";
+import NotFoundPage from "../non-user/NotFoundV1";
 
 const routePath = {
     dashboard: "/admin/dashboard",
@@ -73,6 +74,11 @@ const routes = [
       path: routePath.manageAdmin,
       exact: true,
       main: () => <ManageAdmin />
+    },
+    {
+      path: "*",
+      exact: true,
+      main: () => <NotFoundPage />
     },
   ];
 
