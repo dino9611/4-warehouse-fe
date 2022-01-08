@@ -22,6 +22,7 @@ import Checkout from "./pages/user/Checkout";
 import Cart from "./pages/user/Cart";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
+import LoadingApp from "./components/LoadingApp";
 
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
@@ -146,9 +147,9 @@ function App() {
   return (
     <div className="App">
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
-      {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
-      {loading ? <div>Loading</div> : renderRouting()}
-      <div>{getRoleId === 1 || getRoleId === 2 ? null : <Footer />}</div>
+      {(getRoleId === 1 || getRoleId === 2 || loading) ? null : <Header />}
+      {loading ? <LoadingApp /> : renderRouting()}
+      <div>{(getRoleId === 1 || getRoleId === 2 || loading) ? null : <Footer />}</div>
     </div>
   );
 }
