@@ -15,7 +15,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import thousandSeparator from "../../helpers/ThousandSeparator";
-import CircularProgress from '@mui/material/CircularProgress';
 import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
@@ -31,6 +30,7 @@ import {Link} from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { errorToast } from "../../redux/actions/ToastAction";
+import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -339,9 +339,7 @@ function ManageTransaction() {
                         </div>
                     </>    
                     :
-                    <div className="adm-transaction-spinner-wrap">
-                        <CircularProgress />
-                    </div>
+                    <AdminLoadSpinner />
                 }
             </>
         )

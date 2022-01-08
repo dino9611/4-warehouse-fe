@@ -31,7 +31,7 @@ function AdminFetchFailed({
                 alt="Fetch-Data-Failed" 
                 style={{height: imgHeight, width: imgWidth}}
             />
-            <h3 style={{color: textColor, textAlign: textAlign}}>{textContent}</h3>
+            <h4 style={{color: textColor, textAlign: textAlign}}>{textContent}</h4>
         </div>
     )
 }
