@@ -60,14 +60,6 @@
     -moz-box-shadow: var(--b-shadow-root);
 }
 
-/* .manage-wh-add-wrap {
-    display: flex;
-}
-
-.manage-wh-add-wrap:hover {
-    text-decoration: none;
-} */
-
 .manage-wh-header-wrap button,
 .create-wh-modal-foot > button {
     background-color: var(--primary-4th-color);
@@ -130,25 +122,3 @@
     color: var(--primary-3rd-color);
     transition: 400ms;
 }
-
-/* .adm-swal-btn-override {
-    background-color: var(--primary-4th-color) !important;
-    border: none !important;
-    border-radius: 100px !important;
-    box-shadow: none !important;
-    outline: none !important;
-} */
-
-/* .btn-test:active {
-    background-color: var(--primary-4th-color) !important;
-    outline: none !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.btn-test:focus {
-    background-color: var(--primary-4th-color) !important;
-    outline: none !important;
-    border: none !important;
-    box-shadow: none !important;
-} */
