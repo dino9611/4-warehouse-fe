@@ -17,10 +17,12 @@ import { errorToast } from "../../redux/actions/ToastAction";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import {Link} from "react-router-dom";
+import { useSelector } from "react-redux";
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
+import AdminUnauthorized from "../../components/admin/AdminUnauthorized";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -65,6 +67,8 @@ function ManageWarehouse() {
     const charMax = 45;
 
     // FETCH & useEFFECT SECTION
+    const getRoleId = useSelector((state) => state.auth.role_id);
+    
     const fetchWarehouse = async () => { //* Utk render data list warehouse
         try {
             const res = await axios.get(`${API_URL}/warehouse/list`);
@@ -207,75 +211,81 @@ function ManageWarehouse() {
     };
 
     return (
-        <div className="manage-wh-main-wrap">
-            {!loadData ?
-                <>
-                    <div className="manage-wh-breadcrumb-wrap">
-                        <Stack spacing={2}>
-                            <Breadcrumbs
-                                separator={<NavigateNextIcon fontSize="small" />}
-                                aria-label="transaction detail breadcrumb"
-                            >
-                                {breadcrumbs}
-                            </Breadcrumbs>
-                        </Stack>
-                    </div>
-                    { (!loadData && errorFetch) ?
-                        <AdminFetchFailed />
-                        :
+        <>
+            {(getRoleId === 1) ?
+                <div className="manage-wh-main-wrap">
+                    {!loadData ?
                         <>
-                            <div className="manage-wh-header-wrap">
-                                <h4>Manage Warehouse</h4>
-                                <button onClick={modalClick}>+ Create Warehouse</button>
+                            <div className="manage-wh-breadcrumb-wrap">
+                                <Stack spacing={2}>
+                                    <Breadcrumbs
+                                        separator={<NavigateNextIcon fontSize="small" />}
+                                        aria-label="transaction detail breadcrumb"
+                                    >
+                                        {breadcrumbs}
+                                    </Breadcrumbs>
+                                </Stack>
                             </div>
-                            <div className="manage-wh-contents-wrap">
-                                <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
-                                    <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
-                                        <TableHead style={{backgroundColor: "#FCB537"}}>
-                                            <TableRow>
-                                                <StyledTableCell align="left">Warehouse ID</StyledTableCell>
-                                                <StyledTableCell align="left">Name</StyledTableCell>
-                                                <StyledTableCell align="left">Address</StyledTableCell>
-                                                <StyledTableCell align="left">Geolocation</StyledTableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {warehouses
-                                            .map((val) => (
-                                                <StyledTableRow
-                                                key={`${val.id}-${val.name}`}
-                                                >
-                                                    <StyledTableCell 
-                                                        align="left" 
-                                                        component="th" 
-                                                        scope="row" 
-                                                        style={{width: "200px"}}
-                                                    >
-                                                        {val.id}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
-                                                    <StyledTableCell align="left" className="txt-capitalize">{val.address}</StyledTableCell>
-                                                    <StyledTableCell align="left">
-                                                        lat: {val.latitude}
-                                                        <br />
-                                                        long: {val.longitude}
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                                <Modal open={toggleModal} close={onCloseModal}>
-                                    {createWhModal()}
-                                </Modal>
-                            </div>
-                        </>       
-                    }
-                </>
+                            { (!loadData && errorFetch) ?
+                                <AdminFetchFailed />
+                                :
+                                <>
+                                    <div className="manage-wh-header-wrap">
+                                        <h4>Manage Warehouse</h4>
+                                        <button onClick={modalClick}>+ Create Warehouse</button>
+                                    </div>
+                                    <div className="manage-wh-contents-wrap">
+                                        <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
+                                            <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
+                                                <TableHead style={{backgroundColor: "#FCB537"}}>
+                                                    <TableRow>
+                                                        <StyledTableCell align="left">Warehouse ID</StyledTableCell>
+                                                        <StyledTableCell align="left">Name</StyledTableCell>
+                                                        <StyledTableCell align="left">Address</StyledTableCell>
+                                                        <StyledTableCell align="left">Geolocation</StyledTableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {warehouses
+                                                    .map((val) => (
+                                                        <StyledTableRow
+                                                        key={`${val.id}-${val.name}`}
+                                                        >
+                                                            <StyledTableCell 
+                                                                align="left" 
+                                                                component="th" 
+                                                                scope="row" 
+                                                                style={{width: "200px"}}
+                                                            >
+                                                                {val.id}
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{val.address}</StyledTableCell>
+                                                            <StyledTableCell align="left">
+                                                                lat: {val.latitude}
+                                                                <br />
+                                                                long: {val.longitude}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                        <Modal open={toggleModal} close={onCloseModal}>
+                                            {createWhModal()}
+                                        </Modal>
+                                    </div>
+                                </>       
+                            }
+                        </>
+                        :
+                        <AdminSkeletonSimple />
+                    } 
+                </div>
                 :
-                <AdminSkeletonSimple />
-            } 
-        </div>
+                <AdminUnauthorized />
+            }
+        </>
     )
 }
 
