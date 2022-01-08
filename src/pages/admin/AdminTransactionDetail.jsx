@@ -20,10 +20,10 @@ import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdmBtnPrimary from "../../components/admin/AdmBtnPrimary";
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
-import inactiveNextArrow from "../../assets/arrorprofile.svg"
-import stockRequestIcon from "../../assets/components/Stock-Request.svg"
-import stockRequestInactiveIcon from "../../assets/components/Stock-Request-Inactive.svg"
-import infoIcon from "../../assets/components/Info.svg"
+import inactiveNextArrow from "../../assets/arrorprofile.svg";
+import stockRequestIcon from "../../assets/components/Stock-Request.svg";
+import stockRequestInactiveIcon from "../../assets/components/Stock-Request-Inactive.svg";
+import infoIcon from "../../assets/components/Info.svg";
 import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
 
