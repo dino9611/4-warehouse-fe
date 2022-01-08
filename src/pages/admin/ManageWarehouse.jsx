@@ -13,12 +13,14 @@ import {API_URL} from "../../constants/api";
 import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
 import Swal from 'sweetalert2';
-import { successToast, errorToast } from "../../redux/actions/ToastAction";
+import { errorToast } from "../../redux/actions/ToastAction";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import {Link} from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import Skeleton from '@mui/material/Skeleton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,6 +47,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function ManageWarehouse() {
+    const [loadData, setLoadData] = useState(true);
+
     const [warehouses, setWarehouses] = useState([]);
 
     const [toggleModal, setToggleModal] = useState(false);
@@ -68,6 +72,7 @@ function ManageWarehouse() {
             });
             setWarehouses(res.data);
         } catch (error) {
+            errorToast("Server Error, from ManageWarehouse");
             console.log(error)
         }
     };
@@ -75,7 +80,11 @@ function ManageWarehouse() {
     const {warehouse_name, warehouse_address} = addWhInput;
 
     useEffect(() => {
-        fetchWarehouse();
+        const fetchData = async () => {
+            await fetchWarehouse();
+            await setLoadData(false);
+        };
+        fetchData();
     }, []);
 
     const breadcrumbs = [
@@ -166,12 +175,12 @@ function ManageWarehouse() {
                     icon: 'success',
                     title: 'Create new warehouse success!',
                     text: `${inputtedNewWh.warehouse_name}`,
-                    customClass: {
+                    customClass: { //* CSS custom nya ada di AdminMainParent
                         popup: 'adm-swal-popup-override'
                     },
                     confirmButtonText: 'Continue',
                     confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override',
+                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                   });
                 fetchWarehouse();
             } catch (err) {
@@ -180,12 +189,12 @@ function ManageWarehouse() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
-                    customClass: {
+                    customClass: { //* CSS custom nya ada di AdminMainParent
                         popup: 'adm-swal-popup-override'
                     },
                     confirmButtonText: 'Continue',
                     confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override',
+                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                   });
             };
         } else {
@@ -196,61 +205,79 @@ function ManageWarehouse() {
 
     return (
         <div className="manage-wh-main-wrap">
-            <div className="manage-wh-breadcrumb-wrap">
-                <Stack spacing={2}>
-                    <Breadcrumbs
-                        separator={<NavigateNextIcon fontSize="small" />}
-                        aria-label="transaction detail breadcrumb"
-                    >
-                        {breadcrumbs}
-                    </Breadcrumbs>
-                </Stack>
-            </div>
-            <div className="manage-wh-header-wrap">
-                <h4>Manage Warehouse</h4>
-                <button onClick={modalClick}>+ Create Warehouse</button>
-            </div>
-            <div className="manage-wh-contents-wrap">
-                <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
-                    <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
-                        <TableHead style={{backgroundColor: "#FCB537"}}>
-                            <TableRow>
-                                <StyledTableCell align="left">Warehouse ID</StyledTableCell>
-                                <StyledTableCell align="left">Name</StyledTableCell>
-                                <StyledTableCell align="left">Address</StyledTableCell>
-                                <StyledTableCell align="left">Geolocation</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {warehouses
-                            .map((val) => (
-                                <StyledTableRow
-                                key={`${val.id}-${val.name}`}
-                                >
-                                    <StyledTableCell 
-                                        align="left" 
-                                        component="th" 
-                                        scope="row" 
-                                        style={{width: "200px"}}
-                                    >
-                                        {val.id}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
-                                    <StyledTableCell align="left" className="txt-capitalize">{val.address}</StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        lat: {val.latitude}
-                                        <br />
-                                        long: {val.longitude}
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Modal open={toggleModal} close={onCloseModal}>
-                    {createWhModal()}
-                </Modal>
-            </div>
+            {!loadData ?
+                <>
+                    <div className="manage-wh-breadcrumb-wrap">
+                        <Stack spacing={2}>
+                            <Breadcrumbs
+                                separator={<NavigateNextIcon fontSize="small" />}
+                                aria-label="transaction detail breadcrumb"
+                            >
+                                {breadcrumbs}
+                            </Breadcrumbs>
+                        </Stack>
+                    </div>
+                    <div className="manage-wh-header-wrap">
+                        <h4>Manage Warehouse</h4>
+                        <button onClick={modalClick}>+ Create Warehouse</button>
+                    </div>
+                    <div className="manage-wh-contents-wrap">
+                            <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
+                                <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
+                                    <TableHead style={{backgroundColor: "#FCB537"}}>
+                                        <TableRow>
+                                            <StyledTableCell align="left">Warehouse ID</StyledTableCell>
+                                            <StyledTableCell align="left">Name</StyledTableCell>
+                                            <StyledTableCell align="left">Address</StyledTableCell>
+                                            <StyledTableCell align="left">Geolocation</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {warehouses
+                                        .map((val) => (
+                                            <StyledTableRow
+                                            key={`${val.id}-${val.name}`}
+                                            >
+                                                <StyledTableCell 
+                                                    align="left" 
+                                                    component="th" 
+                                                    scope="row" 
+                                                    style={{width: "200px"}}
+                                                >
+                                                    {val.id}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
+                                                <StyledTableCell align="left" className="txt-capitalize">{val.address}</StyledTableCell>
+                                                <StyledTableCell align="left">
+                                                    lat: {val.latitude}
+                                                    <br />
+                                                    long: {val.longitude}
+                                                </StyledTableCell>
+                                            </StyledTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        <Modal open={toggleModal} close={onCloseModal}>
+                            {createWhModal()}
+                        </Modal>
+                    </div>
+                </>
+                :
+                <Stack spacing={3}>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "3rem", width: "20%"}}/>     
+                    </div>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "3rem", width: "20%"}}/>
+                        <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "3rem", width: "25%"}}/>        
+                    </div>
+                        <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "80vh", width: "100%"}} />
+                    <div style={{display: "flex", columnGap: "24px", justifyContent: "center"}}>
+                        <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "3rem", width: "30%"}} />
+                    </div>
+                </Stack>    
+            } 
         </div>
     )
 }
