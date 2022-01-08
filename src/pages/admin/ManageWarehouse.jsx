@@ -120,6 +120,7 @@ function ManageWarehouse() {
                         value={warehouse_name}
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse name"
+                        maxLength={charMax}
                     />
                     <Textbox
                         type="text"
@@ -128,6 +129,7 @@ function ManageWarehouse() {
                         value={warehouse_address}
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse address"
+                        maxLength={charMax}
                     />
                     {/* <Textbox
                         type="text"
@@ -153,7 +155,7 @@ function ManageWarehouse() {
             warehouse_address: warehouse_address,
         };
 
-        if (warehouse_name && warehouse_address) {
+        if (warehouse_name && warehouse_address && warehouse_name.length <= charMax && warehouse_address.length <= charMax) {
             try {
                 await axios.post(`${API_URL}/warehouse/add`, inputtedNewWh);
                 setAddWhInput((prevState) => {
@@ -188,7 +190,7 @@ function ManageWarehouse() {
             };
         } else {
             document.querySelector("div.create-wh-modal-foot > button").disabled = false;
-            errorToast("Pastikan terisi semua (discount price tidak wajib)");
+            errorToast("Please make sure all input filled & below 46 characters");
         };
     };
 

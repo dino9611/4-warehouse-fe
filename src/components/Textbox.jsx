@@ -19,6 +19,7 @@ function Textbox({
   backgroundColor,
   type = "text",
   onBlur,
+  maxLength,
 }) {
   return (
     <div className="d-flex flex-column">
@@ -47,6 +48,7 @@ function Textbox({
           name={name}
           disabled={disabled}
           onBlur={onBlur}
+          maxLength={maxLength}
         />
       </div>
       {error ? (
