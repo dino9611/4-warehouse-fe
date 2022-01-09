@@ -225,5 +225,54 @@ textarea[name="address"] {
 }
 
 .checkout-modal {
-  width: 50% !important;
+  width: 40% !important;
+  aspect-ratio: 1;
+  overflow: auto;
+}
+
+.checkout-address-btn {
+  background: #ffffff;
+  border: 1px solid #b24629;
+  box-sizing: border-box;
+  border-radius: 100px;
+  font-size: 0.875em;
+  color: #b24629;
+  font-weight: 600;
+}
+
+.checkout-list-address {
+  background: #ffffff;
+  border: 1px solid #cacaca;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.checkout-address-main {
+  background: #f4f4f4;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.checkout-address-action {
+  background: #f4f4f4;
+  border-radius: 0px 0px 7px 7px;
+}
+
+.checkout-addressaction-border {
+  border-left: 1px solid #cacaca;
+}
+
+.checkout-ubah-btn {
+  border: none;
+  background-color: transparent;
+}
+
+.checkout-btn-batal {
+  border: 1px solid #b24629;
+  background-color: transparent;
+  border-radius: 100px;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+  padding: 8px 10px;
 }

@@ -115,7 +115,7 @@ function Product() {
         <div key={index}>
           <label
             className="product-category-label d-flex align-items-center"
-            for={el.category}
+            htmlFor={el.category}
             style={{ cursor: "pointer" }}
           >
             <input
@@ -123,7 +123,7 @@ function Product() {
               id={el.category}
               name={el.category}
               value={el.id}
-              className=" mr-2"
+              className="mr-2"
               onChange={onChangeHandlerCategory}
               style={{ opacity: "0", cursor: "pointer", zIndex: "999" }}
             />

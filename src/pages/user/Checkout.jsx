@@ -39,9 +39,11 @@ function Checkout(props) {
   const [shipping, setShipping] = useState({}); // Get data ongkir
   const [pickShipping, setPickShipping] = useState(0); // Pilih jenis pengiriman
   const [pickBank, setPickBank] = useState({}); // State untuk menyimpan value dari bank yang dipilih
+  const [pickAddress, setPickAddress] = useState(null);
   const [mainAddress, setMainAddress] = useState(false); // State untuk menyimpan data dari alamat utama user
   const [pickProvince, setPickProvince] = useState(""); // State untuk menyimpan data provinsi yang dipilih
   const [errorFillAddress, setErrorFillAddress] = useState(false); // Jika kolom tambah alamat bellum diisi akan error true
+  const [btnAdd, setBtnAdd] = useState(false);
 
   // State loading request data
 
@@ -55,7 +57,7 @@ function Checkout(props) {
     phone_number: null,
     city: "",
     address: "",
-    is_main_address: null,
+    is_main_address: 0,
   });
 
   const dataUser = useSelector((state) => state.auth); // Get data auth user dari redux
@@ -100,12 +102,15 @@ function Checkout(props) {
             return;
           }
 
+          // Get data provinsi
+
           // Get shipping fee
 
           let resShipping = await axios.get(
             `${API_URL}/location/shipping-fee/${resAddress.data[0]?.id}`
           );
 
+          setPickAddress(resAddress.data[0].id);
           setDataAddress(resAddress.data[0]);
           setShipping(resShipping.data);
         } catch (error) {
@@ -129,6 +134,16 @@ function Checkout(props) {
       }
     })();
   }, [pickProvince]);
+
+  useEffect(() => {
+    (async () => {
+      let res = await axios.get(
+        `${API_URL}/location/get/data-address/${dataUser.id}`
+      );
+
+      setListAddress(res.data);
+    })();
+  }, []);
 
   // EVENT
 
@@ -192,20 +207,20 @@ function Checkout(props) {
 
   // Pilih alamat pengiriman
 
-  const pickAddress = async (data) => {
-    try {
-      let resShipping = await axios.get(
-        `${API_URL}/location/shipping-fee/${data.id}`
-      );
+  // const pickAddress = async (data) => {
+  //   try {
+  //     let resShipping = await axios.get(
+  //       `${API_URL}/location/shipping-fee/${data.id}`
+  //     );
 
-      setShipping(resShipping.data);
-      setDataAddress(data);
-      setHandleAddress(false);
-      setPickShipping(0);
-    } catch (error) {
-      console.log(error.response.data.message);
-    }
-  };
+  //     setShipping(resShipping.data);
+  //     setDataAddress(data);
+  //     setHandleAddress(false);
+  //     setPickShipping(0);
+  //   } catch (error) {
+  //     console.log(error.response.data.message);
+  //   }
+  // };
 
   // Onclik tambah alamat baru
 
@@ -244,7 +259,7 @@ function Checkout(props) {
 
       setErrorFillAddress(false);
       setLoadingNewAddress(false);
-      console.log("Berhasil tambah alamat");
+      alert("Berhasil tambah alamat");
     } catch (error) {
       console.log(error);
       console.log(error.response.data.message);
@@ -278,9 +293,28 @@ function Checkout(props) {
     }
   };
 
+  // onChange kurir
+
   const onChangeKurir = (e, data) => {
     setPickShipping(e.target.value);
     setDataKurir(data);
+  };
+
+  // onClick close pada modal address
+
+  const onClickCloseModal = () => {
+    setHandleAddress(false);
+    setBtnAdd(false);
+  };
+
+  // onChange is main address
+
+  const onChangeMainAddress = (e) => {
+    if (e.target.checked) {
+      setDataNewAddress({ ...dataNewAddress, is_main_address: 1 });
+    } else {
+      setDataNewAddress({ ...dataNewAddress, is_main_address: 0 });
+    }
   };
 
   // RENDERING
@@ -370,7 +404,9 @@ function Checkout(props) {
           {!dataNewAddress.city && errorFillAddress ? errorMessage() : null}
           <datalist id="cities">
             {dataCity?.map((el) => (
-              <option key={el.city_id} value={`${el.type} ${el.city_name}`} />
+              <option key={el.city_id} value={`${el.city_name}`}>
+                {el.type}
+              </option>
             ))}
           </datalist>
         </div>
@@ -393,29 +429,83 @@ function Checkout(props) {
           ></textarea>
           {!dataNewAddress.address && errorFillAddress ? errorMessage() : null}
         </div>
-        <div className="checkout-address-note mb-3">
-          * Data alamat yang Anda masukkan akan menjadi alamat utama,
-          dikarenakan Anda belum mempunyai alamat sebelumnya
-        </div>
-        <div>
-          <ButtonPrimary
-            onClick={onClickNewAddress}
-            width="w-100"
-            disabled={loadingNewAddress ? true : false}
+        <div className="mb-3">
+          <label
+            className="product-category-label d-flex align-items-center"
+            htmlFor="is_main_address"
+            style={{ cursor: "pointer" }}
           >
-            {!loadingNewAddress ? (
-              "Simpan alamat"
+            <input
+              type="checkbox"
+              id="is_main_address"
+              name="is_main_address"
+              className="mr-2"
+              onChange={onChangeMainAddress}
+              style={{ opacity: "0", cursor: "pointer", zIndex: "999" }}
+            />
+            {dataNewAddress.is_main_address ? (
+              <img
+                src={images.checked}
+                alt="checked"
+                style={{ position: "absolute" }}
+              />
             ) : (
-              <Spinner color="light" size="sm">
-                Loading...
-              </Spinner>
+              <img
+                src={images.unchecked}
+                alt="unchecked"
+                style={{ position: "absolute" }}
+              />
             )}
-          </ButtonPrimary>
+            Jadikan sebagai alamat utama
+          </label>
         </div>
+        <div className="checkout-address-note mb-3">
+          * Jika Anda belum mempunyai alamat sebelumnya, maka data alamat yang
+          anda masukkan saat ini akan menjadi alamat utama Anda
+        </div>
+        {btnAdd ? (
+          <div className="d-flex align-items-center justify-content-end w-100">
+            <button
+              className="checkout-btn-batal mr-4 w-25"
+              onClick={onClickCloseModal}
+            >
+              Batal
+            </button>
+            <ButtonPrimary
+              onClick={onClickNewAddress}
+              width="w-25"
+              disabled={loadingNewAddress ? true : false}
+            >
+              {!loadingNewAddress ? (
+                "Simpan"
+              ) : (
+                <Spinner color="light" size="sm">
+                  Loading...
+                </Spinner>
+              )}
+            </ButtonPrimary>
+          </div>
+        ) : (
+          <div>
+            <ButtonPrimary
+              onClick={onClickNewAddress}
+              width="w-100"
+              disabled={loadingNewAddress ? true : false}
+            >
+              {!loadingNewAddress ? (
+                "Simpan alamat"
+              ) : (
+                <Spinner color="light" size="sm">
+                  Loading...
+                </Spinner>
+              )}
+            </ButtonPrimary>
+          </div>
+        )}
       </div>
     );
   };
-
+  console.log(dataNewAddress);
   // Kondisi error message pada saat user mengisi alamat
 
   const errorMessage = () => {
@@ -468,8 +558,11 @@ function Checkout(props) {
 
   const renderModalAddress = () => {
     return (
-      <div className="w-100">
-        <h5 className="profile-fs14-500-black d-flex align-items-center justify-content-between">
+      <div
+        className=" w-100 pt-4 px-4 pb-2 mb-2"
+        style={{ position: "sticky", top: "0", backgroundColor: "#fff" }}
+      >
+        <h5 className="profile-fs14-500-black d-flex align-items-center justify-content-between p-0">
           <div>Pilih Alamat Pengiriman</div>
           <button
             className="checkout-close-modal"
@@ -479,55 +572,98 @@ function Checkout(props) {
           </button>
         </h5>
         <div className="mt-3">
-          <ButtonPrimary width="w-100" fontSize="0.75em">
+          <button
+            className="checkout-address-btn w-100 py-2"
+            onClick={() => setBtnAdd(true)}
+          >
             Tambah alamat baru
-          </ButtonPrimary>
-        </div>
-        <div className="cart-detail-border my-3"></div>
-        <div className="checkout-listadd-wrapper">
-          {listAddress?.map((el, index) => {
-            return (
-              <div className="checkout-listaddress mb-3">
-                <div>{el.recipient}</div>
-                <div>{el.phone_number}</div>
-                <div>{el.address}</div>
-                <div>{`${el.city}, ${el.province}`}</div>
-                {el.is_main_address ? (
-                  <div className="checkout-main-address">Utama</div>
-                ) : null}
-                <div>
-                  <button className="checkout-btn-address mr-3">
-                    Edit alamat
-                  </button>
-                  {el.is_main_address ? null : (
-                    <button
-                      className="checkout-btn-address"
-                      onClick={() => onClickChangeMainAddress(el.id)}
-                    >
-                      Jadikan alamat utama
-                    </button>
-                  )}
-                  {el.id === dataAddress?.id ? null : (
-                    <ButtonPrimary
-                      width="w-100"
-                      onClick={() => pickAddress(el)}
-                    >
-                      Pilih alamat
-                    </ButtonPrimary>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          </button>
         </div>
       </div>
     );
   };
 
+  // Render list address di modal checkout address
+
+  const renderListAddress = () => {
+    return listAddress.map((el, index) => {
+      return (
+        <label htmlFor={el.id} style={{ cursor: "pointer" }} className="w-100">
+          <input
+            type="radio"
+            id={el.id}
+            value={parseInt(el.id)}
+            name="list-address"
+            style={{ display: "none", cursor: "pointer", zIndex: "999" }}
+            checked={parseInt(el.id) === pickAddress ? "checked" : null}
+            onChange={(e) => setPickAddress(e.target.value)}
+          />
+          <div key={index} className="checkout-list-address mx-4 mb-3">
+            <div className="p-3">
+              <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center mb-2">
+                  <div className="fs12-500-black mr-2">
+                    {el.recipient.charAt(0).toUpperCase() +
+                      el.recipient.slice(1)}
+                  </div>
+                  {el.is_main_address ? (
+                    <div className="checkout-address-main fs10-500-gray">
+                      Utama
+                    </div>
+                  ) : null}
+                </div>
+                {parseInt(el.id) == pickAddress ? (
+                  <img src={images.checkon} alt="" />
+                ) : (
+                  <img src={images.checkoff} alt="" />
+                )}
+              </div>
+              <div className="fs10-500-gray mb-1">{el.phone_number}</div>
+              <div className="fs10-400-gray mb-1">{el.address}</div>
+              <div className="fs10-400-gray">{`${el.city}, ${el.province}`}</div>
+            </div>
+            <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
+              <button className="checkout-ubah-btn d-flex align-items-center p-0">
+                <img src={images.edit} alt="edit" className="mr-1" />
+                <div className="fs14-600-red">Ubah alamat</div>
+              </button>
+              {!el.is_main_address ? (
+                <>
+                  <div className="checkout-addressaction-border mx-3 py-2"></div>
+                  <button className="checkout-ubah-btn d-flex align-items-center p-0">
+                    <img src={images.utama} alt="edit" className="mr-1" />
+                    <div className="fs14-600-red">Jadikan alamat utama</div>
+                  </button>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </label>
+      );
+    });
+  };
+
   // Render modal tambah alamat
 
   const renderModalAddAddress = () => {
-    return <div></div>;
+    return (
+      <div>
+        <div
+          className="d-flex align-items-center justify-content-between pt-4 px-4 pb-2"
+          style={{ position: "sticky", top: "0", background: "#fff" }}
+        >
+          <div className="profile-fs14-500-black">Detail alamat</div>
+          <button
+            style={{ backgroundColor: "transparent", border: "none" }}
+            className="p-0"
+            onClick={onClickCloseModal}
+          >
+            <img src={images.close} alt="close" />
+          </button>
+        </div>
+        <div className="px-4 pb-4 pt-2">{renderNewAddress()}</div>
+      </div>
+    );
   };
 
   // Render product dari cart detail
@@ -755,10 +891,16 @@ function Checkout(props) {
       <div className="container-modal">
         <Modal
           open={handleAddress}
-          close={() => setHandleAddress(false)}
-          classModal="checkout-modal p-4"
+          close={onClickCloseModal}
+          classModal="checkout-modal p-0"
         >
-          {renderModalAddress()}
+          {btnAdd ? (
+            renderModalAddAddress()
+          ) : (
+            <>
+              {renderModalAddress()} {renderListAddress()}
+            </>
+          )}
         </Modal>
       </div>
     </div>

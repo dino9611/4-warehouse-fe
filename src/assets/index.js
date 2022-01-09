@@ -55,6 +55,10 @@ import calendar from "./calendar.svg";
 import minusactive from "./minusactive.svg";
 import copy from "./copy.svg";
 import copycolor from "./copycolor.svg";
+import edit from "./edit.svg";
+import utama from "./utama.svg";
+import checkoff from "./checkoff.svg";
+import checkon from "./checkon.svg";
 
 export default {
   logo,
@@ -114,4 +118,8 @@ export default {
   minusactive,
   copy,
   copycolor,
+  edit,
+  utama,
+  checkoff,
+  checkon,
 };
