@@ -30,6 +30,8 @@ import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
 import ShowPassTrue from "../../assets/components/Show-Pass-True.svg";
 import { useSelector } from "react-redux";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
+import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
+import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -91,24 +93,12 @@ function ManageProduct() {
     
     let showMaxRange = 5; //* Tentuin default max range yg tampil/di-render berapa buah
 
-    let firstCount = pageCountRange[0]; //* Tentuin first page yg mana, utk most first button (blm dipake)
+    //! let firstCount = pageCountRange[0]; //! Tentuin first page yg mana, utk most first button (blm dipake)
 
-    let lastCount = pageCountRange[pageCountRange.length - 1]; //* Tentuin last page yg mana, utk most last button (blm dipake)
+    //! let lastCount = pageCountRange[pageCountRange.length - 1]; //! Tentuin last page yg mana, utk most last button (blm dipake)
 
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [5, 10, 50];
-
-    // PER WAREHOUSE MODAL SECTION (Belum dipake)
-    // const [addProdModal, setAddProdModal] = useState(false);
-
-    // const addProdToggle = () => setAddProdModal(!addProdModal);
-    
-    // const showWhModal = AdminWhStockModal();
-
-    // const showWhStock = () => {
-    //     ("Click detected");
-    //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
-    // }
 
     // FETCH & useEFFECT SECTION
     const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
@@ -201,7 +191,7 @@ function ManageProduct() {
     };
 
     const dropdownBlur = () => {
-        let newArr = dropdownLength.map(() => { // Clickaway action dropdown menu/menutup kembali dropdown bila klik diluar dropdown
+        let newArr = dropdownLength.map(() => { //* Clickaway action dropdown menu/menutup kembali dropdown bila klik diluar dropdown
             return false;
         })
         setDropdownLength([...newArr]);
@@ -244,6 +234,8 @@ function ManageProduct() {
           setShowPass("password");
         };
     };
+
+    const charMax = 70;
     
     const delModalContent = (prodId, SKU, prodName, index) => {
         return (
@@ -260,6 +252,7 @@ function ManageProduct() {
                         value={passForDel}
                         onChange={(event) => passForDelHandler(event)}
                         placeholder="Your password"
+                        maxLength={charMax}
                     />
                     <img 
                         src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
@@ -355,31 +348,7 @@ function ManageProduct() {
         };
     };
 
-    // const renderRowsOptions = () => {
-    //     return rowsPerPageOptions.map((val) => {
-    //         if (val === itemPerPage) {
-    //             return (
-    //                 <button className="products-per-page-btn" value={val} onClick={(event) => selectPageFilter(event)} disabled>
-    //                     {val}
-    //                 </button>
-    //             );
-    //         } else {
-    //             return(
-    //                 <button className="products-per-page-btn" value={val} onClick={(event) => selectPageFilter(event)}>
-    //                     {val}
-    //                 </button>
-    //             );
-    //         };
-    //     });
-    // };
-
     // SELECT PAGE FUNCTION SECTION
-
-    // const selectPageFilter = (event) => { 
-    //     setItemPerPage(parseInt(event.target.value));
-    //     setPage(1);
-    // };
-
     const selectPage = (event) => { //* Rubah value page sesuai value button pagination yg di-klik
         setPage(parseInt(event.target.value));
     };
@@ -400,182 +369,207 @@ function ManageProduct() {
         }
     };
 
+    //! PER WAREHOUSE MODAL SECTION (Belum dipake)
+    // const [addProdModal, setAddProdModal] = useState(false);
+
+    // const addProdToggle = () => setAddProdModal(!addProdModal);
+    
+    // const showWhModal = AdminWhStockModal();
+
+    // const showWhStock = () => {
+    //     ("Click detected");
+    //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
+    // }
+    //! -----------------------------------------
+
     return (
         <div className="adm-products-main-wrap">
-            <div className="adm-products-breadcrumb-wrap">
-                <Stack spacing={2}>
-                    <Breadcrumbs
-                        separator={<NavigateNextIcon fontSize="small" />}
-                        aria-label="transaction detail breadcrumb"
-                    >
-                        {breadcrumbs}
-                    </Breadcrumbs>
-                </Stack>
-            </div>
-            <div className="adm-products-header-wrap">
-                <h4>Manage Products</h4>
-                <Link to="/admin/manage-product/add">
-                    <button>+ Add Products</button>
-                </Link>
-            </div>
-            <div className="adm-products-contents-wrap">
-                <TableContainer component={Paper} className="adm-product-table-override">
-                    <div className="adm-products-filter">
-                        <div className="adm-products-filter-item">
-                            {slicedProducts.length ?
-                                <p>Showing {slicedProducts[0]} - {slicedProducts.slice(-1)} of {prodLength} products</p>
-                                :
-                                <p>Showing 0 of {prodLength} products</p>
-                            }
-                        </div>
-                        <div className="adm-products-filter-item">
-                            <p>Product per Page:</p>
-                            <div className="adm-products-filter-dropdown-wrap">
-                                <button 
-                                    className="adm-products-filter-dropdown-btn" 
-                                    onClick={filterDropdownClick}
-                                    onBlur={filterDropdownBlur}
-                                >
-                                    {itemPerPage}
-                                    <img 
-                                        src={chevronDown} 
-                                        style={{
-                                            transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
-                                        }}
-                                    />
-                                </button>
-                                <ul 
-                                    className="adm-products-filter-dropdown-menu" 
-                                    style={{
-                                        transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
-                                        opacity: toggleDropdown ? 1 : 0,
-                                        zIndex: toggleDropdown ? 100 : -10,
-                                    }}
-                                >
-                                    {rowsPerPageOptions.map((val) => (
-                                        val === itemPerPage ? 
-                                        <li className="adm-products-filter-dropdown-selected">{val}</li> 
-                                        : 
-                                        <li
-                                            onClick={() => filterItemPerPage(val)}
-                                        >
-                                            {val}
-                                        </li>
-                                    ))}
-                                </ul>
+            {!loadData ?
+                <>
+                    <div className="adm-products-breadcrumb-wrap">
+                        <Stack spacing={2}>
+                            <Breadcrumbs
+                                separator={<NavigateNextIcon fontSize="small" />}
+                                aria-label="transaction detail breadcrumb"
+                            >
+                                {breadcrumbs}
+                            </Breadcrumbs>
+                        </Stack>
+                    </div>
+                    { (!loadData && errorFetch) ?
+                        <AdminFetchFailed />
+                        :
+                        <>
+                            <div className="adm-products-header-wrap">
+                                <h4>Manage Products</h4>
+                                <Link to="/admin/manage-product/add">
+                                    <button>+ Add Products</button>
+                                </Link>
                             </div>
-                        </div>
-                    </div>
-                    <Table sx={{ minWidth: 650 }} aria-label="manage products table">
-                        <TableHead>
-                            <TableRow style={{backgroundColor: "#FCB537"}}>
-                                <StyledTableCell align="center">Image</StyledTableCell>
-                                <StyledTableCell align="left">Product ID</StyledTableCell>
-                                <StyledTableCell align="left">Name</StyledTableCell>
-                                <StyledTableCell align="left">Category</StyledTableCell>
-                                <StyledTableCell align="left">Price</StyledTableCell>
-                                <StyledTableCell align="left">Stock</StyledTableCell>
-                                <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {products
-                            .map((val, index) => (
-                                <StyledTableRow
-                                key={val.SKU}
-                                >
-                                    <StyledTableCell align="center" component="th" scope="row">
-                                        <img 
-                                            src={`${API_URL}/${val.images[0]}`} 
-                                            style={{height: "100px", width: "100px"}} 
-                                            alt={val.name}
-                                        />
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        {val.id}
-                                        <br />
-                                        SKU: {val.SKU}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
-                                    <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
-                                    <StyledTableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</StyledTableCell>
-                                    <StyledTableCell align="left">
-                                        <span style={{cursor: "pointer"}}>
-                                            {val.total_stock}
-                                        </span>
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center" className="adm-products-action-cell">
-                                        <button 
-                                            className="adm-products-dropdown-btn" 
-                                            onClick={() => dropdownClick(index)}
-                                            onBlur={() => dropdownBlur(index)}
-                                        >
-                                            Options
-                                            <img 
-                                                src={chevronDown} 
-                                                style={{
-                                                    transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
-                                                }}
-                                            />
-                                        </button>
-                                        <ul 
-                                            className="adm-products-dropdown-menu" 
-                                            style={{
-                                                transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
-                                                opacity: dropdownLength[index] ? 1 : 0,
-                                                zIndex: dropdownLength[index] ? 100 : -10,
-                                            }}
-                                        >
-                                            <li>
-                                                <img src={editIcon} />
-                                                <Link 
-                                                    to={{
-                                                        pathname: "/admin/manage-product/edit",
-                                                        state: val
-                                                    }}
-                                                    className="link-no-decoration"
+                            <div className="adm-products-contents-wrap">
+                                <TableContainer component={Paper} className="adm-product-table-override">
+                                    <div className="adm-products-filter">
+                                        <div className="adm-products-filter-item">
+                                            {slicedProducts.length ?
+                                                <p>Showing {slicedProducts[0]} - {slicedProducts.slice(-1)} of {prodLength} products</p>
+                                                :
+                                                <p>Showing 0 of {prodLength} products</p>
+                                            }
+                                        </div>
+                                        <div className="adm-products-filter-item">
+                                            <p>Product per Page:</p>
+                                            <div className="adm-products-filter-dropdown-wrap">
+                                                <button 
+                                                    className="adm-products-filter-dropdown-btn" 
+                                                    onClick={filterDropdownClick}
+                                                    onBlur={filterDropdownBlur}
                                                 >
-                                                    Edit
-                                                </Link>
-                                            </li>
-                                            <li 
-                                                onClick={() => modalClick(index)}
-                                            >
-                                                <img src={deleteTrash} />
-                                                Delete
-                                            </li>
-                                        </ul>
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <div className="adm-products-pagination">
-                    <div className="adm-products-pagination-item">
-                        <button 
-                            className="adm-products-prev-btn" 
-                            disabled={page === 1} 
-                            onClick={prevPage}
-                        >
-                            {page === 1 ? <img src={paginationPrevArrowInactive} alt="Pagination-Prev-Arrow" /> : <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />}
-                        </button>
-                        {renderPageRange()}
-                        <button 
-                            className="adm-products-next-btn" 
-                            disabled={page === pageCountTotal || !products.length} 
-                            onClick={nextPage}
-                        >
-                            {(page === pageCountRange.length || !products.length) ? <img src={paginationNextArrowInactive} alt="Pagination-Next-Arrow" /> : <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />}
-                        </button>
-                    </div>
-                </div>
-                {products.map((val, index) => (
-                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
-                        {delModalContent(val.id, val.SKU, val.name, index)}
-                    </Modal>
-                ))}
-            </div>
+                                                    {itemPerPage}
+                                                    <img 
+                                                        src={chevronDown} 
+                                                        style={{
+                                                            transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                                        }}
+                                                    />
+                                                </button>
+                                                <ul 
+                                                    className="adm-products-filter-dropdown-menu" 
+                                                    style={{
+                                                        transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
+                                                        opacity: toggleDropdown ? 1 : 0,
+                                                        zIndex: toggleDropdown ? 100 : -10,
+                                                    }}
+                                                >
+                                                    {rowsPerPageOptions.map((val) => (
+                                                        val === itemPerPage ? 
+                                                        <li className="adm-products-filter-dropdown-selected">{val}</li> 
+                                                        : 
+                                                        <li
+                                                            onClick={() => filterItemPerPage(val)}
+                                                        >
+                                                            {val}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <Table sx={{ minWidth: 650 }} aria-label="manage products table">
+                                        <TableHead>
+                                            <TableRow style={{backgroundColor: "#FCB537"}}>
+                                                <StyledTableCell align="center">Image</StyledTableCell>
+                                                <StyledTableCell align="left">Product ID</StyledTableCell>
+                                                <StyledTableCell align="left">Name</StyledTableCell>
+                                                <StyledTableCell align="left">Category</StyledTableCell>
+                                                <StyledTableCell align="left">Price</StyledTableCell>
+                                                <StyledTableCell align="left">Stock</StyledTableCell>
+                                                <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {products
+                                            .map((val, index) => (
+                                                <StyledTableRow
+                                                key={val.SKU}
+                                                >
+                                                    <StyledTableCell align="center" component="th" scope="row">
+                                                        <img 
+                                                            src={`${API_URL}/${val.images[0]}`} 
+                                                            style={{height: "100px", width: "100px"}} 
+                                                            alt={val.name}
+                                                        />
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="left">
+                                                        {val.id}
+                                                        <br />
+                                                        SKU: {val.SKU}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
+                                                    <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
+                                                    <StyledTableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</StyledTableCell>
+                                                    <StyledTableCell align="left">
+                                                        <span style={{cursor: "pointer"}}>
+                                                            {val.total_stock}
+                                                        </span>
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center" className="adm-products-action-cell">
+                                                        <button 
+                                                            className="adm-products-dropdown-btn" 
+                                                            onClick={() => dropdownClick(index)}
+                                                            onBlur={() => dropdownBlur(index)}
+                                                        >
+                                                            Options
+                                                            <img 
+                                                                src={chevronDown} 
+                                                                style={{
+                                                                    transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
+                                                                }}
+                                                            />
+                                                        </button>
+                                                        <ul 
+                                                            className="adm-products-dropdown-menu" 
+                                                            style={{
+                                                                transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
+                                                                opacity: dropdownLength[index] ? 1 : 0,
+                                                                zIndex: dropdownLength[index] ? 100 : -10,
+                                                            }}
+                                                        >
+                                                            <Link 
+                                                                to={{
+                                                                    pathname: "/admin/manage-product/edit",
+                                                                    state: val
+                                                                }}
+                                                                className="link-no-decoration"
+                                                            >
+                                                                <li>
+                                                                    <img src={editIcon} />
+                                                                    Edit
+                                                                </li>
+                                                            </Link>
+                                                            <li 
+                                                                onClick={() => modalClick(index)}
+                                                            >
+                                                                <img src={deleteTrash} />
+                                                                Delete
+                                                            </li>
+                                                        </ul>
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <div className="adm-products-pagination">
+                                    <div className="adm-products-pagination-item">
+                                        <button 
+                                            className="adm-products-prev-btn" 
+                                            disabled={page === 1} 
+                                            onClick={prevPage}
+                                        >
+                                            {page === 1 ? <img src={paginationPrevArrowInactive} alt="Pagination-Prev-Arrow" /> : <img src={paginationPrevArrow} alt="Pagination-Prev-Arrow" />}
+                                        </button>
+                                        {renderPageRange()}
+                                        <button 
+                                            className="adm-products-next-btn" 
+                                            disabled={page === pageCountTotal || !products.length} 
+                                            onClick={nextPage}
+                                        >
+                                            {(page === pageCountRange.length || !products.length) ? <img src={paginationNextArrowInactive} alt="Pagination-Next-Arrow" /> : <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />}
+                                        </button>
+                                    </div>
+                                </div>
+                                {products.map((val, index) => (
+                                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                                        {delModalContent(val.id, val.SKU, val.name, index)}
+                                    </Modal>
+                                ))}
+                            </div>
+                        </>
+                    }  
+                </>
+                :
+                <AdminSkeletonSimple />            
+            }
         </div>
     )
 }

@@ -65,6 +65,7 @@
 }
 
 .adm-products-filter-dropdown-menu > li:hover,
+.adm-products-dropdown-menu > a:hover,
 .adm-products-dropdown-menu > li:hover {
     color: var(--primary-4th-color);
     transition: 300ms;
@@ -217,18 +218,20 @@
     -moz-box-shadow: var(--b-shadow-root);
 }
 
+.adm-products-dropdown-menu > a,
 .adm-products-dropdown-menu > li {
     align-items: center;
     color: var(--neutral-2nd-color);
     cursor: pointer;
     display: flex;
     justify-content: flex-start;
-    padding: 1rem;
+    padding: 0.5rem;
     width: 100%;
 }
 
+.adm-products-dropdown-menu > a img,
 .adm-products-dropdown-menu > li > img {
-    margin-right: 1rem;
+    margin-right: 0.5rem;
 }
 
 /* ? DELETE MODAL CONTENT */
@@ -256,6 +259,11 @@
     position: absolute;
     right: 14px;
     top: 52%;
+}
+
+.del-modal-body-wrap > div input[type=text] {
+    /* Utk kasih jarak antar text dgn icon show password di posisi paling kanan elemen input saat type = text */
+    padding-right: 3rem;
 }
 
 /* * DEL MODAL FOOT WRAP & CONTENTS ON MANAGE PRODUCT MODAL SECTION */
