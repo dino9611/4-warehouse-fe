@@ -155,8 +155,8 @@ function ManageWarehouse() {
                     /> */}
                 </div>
                 <div className="create-wh-modal-foot">
-                    <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
                     <button onClick={onCloseModal}>Cancel</button>
+                    <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
                 </div>
             </>
         )
@@ -168,7 +168,7 @@ function ManageWarehouse() {
         
         let inputtedNewWh = {
             warehouse_name: warehouse_name,
-            warehouse_address: warehouse_address,
+            warehouse_address: warehouse_address
         };
 
         if (warehouse_name && warehouse_address && warehouse_name.length <= charMax && warehouse_address.length <= charMax) {
@@ -202,7 +202,7 @@ function ManageWarehouse() {
                     confirmButtonText: 'Continue',
                     confirmButtonAriaLabel: 'Continue',
                     confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
-                  });
+                });
             };
         } else {
             document.querySelector("div.create-wh-modal-foot > button").disabled = false;
