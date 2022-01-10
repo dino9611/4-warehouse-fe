@@ -178,7 +178,7 @@ function ManageTransaction() {
         fetchData();
     }, [value, page, itemPerPage]);
 
-    useEffect(() => {
+    useEffect(() => {  //* Utk sumber array showing n - n data of total N data (ex: 1-5 of 25)
         transactionRangeSlice();
     }, [transactionLength, value, page, itemPerPage]);
 
@@ -430,7 +430,7 @@ function ManageTransaction() {
         };
 
         if (pageCountRange.length <= showMaxRange) {
-            return pageCountRange.map((val, index) => {
+            return pageCountRange.map((val) => {
                 if (val === page) { //* Bila value button = value page --> aktif saat ini
                     return disabledBtn(val);
                 } else {

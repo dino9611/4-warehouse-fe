@@ -157,7 +157,7 @@
     margin-top: 2.5rem;
 }
 
-/* ? DROPDOWN MENU FILTER PRODUCT PER PAGE */
+/* ? DROPDOWN MENU FILTER TRANSACTION PER PAGE */
 .adm-transaction-filter {
     display: flex;
     justify-content: space-between;
@@ -261,7 +261,7 @@
 
 .adm-transaction-pagination-item {
     align-items: center;
-    column-gap: 8px;
+    column-gap: 0.5rem;
     display: flex;
     justify-content: center;
     margin: 1rem 0 0;
