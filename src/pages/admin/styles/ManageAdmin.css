@@ -123,6 +123,11 @@
     top: 52%;
 }
 
+.add-adm-modal-body > div:nth-of-type(2) input[type=text] {
+    /* Utk kasih jarak antar text dgn icon show password di posisi paling kanan elemen input saat type = text */
+    padding-right: 3rem;
+}
+
 .add-adm-modal-body-dropdown > label {
     font-size: 0.875rem;
     font-weight: 600;
@@ -155,7 +160,7 @@
     transition: 400ms;
 }
 
-/* ? DROPDOWN MENU FILTER PRODUCT PER PAGE */
+/* ? DROPDOWN MENU SELECT WAREHOUSE ON ADD ADMIN MODAL */
 .manage-adm-dropdown-wrap {
     position: relative;
     width: 100%;
@@ -181,8 +186,8 @@
 }
 
 .manage-adm-dropdown-btn > img {
+    margin-right: 1.5px; /* Biar sejajar dgn icon showpass */
     margin-top: -2.2px;
-    margin-left: 4px;
     transition: 300ms;
 }
 
@@ -194,7 +199,7 @@
     flex-direction: column;
     justify-content: space-around;
     list-style: none;
-    margin-bottom: -13rem;
+    margin-top: 0.5rem;
     overflow: hidden;
     padding: 0;
     position: absolute;
@@ -211,7 +216,7 @@
     color: var(--neutral-2nd-color);
     cursor: pointer;
     display: flex;
-    padding: 8px;
+    padding: 0.5rem;
     width: 100%;
 }
 

@@ -26,7 +26,6 @@ import NotFoundPage from "../non-user/NotFoundV1";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import chevronDown from "../../assets/components/Chevron-Down.svg";
-import AdminLoadSpinner from "../../components/admin/AdminLoadSpinner";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -72,40 +71,10 @@ function ManageAdmin() {
         new_password: "",
         assign_warehouse: 0
     });
-    console.log("74:", addAdmInput);
 
     const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
 
     const [selectedWhDropdown, setSelectedWhDropdown] = useState("Select Warehouse To Assign"); //* Sebagai placeholder ketika assign warehouse belum dipilih & sudah dipilih
-
-    // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
-    const dropdownClick = () => { //* Buka tutup menu dropdown
-        setToggleDropdown(!toggleDropdown);
-    };
-
-    const dropdownBlur = () => { //* Tutup menu dropdown ketika click diluar wrap menu dropdown
-        setToggleDropdown(false)
-    };
-
-    const filterItemPerPage = (event, warehouseName) => { //* Atur value warehouse yg di-assign & behavior dropdown stlh action terjadi
-        // setItemPerPage(itemValue);
-        // setPage(1);
-        console.log("90:", event.target.value);
-        setAddAdmInput((prevState) => {
-            return { ...prevState, assign_warehouse: event.target.value };
-        });
-        setSelectedWhDropdown(warehouseName);
-        setToggleDropdown(false);
-        // setDropdownLoad(true);
-        fetchWarehouse();
-        // setDropdownLoad(false);
-        // setLoadData(true);
-        // fetchWarehouse();
-    };
-
-    const userCharMax = 45;
-
-    const passCharMax = 70;
 
     // FETCH & useEFFECT SECTION
     const getRoleId = useSelector((state) => state.auth.role_id);
@@ -143,10 +112,6 @@ function ManageAdmin() {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     fetchWarehouse();
-    // }, [addAdmInput.assign_warehouse]);
-
     const breadcrumbs = [
         <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
           Dashboard
@@ -156,7 +121,7 @@ function ManageAdmin() {
         </Typography>,
     ];
 
-    // RENDER MODAL CREATE WAREHOUSE
+    // RENDER MODAL ADD ADMIN
     const modalClick = () => {
         if (!toggleModal) {
             setToggleModal(true);
@@ -182,12 +147,6 @@ function ManageAdmin() {
     const addAdmStringHandler = (event) => { //* Utk setState data berbentuk string
         setAddAdmInput((prevState) => {
             return { ...prevState, [event.target.name]: event.target.value };
-        });
-    };
-
-    const addAdmNumberHandler = (event) => { //* Utk setState data berbentuk number
-        setAddAdmInput((prevState) => {
-            return { ...prevState, [event.target.name]: parseInt(event.target.value) };
         });
     };
 
@@ -226,23 +185,6 @@ function ManageAdmin() {
                             onClick={showPassHandler} 
                         />
                     </div>
-                    {/* <div>
-                        <label htmlFor="assign_warehouse">Warehouse</label>
-                        <select 
-                            id="assign_warehouse"
-                            name="assign_warehouse" 
-                            defaultValue={assign_warehouse}
-                            onChange={(event) => addAdmNumberHandler(event)}
-                            style={{textTransform: "capitalize"}}
-                        >
-                            <option value={0} disabled hidden>Select warehouse to assign</option>
-                            {warehouses.map((val) => (
-                                <option value={val.id} key={`00${val.id}-${val.name}`} style={{textTransform: "capitalize"}}>
-                                    {`${val.name} (${val.address})`}
-                                </option>
-                            ))}
-                        </select>
-                    </div> */}
                     <div className="add-adm-modal-body-dropdown">
                         <label>Warehouse</label>
                         <div className="manage-adm-dropdown-wrap">
@@ -278,7 +220,7 @@ function ManageAdmin() {
                                     : 
                                     <li
                                         value={val.id}
-                                        onClick={(event) => filterItemPerPage(event, val.name)}
+                                        onClick={(event) => selectWarehouse(event, val.name)}
                                     >
                                         {val.name}
                                     </li>
@@ -295,6 +237,29 @@ function ManageAdmin() {
         )
     };
 
+    // RENDER DROPDOWN SELECT WAREHOUSE ON ADD ADMIN MODAL
+    const dropdownClick = () => { //* Buka tutup menu dropdown
+        setToggleDropdown(!toggleDropdown);
+    };
+
+    const dropdownBlur = () => { //* Tutup menu dropdown ketika click diluar wrap menu dropdown
+        setToggleDropdown(false)
+    };
+
+    const selectWarehouse = (event, warehouseName) => { //* Atur value warehouse yg di-assign & behavior dropdown stlh action terjadi
+        setAddAdmInput((prevState) => {
+            return { ...prevState, assign_warehouse: event.target.value };
+        });
+        setSelectedWhDropdown(warehouseName);
+        setToggleDropdown(false);
+        fetchWarehouse();
+    };
+
+    const userCharMax = 45;
+
+    const passCharMax = 70;
+
+    // CLICK/SUBMIT FUNCTION SECTION
     const onSubmitAddAdm = async (event) => { //* Untuk trigger submit button
         event.preventDefault();
         document.querySelector("div.add-adm-modal-foot > button").disabled = true;
@@ -342,7 +307,7 @@ function ManageAdmin() {
             };
         } else {
             document.querySelector("div.add-adm-modal-foot > button").disabled = false;
-            errorToast("Please input all form");
+            errorToast("Please input all form, username (max 45 char), & pass (max 75 char)");
         };
     };
 
