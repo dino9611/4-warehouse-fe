@@ -49,9 +49,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function ManageWarehouse() {
-    const [loadData, setLoadData] = useState(true);
+    const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
     
-    const [errorFetch, setErrorFetch] = useState(false);
+    const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
     const [warehouses, setWarehouses] = useState([]);
 

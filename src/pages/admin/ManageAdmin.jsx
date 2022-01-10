@@ -22,6 +22,9 @@ import Stack from '@mui/material/Stack';
 import {Link} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useSelector } from "react-redux";
+import AdminUnauthorized from "../../components/admin/AdminUnauthorized";
+import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
+import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -48,7 +51,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function ManageAdmin() {
-    const [loadData, setLoadData] = useState(true);
+    const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
+
+    const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
     const [adminList, setAdminList] = useState([]);
 
@@ -257,61 +262,79 @@ function ManageAdmin() {
     };
 
     return (
-        <div className="manage-adm-main-wrap">
-            <div className="manage-adm-breadcrumb-wrap">
-                <Stack spacing={2}>
-                    <Breadcrumbs
-                        separator={<NavigateNextIcon fontSize="small" />}
-                        aria-label="transaction detail breadcrumb"
-                    >
-                        {breadcrumbs}
-                    </Breadcrumbs>
-                </Stack>
-            </div>
-            <div className="manage-adm-header-wrap">
-                <h4>Manage Admin</h4>
-                <button onClick={modalClick}>+ Add Admin</button>
-            </div>
-            <div className="manage-adm-contents-wrap">
-            <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
-                    <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
-                        <TableHead style={{backgroundColor: "#FCB537"}}>
-                            <TableRow>
-                                <StyledTableCell align="left">User ID</StyledTableCell>
-                                <StyledTableCell align="left">Username</StyledTableCell>
-                                <StyledTableCell align="left">Role</StyledTableCell>
-                                <StyledTableCell align="left">Warehouse ID</StyledTableCell>
-                                <StyledTableCell align="left">Warehouse Name</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {adminList
-                            .map((val) => (
-                                <StyledTableRow
-                                key={`${val.id}-${val.name}`}
-                                >
-                                    <StyledTableCell 
-                                        align="left" 
-                                        component="th" 
-                                        scope="row" 
-                                        style={{width: "200px"}}
+        <>
+            {(getRoleId === 1) ?
+                <div className="manage-adm-main-wrap">
+                    {!loadData ?
+                        <>
+                            <div className="manage-adm-breadcrumb-wrap">
+                                <Stack spacing={2}>
+                                    <Breadcrumbs
+                                        separator={<NavigateNextIcon fontSize="small" />}
+                                        aria-label="transaction detail breadcrumb"
                                     >
-                                        {val.id}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="left">{val.username}</StyledTableCell>
-                                    <StyledTableCell align="left" className="txt-capitalize">{(val.role_id === 2) ? `${val.role}/Warehouse Admin` : val.role}</StyledTableCell>
-                                    <StyledTableCell align="left" style={{width: "200px"}}>{val.warehouse_id}</StyledTableCell>
-                                    <StyledTableCell align="left">{val.warehouse_name}</StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Modal open={toggleModal} close={onCloseModal}>
-                    {AddAdminModal()}
-                </Modal>
-            </div>
-        </div>
+                                        {breadcrumbs}
+                                    </Breadcrumbs>
+                                </Stack>
+                            </div>
+                            { (!loadData && errorFetch) ?
+                                <AdminFetchFailed />
+                                :
+                                <>
+                                    <div className="manage-adm-header-wrap">
+                                        <h4>Manage Admin</h4>
+                                        <button onClick={modalClick}>+ Add Admin</button>
+                                    </div>
+                                    <div className="manage-adm-contents-wrap">
+                                        <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
+                                            <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
+                                                <TableHead style={{backgroundColor: "#FCB537"}}>
+                                                    <TableRow>
+                                                        <StyledTableCell align="left">User ID</StyledTableCell>
+                                                        <StyledTableCell align="left">Username</StyledTableCell>
+                                                        <StyledTableCell align="left">Role</StyledTableCell>
+                                                        <StyledTableCell align="left">Warehouse ID</StyledTableCell>
+                                                        <StyledTableCell align="left">Warehouse Name</StyledTableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {adminList
+                                                    .map((val) => (
+                                                        <StyledTableRow
+                                                        key={`${val.id}-${val.name}`}
+                                                        >
+                                                            <StyledTableCell 
+                                                                align="left" 
+                                                                component="th" 
+                                                                scope="row" 
+                                                                style={{width: "200px"}}
+                                                            >
+                                                                {val.id}
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left">{val.username}</StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{(val.role_id === 2) ? `${val.role}/Warehouse Admin` : val.role}</StyledTableCell>
+                                                            <StyledTableCell align="left" style={{width: "200px"}}>{val.warehouse_id}</StyledTableCell>
+                                                            <StyledTableCell align="left">{val.warehouse_name}</StyledTableCell>
+                                                        </StyledTableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                        <Modal open={toggleModal} close={onCloseModal}>
+                                            {AddAdminModal()}
+                                        </Modal>
+                                    </div>
+                                </>
+                            }
+                        </>
+                        :
+                        <AdminSkeletonSimple />
+                    }
+                </div>
+                :
+                <AdminUnauthorized />
+            }
+        </>
     )
 }
 
