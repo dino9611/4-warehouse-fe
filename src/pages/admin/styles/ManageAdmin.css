@@ -79,13 +79,15 @@
     -moz-box-shadow: var(--b-shadow-root);
 }
 
-/* CREATE WH MODAL CONTENT */
+/* ? MANAGE ADMIN MODAL CONTENT */
+
+/* * ADM MODAL HEAD WRAP & CONTENTS ON MANAGE ADM MODAL SECTION */
 .add-adm-modal-head {
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-bottom: 40px;
+    margin-bottom: 2.5rem;
     row-gap: 1rem;
 }
 
@@ -94,6 +96,7 @@
     text-align: center;
 }
 
+/* * ADM MODAL BODY WRAP & CONTENTS ON MANAGE ADM MODAL SECTION */
 .add-adm-modal-body {
     display: flex;
     flex-direction: column;
@@ -120,6 +123,7 @@
     margin: 0 1rem 0 0;
 }
 
+/* * ADM MODAL FOOT WRAP & CONTENTS ON MANAGE ADM MODAL SECTION */
 .add-adm-modal-foot {
     column-gap: 1rem;
     display: flex;
