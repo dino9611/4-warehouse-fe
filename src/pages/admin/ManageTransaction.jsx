@@ -101,7 +101,7 @@ function ManageTransaction() {
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
 
-    const [toggleDropdown, setToggleDropwdown] = useState(false); //* Atur toggle dropdown filter product per page
+    const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
 
     const [itemPerPage, setItemPerPage] = useState(10);
 
@@ -347,17 +347,17 @@ function ManageTransaction() {
 
     // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
     const dropdownClick = () => { //* Buka tutup menu dropdown
-        setToggleDropwdown(!toggleDropdown);
+        setToggleDropdown(!toggleDropdown);
     };
 
     const dropdownBlur = () => { //* Tutup menu dropdown ketika click diluar wrap menu dropdown
-        setToggleDropwdown(false)
+        setToggleDropdown(false)
     };
 
     const filterItemPerPage = (itemValue) => { //* Atur value filter item per page & behavior dropdown stlh action terjadi
         setItemPerPage(itemValue);
         setPage(1);
-        setToggleDropwdown(false);
+        setToggleDropdown(false);
         setLoadData(true);
     };
 

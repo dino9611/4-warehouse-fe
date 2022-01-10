@@ -25,6 +25,8 @@ import { useSelector } from "react-redux";
 import NotFoundPage from "../non-user/NotFoundV1";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
+import chevronDown from "../../assets/components/Chevron-Down.svg";
+import AdminLoadSpinner from "../../components/admin/AdminLoadSpinner";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -69,7 +71,37 @@ function ManageAdmin() {
         new_username: "",
         new_password: "",
         assign_warehouse: 0
-      });
+    });
+    console.log("74:", addAdmInput);
+
+    const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
+
+    const [selectedWhDropdown, setSelectedWhDropdown] = useState("Select Warehouse To Assign"); //* Sebagai placeholder ketika assign warehouse belum dipilih & sudah dipilih
+
+    // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
+    const dropdownClick = () => { //* Buka tutup menu dropdown
+        setToggleDropdown(!toggleDropdown);
+    };
+
+    const dropdownBlur = () => { //* Tutup menu dropdown ketika click diluar wrap menu dropdown
+        setToggleDropdown(false)
+    };
+
+    const filterItemPerPage = (event, warehouseName) => { //* Atur value warehouse yg di-assign & behavior dropdown stlh action terjadi
+        // setItemPerPage(itemValue);
+        // setPage(1);
+        console.log("90:", event.target.value);
+        setAddAdmInput((prevState) => {
+            return { ...prevState, assign_warehouse: event.target.value };
+        });
+        setSelectedWhDropdown(warehouseName);
+        setToggleDropdown(false);
+        // setDropdownLoad(true);
+        fetchWarehouse();
+        // setDropdownLoad(false);
+        // setLoadData(true);
+        // fetchWarehouse();
+    };
 
     const userCharMax = 45;
 
@@ -85,6 +117,7 @@ function ManageAdmin() {
         } catch (error) {
             errorToast("Server Error, from ManageAdmin - Adm");
             console.log(error);
+            setErrorFetch(true);
         }
     };
 
@@ -95,6 +128,7 @@ function ManageAdmin() {
         } catch (error) {
             errorToast("Server Error, from ManageAdmin - Wh");
             console.log(error);
+            setErrorFetch(true);
         }
     };
 
@@ -108,6 +142,10 @@ function ManageAdmin() {
         };
         fetchData();
     }, []);
+
+    // useEffect(() => {
+    //     fetchWarehouse();
+    // }, [addAdmInput.assign_warehouse]);
 
     const breadcrumbs = [
         <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
@@ -168,6 +206,7 @@ function ManageAdmin() {
                         onChange={(event) => addAdmStringHandler(event)}
                         placeholder="Input the new admin username"
                         maxLength={userCharMax}
+                        borderRadius={"8px"}
                     />
                     <div>
                         <Textbox
@@ -179,6 +218,7 @@ function ManageAdmin() {
                             placeholder="Set the new admin password"
                             maxLength={passCharMax}
                             style={{paddingRight: "30px"}}
+                            borderRadius={"8px"}
                         />
                         <img 
                             src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
@@ -186,7 +226,7 @@ function ManageAdmin() {
                             onClick={showPassHandler} 
                         />
                     </div>
-                    <div>
+                    {/* <div>
                         <label htmlFor="assign_warehouse">Warehouse</label>
                         <select 
                             id="assign_warehouse"
@@ -202,6 +242,49 @@ function ManageAdmin() {
                                 </option>
                             ))}
                         </select>
+                    </div> */}
+                    <div className="add-adm-modal-body-dropdown">
+                        <label>Warehouse</label>
+                        <div className="manage-adm-dropdown-wrap">
+                            <button 
+                                className="manage-adm-dropdown-btn" 
+                                onClick={dropdownClick}
+                                onBlur={dropdownBlur}
+                            >
+                                {selectedWhDropdown}
+                                <img 
+                                    src={chevronDown} 
+                                    style={{
+                                        transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                    }}
+                                />
+                            </button>
+                            <ul 
+                                className="manage-adm-dropdown-menu" 
+                                style={{
+                                    transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
+                                    opacity: toggleDropdown ? 1 : 0,
+                                    zIndex: toggleDropdown ? 100 : -10,
+                                }}
+                            >
+                                {warehouses?.map((val) => (
+                                    parseInt(val.id) === addAdmInput.assign_warehouse ? //* parseInt karena yg dri BE berbentuk string
+                                    <li 
+                                        value={val.id} 
+                                        className="manage-adm-dropdown-selected"
+                                    >
+                                        {val.name}
+                                    </li> 
+                                    : 
+                                    <li
+                                        value={val.id}
+                                        onClick={(event) => filterItemPerPage(event, val.name)}
+                                    >
+                                        {val.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div className="add-adm-modal-foot">
@@ -228,6 +311,7 @@ function ManageAdmin() {
                 setAddAdmInput((prevState) => {
                     return {...prevState, new_username: "", new_password: "", assign_warehouse: 0}
                 });
+                setSelectedWhDropdown("Select Warehouse To Assign");
                 document.querySelector("div.add-adm-modal-foot > button").disabled = false;
                 Swal.fire({
                     icon: 'success',
@@ -241,6 +325,7 @@ function ManageAdmin() {
                     confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                   });
                 fetchAdminList();
+                fetchWarehouse();
             } catch (error) {
                 console.log(error);
                 document.querySelector("div.add-adm-modal-foot > button").disabled = false;

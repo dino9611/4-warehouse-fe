@@ -17,6 +17,7 @@ function Textbox({
   onClick,
   cursor,
   backgroundColor,
+  borderRadius,
   type = "text",
   onBlur,
   maxLength,
@@ -41,6 +42,7 @@ function Textbox({
             height,
             cursor,
             backgroundColor,
+            borderRadius,
           }}
           value={value}
           onChange={onChange}

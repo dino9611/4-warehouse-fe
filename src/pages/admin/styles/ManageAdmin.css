@@ -103,6 +103,15 @@
     row-gap: 1rem;
 }
 
+.add-adm-modal-body-dropdown {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 0.5rem;
+    width: 100%;
+}
+
 .add-adm-modal-body > div:nth-of-type(2) {
     position: relative;
 }
@@ -114,13 +123,10 @@
     top: 52%;
 }
 
-.add-adm-modal-body > div:last-of-type {
-    align-items: center;
-    display: flex;
-}
-
-.add-adm-modal-body > div:last-of-type > label {
-    margin: 0 1rem 0 0;
+.add-adm-modal-body-dropdown > label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
 }
 
 /* * ADM MODAL FOOT WRAP & CONTENTS ON MANAGE ADM MODAL SECTION */
@@ -147,4 +153,74 @@
     border-color: var(--primary-3rd-color);
     color: var(--primary-3rd-color);
     transition: 400ms;
+}
+
+/* ? DROPDOWN MENU FILTER PRODUCT PER PAGE */
+.manage-adm-dropdown-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.manage-adm-dropdown-btn {
+    align-items: center;
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    color: var(--neutral-3rd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    width: 100%;
+}
+
+.manage-adm-dropdown-btn:hover {
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
+    transition: 400ms;
+}
+
+.manage-adm-dropdown-btn > img {
+    margin-top: -2.2px;
+    margin-left: 4px;
+    transition: 300ms;
+}
+
+.manage-adm-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    list-style: none;
+    margin-bottom: -13rem;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 100%;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.manage-adm-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    padding: 8px;
+    width: 100%;
+}
+
+.manage-adm-dropdown-menu > li:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+.manage-adm-dropdown-selected {
+    color: var(--primary-4th-color) !important;
+    cursor: default !important;
 }

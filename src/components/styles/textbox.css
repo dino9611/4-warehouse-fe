@@ -9,6 +9,10 @@
   outline-color: #b24629;
 }
 
+.textbox-styling::placeholder {
+  color: #cacaca;
+}
+
 .textbox-error {
   border: solid 1px #c83532 !important;
   background-color: #fbefef !important;
