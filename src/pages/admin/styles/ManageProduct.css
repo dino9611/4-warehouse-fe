@@ -65,7 +65,7 @@
 }
 
 .adm-products-filter-dropdown-menu > li:hover,
-.adm-products-dropdown-menu > a:hover,
+.adm-products-dropdown-menu > a:hover > li,
 .adm-products-dropdown-menu > li:hover {
     color: var(--primary-4th-color);
     transition: 300ms;
@@ -218,7 +218,11 @@
     -moz-box-shadow: var(--b-shadow-root);
 }
 
-.adm-products-dropdown-menu > a,
+.adm-products-dropdown-menu > a {
+    width: 100%;
+}
+
+.adm-products-dropdown-menu > a > li,
 .adm-products-dropdown-menu > li {
     align-items: center;
     color: var(--neutral-2nd-color);
@@ -229,9 +233,37 @@
     width: 100%;
 }
 
-.adm-products-dropdown-menu > a img,
-.adm-products-dropdown-menu > li > img {
+.adm-products-dropdown-menu .adm-edit-icon,
+.adm-products-dropdown-menu .adm-delete-icon {
     margin-right: 0.5rem;
+}
+
+/* * EDIT ICON ON EDIT & DELETE DROPDOWN MENU */
+.adm-edit-icon {
+    background: url("../../../assets/components/Edit-Icon.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -1.65px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.adm-products-dropdown-menu li:hover .adm-edit-icon {
+    background: url("../../../assets/components/Edit-Icon-Orange.svg");
+    transition: 400ms;
+}
+
+/* * DELETE ICON ON EDIT & DELETE DROPDOWN MENU */
+.adm-delete-icon {
+    background: url("../../../assets/components/Delete-Trash.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -1.65px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.adm-products-dropdown-menu li:hover .adm-delete-icon {
+    background: url("../../../assets/components/Delete-Trash-Orange.svg");
+    transition: 400ms;
 }
 
 /* ? DELETE MODAL CONTENT */

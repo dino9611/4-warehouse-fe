@@ -522,14 +522,14 @@ function ManageProduct() {
                                                                 className="link-no-decoration"
                                                             >
                                                                 <li>
-                                                                    <img src={editIcon} />
+                                                                    <div className="adm-edit-icon" />
                                                                     Edit
                                                                 </li>
                                                             </Link>
                                                             <li 
                                                                 onClick={() => modalClick(index)}
                                                             >
-                                                                <img src={deleteTrash} />
+                                                                <div className="adm-delete-icon" />
                                                                 Delete
                                                             </li>
                                                         </ul>
