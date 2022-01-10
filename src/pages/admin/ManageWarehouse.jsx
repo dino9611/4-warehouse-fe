@@ -22,7 +22,7 @@ import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
-import AdminUnauthorized from "../../components/admin/AdminUnauthorized";
+import NotFoundPage from "../non-user/NotFoundV1";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -283,7 +283,7 @@ function ManageWarehouse() {
                     } 
                 </div>
                 :
-                <AdminUnauthorized />
+                <NotFoundPage />
             }
         </>
     )

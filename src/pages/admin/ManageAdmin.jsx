@@ -22,7 +22,7 @@ import Stack from '@mui/material/Stack';
 import {Link} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useSelector } from "react-redux";
-import AdminUnauthorized from "../../components/admin/AdminUnauthorized";
+import NotFoundPage from "../non-user/NotFoundV1";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 
@@ -332,7 +332,7 @@ function ManageAdmin() {
                     }
                 </div>
                 :
-                <AdminUnauthorized />
+                <NotFoundPage />
             }
         </>
     )
