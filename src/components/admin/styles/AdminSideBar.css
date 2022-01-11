@@ -36,9 +36,10 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    min-width: 15%;
+    /* min-width: 15%; */
     padding: 2.5rem 0;
     position: relative;
+    width: max(15%, 248px);
 }
 
 /* ? BRAND LOGO WRAP SECTION */

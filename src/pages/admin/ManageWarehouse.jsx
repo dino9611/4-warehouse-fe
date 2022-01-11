@@ -220,7 +220,7 @@ function ManageWarehouse() {
                                 <Stack spacing={2}>
                                     <Breadcrumbs
                                         separator={<NavigateNextIcon fontSize="small" />}
-                                        aria-label="transaction detail breadcrumb"
+                                        aria-label="manage warehouse breadcrumb"
                                     >
                                         {breadcrumbs}
                                     </Breadcrumbs>

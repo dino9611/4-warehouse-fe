@@ -321,7 +321,7 @@ function ManageAdmin() {
                                 <Stack spacing={2}>
                                     <Breadcrumbs
                                         separator={<NavigateNextIcon fontSize="small" />}
-                                        aria-label="transaction detail breadcrumb"
+                                        aria-label="manage admin breadcrumb"
                                     >
                                         {breadcrumbs}
                                     </Breadcrumbs>

@@ -7,13 +7,21 @@ import deleteTrash from "../../assets/components/Delete-Trash.svg";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 function AdminAddProduct() {
     const [role, setRole] = useState("superAdmin"); // Hanya untuk testing
+
     const [skeletonLoad, setSkeletonLoad] = useState(true);
+
     const [category, setCategory] = useState([]);
+
     const [warehouse, setWarehouse] = useState([]);
+
     const [mainImgCheck, setMainImgCheck] = useState(false);
+
     const [charCounter, setCharCounter] = useState(2000);
 
     const [addImage, setAddImage] = useState([
@@ -69,6 +77,18 @@ function AdminAddProduct() {
         fetchWarehouse();
         setSkeletonLoad(false);
     }, []);
+
+    const breadcrumbs = [
+        <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
+          Dashboard
+        </Link>,
+        <Link to="/admin/manage-product" key="2" className="link-no-decoration adm-breadcrumb-modifier">
+          Manage Products
+        </Link>,
+        <Typography key="3" color="#070707" style={{fontSize: "0.75rem", margin: "auto"}}>
+          Add Product
+        </Typography>,
+    ];
 
     // HANDLER && CHECKER FUNCTIONS SECTION
     const addProdStringHandler = (event) => { // Utk setState data berbentuk string
@@ -243,15 +263,25 @@ function AdminAddProduct() {
         <div className="add-products-main-wrap">
             {!skeletonLoad ?
                 <>
+                    <div className="add-products-breadcrumb-wrap">
+                        <Stack spacing={2}>
+                            <Breadcrumbs
+                                separator={<NavigateNextIcon fontSize="small" />}
+                                aria-label="add product breadcrumb"
+                            >
+                                {breadcrumbs}
+                            </Breadcrumbs>
+                        </Stack>
+                    </div>
                     <div className="add-products-header-wrap">
-                        <h4>Tambah Produk Page</h4>
-                        <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
+                        <h4>Add New Product</h4>
                     </div>
                     <div className="add-products-contents-wrap">
                         <div className="add-images-form-wrap">
                             <div className="add-images-left-wrap">
-                                <h5>Upload Image</h5>
-                                <p>Please ensure the image uploaded is meeting our standard/minimum guideline</p>
+                                <h6>Upload Image</h6>
+                                <p>Eligible file formats are jpg, jpeg, or PNG. Max file size 2.5 MB. </p>
+                                <p>Max upload 3 images. Main image is required for each product.</p>
                             </div>
                             <div className="add-images-right-wrap">
                                 {addImage.map((val, index) => {

@@ -21,8 +21,6 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import {Link} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import deleteTrash from "../../assets/components/Delete-Trash.svg";
-import editIcon from "../../assets/components/Edit-Icon.svg";
 import chevronDown from "../../assets/components/Chevron-Down.svg";
 import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
@@ -390,7 +388,7 @@ function ManageProduct() {
                         <Stack spacing={2}>
                             <Breadcrumbs
                                 separator={<NavigateNextIcon fontSize="small" />}
-                                aria-label="transaction detail breadcrumb"
+                                aria-label="manage product breadcrumb"
                             >
                                 {breadcrumbs}
                             </Breadcrumbs>

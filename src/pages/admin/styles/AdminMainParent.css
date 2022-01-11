@@ -99,5 +99,6 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: calc(100% - 15%);
+    /* width: calc(100% - 15%); */
+    width: max(100% - 15%, 100% - 248px);
 }
