@@ -96,6 +96,7 @@ function AdminTransactionDetail() {
   const [handleModal, setHandleModal] = useState(false);
   const [dataStockRequest, setDataStockRequest] = useState({});
   const [dataWarehouse, setDataWarehouse] = useState([]);
+  const [dataWarehouseOrigin, setDataWarehouseOrigin] = useState([]);
   const [inputRequest, setInputRequest] = useState(0);
 
   const renderCurrentStatus = () => {
@@ -324,6 +325,7 @@ function AdminTransactionDetail() {
           );
 
           setDataWarehouse(res.data);
+          setDataWarehouseOrigin(res.data.origin);
         } catch (error) {
           console.log(error);
         }
@@ -336,10 +338,130 @@ function AdminTransactionDetail() {
     setDataStockRequest(data);
     console.log(data);
   };
-  console.log(dataWarehouse);
 
-  const onChanegInputRequest = (e) => {
-    setInputRequest(e.target.value);
+  const onClickCloseModal = () => {
+    setHandleModal(false);
+  };
+
+  const onClickMinusRequest = (index) => {
+    if (dataWarehouseOrigin[index].request_qty <= 0) {
+      return;
+    }
+
+    setDataWarehouseOrigin([
+      ...dataWarehouseOrigin?.slice(0, index),
+      {
+        ...dataWarehouseOrigin[index],
+        request_qty: dataWarehouseOrigin[index].request_qty - 1,
+      },
+      ...dataWarehouseOrigin?.slice(index + 1),
+    ]);
+  };
+
+  const onClickPlusRequest = (index) => {
+    if (
+      dataStockRequest.qty === totalRequestQty() ||
+      dataWarehouseOrigin[index].request_qty >=
+        dataWarehouseOrigin[index].stocks
+    ) {
+      return;
+    }
+
+    setDataWarehouseOrigin([
+      ...dataWarehouseOrigin?.slice(0, index),
+      {
+        ...dataWarehouseOrigin[index],
+        request_qty: dataWarehouseOrigin[index].request_qty + 1,
+      },
+      ...dataWarehouseOrigin?.slice(index + 1),
+    ]);
+  };
+
+  const onChangeInputRequest = (e, index) => {
+    let request_qty = parseInt(e.target.value);
+
+    if (e.target.value === "" || e.target.value <= 0) {
+      setDataWarehouseOrigin([
+        ...dataWarehouseOrigin?.slice(0, index),
+        { ...dataWarehouseOrigin[index], request_qty: 0 },
+        ...dataWarehouseOrigin?.slice(index + 1),
+      ]);
+      return;
+    }
+
+    setDataWarehouseOrigin([
+      ...dataWarehouseOrigin?.slice(0, index),
+      { ...dataWarehouseOrigin[index], request_qty },
+      ...dataWarehouseOrigin?.slice(index + 1),
+    ]);
+  };
+
+  const onBlurRequest = (e, index) => {
+    let sum = dataStockRequest.qty - (totalRequestQty() % dataStockRequest.qty);
+
+    if (
+      parseInt(e.target.value) > dataWarehouseOrigin[index].stocks ||
+      parseInt(e.target.value) > dataStockRequest.qty
+    ) {
+      if (dataStockRequest.qty === totalRequestQty()) {
+        setDataWarehouseOrigin([
+          ...dataWarehouseOrigin?.slice(0, index),
+          { ...dataWarehouseOrigin[index], request_qty: 0 },
+          ...dataWarehouseOrigin?.slice(index + 1),
+        ]);
+        console.log("<asuik sini ro");
+        return;
+      } else {
+        if (sum >= dataWarehouseOrigin[index].stocks) {
+          setDataWarehouseOrigin([
+            ...dataWarehouseOrigin?.slice(0, index),
+            {
+              ...dataWarehouseOrigin[index],
+              request_qty: dataWarehouseOrigin[index].stocks,
+            },
+            ...dataWarehouseOrigin?.slice(index + 1),
+          ]);
+          return;
+        } else {
+          setDataWarehouseOrigin([
+            ...dataWarehouseOrigin?.slice(0, index),
+            { ...dataWarehouseOrigin[index], request_qty: sum },
+            ...dataWarehouseOrigin?.slice(index + 1),
+          ]);
+          return;
+        }
+      }
+    }
+  };
+
+  const onClickRequestStock = async () => {
+    try {
+      if (totalRequestQty() !== dataStockRequest.qty) {
+        console.log("masuk");
+        return;
+      }
+
+      const filterWarehouse = dataWarehouseOrigin.filter(
+        (el) => el.request_qty !== 0
+      );
+
+      await axios.post(`${API_URL}/stock/add/request-stock`, {
+        ordersId: dataStockRequest.order_id,
+        productId: dataStockRequest.product_id,
+        destination: dataWarehouse.destination.id,
+        origin: filterWarehouse,
+      });
+
+      alert("berhasil request");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const totalRequestQty = () => {
+    return dataWarehouseOrigin
+      .map((el) => el.request_qty)
+      .reduce((prev, curr) => prev + curr, 0);
   };
 
   const renderModalRequestStock = () => {
@@ -349,8 +471,14 @@ function AdminTransactionDetail() {
           className="d-flex align-items-center justify-content-between px-4 pt-4 pb-3"
           style={{ position: "sticky", top: "0" }}
         >
-          <div>Request Stock</div>
-          <img src={assets.close} alt="close" />
+          <div className="fs14-500-black">Request Stock</div>
+          <button
+            className="p-0"
+            style={{ border: "none", backgroundColor: "transparent" }}
+            onClick={onClickCloseModal}
+          >
+            <img src={assets.close} alt="close" />
+          </button>
         </div>
 
         <div className="p-4">
@@ -381,13 +509,15 @@ function AdminTransactionDetail() {
           <div className="d-flex align-items-center mb-3">
             <div className="fs14-500-black w-50">Total stock request</div>
             <div className="fs14-500-black w-50">
-              <div>{inputRequest}</div>
+              <div>{totalRequestQty()}</div>
             </div>
           </div>
 
           <div className="d-flex align-items-center justify-content-end">
-            <button className="mr-3">Cancel</button>
-            <button>Request</button>
+            <button className="mr-3" onClick={onClickCloseModal}>
+              Cancel
+            </button>
+            <button onClick={onClickRequestStock}>Request</button>
           </div>
         </div>
       </div>
@@ -395,28 +525,46 @@ function AdminTransactionDetail() {
   };
 
   const renderListNearestWarehouse = () => {
-    return dataWarehouse.origin?.map((el, index) => {
+    return dataWarehouseOrigin?.map((el, index) => {
       return (
-        <div className="modal-request-cardaddress p-3 d-flex align-items-center justify-content-between mb-2">
+        <div
+          key={index}
+          className="modal-request-cardaddress p-3 d-flex align-items-center justify-content-between mb-2"
+        >
           <div>
-            <div className="fs14-500-black">{el.name}</div>
+            <div className="fs14-500-black mb-1">{el.name}</div>
             <div className="fs14-500-black">Warehosue stock : {el.stocks}</div>
           </div>
-          <div>
-            <div className="fs14-500-black">Input stock</div>
-            <div className="w-25">
-              <Textbox width="w-100" />
+          <div className="d-flex flex-column justify-content-end w-25">
+            <div className="fs14-500-black align-self-start mb-2 w-75">
+              Input stock
             </div>
-            {/* <input
-              type="number"
-              value={inputRequest}
-              onChange={onChanegInputRequest}
-            /> */}
+            <div className="modal-request-wrapperinput d-flex">
+              <button
+                className="modal-request-plusminus"
+                onClick={() => onClickMinusRequest(index)}
+              >
+                <img src={assets.minus} alt="minus" />
+              </button>
+              <div
+                className="modal-request-input d-flex align-items-center justify-content-center"
+                style={{ cursor: "default" }}
+              >
+                {el.request_qty}
+              </div>
+              <button
+                className="modal-request-plusminus"
+                onClick={() => onClickPlusRequest(index)}
+              >
+                <img src={assets.plus} alt="plus" />
+              </button>
+            </div>
           </div>
         </div>
       );
     });
   };
+  console.log(transactionDetail);
 
   return (
     <div className="adm-transaction-detail-main-wrap">
