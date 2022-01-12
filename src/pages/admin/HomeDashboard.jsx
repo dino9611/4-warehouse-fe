@@ -205,7 +205,7 @@ function HomeDashboard() {
     const selectFilterYear = (yearValue) => {
         setFilterYear(yearValue);
         setToggleDropwdown(false);
-        setStatusContData([]);
+        setStatusContData([]); //! Klo ga gini, nnti setiap ganti filter year, array lama terbawah alhasil salah data
         setLoadData(true);
     };
 
