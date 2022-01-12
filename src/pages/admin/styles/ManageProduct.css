@@ -99,6 +99,10 @@
     justify-content: space-between;
 }
 
+.adm-products-header-wrap > h4 {
+    font-weight: 600;
+}
+
 /* ? CONTENTS/BODY WRAP & CONTENTS SECTION */
 .adm-products-contents-wrap {
     margin-top: 1.5rem;
