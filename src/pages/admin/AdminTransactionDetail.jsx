@@ -20,7 +20,7 @@ import thousandSeparator from "../../helpers/ThousandSeparator";
 import AdmBtnPrimary from "../../components/admin/AdmBtnPrimary";
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
-import inactiveNextArrow from "../../assets/arrorprofile.svg";
+import inactiveNextArrow from "../../assets/components/Next-Arrow-Gray.svg";
 import stockRequestIcon from "../../assets/components/Stock-Request.svg";
 import stockRequestInactiveIcon from "../../assets/components/Stock-Request-Inactive.svg";
 import infoIcon from "../../assets/components/Info.svg";
@@ -296,7 +296,7 @@ function AdminTransactionDetail() {
                             <>
                                 <h6 className="status-active">{val.status}</h6>
                                 {(val.id <= fetchedStatusId && fetchedStatusId < 5) ? 
-                                    <img src={inactiveNextArrow} style={{transform: "rotate(-90deg"}}/>
+                                    <img src={inactiveNextArrow}/>
                                     : 
                                     null
                                 }
@@ -307,7 +307,7 @@ function AdminTransactionDetail() {
                             <>
                                 <h6 className="status-inactive">{val.status}</h6>
                                 {(index < 2) ? 
-                                    <img src={inactiveNextArrow} style={{transform: "rotate(-90deg"}}/>
+                                    <img src={inactiveNextArrow}/>
                                     : 
                                     null
                                 }
