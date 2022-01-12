@@ -24,19 +24,17 @@ function AdminAddProduct() {
 
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
-    const [role, setRole] = useState("superAdmin"); //* Hanya untuk testing
-
     const [category, setCategory] = useState([]);
 
     const [warehouse, setWarehouse] = useState([]);
 
-    const [mainImgCheck, setMainImgCheck] = useState(false);
+    const [mainImgCheck, setMainImgCheck] = useState(false); //* Utk validasi foto utama produk sudah di-input oleh admin
 
-    const [prodNameCounter, setProdNameCounter] = useState(0);
+    const [prodNameCounter, setProdNameCounter] = useState(0); //* Utk check characters left input nama produk
 
-    const [charCounter, setCharCounter] = useState(0);
+    const [charCounter, setCharCounter] = useState(0); //* Utk check characters left input deskripsi produk
 
-    const [addImage, setAddImage] = useState([
+    const [addImage, setAddImage] = useState([ //* Utk bawa data uploaded image ke BE
         "",
         "",
         ""
@@ -57,9 +55,9 @@ function AdminAddProduct() {
     
     const [dropdownActiveDetector, setDropdownActiveDetector] = useState(0);
 
-    const prodNameCharMax = 75;
+    const prodNameCharMax = 75; //* Max char input nama produk
 
-    const descCharLimit = 2000;
+    const descCharLimit = 2000; //* Max char input deskripsi produk
 
     let { 
         images, 
@@ -302,7 +300,6 @@ function AdminAddProduct() {
                     })
                     return [...newArray];
                 });
-                // document.querySelector("button.add-products-submit-btn").disabled = true;
                 Swal.fire({
                     icon: 'success',
                     title: 'Add product success!',
@@ -471,20 +468,6 @@ function AdminAddProduct() {
                                                             ))}
                                                         </ul>
                                                     </div>
-                                                    {/* <select 
-                                                        id="prod_category"
-                                                        name="prod_category" 
-                                                        defaultValue={prod_category}
-                                                        onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
-                                                        style={{textTransform: "capitalize"}}
-                                                    >
-                                                        <option value={0} disabled hidden>Select here</option>
-                                                        {category.map((val) => (
-                                                            <option value={val.id} key={`00${val.id}-${val.category}`} style={{textTransform: "capitalize"}}>
-                                                                {val.category}
-                                                            </option>
-                                                        ))}
-                                                    </select> */}
                                                 </div>
                                             </div>
                                             <div className="add-info-form-item"> {/* Wrapper individu row input */}
@@ -570,7 +553,6 @@ function AdminAddProduct() {
                                                                     onWheel={(event) => event.target.blur()}
                                                                     placeholder="Input stock (minimum: 0)"
                                                                     min="0"
-                                                                    disabled={role === "admin"}
                                                                 />
                                                             </div>
                                                         </div>
@@ -611,16 +593,6 @@ function AdminAddProduct() {
                                             >
                                                 Submit
                                             </AdmBtnPrimary>
-                                            {/* <Link to="/admin/manage-product" className="add-products-cancel-wrap">
-                                                <button>Cancel</button>
-                                            </Link> */}
-                                            {/* <button 
-                                                className="add-products-submit-btn"
-                                                onClick={onSubmitAddProd}
-                                                disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !(warehouse.every(stockTrueChecker)) || !prod_desc}
-                                            >
-                                                Submit
-                                            </button> */}
                                         </div>
                                     </div>
                                 </>
@@ -628,19 +600,6 @@ function AdminAddProduct() {
                         </>
                         :
                         <AdminSkeletonModerate />
-                        // <Stack spacing={3}>
-                        //     <div style={{display: "flex", justifyContent: "space-between"}}>
-                        //         <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "48px", width: "20%"}}/>
-                        //         <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "48px", width: "25%"}}/>        
-                        //     </div>
-                        //     <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
-                        //     <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
-                        //     <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
-                        //     <div style={{display: "flex", columnGap: "24px", justifyContent: "flex-end"}}>
-                        //         <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "48px", width: "160px"}} />
-                        //         <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "48px", width: "160px"}} />
-                        //     </div>
-                        // </Stack>
                     }
                 </div>
                 :

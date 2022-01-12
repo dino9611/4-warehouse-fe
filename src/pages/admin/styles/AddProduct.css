@@ -63,10 +63,8 @@
 .add-images-right-wrap,
 .add-info-form-right,
 .add-desc-form-right {
-    /* align-items: center; */
     column-gap: 2rem;
     display: flex;
-    /* justify-content: flex-start; */
     width: 80%;
 }
 
@@ -98,24 +96,45 @@
 .add-info-right-name-input > input:focus,
 .add-info-right-weight-input > input:focus,
 .add-info-right-numeric-input > input:focus,
-.add-info-form-right > input:focus,
 .add-desc-form-right textarea:focus {
     border-color: var(--primary-4th-color);
     outline: none;
 }
 
-/* .add-info-form-right > input[name="prod_weight"],
-.add-info-form-right > input[name="prod_price"],
-.add-info-form-right > input[name="prod_cost"],
-.add-info-form-right > .add-stock-input-wrap {
-    width: 320px;
-} */
+.add-info-form-right > .add-info-right-name-input,
+.add-info-form-right > .add-info-right-category-dropdown,
+.add-info-form-right > .add-info-right-weight-input,
+.add-info-form-right > .add-info-right-numeric-input,
+.add-desc-form-right > .add-info-right-desc-input {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    row-gap: 0.5rem;
+    width: min(80%, 600px + 64px); 
+    /* 600px + 64px ngikutin lebar tile image, biar at least keliatan sejajar */
+}
+
+.add-info-right-name-input > input,
+.add-info-right-weight-input > input,
+.add-info-right-numeric-input > input {
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    padding: 0 12px;
+    height: 40px;
+    width: 100%;
+}
+
+.add-info-right-name-input > span,
+.add-info-right-desc-input span {
+    color: var(--neutral-2nd-color);
+    font-size: 0.75rem;
+}
 
 /* ? GROUPED INPUT PLACEHOLDERS STYLING SECTION */
 .add-info-right-name-input > input::placeholder,
 .add-info-right-weight-input > input::placeholder,
 .add-info-right-numeric-input > input::placeholder,
-.add-info-form-right > input::placeholder,
 .add-desc-form-right textarea::placeholder {
     /* ! Chrome, Firefox, Opera, Safari 10.1+ */
     color: var(--neutral-3rd-color);
@@ -125,15 +144,13 @@
 }
 
 .add-info-right-name-input > input:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
-.add-info-right-weight-input > input:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
-.add-info-right-numeric-input > input:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
-.add-info-form-right > input:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
-.add-desc-form-right textarea:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
+.add-info-right-weight-input > input:-ms-input-placeholder, 
+.add-info-right-numeric-input > input:-ms-input-placeholder, 
+.add-desc-form-right textarea:-ms-input-placeholder, 
 .add-info-right-name-input > input::-ms-input-placeholder, /* ! Microsoft Edge */
-.add-info-right-weight-input > input:-ms-input-placeholder, /* ! Microsoft Edge */
-.add-info-right-numeric-input > input:-ms-input-placeholder, /* ! Microsoft Edge */
-.add-info-form-right > input::-ms-input-placeholder, /* ! Microsoft Edge */
-.add-desc-form-right textarea::-ms-input-placeholder { /* ! Microsoft Edge */
+.add-info-right-weight-input > input:-ms-input-placeholder, 
+.add-info-right-numeric-input > input:-ms-input-placeholder, 
+.add-desc-form-right textarea::-ms-input-placeholder { 
     color: var(--neutral-3rd-color);
     font-size: 0.875rem;
     font-weight: 400;
@@ -271,31 +288,6 @@
     row-gap: 1.5rem;
 }
 
-.add-info-form-right > .add-info-right-name-input,
-.add-info-form-right > .add-info-right-category-dropdown,
-.add-info-form-right > .add-info-right-weight-input,
-.add-info-form-right > .add-info-right-numeric-input,
-.add-desc-form-right > .add-info-right-desc-input {
-    align-items: flex-end;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    row-gap: 0.5rem;
-    width: min(80%, 600px + 64px); /* 600px + 64px ngikutin lebar tile image, biar at least keliatan sejajar */
-}
-
-.add-info-right-name-input > input,
-.add-info-right-weight-input > input,
-.add-info-right-numeric-input > input,
-.add-info-form-right > input {
-    border: 1px solid var(--neutral-3rd-color);
-    border-radius: var(--b-rad-table);
-    padding: 0 12px;
-    height: 40px;
-    /* width: min(70%, 548px); */
-    width: 100%;
-}
-
 .add-info-right-weight-input > input {
     padding-right: 5.5rem;
 }
@@ -312,12 +304,6 @@
     position: absolute;
 } 
 
-.add-info-right-name-input > span,
-.add-info-right-desc-input span {
-    color: var(--neutral-2nd-color);
-    font-size: 0.75rem;
-}
-
 .add-info-right-weight-input > span {
     font-size: 0.875rem;
     margin-top: 0.625rem;
@@ -333,76 +319,15 @@
     position: absolute;
 }
 
-.add-info-form-right > input:disabled {
-    color: var(--neutral-3rd-color);
-    background-color: var(--neutral-4th-color);
-}
-
-select > option {
-    text-transform: capitalize;
-}
-
 /* * ADD DESCRIPTION FORM WRAP ON CONTENTS/BODY SECTION (3RD ROW FORM) */
 .add-desc-form-right textarea {
     border: 1px solid var(--neutral-3rd-color);
     border-radius: var(--b-rad-table);
-    padding: 12px;
+    padding: 0.75rem;
     width: 100%;
 }
 
-/* ? ADD PRODUCT SUBMISSION WRAP & CONTENTS SECTION */
-.add-products-submission-wrap {
-    align-items: center;
-    column-gap: 16px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.add-products-cancel-wrap {
-    display: flex;
-}
-
-.add-products-cancel-wrap:hover {
-    text-decoration: none;
-}
-
-.add-products-cancel-wrap > button {
-    background-color: var(--neutral-4th-color);
-    border: none;
-    border-radius: 100px;
-    color: var(--neutral-2nd-color);
-    height: 48px;
-    width: 160px;
-}
-
-.add-products-cancel-wrap > button:hover {
-    background-color: var(--primary-4th-color);
-    color: var(--neutral-5th-color);
-    transition: 400ms;
-}
-
-.add-products-submit-btn {
-    background-color: var(--primary-4th-color);
-    border: none;
-    border-radius: 100px;
-    color: var(--neutral-5th-color);
-    cursor: pointer;
-    height: 48px;
-    width: 160px;
-}
-
-.add-products-submit-btn:hover {
-    background-color: var(--primary-3rd-color);
-    transition: 400ms;
-}
-
-.add-products-submit-btn:disabled {
-    background-color: var(--neutral-3rd-color);
-    color: var(--neutral-5th-color);
-    cursor: default;
-}
-
-/* ? DROPDOWN MENU FILTER TRANSACTION PER PAGE */
+/* ? DROPDOWN MENU SELECT PRODUCT CATEGORY */
 .add-info-right-category-dropdown {
     position: relative;
 }
@@ -423,12 +348,6 @@ select > option {
     width: 100%;
 }
 
-/* .info-right-category-dropdown-btn:hover {
-    border-color: var(--primary-4th-color);
-    color: var(--primary-4th-color);
-    transition: 400ms;
-} */
-
 .info-right-category-dropdown-btn > img {
     margin-top: -2.2px;
     margin-left: 4px;
@@ -446,7 +365,7 @@ select > option {
     list-style: none;
     margin-top: 3rem;
     overflow: hidden;
-    padding: 0 0 0 0.25rem;
+    padding: 0;
     position: absolute;
     transition: 300ms;
     width: 100%;
@@ -461,7 +380,7 @@ select > option {
     color: var(--neutral-2nd-color);
     cursor: pointer;
     display: flex;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
     width: 100%;
 }
 
@@ -473,4 +392,12 @@ select > option {
 .info-right-category-dropdown-selected {
     color: var(--primary-4th-color) !important;
     cursor: default !important;
+}
+
+/* ? ADD PRODUCT SUBMISSION WRAP & CONTENTS SECTION */
+.add-products-submission-wrap {
+    align-items: center;
+    column-gap: 1rem;
+    display: flex;
+    justify-content: flex-end;
 }
