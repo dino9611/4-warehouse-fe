@@ -101,6 +101,8 @@ function ManageProduct() {
     // FETCH & useEFFECT SECTION
     const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
 
+    const getRoleId = useSelector((state) => state.auth.role_id);
+
     const fetchProdData = async () => {
         try {
             const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
@@ -151,7 +153,7 @@ function ManageProduct() {
           Dashboard
         </Link>,
         <Typography key="2" color="#070707" style={{fontSize: "0.75rem", margin: "auto"}}>
-          Manage Products
+          {getRoleId === 2 ? "Product List" : "Manage Products"}
         </Typography>,
     ];
     
@@ -399,7 +401,7 @@ function ManageProduct() {
                         :
                         <>
                             <div className="adm-products-header-wrap">
-                                <h4>Manage Products</h4>
+                                {getRoleId === 2 ? <h4>Nationwide Product List & Stock</h4> : <h4>Manage Products</h4>}
                                 <Link to="/admin/manage-product/add">
                                     <button>+ Add Products</button>
                                 </Link>
@@ -460,8 +462,14 @@ function ManageProduct() {
                                                 <StyledTableCell align="left">Name</StyledTableCell>
                                                 <StyledTableCell align="left">Category</StyledTableCell>
                                                 <StyledTableCell align="left">Price</StyledTableCell>
-                                                <StyledTableCell align="left">Stock</StyledTableCell>
-                                                <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
+                                                <StyledTableCell align="left">
+                                                    {getRoleId === 1 ? "Stock" : "Nationwide Stock"}
+                                                </StyledTableCell>
+                                                {getRoleId === 1 ?
+                                                    <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
+                                                    :
+                                                    null
+                                                }
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -490,48 +498,52 @@ function ManageProduct() {
                                                             {val.total_stock}
                                                         </span>
                                                     </StyledTableCell>
-                                                    <StyledTableCell align="center" className="adm-products-action-cell">
-                                                        <button 
-                                                            className="adm-products-dropdown-btn" 
-                                                            onClick={() => dropdownClick(index)}
-                                                            onBlur={() => dropdownBlur(index)}
-                                                        >
-                                                            Options
-                                                            <img 
-                                                                src={chevronDown} 
+                                                    {getRoleId === 1 ?
+                                                        <StyledTableCell align="center" className="adm-products-action-cell">
+                                                            <button 
+                                                                className="adm-products-dropdown-btn" 
+                                                                onClick={() => dropdownClick(index)}
+                                                                onBlur={() => dropdownBlur(index)}
+                                                            >
+                                                                Options
+                                                                <img 
+                                                                    src={chevronDown} 
+                                                                    style={{
+                                                                        transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
+                                                                    }}
+                                                                />
+                                                            </button>
+                                                            <ul 
+                                                                className="adm-products-dropdown-menu" 
                                                                 style={{
-                                                                    transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
+                                                                    transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
+                                                                    opacity: dropdownLength[index] ? 1 : 0,
+                                                                    zIndex: dropdownLength[index] ? 100 : -10,
                                                                 }}
-                                                            />
-                                                        </button>
-                                                        <ul 
-                                                            className="adm-products-dropdown-menu" 
-                                                            style={{
-                                                                transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
-                                                                opacity: dropdownLength[index] ? 1 : 0,
-                                                                zIndex: dropdownLength[index] ? 100 : -10,
-                                                            }}
-                                                        >
-                                                            <Link 
-                                                                to={{
-                                                                    pathname: "/admin/manage-product/edit",
-                                                                    state: val
-                                                                }}
-                                                                className="link-no-decoration"
                                                             >
-                                                                <li>
-                                                                    <div className="adm-edit-icon" />
-                                                                    Edit
+                                                                <Link 
+                                                                    to={{
+                                                                        pathname: "/admin/manage-product/edit",
+                                                                        state: val
+                                                                    }}
+                                                                    className="link-no-decoration"
+                                                                >
+                                                                    <li>
+                                                                        <div className="adm-edit-icon" />
+                                                                        Edit
+                                                                    </li>
+                                                                </Link>
+                                                                <li 
+                                                                    onClick={() => modalClick(index)}
+                                                                >
+                                                                    <div className="adm-delete-icon" />
+                                                                    Delete
                                                                 </li>
-                                                            </Link>
-                                                            <li 
-                                                                onClick={() => modalClick(index)}
-                                                            >
-                                                                <div className="adm-delete-icon" />
-                                                                Delete
-                                                            </li>
-                                                        </ul>
-                                                    </StyledTableCell>
+                                                            </ul>
+                                                        </StyledTableCell>
+                                                        :
+                                                        null
+                                                    }
                                                 </StyledTableRow>
                                             ))}
                                         </TableBody>

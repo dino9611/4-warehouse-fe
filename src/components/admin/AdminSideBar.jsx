@@ -99,7 +99,7 @@ function AdminSideBar(props) {
                             }}
     
                         >
-                            Manage Products
+                            {role_id === 2 ? "Product List" : "Manage Products"}
                             {currentPath.includes(routes.manageProduct) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
                         <Link 
