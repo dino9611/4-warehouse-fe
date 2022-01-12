@@ -73,6 +73,22 @@ function HomeDashboard() {
 
     const [totalOrders, setTotalOrders] = useState(0);
 
+    const resetArray = () => { //! Utk reset array ketika pilih filter tahun
+        setMonthRevLabels([]);
+        setMonthRevData([]);
+        setPotentRevLabels([]);
+        setPotentRevData([]);
+        setStatusContLabels([]);
+        setStatusContData([]);
+        setNetSalesLabels([]);
+        setNetSalesData([]);
+        setProdQtyLabels([]);
+        setProdQtyData([]);
+        setProdValLabels([]);
+        setProdValData([]);
+        setTopUsers([]);
+    };
+
     const fetchRevenue = async () => {
         try {
             const res01 = await axios.get(`${API_URL}/sales/monthly-revenue`, {headers: {filter_year: filterYear}});
@@ -205,7 +221,7 @@ function HomeDashboard() {
     const selectFilterYear = (yearValue) => {
         setFilterYear(yearValue);
         setToggleDropwdown(false);
-        setStatusContData([]); //! Klo ga gini, nnti setiap ganti filter year, array lama terbawah alhasil salah data
+        resetArray(); //! Klo ga gini, nnti setiap ganti filter year, array lama terbawah alhasil salah data
         setLoadData(true);
     };
 
