@@ -53,7 +53,7 @@ function AdminAddProduct() {
 
     const [selectedCategory, setSelectedCategory] = useState("Choose product category"); //* Sebagai placeholder ketika assign category belum dipilih & sudah dipilih
     
-    const [dropdownActiveDetector, setDropdownActiveDetector] = useState(0);
+    const [dropdownActiveDetector, setDropdownActiveDetector] = useState(0); //* Utk kondisi klo value terpilih, warna text menyala, klo tidak warna text abu-abu
 
     const prodNameCharMax = 75; //* Max char input nama produk
 

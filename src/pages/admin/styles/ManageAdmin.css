@@ -183,12 +183,6 @@
     width: 100%;
 }
 
-.manage-adm-dropdown-btn:hover {
-    border-color: var(--primary-4th-color);
-    color: var(--primary-4th-color);
-    transition: 400ms;
-}
-
 .manage-adm-dropdown-btn > img {
     margin-right: 1.5px; /* Biar sejajar dgn icon showpass */
     margin-top: -2.2px;

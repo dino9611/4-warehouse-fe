@@ -76,6 +76,8 @@ function ManageAdmin() {
 
     const [selectedWhDropdown, setSelectedWhDropdown] = useState("Select Warehouse To Assign"); //* Sebagai placeholder ketika assign warehouse belum dipilih & sudah dipilih
 
+    const [dropdownActiveDetector, setDropdownActiveDetector] = useState(0); //* Utk kondisi klo value terpilih, warna text menyala, klo tidak warna text abu-abu
+
     // FETCH & useEFFECT SECTION
     const getRoleId = useSelector((state) => state.auth.role_id);
 
@@ -190,6 +192,7 @@ function ManageAdmin() {
                         <div className="manage-adm-dropdown-wrap">
                             <button 
                                 className="manage-adm-dropdown-btn" 
+                                style={{color: dropdownActiveDetector? "#070707" : "#CACACA"}}
                                 onClick={dropdownClick}
                                 onBlur={dropdownBlur}
                             >
@@ -252,6 +255,7 @@ function ManageAdmin() {
         });
         setSelectedWhDropdown(warehouseName);
         setToggleDropdown(false);
+        setDropdownActiveDetector(dropdownActiveDetector + 1);
         fetchWarehouse();
     };
 

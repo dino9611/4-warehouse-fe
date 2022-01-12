@@ -1,4 +1,4 @@
-import emptyState from "../../assets/components/Empty-Orders.svg";
+import emptyState from "../../assets/components/Fetch-Fail.svg";
 
 function AdminFetchFailed({
     alignItems = "center",
@@ -13,7 +13,7 @@ function AdminFetchFailed({
     imgWidth = "40%",
     textColor = "#5A5A5A",
     textAlign = "center",
-    textContent = "Oops...unexpected things happened, please try again",
+    textContent = "Oops...unexpected things happened, please try again.",
 }) {
     return (
         <div style={{
