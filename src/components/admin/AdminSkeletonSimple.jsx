@@ -1,7 +1,7 @@
 import Stack from '@mui/material/Stack';
 import Skeleton from '@mui/material/Skeleton';
 
-function AdminSimpleSkeleton() {
+function AdminSkeletonSimple() {
     return (
         <Stack spacing={3}>
             <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -19,4 +19,4 @@ function AdminSimpleSkeleton() {
     )
 }
 
-export default AdminSimpleSkeleton;
+export default AdminSkeletonSimple;

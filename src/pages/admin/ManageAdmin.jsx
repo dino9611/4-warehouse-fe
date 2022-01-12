@@ -248,7 +248,7 @@ function ManageAdmin() {
 
     const selectWarehouse = (event, warehouseName) => { //* Atur value warehouse yg di-assign & behavior dropdown stlh action terjadi
         setAddAdmInput((prevState) => {
-            return { ...prevState, assign_warehouse: event.target.value };
+            return { ...prevState, assign_warehouse: parseInt(event.target.value) };
         });
         setSelectedWhDropdown(warehouseName);
         setToggleDropdown(false);

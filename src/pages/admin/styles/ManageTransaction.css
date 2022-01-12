@@ -212,7 +212,7 @@
 .adm-transaction-dropdown-menu {
     align-items: flex-start;
     background-color: var(--neutral-5th-color);
-    border-radius: 8px;
+    border-radius: var(--b-rad-table);
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -235,7 +235,7 @@
     cursor: pointer;
     display: flex;
     justify-content: center;
-    padding: 8px;
+    padding: 0.5rem;
     width: 100%;
 }
 
