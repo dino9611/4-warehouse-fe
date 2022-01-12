@@ -205,6 +205,7 @@ function HomeDashboard() {
     const selectFilterYear = (yearValue) => {
         setFilterYear(yearValue);
         setToggleDropwdown(false);
+        setStatusContData([]);
         setLoadData(true);
     };
 
