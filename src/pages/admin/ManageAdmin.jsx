@@ -282,6 +282,7 @@ function ManageAdmin() {
                 });
                 setSelectedWhDropdown("Select Warehouse To Assign");
                 document.querySelector("div.add-adm-modal-foot > button").disabled = false;
+                setDropdownActiveDetector(0);
                 Swal.fire({
                     icon: 'success',
                     title: 'Add new admin/warehouse admin success!',

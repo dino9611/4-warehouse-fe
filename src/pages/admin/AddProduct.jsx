@@ -312,6 +312,7 @@ function AdminAddProduct() {
                     confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                 });
                 document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = false;
+                setDropdownActiveDetector(0);
             } catch (err) {
                 console.log(err);
                 Swal.fire({
