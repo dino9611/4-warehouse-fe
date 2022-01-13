@@ -7,9 +7,10 @@ import VerticalBarChart from '../../components/admin/VerticalBarChart';
 import LineChart from '../../components/admin/LineChart';
 import DonutChart from '../../components/admin/DonutChart';
 import HorizontalBarChart from '../../components/admin/HorizontalBarChart';
+import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -21,9 +22,38 @@ import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
     TableContainer: {
+      borderRadius: 0,
       height: "100%"
     }
 });
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      border: 0,
+      fontSize: "clamp(0.625rem, 1vw, 0.8125rem)",
+      fontWeight: 600
+    },
+    [`&.${tableCellClasses.body}`]: {
+        border: 0,
+        color: "#5A5A5A",
+        fontSize: "clamp(0.625rem, 1vw, 0.8125rem)",
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: "white",
+      fontSize: "clamp(0.625rem, 1vw, 0.8125rem)",
+    },
+    '&:nth-of-type(even)': {
+      backgroundColor: "#F4F4F4",
+      fontSize: "clamp(0.625rem, 1vw, 0.8125rem)",
+    },
+    // Show last border
+    '&:last-child td, &:last-child th': {
+      borderBottom: "1px solid #CACACA"
+    },
+}));
 
 function HomeDashboard() {
     const classes = useStyles();
@@ -523,29 +553,29 @@ function HomeDashboard() {
                                             <h6>{`Sales Contribution by Category`}</h6>
                                         </div>
                                         <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
-                                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                            <Table sx={{ height: "100%" }} aria-label="sales contribution by category table">
                                                 <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="left" style={{color: "#5A5A5A", width: "56px"}}>Rank</TableCell>
-                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Category</TableCell>
-                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Sales</TableCell>
-                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Contribution</TableCell>
+                                                    <TableRow style={{backgroundColor: "#FCB537", height: "80px"}}>
+                                                        <StyledTableCell align="left">Rank</StyledTableCell>
+                                                        <StyledTableCell align="left">Category</StyledTableCell>
+                                                        <StyledTableCell align="left">Total Sales</StyledTableCell>
+                                                        <StyledTableCell align="left">Contribution</StyledTableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
                                                     {categoryContribution.map((val, index) => (
-                                                        <TableRow
+                                                        <StyledTableRow
                                                         key={`0${val.index}-${val.category}`}
                                                         >
-                                                            <TableCell align="left" component="th" scope="row">
+                                                            <StyledTableCell align="left" component="th" scope="row">
                                                                 {index + 1}
-                                                            </TableCell>
-                                                            <TableCell align="left" style={{width: "80px"}}>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left">
                                                                 {val.category}
-                                                            </TableCell>
-                                                            <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.amount)}`}</TableCell>
-                                                            <TableCell align="left" className="txt-capitalize">{val.contribution}%</TableCell>
-                                                        </TableRow>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.amount)}`}</StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{val.contribution}%</StyledTableCell>
+                                                        </StyledTableRow>
                                                     ))}
                                                 </TableBody>
                                             </Table>
@@ -572,27 +602,27 @@ function HomeDashboard() {
                                             <h6>{`Top 5 Users by Transaction`}</h6>
                                         </div>
                                         <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
-                                            <Table sx={{ minWidth: 160, height: "100%" }} aria-label="top users table">
+                                            <Table sx={{ height: "100%" }} aria-label="top users table">
                                                 <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align="left" style={{color: "#5A5A5A", width: "80px"}}>Rank</TableCell>
-                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Username</TableCell>
-                                                        <TableCell align="left" style={{color: "#5A5A5A"}}>Total Transaction Value</TableCell>
+                                                    <TableRow style={{backgroundColor: "#FCB537", height: "80px"}}>
+                                                        <StyledTableCell align="left">Rank</StyledTableCell>
+                                                        <StyledTableCell align="left">Username</StyledTableCell>
+                                                        <StyledTableCell align="left">Total Transaction Value</StyledTableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
                                                     {topUsers.map((val, index) => (
-                                                        <TableRow
+                                                        <StyledTableRow
                                                         key={`0${val.index}-${val.user_id}`}
                                                         >
-                                                            <TableCell align="left" component="th" scope="row">
+                                                            <StyledTableCell align="left" component="th" scope="row">
                                                                 {index + 1}
-                                                            </TableCell>
-                                                            <TableCell align="left">
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left">
                                                                 {val.username}
-                                                            </TableCell>
-                                                            <TableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</TableCell>
-                                                        </TableRow>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{`Rp ${thousandSeparator(val.total_transaction_value)}`}</StyledTableCell>
+                                                        </StyledTableRow>
                                                     ))}
                                                 </TableBody>
                                             </Table>
