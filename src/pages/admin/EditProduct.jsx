@@ -4,7 +4,6 @@ import {useLocation} from "react-router-dom";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
 import {Link} from "react-router-dom";
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
 import { useSelector } from "react-redux";
@@ -16,11 +15,13 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import chevronDown from "../../assets/components/Chevron-Down.svg";
+import NotFoundPage from "../non-user/NotFoundV1";
 import AdminSkeletonModerate from '../../components/admin/AdminSkeletonModerate';
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import infoIcon from "../../assets/components/Info-Yellow.svg";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function EditProduct() {
     const prodIdFromParent = useLocation();
@@ -28,8 +29,10 @@ function EditProduct() {
     const {id, name: prevName} = prodIdFromParent.state; //* Utk fetch data produk yang ingin di-edit, sengaja agar saat selesai edit, tampilan akan render ulang
 
     const [skeletonLoad, setSkeletonLoad] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
-
+    
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
+
+    const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
     const [editCategory, setEditCategory] = useState([]);
 
@@ -46,7 +49,7 @@ function EditProduct() {
     const [imgIndex, setImgIndex] = useState(null); //* Utk deteksi index image keberapa yang di-edit
 
     const [editProdInput, setEditProdInput] = useState({}); //* Utk bawa input edit data informasi (bukan image) produk ke BE
-    console.log(editProdInput);
+
     const [modalLength, setModalLength] = useState([]); //* Utk atur relation modal edit image per tile image (currently max 3), sehingga unique identik dgn msg2 image
 
     const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown select product category
@@ -60,7 +63,7 @@ function EditProduct() {
     let {name, category_id, weight, price, product_cost, description} = editProdInput;
 
     // FETCH & useEFFECT SECTION
-    const getRoleId = useSelector(state => state.auth.id); // ? Blm kepake
+    const getRoleId = useSelector((state) => state.auth.role_id);
 
     let history = useHistory();
 
@@ -71,7 +74,6 @@ function EditProduct() {
         try {
             const res = await axios.get(`${API_URL}/admin/product/detail?id=${id}`);
             setEditProdInput(res.data);
-            console.log("73", res.data);
             setSelectedCategory(res.data.category);
             setProdNameCounter(res.data.name.length) //* Utk kalkulasi sisa max char product name
             setCharCounter(res.data.description.length); //* Utk kalkulasi sisa max char description
@@ -399,6 +401,7 @@ function EditProduct() {
     const onSubmitedEditProd = async (event) => { //* Untuk trigger submit button informasi produk (tanpa image, karena edit image terpisah)
         event.preventDefault();
         
+        setSubmitLoad(true);
         document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = true; //! Disable submit button input edit product utk prevent submit berulang kali
         const successRedirect = () => history.push("/admin/manage-product");
         
@@ -425,7 +428,7 @@ function EditProduct() {
                     confirmButtonAriaLabel: 'Continue',
                     confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                 });
-                document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
+                setSubmitLoad(false);
                 successRedirect();
             } catch (err) {
                 console.log(err);
@@ -439,300 +442,277 @@ function EditProduct() {
                     confirmButtonAriaLabel: 'Continue',
                     confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                 });
+                setSubmitLoad(false);
                 document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
             };
         } else {
             errorToast("Please make sure all inputs are filled");
+            setSubmitLoad(false);
             document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
         };
     };
 
     return (
-        <div className="edit-product-main-wrap">
-            {!skeletonLoad ?
-                <>
-                    <div className="edit-product-breadcrumb-wrap">
-                        <Stack spacing={2}>
-                            <Breadcrumbs
-                                separator={<NavigateNextIcon fontSize="small" />}
-                                aria-label="edit product breadcrumb"
-                            >
-                                {breadcrumbs}
-                            </Breadcrumbs>
-                        </Stack>
-                    </div>
-                    <div className="edit-product-header-wrap">
-                        <h4>Edit Product {prevName}</h4>
-                    </div>
-                    <div className="edit-product-contents-wrap">
-                        <div className="edit-notice-wrap">
-                            <div>
-                                <img src={infoIcon} alt="Info-Icon"/>
-                                <h6>[Read Carefully] Important Notice During Edit Product</h6>
-                            </div>
-                            <ol>
-                                <li>Edit product images & information (ex: name, category, etc.) is separated form.</li>
-                                <li>Edit & delete product images have its own submit button, access it by click each image you want to edit.</li>
-                                <li>Main image cannot be delete because it's mandatory for each product (only edit available).</li>
-                                <li>Edit product information have its own submit button, located on the bottom of this page.</li>
-                                <li>Edit stock only accessible through Stock Opname page and only eligible for warehouse admin role.</li>
-                                {/* <li>Make sure you've choose correct product category before edit the image.</li> */}
-                            </ol>
-                        </div>
-                        <div className="edit-images-form-wrap"> {/* Bagian upload image produk */}
-                            <div className="edit-images-left-wrap"> {/* Bagian kiri upload image produk */}
-                                <h6>Upload Image</h6>
-                                <p>Eligible file formats are jpg, jpeg, or PNG. Max file size 2.5 MB. </p>
-                                <p>Max upload 3 images. Main image is required for each product.</p>
-                            </div>
-                            <div className="edit-images-right-wrap"> {/* Bagian kanan upload image produk */}
-                                {editImage.map((val, index) => {
-                                    return (
-                                        <div className="edit-images-tile-wrap">
-                                            <label 
-                                                htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                className={editImage[index] ? "edit-images-upload-preview" : "edit-images-upload-item"}
-                                                onClick={!editImage[index] ? () => modalClick(index) : null}
-                                            >
-                                                {editImage[index] ?
-                                                    <>
-                                                        <img 
-                                                            src={`${API_URL}/${val}`}
-                                                            alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
-                                                            className="edit-images-preview"
-                                                        />
-                                                    </>
-                                                    :
-                                                    <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
-                                                }
-                                            </label>
-                                            {editImage[index] ?
-                                                <span 
-                                                    className="edit-images-icon"
-                                                    onClick={() => modalClick(index)}
-                                                >
-                                                    <img src={editIcon} />
-                                                </span>
-                                                :
-                                                null
-                                            }
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div> {/* ------ End of bagian upload image produk ------ */}
-                        <form id="edit-prod-form" className="edit-info-form-wrap"> {/* Bagian input informasi produk */}
-                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
-                                <div className="edit-info-form-left"> {/* Bagian kiri input nama produk */}
-                                    <label htmlFor="name">Product Name</label>
-                                    <p>Fill in the product name which includes brand, information such as weight, material, origin, etc.</p>
-                                </div>
-                                <div className="edit-info-form-right"> {/* Bagian kanan input nama produk */}
-                                    <div className="edit-info-right-name-input">
-                                        <input 
-                                            type="text" 
-                                            id="name" 
-                                            name="name" 
-                                            value={name}
-                                            onChange={(event) => editProdStringHandler(event)}
-                                            onKeyUp={(event) => prodNameCharCounter(event)}
-                                            placeholder="Ex: Javara Coconut Sugar 250gr"
-                                            maxLength={prodNameCharMax}
-                                        />
-                                        <span>{prodNameCounter}/{prodNameCharMax}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
-                                <div className="edit-info-form-left"> {/* Bagian kiri input kategori produk */}
-                                    <label htmlFor="category_id">Category</label>
-                                </div>
-                                <div className="edit-info-form-right"> {/* Bagian kanan input kategori produk */}
-                                    <div className="edit-info-right-category-dropdown">
-                                        <button 
-                                            className="info-right-editCat-dropdown-btn" 
-                                            onClick={(event) => dropdownClick(event)}
-                                            onBlur={dropdownBlur}
-                                        >
-                                            {selectedCategory}
-                                            <img 
-                                                src={chevronDown} 
-                                                style={{
-                                                    transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
-                                                }}
-                                            />
-                                        </button>
-                                        <ul 
-                                            className="info-right-editCat-dropdown-menu" 
-                                            style={{
-                                                transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
-                                                opacity: toggleDropdown ? 1 : 0,
-                                                zIndex: toggleDropdown ? 100 : -10,
-                                            }}
-                                        >
-                                            {editCategory.map((val) => (
-                                                val.id === category_id? 
-                                                <li className="info-right-editCat-dropdown-selected">{val.category}</li> 
-                                                : 
-                                                <li
-                                                    value={val.id}
-                                                    onClick={(event) => selectCategoryClick(event, val.category)}
-                                                >
-                                                    {val.category}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                    {/* <select 
-                                        id="category_id"
-                                        name="category_id" 
-                                        defaultValue={category_id}
-                                        onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
-                                        style={{textTransform: "capitalize"}}
+        <>
+            {(getRoleId === 1) ?
+                <div className="edit-product-main-wrap">
+                    {!skeletonLoad ?
+                        <>
+                            <div className="edit-product-breadcrumb-wrap">
+                                <Stack spacing={2}>
+                                    <Breadcrumbs
+                                        separator={<NavigateNextIcon fontSize="small" />}
+                                        aria-label="edit product breadcrumb"
                                     >
-                                        <option value={0} disabled hidden>Select here</option>
-                                        {editCategory.map((val) => (
-                                            <option value={val.id} key={`00${val.id}-${val.category}`} style={{textTransform: "capitalize"}}>
-                                                {val.category}
-                                            </option>
-                                        ))}
-                                    </select> */}
-                                </div>
+                                        {breadcrumbs}
+                                    </Breadcrumbs>
+                                </Stack>
                             </div>
-                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
-                                <div className="edit-info-form-left"> {/* Bagian kiri input berat produk */}
-                                    <label htmlFor="weight">Product Weight</label>
-                                    <p>Pay attention, product weight will affect courier shipping fee</p>
-                                </div>
-                                <div className="edit-info-form-right"> {/* Bagian kanan input berat produk */}
-                                    <div className="edit-info-right-weight-input">
-                                        <input 
-                                            type="number" 
-                                            id="weight" 
-                                            name="weight" 
-                                            value={weight}
-                                            onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
-                                            onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
-                                            onWheel={(event) => event.target.blur()}
-                                            placeholder="Product base weight + packaging"
-                                            min="1"
-                                        />
-                                        <span>gram (g)</span>
+                            { (!skeletonLoad && errorFetch) ?
+                                <AdminFetchFailed />
+                                :
+                                <>
+                                    <div className="edit-product-header-wrap">
+                                        <h4>Edit Product {prevName}</h4>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
-                                <div className="edit-info-form-left"> {/* Bagian kiri input harga produk */}
-                                    <label htmlFor="price">Product Price / Pcs</label>
-                                </div>
-                                <div className="edit-info-form-right"> {/* Bagian kanan input harga produk */}
-                                    <div className="edit-info-right-numeric-input">
-                                        <input 
-                                            type="number" 
-                                            id="price" 
-                                            name="price" 
-                                            value={price}
-                                            onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
-                                            onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
-                                            onWheel={(event) => event.target.blur()}
-                                            placeholder="Input price (minimum: 1)"
-                                            min="1"
-                                        />
-                                        <span>Rp</span>
+                                    <div className="edit-product-contents-wrap">
+                                        <div className="edit-notice-wrap">
+                                            <div>
+                                                <img src={infoIcon} alt="Info-Icon"/>
+                                                <h6>[Read Carefully] Important Notice During Edit Product</h6>
+                                            </div>
+                                            <ol>
+                                                <li>Edit product images & information (ex: name, category, etc.) is separated form.</li>
+                                                <li>Edit & delete product images have its own submit button, access it by click each image you want to edit.</li>
+                                                <li>Main image cannot be delete because it's mandatory for each product (only edit available).</li>
+                                                <li>Edit product information have its own submit button, located on the bottom of this page.</li>
+                                                <li>Edit stock only accessible through Stock Opname page and only eligible for warehouse admin role.</li>
+                                                {/* <li>Make sure you've choose correct product category before edit the image.</li> */}
+                                            </ol>
+                                        </div>
+                                        <div className="edit-images-form-wrap"> {/* Bagian upload image produk */}
+                                            <div className="edit-images-left-wrap"> {/* Bagian kiri upload image produk */}
+                                                <h6>Upload Image</h6>
+                                                <p>Eligible file formats are jpg, jpeg, or PNG. Max file size 2.5 MB. </p>
+                                                <p>Max upload 3 images. Main image is required for each product.</p>
+                                            </div>
+                                            <div className="edit-images-right-wrap"> {/* Bagian kanan upload image produk */}
+                                                {editImage.map((val, index) => {
+                                                    return (
+                                                        <div className="edit-images-tile-wrap">
+                                                            <label 
+                                                                htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
+                                                                className={editImage[index] ? "edit-images-upload-preview" : "edit-images-upload-item"}
+                                                                onClick={!editImage[index] ? () => modalClick(index) : null}
+                                                            >
+                                                                {editImage[index] ?
+                                                                    <>
+                                                                        <img 
+                                                                            src={`${API_URL}/${val}`}
+                                                                            alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
+                                                                            className="edit-images-preview"
+                                                                        />
+                                                                    </>
+                                                                    :
+                                                                    <p>{(index === 0) ? "Main Image" : (index === 1) ? "Second Image" : "Third Image"}</p>
+                                                                }
+                                                            </label>
+                                                            {editImage[index] ?
+                                                                <span 
+                                                                    className="edit-images-icon"
+                                                                    onClick={() => modalClick(index)}
+                                                                >
+                                                                    <img src={editIcon} />
+                                                                </span>
+                                                                :
+                                                                null
+                                                            }
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div> {/* ------ End of bagian upload image produk ------ */}
+                                        <form id="edit-prod-form" className="edit-info-form-wrap"> {/* Bagian input informasi produk */}
+                                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
+                                                <div className="edit-info-form-left"> {/* Bagian kiri input nama produk */}
+                                                    <label htmlFor="name">Product Name</label>
+                                                    <p>Fill in the product name which includes brand, information such as weight, material, origin, etc.</p>
+                                                </div>
+                                                <div className="edit-info-form-right"> {/* Bagian kanan input nama produk */}
+                                                    <div className="edit-info-right-name-input">
+                                                        <input 
+                                                            type="text" 
+                                                            id="name" 
+                                                            name="name" 
+                                                            value={name}
+                                                            onChange={(event) => editProdStringHandler(event)}
+                                                            onKeyUp={(event) => prodNameCharCounter(event)}
+                                                            placeholder="Ex: Javara Coconut Sugar 250gr"
+                                                            maxLength={prodNameCharMax}
+                                                        />
+                                                        <span>{prodNameCounter}/{prodNameCharMax}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
+                                                <div className="edit-info-form-left"> {/* Bagian kiri input kategori produk */}
+                                                    <label htmlFor="category_id">Category</label>
+                                                </div>
+                                                <div className="edit-info-form-right"> {/* Bagian kanan input kategori produk */}
+                                                    <div className="edit-info-right-category-dropdown">
+                                                        <button 
+                                                            className="info-right-editCat-dropdown-btn" 
+                                                            onClick={(event) => dropdownClick(event)}
+                                                            onBlur={dropdownBlur}
+                                                        >
+                                                            {selectedCategory}
+                                                            <img 
+                                                                src={chevronDown} 
+                                                                style={{
+                                                                    transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
+                                                                }}
+                                                            />
+                                                        </button>
+                                                        <ul 
+                                                            className="info-right-editCat-dropdown-menu" 
+                                                            style={{
+                                                                transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
+                                                                opacity: toggleDropdown ? 1 : 0,
+                                                                zIndex: toggleDropdown ? 100 : -10,
+                                                            }}
+                                                        >
+                                                            {editCategory.map((val) => (
+                                                                val.id === category_id? 
+                                                                <li className="info-right-editCat-dropdown-selected">{val.category}</li> 
+                                                                : 
+                                                                <li
+                                                                    value={val.id}
+                                                                    onClick={(event) => selectCategoryClick(event, val.category)}
+                                                                >
+                                                                    {val.category}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
+                                                <div className="edit-info-form-left"> {/* Bagian kiri input berat produk */}
+                                                    <label htmlFor="weight">Product Weight</label>
+                                                    <p>Pay attention, product weight will affect courier shipping fee</p>
+                                                </div>
+                                                <div className="edit-info-form-right"> {/* Bagian kanan input berat produk */}
+                                                    <div className="edit-info-right-weight-input">
+                                                        <input 
+                                                            type="number" 
+                                                            id="weight" 
+                                                            name="weight" 
+                                                            value={weight}
+                                                            onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
+                                                            onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
+                                                            onWheel={(event) => event.target.blur()}
+                                                            placeholder="Product base weight + packaging"
+                                                            min="1"
+                                                        />
+                                                        <span>gram (g)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
+                                                <div className="edit-info-form-left"> {/* Bagian kiri input harga produk */}
+                                                    <label htmlFor="price">Product Price / Pcs</label>
+                                                </div>
+                                                <div className="edit-info-form-right"> {/* Bagian kanan input harga produk */}
+                                                    <div className="edit-info-right-numeric-input">
+                                                        <input 
+                                                            type="number" 
+                                                            id="price" 
+                                                            name="price" 
+                                                            value={price}
+                                                            onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
+                                                            onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
+                                                            onWheel={(event) => event.target.blur()}
+                                                            placeholder="Input price (minimum: 1)"
+                                                            min="1"
+                                                        />
+                                                        <span>Rp</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
+                                                <div className="edit-info-form-left"> {/* Bagian kiri input biaya/COGS produk */}
+                                                    <label htmlFor="product_cost">Product Cost / Pcs</label> {/* Bagian kanan input biaya/COGS produk */}
+                                                </div>
+                                                <div className="edit-info-form-right">
+                                                    <div className="edit-info-right-numeric-input">
+                                                        <input 
+                                                            type="number" 
+                                                            id="product_cost" 
+                                                            name="product_cost" 
+                                                            value={product_cost}
+                                                            onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
+                                                            onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
+                                                            onWheel={(event) => event.target.blur()}
+                                                            placeholder="Product COGS (minimum: 1)"
+                                                            min="1"
+                                                        />
+                                                        <span>Rp</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form> {/* ------ End of bagian input informasi produk ------ */}
+                                        <div className="edit-desc-form-wrap"> {/* Bagian input deskripsi produk */}
+                                            <div className="edit-desc-form-item"> {/* Wrapper individu row input deskripsi */}
+                                                <div className="edit-desc-form-left"> {/* Bagian kiri input deskripisi produk */}
+                                                    <label htmlFor="description">Product Description</label>
+                                                    <p>Make sure the product description includes specifications, sizes, materials, expiration dates, and more. The more detailed, the more useful and easy to understand for buyers.</p>                                    
+                                                </div>
+                                                <div className="edit-desc-form-right"> {/* Bagian kanan input deskripisi produk */}
+                                                    <div className="edit-info-right-desc-input">
+                                                        <textarea 
+                                                            type="text" 
+                                                            rows="8"
+                                                            cols="100"
+                                                            name="description" 
+                                                            value={description}
+                                                            onChange={(event) => editProdStringHandler(event)}
+                                                            onKeyUp={(event) => charCounterHandler(event)}
+                                                            placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
+                                                            maxlength="2000"
+                                                        >
+                                                        </textarea>
+                                                        <span>max char: {charCounter}/{descCharLimit}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> {/* ------ End of bagian input deskripsi produk ------ */}
+                                        <div className="edit-product-submission-wrap"> {/* Bagian submit form */}
+                                            <AdmBtnSecondary width={"10rem"} onClick={toManageProduct}>Cancel</AdmBtnSecondary>
+                                            <AdmBtnPrimary
+                                                width={"10rem"}
+                                                onClick={onSubmitedEditProd}
+                                                disabled={!name || !category_id || !weight || !price || !product_cost || !description}
+                                            >
+                                                {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
+                                            </AdmBtnPrimary>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="edit-info-form-item"> {/* Wrapper individu row input */}
-                                <div className="edit-info-form-left"> {/* Bagian kiri input biaya/COGS produk */}
-                                    <label htmlFor="product_cost">Product Cost / Pcs</label> {/* Bagian kanan input biaya/COGS produk */}
-                                </div>
-                                <div className="edit-info-form-right">
-                                    <div className="edit-info-right-numeric-input">
-                                        <input 
-                                            type="number" 
-                                            id="product_cost" 
-                                            name="product_cost" 
-                                            value={product_cost}
-                                            onChange={(event) => editProdNumberHandler(event, setEditProdInput)}
-                                            onKeyUp={(event) => noMinusHandler(event, setEditProdInput)}
-                                            onWheel={(event) => event.target.blur()}
-                                            placeholder="Product COGS (minimum: 1)"
-                                            min="1"
-                                        />
-                                        <span>Rp</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </form> {/* ------ End of bagian input informasi produk ------ */}
-                        <div className="edit-desc-form-wrap"> {/* Bagian input deskripsi produk */}
-                            <div className="edit-desc-form-item"> {/* Wrapper individu row input deskripsi */}
-                                <div className="edit-desc-form-left"> {/* Bagian kiri input deskripisi produk */}
-                                    <label htmlFor="description">Product Description</label>
-                                    <p>Make sure the product description includes specifications, sizes, materials, expiration dates, and more. The more detailed, the more useful and easy to understand for buyers.</p>                                    
-                                </div>
-                                <div className="edit-desc-form-right"> {/* Bagian kanan input deskripisi produk */}
-                                    <div className="edit-info-right-desc-input">
-                                        <textarea 
-                                            type="text" 
-                                            rows="8"
-                                            cols="100"
-                                            name="description" 
-                                            value={description}
-                                            onChange={(event) => editProdStringHandler(event)}
-                                            onKeyUp={(event) => charCounterHandler(event)}
-                                            placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
-                                            maxlength="2000"
-                                        >
-                                        </textarea>
-                                        <p>max char: {charCounter}/{descCharLimit}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> {/* ------ End of bagian input deskripsi produk ------ */}
-                        <div className="edit-product-submission-wrap"> {/* Bagian submit form */}
-                            <AdmBtnSecondary width={"10rem"} onClick={toManageProduct}>Cancel</AdmBtnSecondary>
-                            <AdmBtnPrimary
-                                width={"10rem"}
-                                onClick={onSubmitedEditProd}
-                                disabled={!name || !category_id || !weight || !price || !product_cost || !description}
-                            >
-                                Submit
-                            </AdmBtnPrimary>
-                            {/* <Link to="/admin/manage-product" className="edit-product-cancel-wrap">
-                                <button>Cancel/Back</button>
-                            </Link>
-                            <button 
-                                className="edit-product-submit-btn"
-                                onClick={onSubmitedEditProd}
-                                disabled={!name || !category_id || !weight || !price || !product_cost || !description}
-                            >
-                                Submit
-                            </button> */}
-                        </div>
-                    </div>
-                    {editImage.map((val, index) => (
-                        <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
-                            {editImgModalContent(val, index)}
-                        </Modal>
-                    ))}
-                </>
+                                    {editImage.map((val, index) => (
+                                        <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                                            {editImgModalContent(val, index)}
+                                        </Modal>
+                                    ))}
+                                </>
+                            }
+                        </>
+                        :
+                        <AdminSkeletonModerate />
+                    }
+                </div>
                 :
-                <AdminSkeletonModerate />
-                // <Stack spacing={3}>
-                //     <div style={{display: "flex", justifyContent: "space-between"}}>
-                //         <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "48px", width: "20%"}}/>
-                //         <Skeleton variant="text" animation="wave" style={{borderRadius: "12px", height: "48px", width: "25%"}}/>        
-                //     </div>
-                //     <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
-                //     <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
-                //     <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "320px", width: "100%"}} />
-                //     <div style={{display: "flex", columnGap: "24px", justifyContent: "flex-end"}}>
-                //         <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "48px", width: "160px"}} />
-                //         <Skeleton variant="rectangular" animation="wave" style={{borderRadius: "12px", height: "48px", width: "160px"}} />
-                //     </div>
-                // </Stack>
+                <NotFoundPage />
             }
-        </div>
+        </>
     )
 }
 

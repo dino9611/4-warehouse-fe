@@ -4,7 +4,6 @@ import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link, useHistory} from "react-router-dom";
 import deleteTrash from "../../assets/components/Delete-Trash.svg";
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -334,6 +333,7 @@ function AdminAddProduct() {
             };
         } else {
             errorToast("Please make sure all inputs filled");
+            setSubmitLoad(false);
             document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = false;
         };
     };

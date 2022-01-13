@@ -504,8 +504,8 @@ select > option {
     transition: 400ms;
 }
 
-.edit-img-modal-foot > button:disabled
-/* ,.edit-img-modal-foot > button:nth-of-type(2):disabled  */
+.edit-img-modal-foot > button:disabled,
+.edit-img-modal-foot > button:nth-of-type(2):disabled /* ! Utk button delete main img tdk bs kena hover */
 {
     background-color: var(--neutral-3rd-color);
     color: var(--neutral-5th-color);
