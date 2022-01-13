@@ -231,6 +231,14 @@
   padding: 0.25rem 0.5rem;
 }
 
+.transaction-detail-requested-label {
+  background-color: #fef0d7;
+  border-radius: var(--b-rad-table);
+  color: #ef8943;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
 .transaction-detail-1stRow-right {
   background-color: var(--neutral-5th-color);
   border-radius: var(--b-rad-table);
@@ -383,4 +391,17 @@
 
 .modal-request-input:enabled {
   outline: none;
+}
+
+.modal-request-submit {
+  border: none;
+  background-color: #b24629;
+  border-radius: 100px;
+  color: #fff;
+}
+.modal-request-cancel {
+  border: 1px solid #b24629;
+  box-sizing: border-box;
+  border-radius: 100px;
+  background-color: transparent;
 }

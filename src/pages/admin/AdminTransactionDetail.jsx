@@ -28,6 +28,7 @@ import { useSelector } from "react-redux";
 import Modal from "../../components/Modal";
 import assets from "./../../assets";
 import Textbox from "../../components/Textbox";
+import { Spinner } from "reactstrap";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,7 +74,7 @@ function AdminTransactionDetail() {
 
   const [shippingInfo, setShippingInfo] = useState({});
 
-  const [customerPayProof, setCustomerPayProof] = useState("");
+  const [customerPayProof, setCustomerPayProof] = useState([]);
 
   const [statusesList, setStatusesList] = useState([]); //* Bikin array sebagai sumber render data status order
 
@@ -97,7 +98,8 @@ function AdminTransactionDetail() {
   const [dataStockRequest, setDataStockRequest] = useState({});
   const [dataWarehouse, setDataWarehouse] = useState([]);
   const [dataWarehouseOrigin, setDataWarehouseOrigin] = useState([]);
-  const [inputRequest, setInputRequest] = useState(0);
+  const [loadingRequest, setLoadingrRequest] = useState(false);
+  const [checkRequest, setCheckRequest] = useState(0);
 
   const renderCurrentStatus = () => {
     //* Utk render tampilan current order status
@@ -123,6 +125,7 @@ function AdminTransactionDetail() {
       const res02 = await axios.get(
         `${API_URL}/transaction/payment-proof/${parentId}`
       );
+      console.log(res01.data);
       setTransactionDetail(res01.data);
       setStatusIdData(res01.data[0]);
       setCustomerPayProof(res02.data);
@@ -157,10 +160,12 @@ function AdminTransactionDetail() {
   };
 
   useEffect(() => {
-    fetchTransactionDetail();
-    fetchShippingInfo();
-    fetchTransactionStatuses();
-  }, []);
+    if (!loadingRequest) {
+      fetchTransactionDetail();
+      fetchShippingInfo();
+      fetchTransactionStatuses();
+    }
+  }, [loadingRequest]);
 
   const breadcrumbs = [
     <Link
@@ -324,6 +329,11 @@ function AdminTransactionDetail() {
             `${API_URL}/stock/get/nearest-warehouse?productId=${dataStockRequest.product_id}&orderId=${dataStockRequest.order_id}`
           );
 
+          let resChecking = await axios.get(
+            `${API_URL}/stock/get/checking-request?ordersId=${dataStockRequest.order_id}&productId=${dataStockRequest.product_id}`
+          );
+
+          setCheckRequest(resChecking.data);
           setDataWarehouse(res.data);
           setDataWarehouseOrigin(res.data.origin);
         } catch (error) {
@@ -342,7 +352,7 @@ function AdminTransactionDetail() {
   const onClickCloseModal = () => {
     setHandleModal(false);
   };
-
+  console.log(dataStockRequest);
   const onClickMinusRequest = (index) => {
     if (dataWarehouseOrigin[index].request_qty <= 0) {
       return;
@@ -360,7 +370,9 @@ function AdminTransactionDetail() {
 
   const onClickPlusRequest = (index) => {
     if (
-      dataStockRequest.qty === totalRequestQty() ||
+      parseInt(dataStockRequest.qty - checkRequest) -
+        parseInt(dataStockRequest.total_stock) ===
+        totalRequestQty() ||
       dataWarehouseOrigin[index].request_qty >=
         dataWarehouseOrigin[index].stocks
     ) {
@@ -377,69 +389,19 @@ function AdminTransactionDetail() {
     ]);
   };
 
-  const onChangeInputRequest = (e, index) => {
-    let request_qty = parseInt(e.target.value);
-
-    if (e.target.value === "" || e.target.value <= 0) {
-      setDataWarehouseOrigin([
-        ...dataWarehouseOrigin?.slice(0, index),
-        { ...dataWarehouseOrigin[index], request_qty: 0 },
-        ...dataWarehouseOrigin?.slice(index + 1),
-      ]);
-      return;
-    }
-
-    setDataWarehouseOrigin([
-      ...dataWarehouseOrigin?.slice(0, index),
-      { ...dataWarehouseOrigin[index], request_qty },
-      ...dataWarehouseOrigin?.slice(index + 1),
-    ]);
-  };
-
-  const onBlurRequest = (e, index) => {
-    let sum = dataStockRequest.qty - (totalRequestQty() % dataStockRequest.qty);
-
-    if (
-      parseInt(e.target.value) > dataWarehouseOrigin[index].stocks ||
-      parseInt(e.target.value) > dataStockRequest.qty
-    ) {
-      if (dataStockRequest.qty === totalRequestQty()) {
-        setDataWarehouseOrigin([
-          ...dataWarehouseOrigin?.slice(0, index),
-          { ...dataWarehouseOrigin[index], request_qty: 0 },
-          ...dataWarehouseOrigin?.slice(index + 1),
-        ]);
-        console.log("<asuik sini ro");
-        return;
-      } else {
-        if (sum >= dataWarehouseOrigin[index].stocks) {
-          setDataWarehouseOrigin([
-            ...dataWarehouseOrigin?.slice(0, index),
-            {
-              ...dataWarehouseOrigin[index],
-              request_qty: dataWarehouseOrigin[index].stocks,
-            },
-            ...dataWarehouseOrigin?.slice(index + 1),
-          ]);
-          return;
-        } else {
-          setDataWarehouseOrigin([
-            ...dataWarehouseOrigin?.slice(0, index),
-            { ...dataWarehouseOrigin[index], request_qty: sum },
-            ...dataWarehouseOrigin?.slice(index + 1),
-          ]);
-          return;
-        }
-      }
-    }
-  };
-
   const onClickRequestStock = async () => {
     try {
-      if (totalRequestQty() !== dataStockRequest.qty) {
-        console.log("masuk");
+      if (
+        totalRequestQty() !==
+        parseInt(dataStockRequest.qty) -
+          checkRequest -
+          parseInt(dataStockRequest.total_stock)
+      ) {
+        errorToast("Total items input must be same with total stock required");
         return;
       }
+
+      setLoadingrRequest(true);
 
       const filterWarehouse = dataWarehouseOrigin.filter(
         (el) => el.request_qty !== 0
@@ -452,9 +414,12 @@ function AdminTransactionDetail() {
         origin: filterWarehouse,
       });
 
-      alert("berhasil request");
+      setLoadingrRequest(false);
+      setHandleModal(false);
+      successToast("request successful!");
     } catch (error) {
       console.log(error);
+      errorToast(error.response.data.message);
     }
   };
 
@@ -491,7 +456,11 @@ function AdminTransactionDetail() {
             </div>
             <div className="d-flex align-items-center mb-1">
               <div className="fs14-500-black w-50">Total stock required</div>
-              <div className="fs14-500-black w-50">{dataStockRequest.qty}</div>
+              <div className="fs14-500-black w-50">
+                {dataStockRequest.qty -
+                  parseInt(dataStockRequest.total_stock) -
+                  checkRequest}
+              </div>
             </div>
             <div className="d-flex align-items-center">
               <div className="fs14-500-black w-50">Warehouse destination</div>
@@ -514,10 +483,29 @@ function AdminTransactionDetail() {
           </div>
 
           <div className="d-flex align-items-center justify-content-end">
-            <button className="mr-3" onClick={onClickCloseModal}>
-              Cancel
-            </button>
-            <button onClick={onClickRequestStock}>Request</button>
+            <div className="d-flex justify-content-end w-50">
+              <button
+                className="modal-request-cancel mr-3 py-2 w-25"
+                onClick={onClickCloseModal}
+              >
+                Cancel
+              </button>
+              <button
+                className="modal-request-submit py-2 w-25"
+                onClick={onClickRequestStock}
+                disabled={loadingRequest ? true : false}
+              >
+                {loadingRequest ? (
+                  <div className="px-4">
+                    <Spinner color="success" size="sm">
+                      Loading...
+                    </Spinner>
+                  </div>
+                ) : (
+                  "Request"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -564,7 +552,6 @@ function AdminTransactionDetail() {
       );
     });
   };
-  console.log(transactionDetail);
 
   return (
     <div className="adm-transaction-detail-main-wrap">
@@ -788,13 +775,17 @@ function AdminTransactionDetail() {
                           <span className="transaction-detail-insufficient-label">
                             Cancelled
                           </span>
-                        ) : (
+                        ) : val.status_request === "Request required" ? (
                           <span
                             className="transaction-detail-insufficient-label"
                             onClick={() => onClickModalRequest(val)}
                             style={{ cursor: "pointer" }}
                           >
-                            {val.stock_status}
+                            {`${val.stock_status}`}
+                          </span>
+                        ) : (
+                          <span className="transaction-detail-requested-label">
+                            {`${val.status_request}`}
                           </span>
                         )}
                       </StyledTableCell>

@@ -48,6 +48,8 @@ import profpic from "./profpic.svg";
 import history from "./history.svg";
 import alamat from "./alamat.svg";
 import logout from "./logout.svg";
+import emptycart from "./emptycart.svg";
+import centang from "./centang.svg";
 
 export default {
   logo,
@@ -100,4 +102,6 @@ export default {
   history,
   alamat,
   logout,
+  emptycart,
+  centang,
 };

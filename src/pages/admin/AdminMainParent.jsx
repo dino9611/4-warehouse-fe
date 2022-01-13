@@ -11,6 +11,7 @@ import HomeDashboard from "./HomeDashboard";
 import ManageTransaction from "./ManageTransaction";
 import AdminTransactionDetail from "./AdminTransactionDetail";
 import StockRequest from "./StockRequest";
+import LogRequest from "./LogRequest";
 
 const routePath = {
   dashboard: "/admin/dashboard",
@@ -23,6 +24,7 @@ const routePath = {
   warehouses: "/admin/manage-warehouse",
   stockRequest: "/admin/stock-request",
   manageAdmin: "/admin/manage-admin",
+  logRequest: "/admin/log-request",
 };
 
 const routes = [
@@ -75,6 +77,11 @@ const routes = [
     path: routePath.manageAdmin,
     exact: true,
     main: () => <ManageAdmin />,
+  },
+  {
+    path: routePath.logRequest,
+    exact: true,
+    main: () => <LogRequest />,
   },
 ];
 
