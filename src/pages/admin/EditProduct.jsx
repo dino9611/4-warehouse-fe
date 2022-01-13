@@ -34,6 +34,10 @@ function EditProduct() {
 
     const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
+    const [sbmtEditImgLoad, setSbmtEditImgLoad] = useState(false); //* State kondisi loading ketika submit button edit image ter-trigger, hingga proses selesai
+
+    const [sbmtDelImgLoad, setSbmtDelImgLoad] = useState(false); //* State kondisi loading ketika submit button delete image ter-trigger, hingga proses selesai
+
     const [editCategory, setEditCategory] = useState([]);
 
     const [prodNameCounter, setProdNameCounter] = useState(0); //* Utk check characters left input nama produk
@@ -269,8 +273,18 @@ function EditProduct() {
                 </div>
                 <div className="edit-img-modal-foot">
                     <button onClick={() => onCloseModal(index)}>Cancel</button>
-                    <button onClick={(event) => onDeleteImg(event, index, imgSrc)} disabled={index === 0 || !imgSrc}>Delete Image File</button>
-                    <button onClick={(event) => onSubmitImgCarrier(event)} disabled={!imgCarrier[0]}>Submit Edit</button>
+                    <button 
+                        onClick={(event) => onDeleteImg(event, index, imgSrc)} 
+                        disabled={index === 0 || !imgSrc}
+                    >
+                        {sbmtDelImgLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Delete Image File"}
+                    </button>
+                    <button 
+                        onClick={(event) => onSubmitImgCarrier(event)} 
+                        disabled={!imgCarrier[0]}
+                    >
+                        {sbmtEditImgLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit Edit"}
+                    </button>
                 </div>
             </>
         )
@@ -303,6 +317,8 @@ function EditProduct() {
 
     const onSubmitImgCarrier = async (event) => { //* Untuk trigger submit button pada modal edit image
         event.preventDefault();
+
+        setSbmtEditImgLoad(true);
         document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = true; //! Disable submit button utk prevent submit berulang kali
         document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true; //! Disable delete img button utk prevent trigger berulang kali
         
@@ -338,6 +354,7 @@ function EditProduct() {
                 confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
             });
             setImgCarrier([]);
+            setSbmtEditImgLoad(false);
             document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
             document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
             fetchProdToEdit();
@@ -353,6 +370,7 @@ function EditProduct() {
                 confirmButtonAriaLabel: 'Continue',
                 confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
             });
+            setSbmtEditImgLoad(false);
             document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
             document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
         };
@@ -360,6 +378,8 @@ function EditProduct() {
 
     const onDeleteImg = async (event, index, prevImg) => { //* Untuk trigger delete button pada modal edit image
         event.preventDefault();
+
+        setSbmtDelImgLoad(true);
         document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = true; //! Disable submit button utk prevent submit berulang kali
         document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true; //! Disable delete img button utk prevent trigger berulang kali
 
@@ -377,6 +397,7 @@ function EditProduct() {
                 confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
             });
             setImgCarrier([]);
+            setSbmtDelImgLoad(false);
             document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
             document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
             fetchProdToEdit();
@@ -392,6 +413,7 @@ function EditProduct() {
                 confirmButtonAriaLabel: 'Continue',
                 confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
             });
+            setSbmtDelImgLoad(false);
             document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
             document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
         };
