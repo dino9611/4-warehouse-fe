@@ -17,6 +17,7 @@ import Paper from '@mui/material/Paper';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@mui/material/CircularProgress';
 import chevronDown from "../../assets/components/Chevron-Down.svg";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
     TableContainer: {
@@ -88,6 +89,11 @@ function HomeDashboard() {
         setProdValData([]);
         setTopUsers([]);
     };
+
+    // FETCH & useEFFECT SECTION
+    const getAuthData = useSelector((state) => state.auth);
+
+    const {role_id, warehouse_id, warehouse_name} = getAuthData;
 
     const fetchRevenue = async () => {
         try {
@@ -231,7 +237,7 @@ function HomeDashboard() {
     return (
         <div className="adm-dashboard-main-wrap">
             <div className="adm-dashboard-header-wrap">
-                <h4>Dashboard</h4>
+                {(role_id === 1) ? <h4>Dashboard</h4> : <h4>Dashboard {warehouse_name}</h4>}
                 <div className="adm-dashboard-header-right">
                     <h4>Filter Year</h4>
                     <div className="adm-dashboard-dropdown-wrap">
@@ -366,11 +372,11 @@ function HomeDashboard() {
                                     <>
                                         <div className="dashboard-2ndRow-left-heading">
                                             <h6>{`Monthly Actual vs Potential Revenue ${filterYear}`}</h6>
-                                            {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
+                                            {/* {(monthlyRevenue[prevMonth] < monthlyRevenue[nowMonth]) ? 
                                                 <h6 style={{color: "#43936C"}}>+ {lastMonthRevGrow}% Actual rev. vs last month</h6>
                                                 : 
                                                 <h6 style={{color: "#CB3A31"}}>- {lastMonthRevGrow}% Actual rev. vs last month</h6>
-                                            }
+                                            } */}
                                         </div>
                                         <div className="dashboard-2ndRow-left-chart">
                                             <LineChart 

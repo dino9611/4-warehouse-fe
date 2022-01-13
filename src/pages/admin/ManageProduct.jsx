@@ -401,10 +401,14 @@ function ManageProduct() {
                         :
                         <>
                             <div className="adm-products-header-wrap">
-                                {getRoleId === 2 ? <h4>Nationwide Product List & Stock</h4> : <h4>Manage Products</h4>}
-                                <Link to="/admin/manage-product/add">
-                                    <button>+ Add Products</button>
-                                </Link>
+                                {(getRoleId === 2) ? <h4>Nationwide Product List & Stock</h4> : <h4>Manage Products</h4>}
+                                {(getRoleId === 1) ?
+                                    <Link to="/admin/manage-product/add">
+                                        <button>+ Add Products</button>
+                                    </Link>
+                                    :
+                                    null
+                                } 
                             </div>
                             <div className="adm-products-contents-wrap">
                                 <TableContainer component={Paper} className="adm-product-table-override">
