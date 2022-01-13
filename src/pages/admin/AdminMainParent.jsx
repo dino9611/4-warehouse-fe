@@ -11,6 +11,8 @@ import EditProduct from "./EditProduct";
 import ManageWarehouse from "./ManageWarehouse";
 import ManageAdmin from "./ManageAdmin";
 import HomeDashboard from "./HomeDashboard";
+import ManageTransaction from "./ManageTransaction";
+import AdminTransactionDetail from "./AdminTransactionDetail";
 
 const routePath = {
     dashboard: "/admin/dashboard",
@@ -19,6 +21,7 @@ const routePath = {
     editProduct: "/admin/manage-product/edit",
     stockOpname: "/admin/stock-opname",
     transactions: "/admin/manage-transaction",
+    detailTransaction: "/admin/manage-transaction/detail",
     warehouses: "/admin/manage-warehouse",
     stockRequest: "/admin/stock-request",
     manageAdmin: "/admin/manage-admin",
@@ -53,7 +56,12 @@ const routes = [
     {
       path: routePath.transactions,
       exact: true,
-      main: () => <div>Belum ada page manage transaction</div>
+      main: () => <ManageTransaction />
+    },
+    {
+      path: routePath.detailTransaction,
+      exact: true,
+      main: () => <AdminTransactionDetail />
     },
     {
       path: routePath.warehouses,

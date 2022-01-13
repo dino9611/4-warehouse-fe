@@ -1,0 +1,327 @@
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #5A5A5A;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #F4F4F4;
+    --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-rad-table: 8px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+/* ? UTILITY CLASS */
+.adm-table-style-override {
+    border-radius: var(--b-rad-table) !important;
+    padding: 1.5rem;
+
+    box-shadow: var(--b-shadow-root) !important;
+    -webkit-box-shadow: var(--b-shadow-root) !important;
+    -moz-box-shadow: var(--b-shadow-root) !important;
+}
+
+.adm-transaction-spinner-wrap {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+
+/* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
+.payproof-modal-heading-wrap > h4,
+.payproof-modal-heading-wrap > h6,
+.adm-transaction-pagination-item > p,
+.adm-transaction-empty-state > h6 {
+    margin: 0;
+}
+
+/* ? MAIN WRAPPER SECTION */
+.adm-transaction-main-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* ? BREADCRUMB WRAP & CONTENTS SECTION */
+.adm-transaction-breadcrumb-wrap {
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.adm-transaction-breadcrumb-wrap li { 
+    /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
+    align-items: center;
+    display: flex;
+}
+
+/* ? HEADER WRAP & CONTENTS SECTION */
+.adm-transaction-header-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ? TABBING PANEL & CONTENTS SECTION */
+.adm-transaction-tabpanel-wrap {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+    row-gap: 1.5rem;
+    width: 100%;
+}
+
+/* ? CONTENTS/BODY WRAP & CONTENTS SECTION */
+.adm-transaction-contents-wrap {
+    margin-top: 24px;
+}
+
+/* * ACTIONS CELL & CONTENTS ON CONTENTS/BODY SECTION */
+.adm-transaction-payproof-action,
+.adm-transaction-detail-action {
+    color: var(--primary-4th-color) !important;
+    cursor: pointer;
+}
+
+.adm-transaction-payproof-action:hover,
+.adm-transaction-detail-action:hover {
+    color: var(--primary-3rd-color) !important;
+}
+
+/* * EMPTY STATE & CONTENTS ON CONTENTS/BODY SECTION */
+.adm-transaction-empty-state {
+    height: 40vh;
+    text-align: center;
+}
+
+.adm-transaction-empty-state > img {
+    margin-bottom: 1rem;
+}
+
+/* ? STATUS BADGE SECTION */
+#adm-status-label {
+    align-items: center;
+    border-radius: 8px;
+    display: flex;
+    font-size: 0.7em;
+    font-weight: 500;
+    height: 1.5rem;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    width: fit-content;
+}
+
+#adm-status-label.adm-process {
+    background-color: #FEF0D7;
+    color: var(--semantic-warning);
+}
+
+#adm-status-label.adm-success {
+    background-color: #D0E4DA;
+    color: var(--semantic-success);
+}
+
+#adm-status-label.adm-fail {
+    background-color: #F0DAD4;
+    color: var(--semantic-error);
+}
+
+/* ? PAYMENT PRROF MODAL CONTENT */
+.payproof-modal-heading-wrap {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    row-gap: 1rem;
+}
+
+.payproof-modal-body-wrap {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.payproof-modal-body-wrap > img {
+    height: 30rem;
+    width: 30rem;
+}
+
+.payproof-modal-foot-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+/* ? DROPDOWN MENU FILTER PRODUCT PER PAGE */
+.adm-transaction-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    min-height: fit-content;
+    width: 100%;
+}
+
+.adm-transaction-filter-item {
+    align-items: center;
+    column-gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.adm-transaction-filter-item > p {
+    color: var(--neutral-2nd-color);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.adm-transaction-dropdown-wrap {
+    position: relative;
+}
+
+.adm-transaction-dropdown-btn {
+    align-items: center;
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    color: var(--neutral-3rd-color);
+    cursor: pointer;
+    display: flex;
+    height: 32px;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    width: 72px;
+}
+
+.adm-transaction-dropdown-btn:hover {
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-dropdown-btn > img {
+    margin-top: -2.2px;
+    margin-left: 4px;
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    list-style: none;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 72px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-transaction-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    width: 100%;
+}
+
+.adm-transaction-dropdown-menu > li:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+.adm-transaction-dropdown-selected {
+    color: var(--primary-4th-color) !important;
+    cursor: default !important;
+}
+
+/* ? PAGINATION SECTION */
+.adm-transaction-pagination {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.adm-transaction-pagination-item {
+    align-items: center;
+    column-gap: 8px;
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0 0;
+}
+
+.adm-transaction-pagination-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    height: 48px;
+    width: 40px;
+}
+
+.adm-transaction-pagination-btn:hover {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    transition: 400ms;
+}
+
+.adm-transaction-pagination-btn:disabled {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.adm-transaction-prev-btn,
+.adm-transaction-next-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    height: 48px;
+    width: 88px;
+}
+
+.adm-transaction-prev-btn:hover > img,
+.adm-transaction-next-btn:hover > img {
+    transform: translateY(-2px);
+    transition: 300ms;
+}
+
+.adm-transaction-prev-btn:disabled,
+.adm-transaction-next-btn:disabled {
+    background-color: var(--neutral-3rd-color);
+    cursor: default;
+    opacity: 50%;
+}
+
+.adm-transaction-prev-btn:disabled:hover > img,
+.adm-transaction-next-btn:disabled:hover > img {
+    transform: translateY(0);
+    transition: none;
+}

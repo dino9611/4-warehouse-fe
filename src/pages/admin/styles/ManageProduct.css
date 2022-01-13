@@ -75,10 +75,6 @@
     transition: 300ms;
 }
 
-.txt-capitalize {
-    text-transform: capitalize;
-}
-
 .adm-products-pagination {
     display: flex;
     justify-content: space-between;
