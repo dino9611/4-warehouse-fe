@@ -117,7 +117,7 @@
 .add-info-right-numeric-input > input {
     border: 1px solid var(--neutral-3rd-color);
     border-radius: var(--b-rad-table);
-    padding: 0 12px;
+    padding: 0 0.75rem;
     height: 40px;
     width: 100%;
 }

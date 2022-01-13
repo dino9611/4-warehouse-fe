@@ -18,11 +18,14 @@ import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import { errorToast } from "../../redux/actions/ToastAction";
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function AdminAddProduct() {
     const [skeletonLoad, setSkeletonLoad] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
 
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
+
+    const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
     const [category, setCategory] = useState([]);
 
@@ -241,6 +244,7 @@ function AdminAddProduct() {
     // CLICK FUNCTION SECTION
     const onSubmitAddProd = async (event) => { //* Untuk trigger submit button
         event.preventDefault();
+        setSubmitLoad(true);
         document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = true;
         
         let uploadedImg = addImage;
@@ -274,9 +278,8 @@ function AdminAddProduct() {
         try {
             await axios.post(`${API_URL}/product/determine-category`, inputtedProd);
         } catch (err) {
-            errorToast("Server Error, from AddProduct - Post cat");
             console.log(err);
-            document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = false;
+            //! Entah kenapa akan muncul error status code 404 walaupun proses berhasil jalan hingga masuk ke step berikutnya
         };
 
         if (prod_name && prod_category && prod_weight && prod_price && prod_cost && prod_desc && (warehouse.every(stockTrueChecker))) {
@@ -300,6 +303,8 @@ function AdminAddProduct() {
                     })
                     return [...newArray];
                 });
+                setSelectedCategory("Choose product category");
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Add product success!',
@@ -311,10 +316,10 @@ function AdminAddProduct() {
                     confirmButtonAriaLabel: 'Continue',
                     confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                 });
-                document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = false;
                 setDropdownActiveDetector(0);
             } catch (err) {
                 console.log(err);
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
@@ -592,7 +597,7 @@ function AdminAddProduct() {
                                                 onClick={onSubmitAddProd}
                                                 disabled={!mainImgCheck || !prod_name || !prod_category || !prod_weight || !prod_price || !prod_cost || !(warehouse.every(stockTrueChecker)) || !prod_desc}
                                             >
-                                                Submit
+                                                {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
                                             </AdmBtnPrimary>
                                         </div>
                                     </div>
