@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { Login } from "./pages/user";
 import { Register, VerifyEmail } from "./pages/non-user";
 
@@ -30,6 +30,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const dispatch = useDispatch();
+
+  const DetectPath = () => {
+    return useLocation().pathname;
+  };
+
+  let currentPath = DetectPath();
 
   useEffect(() => {
     (async () => {
@@ -147,9 +153,9 @@ function App() {
   return (
     <div className="App">
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
-      {(getRoleId === 1 || getRoleId === 2 || loading) ? null : <Header />}
+      {(getRoleId === 1 || getRoleId === 2 || loading || currentPath.includes("/admin")) ? null : <Header />}
       {loading ? <LoadingApp /> : renderRouting()}
-      <div>{(getRoleId === 1 || getRoleId === 2 || loading) ? null : <Footer />}</div>
+      <div>{(getRoleId === 1 || getRoleId === 2 || loading | currentPath.includes("/admin")) ? null : <Footer />}</div>
     </div>
   );
 }
