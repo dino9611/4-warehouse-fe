@@ -1,5 +1,5 @@
 import "./styles/EditProduct.css";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {useLocation} from "react-router-dom";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
@@ -22,6 +22,7 @@ import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import infoIcon from "../../assets/components/Info-Yellow.svg";
 import CircularProgress from '@mui/material/CircularProgress';
+import { debounce } from "throttle-debounce";
 
 function EditProduct() {
     const prodIdFromParent = useLocation();
@@ -168,6 +169,10 @@ function EditProduct() {
             return { ...prevState, [event.target.name]: event.target.value };
         });
     };
+
+    // const debouncedChangeHandler = useCallback(
+    //     debounce(editProdStringHandler, 1000)
+    //   , []);
 
     const editProdNumberHandler = (event, cb) => { //* Utk setState data berbentuk number
         cb((prevState) => {
@@ -568,6 +573,12 @@ function EditProduct() {
                                                             name="name" 
                                                             value={name}
                                                             onChange={(event) => editProdStringHandler(event)}
+                                                            // onChange={debouncedChangeHandler}
+                                                            // onChange={debounce(100, (event) =>
+                                                            //     setEditProdInput((prevState) => {
+                                                            //         return { ...prevState, [event.target.name]: event.target.value };
+                                                            //     })
+                                                            // )}
                                                             onKeyUp={(event) => prodNameCharCounter(event)}
                                                             placeholder="Ex: Javara Coconut Sugar 250gr"
                                                             maxLength={prodNameCharMax}
