@@ -435,9 +435,7 @@ function ManageStock() {
                                                 <TableBody>
                                                     {products
                                                     .map((val, index) => (
-                                                        <StyledTableRow
-                                                            key={val.SKU}
-                                                        >
+                                                        <StyledTableRow key={val.SKU}>
                                                             <StyledTableCell align="center" component="th" scope="row">
                                                                 <img 
                                                                     src={`${API_URL}/${val.images[0]}`} 

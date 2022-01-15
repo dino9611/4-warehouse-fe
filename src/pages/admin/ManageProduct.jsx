@@ -299,28 +299,38 @@ function ManageProduct() {
 
     // RENDER PAGE RANGE SECTION
     const renderPageRange = () => { //* Utk render button select page pagination
-        const disabledBtn = (value) => { //* Button page pagination yg saat ini aktif
+        const disabledBtn = (value, index) => { //* Button page pagination yg saat ini aktif
             return (
-                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)} disabled>
+                <button 
+                    className="adm-products-pagination-btn" 
+                    value={value} onClick={(event) => selectPage(event)} 
+                    disabled
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
-        const clickableBtn = (value) => { //* Button page pagination yg tdk aktif & bisa di-klik
+        const clickableBtn = (value, index) => { //* Button page pagination yg tdk aktif & bisa di-klik
             return (
-                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)}>
+                <button 
+                    className="adm-products-pagination-btn" 
+                    value={value} 
+                    onClick={(event) => selectPage(event)}
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
         if (pageCountRange.length <= showMaxRange) {
-            return pageCountRange.map((val) => {
+            return pageCountRange.map((val, index) => {
                 if (val === page) { //* Bila value button = value page --> aktif saat ini
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         } else {
@@ -336,13 +346,13 @@ function ManageProduct() {
     
             return filteredArr.map((val, index) => {
                 if (val === page) {
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else if (index >= showMaxRange) { //* Bila index >= range maksimum = tidak render
                     return
                 } else if (index > showMaxRange && index < pageCountTotal - 1) {
                     return
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         };
@@ -444,15 +454,11 @@ function ManageProduct() {
                                                         zIndex: toggleDropdown ? 100 : -10,
                                                     }}
                                                 >
-                                                    {rowsPerPageOptions.map((val) => (
+                                                    {rowsPerPageOptions.map((val, index) => (
                                                         val === itemPerPage ? 
-                                                        <li className="adm-products-filter-dropdown-selected">{val}</li> 
+                                                        <li className="adm-products-filter-dropdown-selected" key={index}>{val}</li> 
                                                         : 
-                                                        <li
-                                                            onClick={() => filterItemPerPage(val)}
-                                                        >
-                                                            {val}
-                                                        </li>
+                                                        <li onClick={() => filterItemPerPage(val)} key={index}>{val}</li>
                                                     ))}
                                                 </ul>
                                             </div>
@@ -479,9 +485,7 @@ function ManageProduct() {
                                         <TableBody>
                                             {products
                                             .map((val, index) => (
-                                                <StyledTableRow
-                                                key={val.SKU}
-                                                >
+                                                <StyledTableRow key={val.SKU}>
                                                     <StyledTableCell align="center" component="th" scope="row">
                                                         <img 
                                                             src={`${API_URL}/${val.images[0]}`} 
@@ -573,7 +577,11 @@ function ManageProduct() {
                                     </div>
                                 </div>
                                 {products.map((val, index) => (
-                                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                                    <Modal 
+                                        open={modalLength[index]} 
+                                        close={() => onCloseModal(index)}
+                                        key={`del-prod-#${val.id}-modal`}
+                                    >
                                         {delModalContent(val.id, val.SKU, val.name, index)}
                                     </Modal>
                                 ))}
