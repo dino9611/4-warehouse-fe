@@ -297,20 +297,20 @@ function AdminTransactionDetail() {
                                 {renderCurrentStatus().map((val, index) => (
                                     (val.id === fetchedStatusId) ?
                                     <>
-                                        <h6 className="status-active">{val.status}</h6>
+                                        <h6 className="status-active" key={`status-0${val.id}`}>{val.status}</h6>
                                         {(val.id <= fetchedStatusId && fetchedStatusId < 5) ? 
-                                            <img src={inactiveNextArrow}/>
+                                            <img src={inactiveNextArrow} alt="Next-Process-Arrow"/>
                                             : 
                                             null
                                         }
                                     </>
                                     : (fetchedStatusId >= 6) ?
-                                    <h6 className="status-fail">{val}</h6>
+                                    <h6 className="status-fail" key={`status-0${val.id}`}>{val}</h6>
                                     :
                                     <>
-                                        <h6 className="status-inactive">{val.status}</h6>
+                                        <h6 className="status-inactive" key={`status-0${val.id}`}>{val.status}</h6>
                                         {(index < 2) ? 
-                                            <img src={inactiveNextArrow}/>
+                                            <img src={inactiveNextArrow} alt="Next-Process-Arrow"/>
                                             : 
                                             null
                                         }
