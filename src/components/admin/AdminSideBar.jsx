@@ -123,7 +123,7 @@ function AdminSideBar(props) {
                 {role_id === 2 ?
                     <div className="adm-sidebar-dropdown-wrap">
                         <div 
-                            className={currentPath.includes(routes.stockRequest) ? 
+                            className={(currentPath.includes(routes.stockRequest) ||  currentPath.includes(routes.manageStock)) ? 
                                 "adm-sidebar-item-wrap sidebar-active" 
                                 : 
                                 "adm-sidebar-item-wrap"
@@ -163,7 +163,7 @@ function AdminSideBar(props) {
                                 to={routes.manageStock} className="link-no-decoration"
                                 className="link-no-decoration"
                                 style={{
-                                    color: currentPath.includes(routes.stockOpname) ? "#FCB537" : null,
+                                    color: currentPath.includes(routes.manageStock) ? "#FCB537" : null,
                                     marginLeft: inventoryToggle ? 0 : "-20%",
                                     fontSize: inventoryToggle ? "0.75rem" : 0,
                                     marginTop: inventoryToggle ? 0 : "-10%",

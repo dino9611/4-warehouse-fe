@@ -22,15 +22,16 @@ import Stack from '@mui/material/Stack';
 import {Link} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import chevronDown from "../../assets/components/Chevron-Down.svg";
-import Modal from '../../components/Modal';
-import Textbox from "../../components/Textbox";
-import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
-import ShowPassTrue from "../../assets/components/Show-Pass-True.svg";
 import { useSelector } from "react-redux";
-import { successToast, errorToast } from "../../redux/actions/ToastAction";
+import { errorToast } from "../../redux/actions/ToastAction";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import NotFoundPage from "../non-user/NotFoundV1";
+import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
+import Swal from 'sweetalert2';
+import Modal from '../../components/Modal';
+import Textbox from "../../components/Textbox";
+import AdmBtnSecondary from '../../components/admin/AdmBtnSecondary';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -62,16 +63,13 @@ function ManageStock() {
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
     const [products, setProducts] = useState([]);
-    
-    const [dropdownLength, setDropdownLength] = useState([]); //* Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
 
-    const [modalLength, setModalLength] = useState([]); //* Utk atur relation delete modal per produk, sehingga delete unique identik dgn msg2 produk
-    
-    const [passToggle, setPassToggle] = useState(false); //* Utk atur showPass pada confirm delete produk
-    
-    const [showPass, setShowPass] = useState("password"); //* Utk rubah input type pada modal delete produk
-    
-    const [passForDel, setPassForDel] = useState(""); //* Utk kirim pass ke BE melakukan validasi confirm delete
+    const [editStockInput, setEditStockInput] = useState({});
+    console.log(editStockInput); //!Test
+
+    const [newStock, setNewStock] = useState([]);
+
+    const [modalLength, setModalLength] = useState([]); //* Atur length dropdown edit stock agar dinamis
 
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
@@ -100,15 +98,16 @@ function ManageStock() {
     const rowsPerPageOptions = [5, 10, 50];
 
     // FETCH & useEFFECT SECTION
-    const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
+    const getAuthData = useSelector((state) => state.auth);
 
-    const getRoleId = useSelector((state) => state.auth.role_id);
+    const {role_id, warehouse_id, warehouse_name} = getAuthData;
 
     const fetchProdData = async () => {
         try {
-            const res = await axios.get(`${API_URL}/admin/product/pagination?page=${page - 1}&limit=${itemPerPage}`);
+            const res = await axios.get(`${API_URL}/admin/warehouse-product/pagination?page=${page - 1}&limit=${itemPerPage}&whid=${warehouse_id}`);
             setProducts(res.data);
             setProdLength(parseInt(res.headers["x-total-count"]));
+            setEditStockInput(res.data);
         } catch (error) {
             errorToast("Server Error, from ManageProduct");
             console.log(error);
@@ -136,28 +135,15 @@ function ManageStock() {
         productsRangeSlice();
     }, [prodLength, page, itemPerPage]);
 
-    useEffect(() => { //* Utk create array yg identik dengan masing2 dropdown action menu & modal per produk
-        let dropdownArr = [];
-        for (let i = 0; i < products.length; i++) {
-            dropdownArr[i] = false;
-        };
-        setDropdownLength([...dropdownArr]);
-        let modalArr = [];
-        for (let i = 0; i < products.length; i++) {
-            modalArr[i] = false;
-        };
-        setModalLength([...modalArr]);
-    }, [products])
-
     const breadcrumbs = [
         <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
           Dashboard
         </Link>,
         <Typography key="2" color="#070707" style={{fontSize: "0.75rem", margin: "auto"}}>
-          {getRoleId === 2 ? "Product List" : "Manage Products"}
+          Manage Stock
         </Typography>,
     ];
-    
+
     // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
     const filterDropdownClick = () => { //* Buka tutup menu dropdown
         setToggleDropdown(!toggleDropdown);
@@ -173,32 +159,8 @@ function ManageStock() {
         setToggleDropdown(false);
         setLoadData(true);
     };
-
-    // RENDER DROPDOWN ACTION MENU
-    const dropdownClick = (index) => {
-        if (!dropdownLength[index]) {
-            setDropdownLength((prevState) => {
-                let newArray = prevState;
-                newArray[index] = true;
-                return [...newArray];
-            });
-        } else {
-            setDropdownLength((prevState) => {
-                let newArray = prevState;
-                newArray[index] = false;
-                return [...newArray];
-            });
-        };
-    };
-
-    const dropdownBlur = () => {
-        let newArr = dropdownLength.map(() => { //* Clickaway action dropdown menu/menutup kembali dropdown bila klik diluar dropdown
-            return false;
-        })
-        setDropdownLength([...newArr]);
-    };
-
-    // RENDER MODAL DELETE PRODUCT
+    
+    // RENDER MODAL TO EDIT STOCK
     const modalClick = (index) => {
         if (!modalLength[index]) {
             setModalLength((prevState) => {
@@ -221,107 +183,68 @@ function ManageStock() {
             newArray[index] = false;
             return [...newArray];
         });
-        setPassForDel("");
-        setShowPass("password");
     };
 
-    const passForDelHandler = (event) => setPassForDel(event.target.value);
-
-    const showPassHandler = () => {
-        setPassToggle(!passToggle);
-        if (passToggle) {
-          setShowPass("text");
-        } else {
-          setShowPass("password");
-        };
-    };
-
-    const charMax = 70;
-    
-    const delModalContent = (prodId, SKU, prodName, index) => {
+    const editStockModal = (prodId, prodName, currentStock, whName, index) => {
         return (
             <>
-                <div className="del-modal-heading-wrap">
-                    <h3>{`Are you sure delete ${prodName} ?`}</h3>
-                    <h6>{`[ ID: ${prodId} | SKU: ${SKU} ]`}</h6>
+                <div className="edit-stock-modal-head">
+                    <h3 className="txt-capitalize">{`ID #${prodId} - ${prodName}`}</h3>
                 </div>
-                <div className="del-modal-body-wrap">
+                <div className="edit-stock-modal-body">
+                    <h5>{`Current Stock at ${whName} = ${currentStock}`}</h5>
                     <Textbox
-                        type={showPass}
-                        label="Input Password to confirm delete"
-                        name="passForDel"
-                        value={passForDel}
-                        onChange={(event) => passForDelHandler(event)}
-                        placeholder="Your password"
-                        maxLength={charMax}
-                    />
-                    <img 
-                        src={(showPass === "password") ? ShowPassFalse : ShowPassTrue} 
-                        alt="Show-Pass-Icon" 
-                        onClick={showPassHandler} 
+                        type="number"
+                        label="Set Stock"
+                        name="newStock"
+                        value={newStock}
+                        onChange={editStockHandler}
+                        placeholder="Input new stock"
+                        borderRadius={"8px"}
                     />
                 </div>
-                <div className="del-modal-foot-wrap">
-                    <button onClick={() => onCloseModal(index)}>Cancel</button>
-                    <button onClick={() => onConfirmDelProd(prodId, index)} disabled={!passForDel}>Confirm</button>
+                <div className="edit-stock-modal-foot">
+                    <AdmBtnSecondary width={"6rem"} onClick={() => onCloseModal(index)}>Cancel</AdmBtnSecondary>
+                    <AdmBtnPrimary width={"6rem"} onClick={() => onCloseModal(index)}>Submit</AdmBtnPrimary>
                 </div>
             </>
         )
     };
 
-    const onConfirmDelProd = async (prodId, index) => {
-        let inputtedPass = passForDel;
-        document.querySelector("div.del-modal-foot-wrap > button").disabled = true;
-
-        try {
-            const res = await axios.delete(`${API_URL}/product/delete/${prodId}`, {headers: {username: getUsername, pass: inputtedPass}});
-            if (res.data.message && !res.data.failMessage) {
-                setModalLength((prevState) => {
-                    let newArray = prevState;
-                    newArray[index] = false;
-                    return [...newArray];
-                });
-                setPassForDel("");
-                setShowPass("password");
-                successToast(res.data.message);
-                fetchProdData();
-            } else if (res.data.validationMessage) { //* Case salah input password
-                errorToast(res.data.validationMessage);
-                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
-            } else {
-                errorToast(res.data.failMessage); //* Case product id tidak ditemukan
-                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
-            };
-        } catch (error) {
-            errorToast("Server Error, from ManageProduct");
-            console.log(error);
-        }
-    };
-
     // RENDER PAGE RANGE SECTION
     const renderPageRange = () => { //* Utk render button select page pagination
-        const disabledBtn = (value) => { //* Button page pagination yg saat ini aktif
+        const disabledBtn = (value, index) => { //* Button page pagination yg saat ini aktif
             return (
-                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)} disabled>
+                <button 
+                    className="admWh-stock-pagination-btn" 
+                    value={value} onClick={selectPage} 
+                    disabled
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
-        const clickableBtn = (value) => { //* Button page pagination yg tdk aktif & bisa di-klik
+        const clickableBtn = (value, index) => { //* Button page pagination yg tdk aktif & bisa di-klik
             return (
-                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)}>
+                <button 
+                    className="admWh-stock-pagination-btn" 
+                    value={value} 
+                    onClick={selectPage}
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
         if (pageCountRange.length <= showMaxRange) {
-            return pageCountRange.map((val) => {
+            return pageCountRange.map((val, index) => {
                 if (val === page) { //* Bila value button = value page --> aktif saat ini
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         } else {
@@ -337,13 +260,13 @@ function ManageStock() {
     
             return filteredArr.map((val, index) => {
                 if (val === page) {
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else if (index >= showMaxRange) { //* Bila index >= range maksimum = tidak render
                     return
                 } else if (index > showMaxRange && index < pageCountTotal - 1) {
                     return
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         };
@@ -370,30 +293,53 @@ function ManageStock() {
         }
     };
 
-    //! PER WAREHOUSE MODAL SECTION (Belum dipake)
-    // const [addProdModal, setAddProdModal] = useState(false);
+    // HANDLER FUNCTIONS SECTION
+    const editStockHandler = (event) => { //* Utk setState edit stock
+        setNewStock(parseInt(event.target.value));
+    };
 
-    // const addProdToggle = () => setAddProdModal(!addProdModal);
-    
-    // const showWhModal = AdminWhStockModal();
+    // CLICK/SUBMIT FUNCTION SECTION
+    const submitEditStock = async (event, prodId) => {
 
-    // const showWhStock = () => {
-    //     ("Click detected");
-    //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
-    // }
-    //! -----------------------------------------
+        try {
+            await axios.patch(`${API_URL}/product/edit/stock/${prodId}`, newStock);
+            Swal.fire({
+                icon: 'success',
+                title: 'Edit product success!',
+                text: `Page will go to manage product page after confirm`,
+                customClass: { //* CSS custom nya ada di AdminMainParent
+                    popup: 'adm-swal-popup-override',
+                    confirmButton: 'adm-swal-btn-override'
+                },
+                confirmButtonText: 'Continue',
+                confirmButtonAriaLabel: 'Continue'
+            });
+        } catch (err) {
+            console.log(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...something went wrong, reload/try again',
+                customClass: { //* CSS custom nya ada di AdminMainParent
+                    popup: 'adm-swal-popup-override',
+                    confirmButton: 'adm-swal-btn-override'
+                },
+                confirmButtonText: 'Continue',
+                confirmButtonAriaLabel: 'Continue'
+            });
+        };
+    };
 
     return (
         <>
-            {(getRoleId === 2) ?
-                <div className="adm-products-main-wrap">
+            {(role_id === 2) ?
+                <div className="admWh-stock-main-wrap">
                     {!loadData ?
                         <>
-                            <div className="adm-products-breadcrumb-wrap">
+                            <div className="admWh-stock-breadcrumb-wrap">
                                 <Stack spacing={2}>
                                     <Breadcrumbs
                                         separator={<NavigateNextIcon fontSize="small" />}
-                                        aria-label="manage product breadcrumb"
+                                        aria-label="manage stock breadcrumb"
                                     >
                                         {breadcrumbs}
                                     </Breadcrumbs>
@@ -403,31 +349,24 @@ function ManageStock() {
                                 <AdminFetchFailed />
                                 :
                                 <>
-                                    <div className="adm-products-header-wrap">
-                                        {(getRoleId === 2) ? <h4>Nationwide Product List & Stock</h4> : <h4>Manage Products</h4>}
-                                        {(getRoleId === 1) ?
-                                            <Link to="/admin/manage-product/add">
-                                                <button>+ Add Products</button>
-                                            </Link>
-                                            :
-                                            null
-                                        } 
+                                    <div className="admWh-stock-header-wrap">
+                                        <h4>Manage Stock {warehouse_name}</h4>
                                     </div>
-                                    <div className="adm-products-contents-wrap">
+                                    <div className="admWh-stock-contents-wrap">
                                         <TableContainer component={Paper} className="adm-product-table-override">
-                                            <div className="adm-products-filter">
-                                                <div className="adm-products-filter-item">
+                                            <div className="admWh-stock-filter">
+                                                <div className="admWh-stock-filter-item">
                                                     {slicedProducts.length ?
                                                         <p>Showing {slicedProducts[0]} - {slicedProducts.slice(-1)} of {prodLength} products</p>
                                                         :
                                                         <p>Showing 0 of {prodLength} products</p>
                                                     }
                                                 </div>
-                                                <div className="adm-products-filter-item">
+                                                <div className="admWh-stock-filter-item">
                                                     <p>Product per Page:</p>
-                                                    <div className="adm-products-filter-dropdown-wrap">
+                                                    <div className="admWh-stock-filter-dropdown-wrap">
                                                         <button 
-                                                            className="adm-products-filter-dropdown-btn" 
+                                                            className="admWh-stock-filter-dropdown-btn" 
                                                             onClick={filterDropdownClick}
                                                             onBlur={filterDropdownBlur}
                                                         >
@@ -440,55 +379,46 @@ function ManageStock() {
                                                             />
                                                         </button>
                                                         <ul 
-                                                            className="adm-products-filter-dropdown-menu" 
+                                                            className="admWh-stock-filter-dropdown-menu" 
                                                             style={{
                                                                 transform: toggleDropdown ? "translateY(0)" : "translateY(-5px)",
                                                                 opacity: toggleDropdown ? 1 : 0,
                                                                 zIndex: toggleDropdown ? 100 : -10,
                                                             }}
                                                         >
-                                                            {rowsPerPageOptions.map((val) => (
+                                                            {rowsPerPageOptions.map((val, index) => (
                                                                 val === itemPerPage ? 
-                                                                <li className="adm-products-filter-dropdown-selected">{val}</li> 
+                                                                <li className="admWh-stock-filter-dropdown-selected" key={index}>{val}</li> 
                                                                 : 
-                                                                <li
-                                                                    onClick={() => filterItemPerPage(val)}
-                                                                >
-                                                                    {val}
-                                                                </li>
+                                                                <li onClick={() => filterItemPerPage(val)} key={index}>{val}</li>
                                                             ))}
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <Table sx={{ minWidth: 650 }} aria-label="manage products table">
+                                            <Table sx={{ minWidth: 650 }} aria-label="manage stock table">
                                                 <TableHead>
                                                     <TableRow style={{backgroundColor: "#FCB537"}}>
                                                         <StyledTableCell align="center">Image</StyledTableCell>
                                                         <StyledTableCell align="left">Product ID</StyledTableCell>
                                                         <StyledTableCell align="left">Name</StyledTableCell>
                                                         <StyledTableCell align="left">Category</StyledTableCell>
-                                                        <StyledTableCell align="left">Price</StyledTableCell>
                                                         <StyledTableCell align="left">
-                                                            {getRoleId === 1 ? "Stock" : "Nationwide Stock"}
+                                                            Stock
                                                         </StyledTableCell>
-                                                        {getRoleId === 1 ?
-                                                            <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
-                                                            :
-                                                            null
-                                                        }
+                                                        <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
                                                     {products
                                                     .map((val, index) => (
                                                         <StyledTableRow
-                                                        key={val.SKU}
+                                                            key={val.SKU}
                                                         >
                                                             <StyledTableCell align="center" component="th" scope="row">
                                                                 <img 
                                                                     src={`${API_URL}/${val.images[0]}`} 
-                                                                    style={{height: "100px", width: "100px"}} 
+                                                                    style={{height: "80px", width: "80px"}} 
                                                                     alt={val.name}
                                                                 />
                                                             </StyledTableCell>
@@ -499,67 +429,26 @@ function ManageStock() {
                                                             </StyledTableCell>
                                                             <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
                                                             <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
-                                                            <StyledTableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</StyledTableCell>
                                                             <StyledTableCell align="left">
-                                                                <span style={{cursor: "pointer"}}>
-                                                                    {val.total_stock}
+                                                                {val.warehouse_stock}
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="center" className="txt-capitalize">
+                                                                <span 
+                                                                    className="adm-edit-stock-txtBtn" 
+                                                                    onClick={() => modalClick(index)}
+                                                                >
+                                                                    Edit Stock
                                                                 </span>
                                                             </StyledTableCell>
-                                                            {getRoleId === 1 ?
-                                                                <StyledTableCell align="center" className="adm-products-action-cell">
-                                                                    <button 
-                                                                        className="adm-products-dropdown-btn" 
-                                                                        onClick={() => dropdownClick(index)}
-                                                                        onBlur={() => dropdownBlur(index)}
-                                                                    >
-                                                                        Options
-                                                                        <img 
-                                                                            src={chevronDown} 
-                                                                            style={{
-                                                                                transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
-                                                                            }}
-                                                                        />
-                                                                    </button>
-                                                                    <ul 
-                                                                        className="adm-products-dropdown-menu" 
-                                                                        style={{
-                                                                            transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
-                                                                            opacity: dropdownLength[index] ? 1 : 0,
-                                                                            zIndex: dropdownLength[index] ? 100 : -10,
-                                                                        }}
-                                                                    >
-                                                                        <Link 
-                                                                            to={{
-                                                                                pathname: "/admin/manage-product/edit",
-                                                                                state: val
-                                                                            }}
-                                                                            className="link-no-decoration"
-                                                                        >
-                                                                            <li>
-                                                                                <div className="adm-edit-icon" />
-                                                                                Edit
-                                                                            </li>
-                                                                        </Link>
-                                                                        <li 
-                                                                            onClick={() => modalClick(index)}
-                                                                        >
-                                                                            <div className="adm-delete-icon" />
-                                                                            Delete
-                                                                        </li>
-                                                                    </ul>
-                                                                </StyledTableCell>
-                                                                :
-                                                                null
-                                                            }
                                                         </StyledTableRow>
                                                     ))}
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
-                                        <div className="adm-products-pagination">
-                                            <div className="adm-products-pagination-item">
+                                        <div className="admWh-stock-pagination">
+                                            <div className="admWh-stock-pagination-item">
                                                 <button 
-                                                    className="adm-products-prev-btn" 
+                                                    className="admWh-stock-prev-btn" 
                                                     disabled={page === 1} 
                                                     onClick={prevPage}
                                                 >
@@ -567,7 +456,7 @@ function ManageStock() {
                                                 </button>
                                                 {renderPageRange()}
                                                 <button 
-                                                    className="adm-products-next-btn" 
+                                                    className="admWh-stock-next-btn" 
                                                     disabled={page === pageCountTotal || !products.length} 
                                                     onClick={nextPage}
                                                 >
@@ -576,8 +465,12 @@ function ManageStock() {
                                             </div>
                                         </div>
                                         {products.map((val, index) => (
-                                            <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
-                                                {delModalContent(val.id, val.SKU, val.name, index)}
+                                            <Modal 
+                                                open={modalLength[index]} 
+                                                close={() => onCloseModal(index)}
+                                                key={`edit-prod-#${val.id}-stock`}
+                                            >
+                                                {editStockModal(val.id, val.name, val.warehouse_stock, warehouse_name, index)}
                                             </Modal>
                                         ))}
                                     </div>
