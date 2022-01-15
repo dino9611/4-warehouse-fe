@@ -335,7 +335,7 @@ function ManageProduct() {
         } else {
             let filteredArr;
 
-            if (page <= 5) {
+            if (page < 5) {
                 filteredArr = pageCountRange.slice(0, 0 + 5); //* Slice array utk tampilan button select page pagination bila <= 5 buah
             } else {
                 let slicingCounter = page - 6;
