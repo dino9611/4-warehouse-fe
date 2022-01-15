@@ -20,7 +20,9 @@
   z-index: 1000;
 }
 .modal-address {
-  min-width: 100% !important;
+  width: 544px !important;
+  height: 544px;
+  overflow-y: scroll;
 }
 
 .checkout-modal {

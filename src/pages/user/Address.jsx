@@ -1,10 +1,23 @@
-import React from "react";
+import React, { Fragment } from "react";
 import axios from "axios";
 import { API_URL } from "../../constants/api";
-import { ListGroup, ListGroupItemText, ListGroupItemHeading } from "reactstrap";
+// import { ListGroup, ListGroupItemText, ListGroupItemHeading } from "reactstrap";
+// import Select from "react-select";
 import "./style/address.css";
 import "../../components/styles/modal.css";
 import Modal from "../../components/Modal";
+import { connect } from "react-redux";
+// import { Checkbox } from "@mui/material";
+import SuccessSnack from "../../components/SuccessSnack";
+import ErrorSnack from "../../components/ErrorSnackbar";
+import Select from "react-select";
+import { Label } from "reactstrap";
+
+const options = [
+  { value: "chocolate", label: "Chocolate" },
+  { value: "strawberry", label: "Strawberry" },
+  { value: "vanilla", label: "Vanilla" },
+];
 
 class Address extends React.Component {
   state = {
@@ -14,18 +27,40 @@ class Address extends React.Component {
     city: "",
     province: "",
     modalAddress: false,
+    modalDelete: false,
+    modalEdit: false,
     resAddress: [],
+    dataAddress: {},
     latitude: "",
     longitude: "",
+    user_id: "",
+    idAddress: "",
+    isSearchable: true,
+    dataProvince: [],
+    dataCity: [],
+    pickProvince: "",
+    pickCity: "",
+    successSnack: false,
+    errorSnack: false,
   };
 
-  async componentDidMount() {
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({ errorSnack: false, successSnack: false });
+  };
+
+  // provinceOptions =
+
+  // get data address
+  async componentDidMount(prevState) {
+    const { user_id } = this.props;
     try {
       //get address
-      let dataAddress = await axios.get(
-        `${API_URL}/user/address/2` // user_id belum diganti dari redux
-      );
-      console.log(dataAddress.data);
+      let dataAddress = await axios.get(`${API_URL}/user/address/${user_id}`);
+      // console.log(dataAddress.data);
 
       // cek address
       if (!dataAddress.data.length) {
@@ -33,21 +68,127 @@ class Address extends React.Component {
         return;
       } else {
         this.setState({ resAddress: dataAddress.data });
-        console.log(this.state.resAddress);
+        // console.log(this.state.resAddress);
+      }
+      //get data province
+      if (prevState !== this.state.modalAddress) {
+        let res = await axios.get(`${API_URL}/user/address/province`);
+        this.setState({ dataProvince: res.data });
+        console.log(this.state.dataProvince);
       }
     } catch (error) {
       console.log(error);
     }
   }
+  //func utk update data
+  fetchData = async () => {
+    const { user_id } = this.props;
+    try {
+      //get address
+      let dataAddress = await axios.get(`${API_URL}/user/address/${user_id}`);
+      // console.log(dataAddress.data);
 
+      // cek address
+      if (!dataAddress.data.length) {
+        this.setState({ resAddress: false });
+        return;
+      } else {
+        this.setState({ resAddress: dataAddress.data });
+        // console.log(this.state.resAddress);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // get data kota
+  async componentDidUpdate() {
+    const { pickProvince } = this.state;
+    try {
+      if (pickProvince) {
+        let res = await axios.get(
+          `${API_URL}/user/address/city/${pickProvince.province}`
+        );
+        this.setState({ dataCity: res.data });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  //render page kalau belom ada address
   renderAddressFalse = () => {
     return (
-      <div className="">
-        <div>Belum ada alamat</div>
-        <div></div>
+      <div>
+        <div className="belum-ada-alamat">Belum ada alamat</div>
       </div>
     );
   };
+
+  // func utk delet address
+  onDeleteClick = (e, id) => {
+    const { idAddress } = this.state;
+
+    try {
+      axios.delete(`${API_URL}/user/address/delete/${idAddress} `);
+      // alert(`berhasil menghapus alamat`);
+      this.setState({
+        modalDelete: false,
+        successSnack: true,
+        message: "Berhasil menghapus alamat",
+      });
+      this.fetchData();
+      console.log();
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        errorSnack: true,
+        message: error.response.data.message || "Server Error",
+      });
+      alert(`gagal menghapus alamat`);
+    }
+  };
+
+  onCheckMainAddress = (e, id) => {
+    const { user_id } = this.props;
+    const { idAddress } = this.state;
+    if (e.target.checked) {
+      axios
+        .patch(`${API_URL}/user/default-address/${id}`, {
+          user_id: user_id,
+        })
+        .then((res) => {
+          console.log("berhasil checked");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+    }
+  };
+
+  //untuk ganti addres jadi main address
+  onMainAddressClick = async (e, id) => {
+    // const { idAddress } = this.state;
+    const { user_id } = this.props;
+    this.setState({ idAddress: id });
+    try {
+      await axios.patch(`${API_URL}/user/default-address/${id}`, {
+        user_id: user_id,
+      });
+
+      console.log(this.state.idAddress);
+      this.setState({
+        successSnack: true,
+        message: "Berhasil mengganti alamat",
+      });
+      // alert(`berhasil mengganti alamat`);
+      this.fetchData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // render page address kalau address sudah ada
   renderAddressTrue = () => {
     const { resAddress } = this.state;
     return (
@@ -55,24 +196,37 @@ class Address extends React.Component {
         <div>
           {resAddress?.map((val, index) => {
             return (
-              <div key={index} className="render-address row">
-                <div>
+              <div key={index} className="render-address ">
+                <div className="test-kiri">
                   <h4>{val.recipient}</h4>
                   <h6>{val.phone_number}</h6>
 
                   <h6>{`${val.address},${val.province},${val.city}`}</h6>
 
                   {val.is_main_address ? (
-                    <h5 className="checkout-main-address">Utama</h5>
+                    <h5 className="main-address">Utama</h5>
                   ) : (
-                    <button className="btn-alamat-utama">
+                    <button
+                      onClick={(e) => this.onMainAddressClick(e, val.id)}
+                      className="btn-alamat-utama"
+                    >
                       Jadikan Alamat Utama
                     </button>
                   )}
                 </div>
-                <div>
-                  <button className="btn-delete-alamat">Hapus</button>
-                  <button className="btn-edit-alamat">Ubah</button>
+                <div className="test-kanan">
+                  <button
+                    onClick={(e) => this.onDeleteModalClick(e, val.id)}
+                    className="btn-delete-alamat"
+                  >
+                    Hapus
+                  </button>
+                  <button
+                    onClick={(e) => this.onEditClick(e, val.id)}
+                    className="btn-edit-alamat"
+                  >
+                    Ubah
+                  </button>
                 </div>
               </div>
             );
@@ -81,34 +235,129 @@ class Address extends React.Component {
       </div>
     );
   };
-  // <ListGroup>
-  //   <ListGroupItemHeading>
-  //     {this.state.resAddress.recipient}
-  //   </ListGroupItemHeading>
-  //   <h6>{this.state.resAddress.phone_number}</h6>
-  //   {/* <ListGroupItemText>{this.state.resAddress.address}</ListGroupItemText> */}
-  //   <h6>
-  //     {`${this.state.resAddress.address},${this.state.resAddress.province},${this.state.resAddress.city}`}
-  //   </h6>
-  //   {/* <ListGroupItemText>{`${this.state.resAddress.province},${this.state.resAddress.city}`}</ListGroupItemText> */}
-  //   <button className="btn-tambah-alamat">Hapus</button>
-  // </ListGroup>
-  // {/* <div className="">
-  //   <div>{`${this.state.resAddress.recipient}`}</div>
-  //   <div>{this.state.resAddress.phone_number}</div>
-  //   <div>{this.state.resAddress.address}</div>
-  //   <div>{`${this.state.resAddress.city}, ${this.state.resAddress.province}`}</div>
-  // </div>
-  // <div>
-  //   <button className="btn-tambah-alamat">Simpan</button>
-  //   <button className="btn-tambah-alamat">Hapus</button>
-  // </div> */}
+
   onInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
+
+  provinceChange = (pickProvince) => {
+    this.setState({ pickProvince });
+    console.log(pickProvince);
+  };
+
+  cityChange = (pickCity) => {
+    this.setState({ pickCity });
+    console.log(pickCity);
+  };
+  // onInputEditChange = () => {
+  //   this.setState({ ...dataAddress, [e.target.name]: e.target.value });
+  // };
   onSaveAddressClick = () => {
-    const { recipient, phone_number, address, city, province } = this.state;
-    axios
+    const {
+      recipient,
+      phone_number,
+      address,
+      city,
+      province,
+      pickProvince,
+      pickCity,
+    } = this.state;
+    const { user_id } = this.props;
+    const addAddress = `${address},${pickProvince.province},${pickCity.city_name}`;
+    if (recipient && phone_number && address && pickProvince && pickCity) {
+      axios
+        //dapetin data dari google geocode api
+        .get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+          params: {
+            address: addAddress,
+            key: "AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          // ambil data lat & lang
+          console.log(res.data.results[0].geometry.location.lat);
+          axios
+            .post(`${API_URL}/user/address/${user_id}`, {
+              recipient,
+              phone_number,
+              address,
+              city: pickCity.city_name,
+              city_id: pickCity.city_id,
+              province_id: pickProvince.province_id,
+              province: pickProvince.province,
+              latitude: res.data.results[0].geometry.location.lat,
+              longitude: res.data.results[0].geometry.location.lng,
+            })
+            .then((res) => {
+              console.log(addAddress);
+              // alert(`berhasil menambah alamat`);
+              this.setState({
+                modalAddress: false,
+                successSnack: true,
+                message: "Berhasil menambah alamat",
+              });
+
+              this.fetchData();
+            })
+            .catch((err) => {
+              console.log(err);
+              this.setState({
+                errorSnack: true,
+                message: err.response.data.message || "Server Error",
+              });
+              // alert("gagal memasukkan alamat");
+            });
+          // console.log(addAddress);
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            errorSnack: true,
+            message: err.response.data.message || "Server Error",
+          });
+          // alert("Lokasi tidak ditemukan");
+        });
+    } else {
+      this.setState({ errorSnack: "true", message: "Tolong isi Semua Input" });
+    }
+  };
+  // buka modal untuk add address
+  onAddAddressClick = () => {
+    this.setState({ modalAddress: !this.state.modalAddress });
+  };
+  //buka modal untuk edit
+  onEditClick = (e, id) => {
+    this.setState({ modalEdit: !this.state.modalEdit, idAddress: id });
+  };
+  // buka modal delete
+  onDeleteModalClick = (e, id) => {
+    this.setState({ modalDelete: !this.state.modalDelete, idAddress: id });
+  };
+
+  onCancelDeleteClick = () => {
+    this.setState({ modalDelete: false });
+  };
+
+  onCancelClick = () => {
+    this.setState({ modalEdit: false, modalAddress: false });
+  };
+  //onclick untuk edit address
+  onEditAddressClick = async () => {
+    const {
+      recipient,
+      phone_number,
+      address,
+      city,
+      province,
+      resAddress,
+      idAddress,
+      dataAddress,
+      pickCity,
+      pickProvince,
+    } = this.state;
+
+    await axios
       //dapetin data dari google geocode api
       .get(`https://maps.googleapis.com/maps/api/geocode/json`, {
         params: {
@@ -120,109 +369,341 @@ class Address extends React.Component {
         console.log(res.data);
         // ambil data lat & lang
         console.log(res.data.results[0].geometry.location.lat);
-        // const addAddress = {
-        //   recipient,
-        //   phone_number,
-        //   address,
-        //   city,
-        //   province,
-        //   latitude: res.data.results[0].geometry.location.lat,
-        //   longitude: res.data.results[0].geometry.location.lng,
-        // };
+
         axios
-          .post(`${API_URL}/user/address/2`, {
+          .patch(`${API_URL}/user/address/edit/${idAddress}`, {
             recipient,
             phone_number,
             address,
-            city,
-            province,
+            city: pickCity.city_name,
+            city_id: pickCity.city_id,
+            province_id: pickProvince.province_id,
+            province: pickProvince.province,
             latitude: res.data.results[0].geometry.location.lat,
             longitude: res.data.results[0].geometry.location.lng,
+            // dataAddress,
           })
           .then((res) => {
             console.log(res.data);
+            // alert(`berhasil mengubah alamat`);
+            this.setState({
+              modalEdit: false,
+              successSnack: true,
+              message: "Berhasil mengubah alamat",
+            });
           });
 
         // console.log(addAddress);
-        alert(`berhasil menambah alamat`);
-        this.setState({ modalAddress: false });
       })
       .catch((err) => {
         console.log(err);
+        this.setState({
+          errorSnack: true,
+          message: err.response.data.message || "Server Error",
+        });
         alert("Lokasi tidak ditemukan");
       });
   };
-  onAddAddressClick = () => {
-    this.setState({ modalAddress: !this.state.modalAddress });
+  // render modal delete
+  renderDeleteAddress = () => {
+    return (
+      <div>
+        <div>
+          <h4>apakah anda yakin ingin menghapus alamat ini?</h4>
+        </div>
+        <div>
+          <button onClick={this.onDeleteClick}> Yes</button>
+          <button onClick={this.onCancelDeleteClick}> Cancel</button>
+        </div>
+      </div>
+    );
   };
-  renderModalAddAddress = () => {
-    const { recipient, phone_number, address, city, province } = this.state;
+  // render modal edit alamat
+  renderModalEdit = () => {
+    //proteksi semua form terisi
+    const {
+      recipient,
+      phone_number,
+      address,
+      dataProvince,
+      resAddress,
+      dataCity,
+    } = this.state;
+
     return (
       <div className="w-100">
         <h5 className="d-flex justify-content-center w-100">Isi Alamat Anda</h5>
-        <div className="mt-3">
-          {/* <button className="btn-tambah-alamat">Tambah alamat baru</button> */}
+        <div className="mt-3"></div>
+        <div className=" my-3">
+          <div className="">
+            <h6 className="mt-3">Nama Penerima</h6>
+            <input
+              type="text"
+              name="recipient"
+              className="form-control input-form"
+              placeholder="nama penerima"
+              onChange={this.onInputChange}
+              value={resAddress.recipient}
+            />
+            <h6 className="mt-3">Nomor telepon</h6>
+            <input
+              type="text"
+              name="phone_number"
+              className="form-control input-form"
+              placeholder="nomor handphone"
+              onChange={this.onInputChange}
+              value={resAddress.phone_number}
+            />
+            <h6 className="mt-3">Alamat Lengkap</h6>
+            <input
+              type="text"
+              name="address"
+              className="form-control input-form"
+              placeholder="alamat"
+              onChange={this.onInputChange}
+              value={resAddress.address}
+            />
+            <h6 className="mt-3">Provinsi</h6>
+
+            {/* <input
+              type="text"
+              list="provinces"
+              id="province"
+              name="province"
+              className="dropdown-form "
+              placeholder="Masukkan Provinsi"
+              onChange={(e) => {
+                console.log(e.target.name);
+                this.setState({ pickProvince: e.target.value });
+              }}
+              // debounce(1000, (e) => setPickProvince(e.target.value))
+            />
+            <datalist id="provinces">
+              {options?.map((val, index) => (
+                <option name={val.value} key={val.value} value={val.label} />
+              ))}
+            </datalist> */}
+
+            {/* <select
+              className="dropdown-form"
+              onChange={(e) => this.setState({ pickProvince: e.target.value })}
+              // classNamePrefix="select"
+            /> */}
+
+            {/* <select
+              className="dropdown-form"
+              onChange={(e) => this.setState({ pickProvince: e.target.value })}
+            >
+              {options?.map((val, index) => (
+                // <option  key={val.value} value={index} />
+                <option key={val.value} value={index}>
+                  {val.value}
+                </option>
+              ))}
+            </select> */}
+            <Select
+              className="dropdown-form"
+              placeholder="Masukkan Provinsi"
+              onChange={this.provinceChange}
+              // {(e) => this.setState({ pickProvince: e.target.value })}
+              options={dataProvince}
+            />
+
+            <h6 className="mt-3">Kota</h6>
+
+            <Select
+              className="dropdown-form"
+              placeholder="Masukkan Kota"
+              onChange={this.cityChange}
+              options={dataCity}
+            />
+
+            {/* <input
+              type="text"
+              id="city"
+              list="cities"
+              className="dropdown-form"
+              placeholder="Masukkan Kota/Kabupaten"
+              name="city"
+              onChange={this.onInputChange}
+            />
+
+            <datalist id="cities">
+              {dataCity?.map((val, index) => (
+                <option key={val.city_id} value={`${val.city_name}`}>
+                  {val.type}
+                </option>
+              ))}
+            </datalist> */}
+
+            {/* <select
+            name="kota"
+            className="dropdown-form"
+            placeholder="kota"
+            onChange={this.onInputChange}
+            // classNamePrefix="select"
+            options={options}
+          /> */}
+
+            <div className="row">
+              <button
+                className="btn-simpan-alamat"
+                onClick={this.onEditAddressClick}
+              >
+                Ubah
+              </button>
+
+              <button onClick={this.onCancelClick} className="btn-batal-alamat">
+                Batal
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="cart-detail-border my-3"></div>
-        <div className="checkout-listadd-wrapper">
-          <h6>Nama Penerima</h6>
+      </div>
+    );
+  };
+
+  // render modal tambah alamat
+  renderModalAddAddress = () => {
+    const {
+      recipient,
+      phone_number,
+      address,
+      city,
+      province,
+      dataProvince,
+      dataCity,
+    } = this.state;
+    return (
+      <div className="w-100">
+        <h5 className="d-flex justify-content-center w-100 ">
+          Isi Alamat Anda
+        </h5>
+        <div className="mt-3"></div>
+        <div className=" my-3"></div>
+        <div className="">
+          <h6 className="mt-3">Nama Penerima</h6>
           <input
             type="text"
             name="recipient"
-            className="form-control"
+            className="form-control input-form"
             placeholder="nama penerima"
             onChange={this.onInputChange}
             value={recipient}
           />
-          <h6>Nomor telepon</h6>
+          <h6 className="mt-3">Nomor telepon</h6>
           <input
             type="text"
             name="phone_number"
-            className="form-control"
+            className="form-control input-form"
             placeholder="nomor handphone"
             onChange={this.onInputChange}
             value={phone_number}
           />
-          <h6>Alamat</h6>
+          <h6 className="mt-3">Alamat Lengkap</h6>
           <input
             type="text"
             name="address"
-            className="form-control"
+            className="form-control input-form"
             placeholder="alamat"
             onChange={this.onInputChange}
             value={address}
           />
-          <h6>Provinsi</h6>
-          <input
+          <h6 className="mt-3">Provinsi</h6>
+
+          <Select
+            className="dropdown-form"
+            placeholder="Masukkan Provinsi"
+            onChange={this.provinceChange}
+            // {(e) => this.setState({ pickProvince: e.target.value })}
+            options={dataProvince}
+          />
+
+          {/* <input
             type="text"
+            list="provinces"
+            id="province"
             name="province"
-            className="form-control"
+            className="dropdown-form "
+            placeholder="Masukkan Provinsi"
+            onChange={(e) => this.setState({ pickProvince: e.target.value })}
+            // debounce(1000, (e) => setPickProvince(e.target.value))
+          />
+          <datalist id="provinces">
+            {dataProvince?.map((val, index) => (
+              <option key={val.province_id} value={val.province} />
+            ))}
+          </datalist> */}
+          {/* <select
+            name="province"
+            className="dropdown-form"
             placeholder="provinsi"
             onChange={this.onInputChange}
-            value={province}
+            // classNamePrefix="select"
+            options={options}
+          /> */}
+
+          <h6 className="mt-3">Kota</h6>
+
+          <Select
+            className="dropdown-form"
+            placeholder="Masukkan Kota"
+            onChange={this.cityChange}
+            options={dataCity}
           />
-          <h6>Kota</h6>
-          <input
+
+          {/* <input
             type="text"
+            id="city"
+            list="cities"
+            className="dropdown-form"
+            placeholder="Masukkan Kota/Kabupaten"
             name="city"
-            className="form-control"
+            onChange={this.onInputChange}
+          />
+
+          <datalist id="cities">
+            {dataCity?.map((val, index) => (
+              <option key={val.city_id} value={`${val.city_name}`}>
+                {val.type}
+              </option>
+            ))}
+          </datalist> */}
+          {/* <select
+            name="province"
+            className="dropdown-form"
             placeholder="kota"
             onChange={this.onInputChange}
-            value={city}
-          />
-          <button
-            className="btn-tambah-alamat"
-            onClick={this.onSaveAddressClick}
-          >
-            Simpan
-          </button>
+            // classNamePrefix="select"
+            options={options}
+          /> */}
+          {/* <div className="checkbox-alamat-utama mt-3 row">
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              onChange={this.onCheckMainAddress}
+            />
+            <h6 className="alamat-utama-text">Jadikan sebagai alamat utama</h6>
+          </div> */}
+          <div className="row">
+            <button
+              className="btn-simpan-alamat"
+              onClick={this.onSaveAddressClick}
+            >
+              Simpan
+            </button>
+
+            <button onClick={this.onCancelClick} className="btn-batal-alamat">
+              Batal
+            </button>
+          </div>
         </div>
       </div>
     );
   };
 
   render() {
-    console.log(this.state.resAddress);
+    console.log(this.state.pickCity);
     return (
       <div>
         <div>
@@ -234,22 +715,55 @@ class Address extends React.Component {
           </button>
         </div>
         <div className="mt-5">
-          {!this.state.resAddress
+          {this.state.resAddress.is_delete
             ? this.renderAddressFalse()
             : this.renderAddressTrue()}
         </div>
-        <div></div>
-        <Modal
-          open={this.state.modalAddress}
-          close={() => this.setState({ modalAddress: false })}
-          className="modal-address"
-          style={{ width: "100%" }}
-        >
-          {this.renderModalAddAddress()}
-        </Modal>
+        <div>
+          <Modal
+            open={this.state.modalAddress}
+            close={() => this.setState({ modalAddress: false })}
+            classModal="modal-address"
+          >
+            {this.renderModalAddAddress()}
+          </Modal>
+        </div>
+        <div>
+          <Modal
+            open={this.state.modalDelete}
+            close={() => this.setState({ modalDelete: false })}
+            // classModal="modal-address"
+          >
+            {this.renderDeleteAddress()}
+          </Modal>
+        </div>
+        <div>
+          <Modal
+            open={this.state.modalEdit}
+            close={() => this.setState({ modalEdit: false })}
+            classModal="modal-address"
+          >
+            {this.renderModalEdit()}
+          </Modal>
+        </div>
+        <SuccessSnack
+          message={this.state.message}
+          successSnack={this.state.successSnack}
+          handleClose={this.handleClose}
+        />
+        <ErrorSnack
+          message={this.state.message}
+          errorSnack={this.state.errorSnack}
+          handleClose={this.handleClose}
+        />
       </div>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    user_id: state.auth.id,
+  };
+};
 
-export default Address;
+export default connect(mapStateToProps)(Address);
