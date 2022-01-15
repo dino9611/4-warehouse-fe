@@ -263,16 +263,21 @@ function EditProduct() {
                     </div>
                 </div>
                 <div className="edit-img-modal-foot">
-                    <button onClick={() => onCloseModal(index)}>Cancel</button>
+                    <button 
+                        onClick={() => onCloseModal(index)}
+                        disabled={sbmtEditImgLoad || sbmtDelImgLoad}
+                    >
+                        Cancel
+                    </button>
                     <button 
                         onClick={(event) => onDeleteImg(event, index, imgSrc)} 
-                        disabled={index === 0 || !imgSrc}
+                        disabled={index === 0 || !imgSrc || sbmtEditImgLoad || sbmtDelImgLoad}
                     >
                         {sbmtDelImgLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Delete Image File"}
                     </button>
                     <button 
                         onClick={(event) => onSubmitImgCarrier(event)} 
-                        disabled={!imgCarrier[0]}
+                        disabled={!imgCarrier[0] || sbmtEditImgLoad || sbmtDelImgLoad}
                     >
                         {sbmtEditImgLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit Edit"}
                     </button>
@@ -310,9 +315,6 @@ function EditProduct() {
         event.preventDefault();
 
         setSbmtEditImgLoad(true);
-        document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = true; //! Disable submit button utk prevent submit berulang kali
-        document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true; //! Disable delete img button utk prevent trigger berulang kali
-        document.querySelector("div.edit-img-modal-foot > button:first-of-type").disabled = true; //! Disable cancel button
         
         let imgToChange = imgCarrier[0];
         let prevImgToDelete = prevImgCarrier;
@@ -347,9 +349,6 @@ function EditProduct() {
                 confirmButtonAriaLabel: 'Continue',
             });
             setImgCarrier([]);
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:first-of-type").disabled = false;
             fetchProdToEdit();
         } catch (err) {
             console.log(err);
@@ -364,9 +363,6 @@ function EditProduct() {
                 confirmButtonText: 'Continue',
                 confirmButtonAriaLabel: 'Continue'
             });
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:first-of-type").disabled = false;
         };
     };
 
@@ -374,9 +370,6 @@ function EditProduct() {
         event.preventDefault();
 
         setSbmtDelImgLoad(true);
-        document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = true; //! Disable submit button utk prevent submit berulang kali
-        document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true; //! Disable delete img button utk prevent trigger berulang kali
-        document.querySelector("div.edit-img-modal-foot > button:first-of-type").disabled = true; //! Disable cancel button
 
         try {
             await axios.delete(`${API_URL}/product/delete/image/${id}`, {headers: {index_del_img: index, prev_img_path: prevImg}});
@@ -393,9 +386,6 @@ function EditProduct() {
                 confirmButtonAriaLabel: 'Continue'
             });
             setImgCarrier([]);
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:first-of-type").disabled = false;
             fetchProdToEdit();
         } catch (err) {
             console.log(err);
@@ -410,9 +400,6 @@ function EditProduct() {
                 confirmButtonText: 'Continue',
                 confirmButtonAriaLabel: 'Continue'
             });
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:first-of-type").disabled = false;
         };
     };
 
@@ -421,8 +408,6 @@ function EditProduct() {
         event.preventDefault();
         
         setSubmitLoad(true);
-        document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = true; //! Disable submit button input edit product utk prevent submit berulang kali
-        document.querySelector("div.edit-product-submission-wrap > button:first-of-type").disabled = true; //! Disable cancel button
         const successRedirect = () => history.push("/admin/manage-product");
         
         let inputtedProd = {
@@ -463,14 +448,10 @@ function EditProduct() {
                     confirmButtonText: 'Continue',
                     confirmButtonAriaLabel: 'Continue'
                 });
-                document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
-                document.querySelector("div.edit-product-submission-wrap > button:first-of-type").disabled = true;
             };
         } else {
             errorToast("Please make sure all inputs are filled");
             setSubmitLoad(false);
-            document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-product-submission-wrap > button:first-of-type").disabled = true;
         };
     };
 
@@ -709,11 +690,17 @@ function EditProduct() {
                                             </div>
                                         </div> {/* ------ End of bagian input deskripsi produk ------ */}
                                         <div className="edit-product-submission-wrap"> {/* Bagian submit form */}
-                                            <AdmBtnSecondary width={"10rem"} onClick={toManageProduct}>Cancel</AdmBtnSecondary>
+                                            <AdmBtnSecondary 
+                                                width={"10rem"} 
+                                                onClick={toManageProduct}
+                                                disabled={submitLoad}
+                                            >
+                                                Cancel
+                                            </AdmBtnSecondary>
                                             <AdmBtnPrimary
                                                 width={"10rem"}
                                                 onClick={onSubmitedEditProd}
-                                                disabled={!name || !category_id || !weight || !price || !product_cost || !description}
+                                                disabled={!name || !category_id || !weight || !price || !product_cost || !description || submitLoad}
                                             >
                                                 {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
                                             </AdmBtnPrimary>
