@@ -1,5 +1,5 @@
 import "./styles/AdminLogin.css";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AdminLoginImg from "../../assets/visuals/Admin_Login_02.png";
 import localLogo from "../../assets/logo.svg";
 import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
@@ -71,7 +71,7 @@ function AdminLogin() {
     };
 
     // REDIRECT CONDITION IF ALREADY LOGIN & TRY ACCESS LOGIN PAGE
-    if (getIsLogin && getRoleId === 1 || getRoleId === 2) {
+    if (getIsLogin && (getRoleId === 1 || getRoleId === 2)) {
         return (
             <Redirect to="/admin/dashboard" />
         );
