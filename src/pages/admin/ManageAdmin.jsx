@@ -288,11 +288,11 @@ function ManageAdmin() {
                     title: 'Add new admin/warehouse admin success!',
                     text: `Username: ${inputtedAdm.new_username}`,
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                   });
                 fetchAdminList();
                 fetchWarehouse();
@@ -303,11 +303,11 @@ function ManageAdmin() {
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
             };
         } else {

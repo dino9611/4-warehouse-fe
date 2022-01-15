@@ -183,11 +183,11 @@ function ManageWarehouse() {
                     title: 'Create new warehouse success!',
                     text: `${inputtedNewWh.warehouse_name}`,
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                   });
                 fetchWarehouse();
             } catch (err) {
@@ -197,11 +197,11 @@ function ManageWarehouse() {
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
             };
         } else {
