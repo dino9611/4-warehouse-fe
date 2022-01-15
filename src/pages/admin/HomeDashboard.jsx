@@ -493,7 +493,7 @@ function HomeDashboard() {
                             </div>
                         </div>
                         <div className="adm-dashboard-contents-3rdRow">
-                            <div className="adm-dashboard-3rdRow-left">
+                            <div className="adm-dashboard-3rdRow">
                                 <div>
                                     {!loadData ? 
                                         <>
@@ -529,10 +529,10 @@ function HomeDashboard() {
                                         <>
                                             {(topProdValue.length) ?
                                                 <>
-                                                    <div className="dashboard-3rdRow-left-heading">
+                                                    <div className="dashboard-3rdRow-right-heading">
                                                         <h6>{`Top 5 Selling Product by Value`}</h6>
                                                     </div>
-                                                    <div className="dashboard-3rdRow-left-chart">
+                                                    <div className="dashboard-3rdRow-right-chart">
                                                         <HorizontalBarChart
                                                             legendDisplay={false}
                                                             titleDisplay={false}
@@ -557,12 +557,14 @@ function HomeDashboard() {
                                     }
                                 </div>
                             </div>
-                            <div className="adm-dashboard-3rdRow-mid">
+                        </div>
+                        <div className="adm-dashboard-contents-4thRow">
+                            <div className="adm-dashboard-4thRow-left">
                                 {!loadData ? 
                                     <>
                                         {(categoryContribution.length) ?
                                             <>
-                                                <div className="dashboard-3rdRow-mid-heading">
+                                                <div className="dashboard-4thRow-left-heading">
                                                     <h6>{`Sales Contribution by Category`}</h6>
                                                 </div>
                                                 <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
@@ -604,12 +606,12 @@ function HomeDashboard() {
                                     </div>
                                 }
                             </div>
-                            <div className="adm-dashboard-3rdRow-right">
-                            {!loadData ? 
+                            <div className="adm-dashboard-4thRow-right">
+                                {!loadData ? 
                                     <>
                                         {(topUsers.length) ?
                                             <>
-                                                <div className="dashboard-3rdRow-right-heading">
+                                                <div className="dashboard-4thRow-right-heading">
                                                     <h6>{`Top 5 Users by Transaction`}</h6>
                                                 </div>
                                                 <TableContainer sx={{boxShadow: 0}} component={Paper} className={classes.TableContainer}>
