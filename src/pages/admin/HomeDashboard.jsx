@@ -243,11 +243,13 @@ function HomeDashboard() {
     }, [filterYear]);
 
     // CALCULATE GROWTH SECTION
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const date = new Date();
-    const nowMonth = date.toLocaleString('default', { month: 'long' });
-    const prevMonth = monthNames[(date.getMonth() - 1)];
-    const lastMonthRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[prevMonth]) * 100).toFixed(1);
+
+    //? Perlu benerin logic
+    // const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    // const nowMonth = date.toLocaleString('default', { month: 'long' });
+    // const prevMonth = monthNames[(date.getMonth() - 1)];
+    // const lastMonthRevGrow = (((monthlyRevenue[nowMonth] - monthlyRevenue[prevMonth]) / monthlyRevenue[prevMonth]) * 100).toFixed(1);
 
     // RENDER DROPDOWN FILTER YEAR
     const filterYearLimit = 4;
@@ -296,6 +298,7 @@ function HomeDashboard() {
                                         style={{
                                             transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                         }}
+                                        alt="Dropdown-Arrow"
                                     />
                                 </button>
                                 <ul 
@@ -306,15 +309,11 @@ function HomeDashboard() {
                                         zIndex: toggleDropdown ? 100 : -10,
                                     }}
                                 >
-                                    {yearRange.map((val) => (
+                                    {yearRange.map((val, index) => (
                                         val === filterYear ? 
-                                        <li className="adm-dashboard-dropdown-selected">{val}</li> 
+                                        <li className="adm-dashboard-dropdown-selected" key={index}>{val}</li> 
                                         : 
-                                        <li
-                                            onClick={() => selectFilterYear(val)}
-                                        >
-                                            {val}
-                                        </li>
+                                        <li onClick={() => selectFilterYear(val)} key={index}>{val}</li>
                                     ))}
                                 </ul>
                             </div>
@@ -578,9 +577,7 @@ function HomeDashboard() {
                                                         </TableHead>
                                                         <TableBody>
                                                             {categoryContribution.map((val, index) => (
-                                                                <StyledTableRow
-                                                                key={`0${val.index}-${val.category}`}
-                                                                >
+                                                                <StyledTableRow key={`0${val.index}-${val.category}`}>
                                                                     <StyledTableCell align="left" component="th" scope="row">
                                                                         {index + 1}
                                                                     </StyledTableCell>
@@ -626,9 +623,7 @@ function HomeDashboard() {
                                                         </TableHead>
                                                         <TableBody>
                                                             {topUsers.map((val, index) => (
-                                                                <StyledTableRow
-                                                                key={`0${val.index}-${val.user_id}`}
-                                                                >
+                                                                <StyledTableRow key={`0${val.index}-${val.user_id}`}>
                                                                     <StyledTableCell align="left" component="th" scope="row">
                                                                         {index + 1}
                                                                     </StyledTableCell>
