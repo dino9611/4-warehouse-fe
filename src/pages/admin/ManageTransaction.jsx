@@ -15,7 +15,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import thousandSeparator from "../../helpers/ThousandSeparator";
-import CircularProgress from '@mui/material/CircularProgress';
 import { useSelector } from "react-redux";
 import Modal from '../../components/Modal';
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
@@ -31,6 +30,7 @@ import {Link} from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { errorToast } from "../../redux/actions/ToastAction";
+import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -101,7 +101,7 @@ function ManageTransaction() {
     // PAGINATION SECTION
     const [page, setPage] = useState(1);
 
-    const [toggleDropdown, setToggleDropwdown] = useState(false); //* Atur toggle dropdown filter product per page
+    const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
 
     const [itemPerPage, setItemPerPage] = useState(10);
 
@@ -178,7 +178,7 @@ function ManageTransaction() {
         fetchData();
     }, [value, page, itemPerPage]);
 
-    useEffect(() => {
+    useEffect(() => {  //* Utk sumber array showing n - n data of total N data (ex: 1-5 of 25)
         transactionRangeSlice();
     }, [transactionLength, value, page, itemPerPage]);
 
@@ -339,9 +339,7 @@ function ManageTransaction() {
                         </div>
                     </>    
                     :
-                    <div className="adm-transaction-spinner-wrap">
-                        <CircularProgress />
-                    </div>
+                    <AdminLoadSpinner />
                 }
             </>
         )
@@ -349,17 +347,17 @@ function ManageTransaction() {
 
     // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
     const dropdownClick = () => { //* Buka tutup menu dropdown
-        setToggleDropwdown(!toggleDropdown);
+        setToggleDropdown(!toggleDropdown);
     };
 
     const dropdownBlur = () => { //* Tutup menu dropdown ketika click diluar wrap menu dropdown
-        setToggleDropwdown(false)
+        setToggleDropdown(false)
     };
 
     const filterItemPerPage = (itemValue) => { //* Atur value filter item per page & behavior dropdown stlh action terjadi
         setItemPerPage(itemValue);
         setPage(1);
-        setToggleDropwdown(false);
+        setToggleDropdown(false);
         setLoadData(true);
     };
 
@@ -432,7 +430,7 @@ function ManageTransaction() {
         };
 
         if (pageCountRange.length <= showMaxRange) {
-            return pageCountRange.map((val, index) => {
+            return pageCountRange.map((val) => {
                 if (val === page) { //* Bila value button = value page --> aktif saat ini
                     return disabledBtn(val);
                 } else {
@@ -491,7 +489,7 @@ function ManageTransaction() {
                 <Stack spacing={2}>
                     <Breadcrumbs
                         separator={<NavigateNextIcon fontSize="small" />}
-                        aria-label="transaction detail breadcrumb"
+                        aria-label="manage transaction breadcrumb"
                     >
                         {breadcrumbs}
                     </Breadcrumbs>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { Login } from "./pages/user";
 import { Register, VerifyEmail } from "./pages/non-user";
 
@@ -22,6 +22,7 @@ import Checkout from "./pages/user/Checkout";
 import Cart from "./pages/user/Cart";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
+import LoadingApp from "./components/LoadingApp";
 
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
@@ -29,6 +30,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const dispatch = useDispatch();
+
+  const DetectPath = () => {
+    return useLocation().pathname;
+  };
+
+  let currentPath = DetectPath();
 
   useEffect(() => {
     (async () => {
@@ -100,7 +107,7 @@ function App() {
           <Route path="/checkout" exact component={Checkout} />
           <Route path="/checkout/payment" exact component="" />
           <Route path="/cart" exact component={Cart} />
-          <Route path="*" exact component="" />
+          <Route path="*" component={NotFound} />
         </Switch>
       );
     } else if (getRoleId === 1 || getRoleId === 2) {
@@ -146,9 +153,9 @@ function App() {
   return (
     <div className="App">
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
-      {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
-      {loading ? <div>Loading</div> : renderRouting()}
-      <div>{getRoleId === 1 || getRoleId === 2 ? null : <Footer />}</div>
+      {(getRoleId === 1 || getRoleId === 2 || loading || currentPath.includes("/admin")) ? null : <Header />}
+      {loading ? <LoadingApp /> : renderRouting()}
+      <div>{(getRoleId === 1 || getRoleId === 2 || loading | currentPath.includes("/admin")) ? null : <Footer />}</div>
     </div>
   );
 }

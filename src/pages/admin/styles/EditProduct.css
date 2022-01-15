@@ -17,30 +17,17 @@
     --semantic-info: #27A0E3;
 
     --b-rad-root: 12px;
+    --b-rad-table: 8px;
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
-.edit-product-main-wrap {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: 24px 120px 80px;
-}
-
-.edit-product-header-wrap {
-    display: flex;
-    justify-content: space-between;
-}
-
-.edit-product-header-wrap > h4 {
+/* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
+.edit-images-left-wrap > h6,
+.edit-images-left-wrap > p,
+.edit-notice-wrap > div > h6,
+.edit-images-upload-item > p,
+.edit-info-form-right > p {
     margin: 0;
-}
-
-.edit-product-contents-wrap {
-    display: flex;
-    flex-direction: column;
-    margin-top: 24px;
-    row-gap: 16px;
 }
 
 .edit-notice-wrap,
@@ -48,42 +35,16 @@
 .edit-info-form-wrap,
 .edit-desc-form-wrap {
     background-color: var(--neutral-5th-color);
-    border-radius: 12px;
-    column-gap: 70px;
+    border-radius: var(--b-rad-table);
+    column-gap: 1.5rem;
     display: flex;
     height: max-content;
-    padding: 32px 24px;
+    padding: 2rem 1.5rem;
+    width: 100%;
 
-    box-shadow: 0px 1px 6px #D7D7D8;
-    -webkit-box-shadow: 0px 1px 6px #D7D7D8;
-    -moz-box-shadow: 0px 1px 6px #D7D7D8;
-}
-
-.edit-notice-wrap {
-    flex-direction: column;
-    row-gap: 16px;
-}
-
-.edit-notice-wrap > h4 {
-    color: var(--semantic-error);
-    margin: 0;
-    text-align: left;
-    text-transform: uppercase;
-}
-
-.edit-notice-wrap > ol {
-    margin: 0;
-    padding: 0 0 0 16px;
-}
-
-.edit-notice-wrap li {
-    padding-left: 16px;
-    margin-bottom: 16px;
-    text-align: left;
-}
-
-.edit-notice-wrap li:last-of-type {
-    margin-bottom: 0;
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
 }
 
 .edit-images-left-wrap,
@@ -91,29 +52,199 @@
 .edit-desc-form-left {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    row-gap: 16px;
+    justify-content: flex-start;
+    row-gap: 0.5rem;
     text-align: left;
     width: 20%;
 }
 
-.edit-images-left-wrap > h5,
+/* .edit-images-left-wrap > h5,
 .edit-images-left-wrap > p {
     margin: 0;
-}
-
-.edit-images-left-wrap > p {
-    font-size: 0.9em;
-}
+} */
 
 .edit-images-right-wrap,
 .edit-info-form-right,
 .edit-desc-form-right {
-    align-items: center;
-    column-gap: 32px;
+    column-gap: 2rem;
     display: flex;
-    justify-content: flex-start;
-    width: 70%;
+    width: 80%;
+}
+
+.edit-images-upload-item > input,
+.edit-images-upload-preview > input {
+    display: none;
+}
+
+.edit-info-form-item,
+.edit-desc-form-item {
+    column-gap: 1.5rem;
+    display: flex;
+    width: 100%;
+}
+
+.edit-info-form-left > label,
+.edit-desc-form-left > label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.edit-info-form-left > p,
+.edit-desc-form-left > p {
+    color:var(--neutral-2nd-color);
+    font-size: 0.75rem;
+}
+
+.edit-info-right-name-input > input:focus,
+.edit-info-right-weight-input > input:focus,
+.edit-info-right-numeric-input > input:focus,
+.edit-desc-form-right textarea:focus {
+    border-color: var(--primary-4th-color);
+    outline: none;
+}
+
+.edit-info-form-right > .edit-info-right-name-input,
+.edit-info-form-right > .edit-info-right-category-dropdown,
+.edit-info-form-right > .edit-info-right-weight-input,
+.edit-info-form-right > .edit-info-right-numeric-input,
+.edit-desc-form-right > .edit-info-right-desc-input {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    row-gap: 0.5rem;
+    width: min(80%, 600px + 64px); 
+    /* 600px + 64px ngikutin lebar tile image, biar at least keliatan sejajar */
+}
+
+.edit-info-right-name-input > input,
+.edit-info-right-weight-input > input,
+.edit-info-right-numeric-input > input {
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    padding: 0 0.75rem;
+    height: 40px;
+    width: 100%;
+}
+
+.edit-info-right-name-input > span,
+.edit-info-right-desc-input span {
+    color: var(--neutral-2nd-color);
+    font-size: 0.75rem;
+}
+
+/* ? GROUPED INPUT PLACEHOLDERS STYLING SECTION */
+.edit-info-right-name-input > input::placeholder,
+.edit-info-right-weight-input > input::placeholder,
+.edit-info-right-numeric-input > input::placeholder,
+.edit-desc-form-right textarea::placeholder {
+    /* ! Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--neutral-3rd-color);
+    font-size: 0.875rem;
+    font-weight: 400;
+    opacity: 1; /* ! Firefox fix */
+}
+
+.edit-info-right-name-input > input:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
+.edit-info-right-weight-input > input:-ms-input-placeholder, 
+.edit-info-right-numeric-input > input:-ms-input-placeholder, 
+.edit-desc-form-right textarea:-ms-input-placeholder, 
+.edit-info-right-name-input > input::-ms-input-placeholder, /* ! Microsoft Edge */
+.edit-info-right-weight-input > input:-ms-input-placeholder, 
+.edit-info-right-numeric-input > input:-ms-input-placeholder, 
+.edit-desc-form-right textarea::-ms-input-placeholder { 
+    color: var(--neutral-3rd-color);
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+/* ? MAIN WRAPPER SECTION */
+.edit-product-main-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 1.5rem 2.5rem 4.5rem;
+}
+
+/* ? BREADCRUMB WRAP & CONTENTS SECTION */
+.edit-product-breadcrumb-wrap {
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.edit-product-breadcrumb-wrap li { 
+    /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
+    align-items: center;
+    display: flex;
+}
+
+/* ? HEADER WRAP & CONTENTS SECTION */
+.edit-product-header-wrap {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.edit-product-header-wrap > h4 {
+    font-size: clamp(1.375rem, 2vw, 1.5rem);
+    font-weight: 600;
+}
+
+/* ? CONTENTS/BODY WRAP & CONTENTS SECTION */
+.edit-product-contents-wrap {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5rem;
+}
+
+/* * NOTICE WRAP ON CONTENTS/BODY SECTION (1ST ROW MOST TOP) */
+.edit-notice-wrap {
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.edit-notice-wrap > div {
+    align-items: center;
+    column-gap: 0.625rem;
+    display: flex;
+}
+
+.edit-notice-wrap > div > img {
+     margin-top: -1px; /* Utk centering icon dgn text */
+}
+
+.edit-notice-wrap > div > h6 {
+    font-size: clamp(0.875rem, 1vw, 1rem);
+}
+
+.edit-notice-wrap > ol {
+    margin: 0;
+    padding: 0 0 0 1rem;
+}
+
+.edit-notice-wrap li {
+    color: var(--neutral-2nd-color);
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+    padding-left: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+.edit-notice-wrap li:last-of-type {
+    margin-bottom: 0;
+}
+
+/* * EDIT IMG FORM WRAP ON CONTENTS/BODY SECTION (2ND ROW FORM) */
+.edit-images-left-wrap > h6 {
+    font-size: clamp(0.875rem, 1vw, 1rem);
+    font-weight: 600;
+}
+
+.edit-images-left-wrap > p {
+    color: var(--neutral-2nd-color);
+    font-size: clamp(0.625rem, 1vw, 0.75rem);
 }
 
 .edit-images-right-wrap {
@@ -124,37 +255,38 @@
     display: flex;
 }
 
+/* * EDIT IMG FORM WRAP WHEN IMG NOT UPLOADED STATE */
 .edit-images-upload-item {
     align-items: center;
     border: 2px dashed var(--neutral-3rd-color);
-    border-radius: 12px;
+    border-radius: var(--b-rad-table);
     color: rgba(90, 90, 90, 0.6);
     cursor: pointer;
     display: flex;
     font-size: 0.9em;
     font-weight: 500;
-    height: 200px;
+    height: clamp(136px, 15vw, 200px);
     justify-content: center;
     margin: 0;
-    width: 200px;
+    width: clamp(136px, 15vw, 200px);
 }
 
+.edit-images-upload-item > p {
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+}
+
+/* * EDIT IMG FORM WRAP WHEN IMG HAS UPLOADED/PREVIEW STATE */
 .edit-images-upload-preview {
     align-items: center;
     border: 1px solid var(--neutral-3rd-color);
-    border-radius: 12px;
+    border-radius: var(--b-rad-table);
     cursor: pointer;
     display: flex;
-    height: 200px;
+    height: clamp(136px, 15vw, 200px);
     justify-content: center;
     margin: 0;
     overflow: hidden;
-    width: 200px;
-}
-
-.edit-images-upload-item > input,
-.edit-images-upload-preview > input {
-    display: none;
+    width: clamp(136px, 15vw, 200px);
 }
 
 .edit-images-upload-preview > .edit-images-preview {
@@ -164,9 +296,10 @@
     width: 100%;
 }
 
+/* * EDIT ICON ON ADD IMG FORM WRAP WHEN IMG HAS UPLOADED/PREVIEW STATE */
 .edit-images-icon {
     background-color: var(--neutral-5th-color);
-    border-radius: 12px;
+    border-radius: var(--b-rad-table);
     margin-left: 152px;
     margin-top: 8px;
     padding: 8px;
@@ -175,14 +308,11 @@
     opacity: 0;
 }
 
+/* * EDIT IMG BEHAVIOR WHEN IMG NOT/HAS UPLOADED STATE */
 .edit-images-tile-wrap:hover > .edit-images-icon {
     cursor: pointer;
     opacity: 1;
     transition: 300ms;
-}
-
-.edit-images-upload-item > p {
-    margin: 0;
 }
 
 .edit-images-upload-item:hover {
@@ -191,92 +321,198 @@
     transition: 300ms;
 }
 
+/* * EDIT INFORMATION FORM WRAP ON CONTENTS/BODY SECTION (3RD ROW FORM) */
 .edit-info-form-wrap {
     align-items: flex-start;
     flex-direction: column;
-    row-gap: 24px;
+    row-gap: 1.5rem;
 }
 
-.edit-info-form-item,
-.edit-desc-form-item {
-    column-gap: 70px;
-    display: flex;
-    width: 100%;
+.edit-info-right-weight-input > input {
+    padding-right: 5.5rem;
 }
 
-.edit-desc-form-left > p {
-    font-size: 0.9em;
+.edit-info-right-numeric-input > input {
+    padding-left: 2.25rem;
 }
 
-.edit-info-form-left > label,
-.edit-desc-form-left > label {
-    font-size: 20px;
-    font-weight: 500;
-    margin: 0;
+.edit-info-form-right > span {
+    position: absolute;
 }
 
-.edit-info-form-right > p {
-    margin: 0;
+.edit-info-right-weight-input > span {
+    font-size: 0.875rem;
+    margin-top: 0.625rem;
+    margin-right: 0.625rem;
+    position: absolute;
 }
 
-.edit-info-form-right > input {
-    border: 1px solid var(--neutral-3rd-color);
-    border-radius: 12px;
-    padding: 0 12px;
-    height: 40px;
-    width: 720px;
-}
-
-.edit-info-form-right > input:focus,
-.edit-desc-form-right > textarea:focus {
-    border-color: var(--primary-4th-color);
-    outline: none;
-}
-
-.edit-info-form-right > input::placeholder,
-.edit-desc-form-right > textarea::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    font-size: 0.9em;
-    font-weight: 300;
-    opacity: 1; /* Firefox fix */
-}
-
-.edit-info-form-right > input:disabled {
-    color: var(--neutral-3rd-color);
-    background-color: var(--neutral-4th-color);
-}
-
-.edit-info-form-right > input:-ms-input-placeholder,
-.edit-desc-form-right > textarea:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    font-size: 0.9em;
-    font-weight: 300;
-}
-
-.edit-info-form-right > input::-ms-input-placeholder,
-.edit-desc-form-right > textarea::-ms-input-placeholder {
-    /* Microsoft Edge */
-    font-size: 0.9em;
-    font-weight: 300;
-}
-
-.edit-info-form-right > input[name="prod_weight"],
-.edit-info-form-right > input[name="prod_price"],
-.edit-info-form-right > input[name="prod_cost"],
-.edit-info-form-right > .add-stock-input-wrap {
-    width: 320px;
+.edit-info-right-numeric-input > span {
+    font-size: 0.875rem;
+    left: 0;
+    margin-left: 0.625rem;
+    margin-top: 0.6rem;
+    position: absolute;
 }
 
 select > option {
     text-transform: capitalize;
 }
 
-.edit-desc-form-right > textarea {
+/* * EDIT DESCRIPTION FORM WRAP ON CONTENTS/BODY SECTION (3RD ROW FORM) */
+.edit-desc-form-right textarea {
     border: 1px solid var(--neutral-3rd-color);
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: var(--b-rad-table);
+    padding: 0.75rem;
+    width: 100%;
 }
 
+/* ? DROPDOWN MENU SELECT PRODUCT CATEGORY */
+.edit-info-right-category-dropdown {
+    position: relative;
+}
+
+.info-right-editCat-dropdown-btn {
+    align-items: center;
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    color: var(--neutral-1st-color);
+    cursor: pointer;
+    display: flex;
+    font-size: 0.875rem;
+    height: 40px;
+    text-align: left;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+    width: 100%;
+}
+
+.info-right-editCat-dropdown-btn > img {
+    margin-top: -2.2px;
+    margin-left: 4px;
+    transition: 300ms;
+}
+
+.info-right-editCat-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
+    display: flex;
+    flex-direction: column;
+    font-size: 0.875rem;
+    justify-content: space-around;
+    list-style: none;
+    margin-top: 3rem;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 100%;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.info-right-editCat-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    width: 100%;
+}
+
+.info-right-editCat-dropdown-menu > li:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+.info-right-editCat-dropdown-selected {
+    color: var(--primary-4th-color) !important;
+    cursor: default !important;
+}
+
+/* ? DELETE MODAL CONTENT */
+.edit-img-modal-head {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    row-gap: 1rem;
+}
+
+.edit-img-modal-head > h3,
+.edit-img-modal-head > h6 {
+    margin: 0;
+    text-align: center;
+}
+
+.edit-img-modal-head > h3 {
+    text-transform: capitalize;
+}
+
+.edit-img-modal-body {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.edit-img-modal-foot {
+    column-gap: 1rem;
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+.edit-img-modal-foot > button {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    font-weight: 600;
+    height: 42px;
+    width: 176px;
+}
+
+.edit-img-modal-foot > button:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 300ms;
+}
+
+.edit-img-modal-foot > button:nth-of-type(2) {
+    background-color: var(--semantic-warning);
+}
+
+.edit-img-modal-foot > button:nth-of-type(2):hover {
+    background-color: #D77B3C;
+    transition: 300ms;
+}
+
+
+.edit-img-modal-foot > button:first-of-type {
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--primary-4th-color);
+    color: var(--primary-4th-color);
+}
+
+.edit-img-modal-foot > button:first-of-type:hover {
+    border-color: var(--primary-3rd-color);
+    color: var(--primary-3rd-color);
+    transition: 400ms;
+}
+
+.edit-img-modal-foot > button:disabled,
+.edit-img-modal-foot > button:nth-of-type(2):disabled /* ! Utk button delete main img tdk bs kena hover */
+{
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+/* ? EDIT PRODUCT SUBMISSION WRAP & CONTENTS SECTION */
 .edit-product-submission-wrap {
     align-items: center;
     column-gap: 16px;
@@ -323,83 +559,6 @@ select > option {
 }
 
 .edit-product-submit-btn:disabled {
-    background-color: var(--neutral-3rd-color);
-    color: var(--neutral-5th-color);
-    cursor: default;
-}
-
-/* DELETE MODAL CONTENT */
-.edit-img-modal-head {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-bottom: 40px;
-    row-gap: 16px;
-}
-
-.edit-img-modal-head > h3,
-.edit-img-modal-head > h6 {
-    margin: 0;
-    text-align: center;
-}
-
-.edit-img-modal-head > h3 {
-    text-transform: capitalize;
-}
-
-.edit-img-modal-body {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-}
-
-.edit-img-modal-foot {
-    column-gap: 16px;
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-.edit-img-modal-foot > button {
-    background-color: var(--primary-4th-color);
-    border: none;
-    border-radius: 100px;
-    color: var(--neutral-5th-color);
-    font-weight: 600;
-    height: 42px;
-    width: 176px;
-}
-
-.edit-img-modal-foot > button:hover {
-    background-color: var(--primary-3rd-color);
-    transition: 300ms;
-}
-
-.edit-img-modal-foot > button:nth-of-type(2) {
-    background-color: var(--semantic-warning);
-}
-
-.edit-img-modal-foot > button:nth-of-type(2):hover {
-    background-color: #D77B3C;
-    transition: 300ms;
-}
-
-
-.edit-img-modal-foot > button:last-child {
-    background-color: var(--neutral-5th-color);
-    border: 1px solid var(--primary-4th-color);
-    color: var(--primary-4th-color);
-}
-
-.edit-img-modal-foot > button:last-child:hover {
-    border-color: var(--primary-3rd-color);
-    color: var(--primary-3rd-color);
-    transition: 400ms;
-}
-
-.edit-img-modal-foot > button:disabled,
-.edit-img-modal-foot > button:nth-of-type(2):disabled {
     background-color: var(--neutral-3rd-color);
     color: var(--neutral-5th-color);
     cursor: default;

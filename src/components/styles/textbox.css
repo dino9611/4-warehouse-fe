@@ -9,6 +9,15 @@
   outline-color: #b24629;
 }
 
+.textbox-styling::placeholder {
+  color: #cacaca;
+}
+
+.textbox-styling:focus {
+  border-color: #b24629;
+  outline: none;
+}
+
 .textbox-error {
   border: solid 1px #c83532 !important;
   background-color: #fbefef !important;

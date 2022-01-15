@@ -1,10 +1,6 @@
 import "./styles/AdminMainParent.css";
-import {
-    Switch,
-    Route
-} from "react-router-dom";
+import { Switch,Route } from "react-router-dom";
 import AdminSideBar from "../../components/admin/AdminSideBar";
-import AdminNavbar from "../../components/admin/AdminNavbar";
 import ManageProduct from "./ManageProduct";
 import AdminAddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
@@ -13,13 +9,14 @@ import ManageAdmin from "./ManageAdmin";
 import HomeDashboard from "./HomeDashboard";
 import ManageTransaction from "./ManageTransaction";
 import AdminTransactionDetail from "./AdminTransactionDetail";
+import NotFoundPage from "../non-user/NotFoundV1";
 
 const routePath = {
     dashboard: "/admin/dashboard",
     manageProduct: "/admin/manage-product",
     addProduct: "/admin/manage-product/add",
     editProduct: "/admin/manage-product/edit",
-    stockOpname: "/admin/stock-opname",
+    // stockOpname: "/admin/stock-opname", //? Fitur stock opname utk warehouse admin blm ada
     transactions: "/admin/manage-transaction",
     detailTransaction: "/admin/manage-transaction/detail",
     warehouses: "/admin/manage-warehouse",
@@ -48,11 +45,11 @@ const routes = [
       exact: true,
       main: () => <EditProduct />
     },
-    {
-      path: routePath.stockOpname,
-      exact: true,
-      main: () => <div>Belum ada page stock opname</div>
-    },
+    // { //? Fitur stock opname utk warehouse admin blm ada
+    //   path: routePath.stockOpname,
+    //   exact: true,
+    //   main: () => <div>Belum ada page stock opname</div>
+    // },
     {
       path: routePath.transactions,
       exact: true,
@@ -78,6 +75,11 @@ const routes = [
       exact: true,
       main: () => <ManageAdmin />
     },
+    {
+      path: "*",
+      exact: true,
+      main: () => <NotFoundPage />
+    },
   ];
 
 function AdminMainParent() {
@@ -85,7 +87,6 @@ function AdminMainParent() {
       <div className="adm-main-parent-wrap">
           <AdminSideBar routes={routePath} className="control-zIndex"/>
           <div className="adm-main-content-wrap">
-              <AdminNavbar/>
               <Switch>
                   {routes.map((route, index) => (
                       <Route
