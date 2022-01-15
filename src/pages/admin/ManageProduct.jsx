@@ -10,7 +10,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import thousandSeparator from "../../helpers/ThousandSeparator";
-import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Bg-White.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-White.svg";
@@ -444,6 +443,7 @@ function ManageProduct() {
                                                         style={{
                                                             transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                         }}
+                                                        alt="Dropdown-Arrow"
                                                     />
                                                 </button>
                                                 <ul 
@@ -519,6 +519,7 @@ function ManageProduct() {
                                                                     style={{
                                                                         transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
                                                                     }}
+                                                                    alt="Dropdown-Arrow"
                                                                 />
                                                             </button>
                                                             <ul 
