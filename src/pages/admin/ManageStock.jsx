@@ -65,8 +65,6 @@ function ManageStock() {
 
     const [products, setProducts] = useState([]);
 
-    const [editStockInput, setEditStockInput] = useState({});
-
     const [newStock, setNewStock] = useState("");
 
     const [modalLength, setModalLength] = useState([]); //* Atur length dropdown edit stock agar dinamis
@@ -107,7 +105,6 @@ function ManageStock() {
             const res = await axios.get(`${API_URL}/admin/warehouse-product/pagination?page=${page - 1}&limit=${itemPerPage}&whid=${warehouse_id}`);
             setProducts(res.data);
             setProdLength(parseInt(res.headers["x-total-count"]));
-            setEditStockInput(res.data);
         } catch (error) {
             errorToast("Server Error, from ManageStock");
             console.log(error);
@@ -399,6 +396,7 @@ function ManageStock() {
                                                                 style={{
                                                                     transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                                 }}
+                                                                alt="Dropdown-Arrow"
                                                             />
                                                         </button>
                                                         <ul 
