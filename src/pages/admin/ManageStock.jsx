@@ -9,8 +9,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
-import thousandSeparator from "../../helpers/ThousandSeparator";
-import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Bg-White.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-White.svg";
@@ -32,6 +30,7 @@ import Swal from 'sweetalert2';
 import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
 import AdmBtnSecondary from '../../components/admin/AdmBtnSecondary';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -62,10 +61,11 @@ function ManageStock() {
 
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
+    const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
+
     const [products, setProducts] = useState([]);
 
     const [editStockInput, setEditStockInput] = useState({});
-    console.log(editStockInput); //!Test
 
     const [newStock, setNewStock] = useState("");
 
@@ -76,7 +76,7 @@ function ManageStock() {
 
     const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
 
-    const [itemPerPage, setItemPerPage] = useState(5);
+    const [itemPerPage, setItemPerPage] = useState(10);
 
     const [prodLength, setProdLength] = useState(0);
 
@@ -95,7 +95,7 @@ function ManageStock() {
     //! let lastCount = pageCountRange[pageCountRange.length - 1]; //! Tentuin last page yg mana, utk most last button (blm dipake)
 
     // FILTER ITEM PER PAGE SECTION
-    const rowsPerPageOptions = [5, 10, 50];
+    const rowsPerPageOptions = [10, 50];
 
     // FETCH & useEFFECT SECTION
     const getAuthData = useSelector((state) => state.auth);
@@ -109,7 +109,7 @@ function ManageStock() {
             setProdLength(parseInt(res.headers["x-total-count"]));
             setEditStockInput(res.data);
         } catch (error) {
-            errorToast("Server Error, from ManageProduct");
+            errorToast("Server Error, from ManageStock");
             console.log(error);
             setErrorFetch(true);
         };
@@ -204,8 +204,20 @@ function ManageStock() {
                     />
                 </div>
                 <div className="edit-stock-modal-foot">
-                    <AdmBtnSecondary width={"6rem"} onClick={() => onCloseModal(index)}>Cancel</AdmBtnSecondary>
-                    <AdmBtnPrimary width={"6rem"} onClick={(event) => submitEditStock(event, currentStock, prodId, whId)}>Submit</AdmBtnPrimary>
+                    <AdmBtnSecondary 
+                        width={"6rem"} 
+                        onClick={() => onCloseModal(index)}
+                        disabled={submitLoad}
+                    >
+                        Cancel
+                    </AdmBtnSecondary>
+                    <AdmBtnPrimary 
+                        width={"6rem"} 
+                        onClick={(event) => submitEditStock(event, currentStock, prodId, whId)}
+                        disabled={submitLoad}
+                    >
+                        {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
+                    </AdmBtnPrimary>
                 </div>
             </>
         )
@@ -300,6 +312,8 @@ function ManageStock() {
 
     // CLICK/SUBMIT FUNCTION SECTION
     const submitEditStock = async (event, prevStock, prodId, whId) => {
+        setSubmitLoad(true);
+
         let inputtedStock = {
             warehouse_id: warehouse_id,
             product_id: prodId,
@@ -308,7 +322,8 @@ function ManageStock() {
 
         try {
             await axios.post(`${API_URL}/product/edit/stock`, inputtedStock);
-            setNewStock("")
+            setNewStock("");
+            setSubmitLoad(true);
             Swal.fire({
                 icon: 'success',
                 title: 'Edit product stock success!',
@@ -323,6 +338,7 @@ function ManageStock() {
             fetchProdData();
         } catch (err) {
             console.log(err);
+            setSubmitLoad(true);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...something went wrong, reload/try again',
