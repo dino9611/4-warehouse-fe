@@ -143,22 +143,6 @@ function AdminSideBar(props) {
                                 paddingTop: inventoryToggle ? "1rem" : 0,
                             }}
                         >
-                            <Link 
-                                to={routes.stockRequest}
-                                className="link-no-decoration"
-                                style={{
-                                    color: currentPath.includes(routes.stockRequest) ? "#FCB537" : null, 
-                                    fontSize: inventoryToggle ? "0.75rem" : 0,
-                                    marginLeft: inventoryToggle ? 0 : "-20%",
-                                    marginTop: inventoryToggle ? 0 : "-10%",
-                                    opacity: inventoryToggle ? 1 : 0, 
-                                    zIndex: inventoryToggle ? 1 : -1
-                                }}
-        
-                            >
-                                Stock Request
-                                {currentPath.includes(routes.stockRequest) ? <div className="adm-sidebar-active-nav" /> : null}
-                            </Link>
                             <Link //? Fitur stock opname utk warehouse admin blm ada
                                 to={routes.manageStock} className="link-no-decoration"
                                 className="link-no-decoration"
@@ -174,6 +158,22 @@ function AdminSideBar(props) {
                             >
                                 Manage Stock
                                 {currentPath.includes(routes.manageStock) ? <div className="adm-sidebar-active-nav" /> : null}
+                            </Link>
+                            <Link 
+                                to={routes.stockRequest}
+                                className="link-no-decoration"
+                                style={{
+                                    color: currentPath.includes(routes.stockRequest) ? "#FCB537" : null, 
+                                    fontSize: inventoryToggle ? "0.75rem" : 0,
+                                    marginLeft: inventoryToggle ? 0 : "-20%",
+                                    marginTop: inventoryToggle ? 0 : "-10%",
+                                    opacity: inventoryToggle ? 1 : 0, 
+                                    zIndex: inventoryToggle ? 1 : -1
+                                }}
+        
+                            >
+                                Stock Request
+                                {currentPath.includes(routes.stockRequest) ? <div className="adm-sidebar-active-nav" /> : null}
                             </Link>
                         </div>
                     </div>

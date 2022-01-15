@@ -67,7 +67,7 @@ function ManageStock() {
     const [editStockInput, setEditStockInput] = useState({});
     console.log(editStockInput); //!Test
 
-    const [newStock, setNewStock] = useState([]);
+    const [newStock, setNewStock] = useState("");
 
     const [modalLength, setModalLength] = useState([]); //* Atur length dropdown edit stock agar dinamis
 
@@ -185,7 +185,7 @@ function ManageStock() {
         });
     };
 
-    const editStockModal = (prodId, prodName, currentStock, whName, index) => {
+    const editStockModal = (prodId, prodName, currentStock, whId, whName, index) => {
         return (
             <>
                 <div className="edit-stock-modal-head">
@@ -205,7 +205,7 @@ function ManageStock() {
                 </div>
                 <div className="edit-stock-modal-foot">
                     <AdmBtnSecondary width={"6rem"} onClick={() => onCloseModal(index)}>Cancel</AdmBtnSecondary>
-                    <AdmBtnPrimary width={"6rem"} onClick={() => onCloseModal(index)}>Submit</AdmBtnPrimary>
+                    <AdmBtnPrimary width={"6rem"} onClick={(event) => submitEditStock(event, currentStock, prodId, whId)}>Submit</AdmBtnPrimary>
                 </div>
             </>
         )
@@ -299,14 +299,20 @@ function ManageStock() {
     };
 
     // CLICK/SUBMIT FUNCTION SECTION
-    const submitEditStock = async (event, prodId) => {
+    const submitEditStock = async (event, prevStock, prodId, whId) => {
+        let inputtedStock = {
+            warehouse_id: warehouse_id,
+            product_id: prodId,
+            new_stock: newStock - prevStock
+        };
 
         try {
-            await axios.patch(`${API_URL}/product/edit/stock/${prodId}`, newStock);
+            await axios.post(`${API_URL}/product/edit/stock`, inputtedStock);
+            setNewStock("")
             Swal.fire({
                 icon: 'success',
-                title: 'Edit product success!',
-                text: `Page will go to manage product page after confirm`,
+                title: 'Edit product stock success!',
+                text: `Page will refresh`,
                 customClass: { //* CSS custom nya ada di AdminMainParent
                     popup: 'adm-swal-popup-override',
                     confirmButton: 'adm-swal-btn-override'
@@ -314,6 +320,7 @@ function ManageStock() {
                 confirmButtonText: 'Continue',
                 confirmButtonAriaLabel: 'Continue'
             });
+            fetchProdData();
         } catch (err) {
             console.log(err);
             Swal.fire({
@@ -470,7 +477,7 @@ function ManageStock() {
                                                 close={() => onCloseModal(index)}
                                                 key={`edit-prod-#${val.id}-stock`}
                                             >
-                                                {editStockModal(val.id, val.name, val.warehouse_stock, warehouse_name, index)}
+                                                {editStockModal(val.id, val.name, val.warehouse_stock, warehouse_id, warehouse_name, index)}
                                             </Modal>
                                         ))}
                                     </div>
