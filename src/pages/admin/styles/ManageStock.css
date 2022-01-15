@@ -1,0 +1,399 @@
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #5A5A5A;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #F4F4F4;
+    --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-rad-table: 8px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+/* ? UTILITY CLASS */
+.adm-product-table-override {
+    border-radius: var(--b-rad-table) !important;
+    height: fit-content;
+    overflow-y: hidden;
+    padding: 1.5rem 1.5rem 2.6rem;
+
+    box-shadow: var(--b-shadow-root) !important;
+    -webkit-box-shadow: var(--b-shadow-root) !important;
+    -moz-box-shadow: var(--b-shadow-root) !important;
+}
+
+/* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
+.adm-products-header-wrap button,
+.del-modal-foot-wrap > button {
+    background-color: var(--primary-4th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-5th-color);
+    font-weight: 600;
+    height: 42px;
+    width: 160px;
+}
+
+.adm-products-header-wrap button:hover,
+.del-modal-foot-wrap > button:hover {
+    background-color: var(--primary-3rd-color);
+    transition: 300ms;
+}
+
+.adm-products-filter-dropdown-wrap,
+.adm-products-action-cell,
+.del-modal-body-wrap {
+    position: relative;
+}
+
+.adm-products-filter-dropdown-btn:hover,
+.adm-products-dropdown-btn:hover {
+    border-color: var(--primary-4th-color);
+    color: var(--primary-4th-color);
+    transition: 400ms;
+}
+
+.adm-products-filter-dropdown-menu > li:hover,
+.adm-products-dropdown-menu > a:hover > li,
+.adm-products-dropdown-menu > li:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+/* ? MAIN WRAPPER SECTION */
+.adm-products-main-wrap {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+/* ? BREADCRUMB WRAP & CONTENTS SECTION */
+.adm-products-breadcrumb-wrap {
+    align-items: center;
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.adm-products-breadcrumb-wrap li { 
+    /* Utk centering typography pd breadcrumb, karena lainnya pake Link dari react router dom */
+    align-items: center;
+    display: flex;
+}
+
+/* ? HEADER WRAP & CONTENTS SECTION */
+.adm-products-header-wrap {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.adm-products-header-wrap > h4 {
+    font-weight: 600;
+}
+
+/* ? CONTENTS/BODY WRAP & CONTENTS SECTION */
+.adm-products-contents-wrap {
+    margin-top: 1.5rem;
+}
+
+/* ? DROPDOWN MENU FILTER PRODUCT PER PAGE ON TOP RIGHT OF TABLE */
+.adm-products-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    min-height: fit-content;
+    width: 100%;
+}
+
+.adm-products-filter-item {
+    align-items: center;
+    column-gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.adm-products-filter-item > p {
+    color: var(--neutral-2nd-color);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.adm-products-filter-dropdown-btn {
+    align-items: center;
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: var(--b-rad-table);
+    color: var(--neutral-3rd-color);
+    cursor: pointer;
+    display: flex;
+    height: 32px;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+    width: 72px;
+}
+
+.adm-products-filter-dropdown-btn > img {
+    margin-top: -2.2px;
+    margin-left: 4px;
+    transition: 300ms;
+}
+
+.adm-products-filter-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    list-style: none;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 72px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-products-filter-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.adm-products-filter-dropdown-selected {
+    color: var(--primary-4th-color) !important;
+    cursor: default !important;
+}
+
+/* ? EDIT & DELETE DROPDOWN MENU ON TABLE ACTION CELL */
+.adm-products-dropdown-btn {
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--neutral-3rd-color);
+    border-radius: 8px;
+    color: var(--neutral-1st-color);
+    cursor: pointer;
+    height: 40px;
+    width: 96px;
+}
+
+.adm-products-dropdown-btn > img {
+    margin-top: -4px; /* Utk centering icon dgn text */
+    transition: 300ms;
+}
+
+.adm-products-dropdown-menu {
+    align-items: flex-start;
+    background-color: var(--neutral-5th-color);
+    border-radius: var(--b-rad-table);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    left: 22.5%;
+    list-style: none;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    transition: 300ms;
+    width: 96px;
+
+    box-shadow: var(--b-shadow-root);
+    -webkit-box-shadow: var(--b-shadow-root);
+    -moz-box-shadow: var(--b-shadow-root);
+}
+
+.adm-products-dropdown-menu > a {
+    width: 100%;
+}
+
+.adm-products-dropdown-menu > a > li,
+.adm-products-dropdown-menu > li {
+    align-items: center;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.adm-products-dropdown-menu .adm-edit-icon,
+.adm-products-dropdown-menu .adm-delete-icon {
+    margin-right: 0.5rem;
+}
+
+/* * EDIT ICON ON EDIT & DELETE DROPDOWN MENU */
+.adm-edit-icon {
+    background: url("../../../assets/components/Edit-Icon.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -1.65px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.adm-products-dropdown-menu li:hover .adm-edit-icon {
+    background: url("../../../assets/components/Edit-Icon-Orange.svg");
+    transition: 400ms;
+}
+
+/* * DELETE ICON ON EDIT & DELETE DROPDOWN MENU */
+.adm-delete-icon {
+    background: url("../../../assets/components/Delete-Trash.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -1.65px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.adm-products-dropdown-menu li:hover .adm-delete-icon {
+    background: url("../../../assets/components/Delete-Trash-Orange.svg");
+    transition: 400ms;
+}
+
+/* ? DELETE MODAL CONTENT */
+
+/* * DEL MODAL HEAD WRAP & CONTENTS ON MANAGE PRODUCT MODAL SECTION */
+.del-modal-heading-wrap {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    row-gap: 1rem;
+}
+
+.del-modal-heading-wrap > h3,
+.del-modal-heading-wrap > h6 {
+    margin: 0;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+/* * DEL MODAL BODY WRAP & CONTENTS ON MANAGE PRODUCT MODAL SECTION */
+.del-modal-body-wrap > img {
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 52%;
+}
+
+.del-modal-body-wrap > div input[type=text] {
+    /* Utk kasih jarak antar text dgn icon show password di posisi paling kanan elemen input saat type = text */
+    padding-right: 3rem;
+}
+
+/* * DEL MODAL FOOT WRAP & CONTENTS ON MANAGE PRODUCT MODAL SECTION */
+.del-modal-foot-wrap {
+    column-gap: 1rem;
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
+.del-modal-foot-wrap > button:disabled {
+    background-color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.del-modal-foot-wrap > button:first-child {
+    background-color: var(--neutral-5th-color);
+    border: 1px solid var(--primary-4th-color);
+    color: var(--primary-4th-color);
+}
+
+.del-modal-foot-wrap > button:first-child:hover {
+    border-color: var(--primary-3rd-color);
+    color: var(--primary-3rd-color);
+    transition: 400ms;
+}
+
+/* ? PAGINATION SECTION */
+.adm-products-pagination {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    min-height: 48px;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.adm-products-pagination-item {
+    align-items: center;
+    column-gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0 0;
+}
+
+.adm-products-pagination-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100px;
+    color: var(--neutral-2nd-color);
+    cursor: pointer;
+    height: 48px;
+    width: 40px;
+}
+
+.adm-products-pagination-btn:hover {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    transition: 400ms;
+}
+
+.adm-products-pagination-btn:disabled {
+    background-color: var(--primary-4th-color);
+    color: var(--neutral-5th-color);
+    cursor: default;
+}
+
+.adm-products-prev-btn,
+.adm-products-next-btn {
+    background-color: var(--neutral-5th-color);
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    height: 48px;
+    width: 88px;
+}
+
+.adm-products-prev-btn:hover > img,
+.adm-products-next-btn:hover > img {
+    transform: translateY(-2px);
+    transition: 300ms;
+}
+
+.adm-products-prev-btn:disabled,
+.adm-products-next-btn:disabled {
+    background-color: var(--neutral-3rd-color);
+    cursor: default;
+    opacity: 50%;
+}
+
+.adm-products-prev-btn:disabled:hover > img,
+.adm-products-next-btn:disabled:hover > img {
+    transform: translateY(0);
+    transition: none;
+}
