@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link, useHistory} from "react-router-dom";
@@ -31,10 +31,6 @@ function AdminAddProduct() {
     const [warehouse, setWarehouse] = useState([]);
 
     const [mainImgCheck, setMainImgCheck] = useState(false); //* Utk validasi foto utama produk sudah di-input oleh admin
-
-    const [prodNameCounter, setProdNameCounter] = useState(0); //* Utk check characters left input nama produk
-
-    const [charCounter, setCharCounter] = useState(0); //* Utk check characters left input deskripsi produk
 
     const [addImage, setAddImage] = useState([ //* Utk bawa data uploaded image ke BE
         "",
@@ -146,7 +142,7 @@ function AdminAddProduct() {
             });
         } else if (prod_weight === 0 || prod_price === 0 || prod_cost === 0) {
             cb((prevState) => {
-                return { ...prevState, [event.target.name]: ""};
+                return { ...prevState, [event.target.name]: 1};
             });
         } else {
             return
@@ -210,14 +206,6 @@ function AdminAddProduct() {
     }
 
     // CHECKER FUNCTIONS SECTION
-    const prodNameCharCounter = (event) => { //* Hitung characters left utk input product name
-        return setProdNameCounter(event.target.value.length);
-    };
-
-    const charCounterHandler = (event) => { //* Hitung characters left utk product descripption
-        return setCharCounter(event.target.value.length);
-    };
-
     const stockTrueChecker = (value) => value.stock + 1 > 0 && typeof(value.stock) === "number";
 
     // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
@@ -244,7 +232,8 @@ function AdminAddProduct() {
     const onSubmitAddProd = async (event) => { //* Untuk trigger submit button
         event.preventDefault();
         setSubmitLoad(true);
-        document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = true;
+        document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = true; //! Disable submit button
+        document.querySelector("div.add-products-submission-wrap > button:first-of-type").disabled = true; //! Disable cancel button
         
         let uploadedImg = addImage;
         let inputtedProd = {
@@ -284,13 +273,7 @@ function AdminAddProduct() {
         if (prod_name && prod_category && prod_weight && prod_price && prod_cost && prod_desc && (warehouse.every(stockTrueChecker))) {
             try {
                 await axios.post(`${API_URL}/product/add`, formData, config);
-                setAddImage((prevState) => {
-                    let newArray = prevState;
-                    newArray.forEach((val, index) => {
-                        newArray[index] = "";
-                    })
-                    return [...newArray];
-                });
+                setAddImage(["", "", ""]);
                 setMainImgCheck(false);
                 setAddProdInput((prevState) => {
                     return {...prevState, prod_name: "", prod_category: 0, prod_weight: "", prod_price: "", prod_cost: "", prod_desc: ""}
@@ -309,13 +292,14 @@ function AdminAddProduct() {
                     title: 'Add product success!',
                     text: `${inputtedProd.prod_name}`,
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
                 setDropdownActiveDetector(0);
+                document.querySelector("div.add-products-submission-wrap > button:first-of-type").disabled = false;
             } catch (err) {
                 console.log(err);
                 setSubmitLoad(false);
@@ -323,18 +307,20 @@ function AdminAddProduct() {
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
                 document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = false;
+                document.querySelector("div.add-products-submission-wrap > button:first-of-type").disabled = false;
             };
         } else {
             errorToast("Please make sure all inputs filled");
             setSubmitLoad(false);
             document.querySelector("div.add-products-submission-wrap > button:last-of-type").disabled = false;
+            document.querySelector("div.add-products-submission-wrap > button:first-of-type").disabled = false;
         };
     };
     
@@ -371,7 +357,7 @@ function AdminAddProduct() {
                                             <div className="add-images-right-wrap"> {/* Bagian kanan upload image produk */}
                                                 {addImage.map((val, index) => {
                                                     return (
-                                                        <div className="add-images-tile-wrap">
+                                                        <div className="add-images-tile-wrap" key={index}>
                                                             <label 
                                                                 htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
                                                                 className={addImage[index] ? "add-images-upload-preview" : "add-images-upload-item"}
@@ -388,7 +374,7 @@ function AdminAddProduct() {
                                                                     <>
                                                                         <img 
                                                                             src={URL.createObjectURL(addImage[index])} 
-                                                                            alt={(index === 0) ? "Preview-Main-Image" : (index === 1) ? "Preview-Secondary-Image" : "Preview-Third-Image"}
+                                                                            alt={(index === 0) ? "Preview-Main" : (index === 1) ? "Preview-Secondary" : "Preview-Third"}
                                                                             className="add-images-preview"
                                                                         />
                                                                     </>
@@ -401,7 +387,7 @@ function AdminAddProduct() {
                                                                     className="add-images-del-icon"
                                                                     onClick={(event) => delImgUpload(event, index)}
                                                                 >
-                                                                    <img src={deleteTrash} />
+                                                                    <img src={deleteTrash} alt="Delete"/>
                                                                 </span>
                                                                 :
                                                                 null
@@ -425,11 +411,10 @@ function AdminAddProduct() {
                                                             name="prod_name" 
                                                             value={prod_name}
                                                             onChange={(event) => addProdStringHandler(event)}
-                                                            onKeyUp={(event) => prodNameCharCounter(event)}
                                                             placeholder="Ex: Javara Coconut Sugar 250gr"
                                                             maxLength={prodNameCharMax}
                                                         />
-                                                        <span>{prodNameCounter}/{prodNameCharMax}</span>
+                                                        <span>{prod_name.length}/{prodNameCharMax}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -451,6 +436,7 @@ function AdminAddProduct() {
                                                                 style={{
                                                                     transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                                 }}
+                                                                alt="Dropdown-Arrow"
                                                             />
                                                         </button>
                                                         <ul 
@@ -461,13 +447,14 @@ function AdminAddProduct() {
                                                                 zIndex: toggleDropdown ? 100 : -10,
                                                             }}
                                                         >
-                                                            {category.map((val) => (
+                                                            {category.map((val, index) => (
                                                                 val.id === addProdInput.prod_category ? 
-                                                                <li className="info-right-category-dropdown-selected">{val.category}</li> 
+                                                                <li className="info-right-category-dropdown-selected" key={index}>{val.category}</li> 
                                                                 : 
                                                                 <li
                                                                     value={val.id}
                                                                     onClick={(event) => selectCategoryClick(event, val.category)}
+                                                                    key={index}
                                                                 >
                                                                     {val.category}
                                                                 </li>
@@ -507,7 +494,7 @@ function AdminAddProduct() {
                                                         <input 
                                                             type="number" 
                                                             id="prod_price" 
-                                                            name="prod_price" 
+                                                            name="prod_price"
                                                             value={prod_price}
                                                             onChange={(event) => addProdNumberHandler(event, setAddProdInput)}
                                                             onKeyUp={(event) => noMinusHandler(event, setAddProdInput)}
@@ -580,12 +567,11 @@ function AdminAddProduct() {
                                                             name="prod_desc" 
                                                             value={prod_desc}
                                                             onChange={(event) => addProdStringHandler(event)}
-                                                            onKeyUp={(event) => charCounterHandler(event)}
                                                             placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
-                                                            maxlength="2000"
+                                                            maxLength="2000"
                                                         >
                                                         </textarea>
-                                                        <span>max char: {charCounter}/{descCharLimit}</span>
+                                                        <span>max char: {prod_desc.length}/{descCharLimit}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -616,3 +602,33 @@ function AdminAddProduct() {
 }
 
 export default AdminAddProduct;
+
+//? Klo input form number mau pake thusand separator
+// value={prod_price.toLocaleString("id-ID")}
+
+//? Debug addImageHandler
+// const addImageHandler = useCallback((event, indexArr) => { //* Utk setState upload image
+//     let file = event.target.files[0];
+//     if (indexArr === 0) { //* Klo main image ada ter-upload
+//         setMainImgCheck(!indexArr);
+//     }
+//     if (file) {
+//         setAddImage((prevState) => {
+//             let newArray = prevState;
+//             newArray[indexArr] = file;
+//             // if (indexArr === 0) {
+//             //     setMainImgCheck(true);
+//             // }
+//             return [...newArray];
+//         });
+//     } else {
+//         setAddImage((prevState) => {
+//             let newArray = prevState;
+//             newArray[indexArr] = "";
+//             // if (indexArr === 0) {
+//             //     setMainImgCheck(false);
+//             // }
+//             return [...newArray];
+//         });
+//     }
+// }, []);

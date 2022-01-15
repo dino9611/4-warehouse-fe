@@ -158,8 +158,8 @@ function AdminSideBar(props) {
                             Stock Request
                             {currentPath.includes(routes.stockRequest) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
-                        {/* <Link //? Fitur stock opname utk warehouse admin blm ada
-                            to={routes.stockOpname} className="link-no-decoration"
+                        <Link //? Fitur stock opname utk warehouse admin blm ada
+                            to={routes.manageStock} className="link-no-decoration"
                             className="link-no-decoration"
                             style={{
                                 color: currentPath.includes(routes.stockOpname) ? "#FCB537" : null,
@@ -171,9 +171,9 @@ function AdminSideBar(props) {
                             }}
     
                         >
-                            Manage Transaction
-                            {currentPath.includes(routes.stockOpname) ? <div className="adm-sidebar-active-nav" /> : null}
-                        </Link> */}
+                            Manage Stock
+                            {currentPath.includes(routes.manageStock) ? <div className="adm-sidebar-active-nav" /> : null}
+                        </Link>
                     </div>
                 </div>
                 {role_id === 1 ?
