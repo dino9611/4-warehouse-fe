@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./styles/AddProduct.css";
 import {API_URL} from "../../constants/api";
 import {Link, useHistory} from "react-router-dom";
