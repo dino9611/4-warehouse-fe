@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./styles/ManageTransaction.css";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
@@ -115,7 +115,7 @@ function ManageTransaction() {
 
     let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); //* Itung range page yang bisa di-klik
     
-    let showMaxRange = 10; //* Tentuin default max range yg tampil/di-render berapa buah
+    let showMaxRange = 5; //* Tentuin default max range yg tampil/di-render berapa buah
 
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [10, 50];
@@ -226,6 +226,7 @@ function ManageTransaction() {
                                                 style={{
                                                     transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                 }}
+                                                alt="Dropdown-Arrow"
                                             />
                                         </button>
                                         <ul 
@@ -236,15 +237,11 @@ function ManageTransaction() {
                                                 zIndex: toggleDropdown ? 100 : -10,
                                             }}
                                         >
-                                            {rowsPerPageOptions.map((val) => (
+                                            {rowsPerPageOptions.map((val, index) => (
                                                 val === itemPerPage ? 
-                                                <li className="adm-transaction-dropdown-selected">{val}</li> 
+                                                <li className="adm-transaction-dropdown-selected" key={index}>{val}</li> 
                                                 : 
-                                                <li
-                                                    onClick={() => filterItemPerPage(val)}
-                                                >
-                                                    {val}
-                                                </li>
+                                                <li onClick={() => filterItemPerPage(val)} key={index}>{val}</li>
                                             ))}
                                         </ul>
                                     </div>
@@ -413,34 +410,45 @@ function ManageTransaction() {
 
     // RENDER PAGE RANGE FOR PAGINATION SECTION
     const renderPageRange = () => { //* Utk render button select page pagination
-        const disabledBtn = (value) => { //* Button page pagination yg saat ini aktif
+        const disabledBtn = (value, index) => { //* Button page pagination yg saat ini aktif
             return (
-                <button className="adm-transaction-pagination-btn" value={value} onClick={(event) => selectPage(event)} disabled>
+                <button 
+                    className="adm-transaction-pagination-btn" 
+                    value={value} 
+                    onClick={selectPage} 
+                    disabled
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
-        const clickableBtn = (value) => { //* Button page pagination yg tdk aktif & bisa di-klik
+        const clickableBtn = (value, index) => { //* Button page pagination yg tdk aktif & bisa di-klik
             return (
-                <button className="adm-transaction-pagination-btn" value={value} onClick={(event) => selectPage(event)}>
+                <button 
+                    className="adm-transaction-pagination-btn" 
+                    value={value} 
+                    onClick={selectPage}
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
         if (pageCountRange.length <= showMaxRange) {
-            return pageCountRange.map((val) => {
+            return pageCountRange.map((val, index) => {
                 if (val === page) { //* Bila value button = value page --> aktif saat ini
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         } else {
             let filteredArr;
 
-            if (page <= 5) {
+            if (page < 5) {
                 filteredArr = pageCountRange.slice(0, 0 + 5); //* Slice array utk tampilan button select page pagination bila <= 5 buah
             } else {
                 let slicingCounter = page - 6;
@@ -450,13 +458,13 @@ function ManageTransaction() {
     
             return filteredArr.map((val, index) => {
                 if (val === page) {
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else if (index >= showMaxRange) { //* Bila index >= range maksimum = tidak render
                     return
                 } else if (index > showMaxRange && index < pageCountTotal - 1) {
                     return
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         };
@@ -547,7 +555,11 @@ function ManageTransaction() {
                     </Box>
                 </div>
                 {transactions.map((val, index) => (
-                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                    <Modal 
+                        open={modalLength[index]} 
+                        close={() => onCloseModal(index)}
+                        key={`payproof-#${val.id}-modal`}
+                    >
                         {payProofModal(val.id, val.payment_proof, index)}
                     </Modal>
                 ))}
