@@ -202,6 +202,7 @@ function ManageAdmin() {
                                     style={{
                                         transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                     }}
+                                    alt="Dropdown-Arrow"
                                 />
                             </button>
                             <ul 
@@ -212,11 +213,12 @@ function ManageAdmin() {
                                     zIndex: toggleDropdown ? 100 : -10,
                                 }}
                             >
-                                {warehouses?.map((val) => (
+                                {warehouses?.map((val, index) => (
                                     parseInt(val.id) === addAdmInput.assign_warehouse ? //* parseInt karena yg dri BE berbentuk string
                                     <li 
                                         value={val.id} 
                                         className="manage-adm-dropdown-selected"
+                                        key={index}
                                     >
                                         {val.name}
                                     </li> 
@@ -224,6 +226,7 @@ function ManageAdmin() {
                                     <li
                                         value={val.id}
                                         onClick={(event) => selectWarehouse(event, val.name)}
+                                        key={index}
                                     >
                                         {val.name}
                                     </li>
@@ -355,9 +358,7 @@ function ManageAdmin() {
                                                 <TableBody>
                                                     {adminList
                                                     .map((val) => (
-                                                        <StyledTableRow
-                                                        key={`${val.id}-${val.name}`}
-                                                        >
+                                                        <StyledTableRow key={`${val.id}-${val.name}`}>
                                                             <StyledTableCell 
                                                                 align="left" 
                                                                 component="th" 
