@@ -1,5 +1,5 @@
 import "./styles/EditProduct.css";
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useLocation} from "react-router-dom";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
@@ -22,7 +22,7 @@ import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import infoIcon from "../../assets/components/Info-Yellow.svg";
 import CircularProgress from '@mui/material/CircularProgress';
-import { debounce } from "throttle-debounce";
+// import { debounce } from "throttle-debounce";
 
 function EditProduct() {
     const prodIdFromParent = useLocation();
@@ -251,7 +251,7 @@ function EditProduct() {
                                 <>
                                     <img 
                                         src={URL.createObjectURL(imgCarrier[0])} 
-                                        alt="Preview-Image-To-Upload"
+                                        alt="Preview-To-Upload"
                                         className="edit-images-preview"
                                         style={{cursor: "pointer"}}
                                     />
@@ -525,7 +525,7 @@ function EditProduct() {
                                                                     className="edit-images-icon"
                                                                     onClick={() => modalClick(index)}
                                                                 >
-                                                                    <img src={editIcon} />
+                                                                    <img src={editIcon} alt="Edit"/>
                                                                 </span>
                                                                 :
                                                                 null
@@ -574,6 +574,7 @@ function EditProduct() {
                                                                 style={{
                                                                     transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                                 }}
+                                                                alt="Dropdown-Arrow"
                                                             />
                                                         </button>
                                                         <ul 
