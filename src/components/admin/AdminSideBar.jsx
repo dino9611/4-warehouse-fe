@@ -103,7 +103,7 @@ function AdminSideBar(props) {
                             {currentPath.includes(routes.manageProduct) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
                         <Link 
-                            to={routes.transactions} className="link-no-decoration"
+                            to={routes.transactions}
                             className="link-no-decoration"
                             style={{
                                 color: currentPath.includes(routes.transactions) ? "#FCB537" : null,
@@ -144,7 +144,7 @@ function AdminSideBar(props) {
                             }}
                         >
                             <Link //? Fitur stock opname utk warehouse admin blm ada
-                                to={routes.manageStock} className="link-no-decoration"
+                                to={routes.manageStock}
                                 className="link-no-decoration"
                                 style={{
                                     color: currentPath.includes(routes.manageStock) ? "#FCB537" : null,
@@ -220,7 +220,7 @@ function AdminSideBar(props) {
             <div className="adm-sidebar-foot-wrap">
                 <div className="adm-sidebar-foot-profile">
                     <div className="adm-sidebar-foot-profile-pic">
-                        <img src={profileIcon} alt="admin-profile-picture" />
+                        <img src={profileIcon} alt="admin-profpic" />
                     </div>
                     <div className="adm-sidebar-foot-profile-info">
                         <div>{username}</div>
