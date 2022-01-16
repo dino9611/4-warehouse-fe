@@ -218,8 +218,6 @@
     .adm-login-sub-wrap {
         margin: 0 2.5rem;
         width: calc(100% - 2.5rem * 2);
-        /* margin: 0 5rem;
-        width: calc(100% - 5rem * 2); */
     }
 
     .adm-login-left-img {
@@ -236,26 +234,8 @@
     .adm-login-sub-wrap {
         margin: 0 2.5rem;
         width: calc(100% - 2.5rem * 2);
-        /* margin: 0 5rem;
-        width: calc(100% - 5rem * 2); */
-    }
-
-    .adm-login-left-img {
-        width: 53.5%;
-    }
-
-    .adm-login-right-form {
-        width: 46.5%;
     }
 }
-
-/* ? CUSTOM SIZE LG */
-/* @media (max-width: 1099px) {
-    .adm-login-sub-wrap {
-        margin: 0 2.5rem;
-        width: calc(100% - 2.5rem * 2);
-    }
-} */
 
 /* ? TABLET SIZE MD */
 @media (max-width: 991px) {
