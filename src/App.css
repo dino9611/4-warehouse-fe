@@ -19,24 +19,24 @@
   --b-rad-root: 12px;
   --b-shadow-root: 0px 1px 6px #d7d7d8;
 
-  /* REACT TOASTIFY ROOT STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
+  /* ? REACT TOASTIFY ROOT STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
   --toastify-toast-width: 400px !important;
   --toastify-font-family: "Poppins", "Open Sans", sans-serif;
   --toastify-text-color-light: var(--neutral-1st-color) !important;
 
-  /* ? Success Toast */
+  /* * Success Toast */
   --toastify-icon-color-success: var(--semantic-success);
   --toastify-color-progress-success: var(--semantic-success);
 
-  /* ? Error Toast */
+  /* * Error Toast */
   --toastify-icon-color-error: var(--semantic-error) !important;
   --toastify-color-progress-error: var(--semantic-error) !important;
 }
 
-/* ? Cek bagian ini, apakah ada yang mempengaruhi/tidak */
-.App {
-  /* text-align: center; */
-}
+/* ! Cek bagian ini, apakah ada yang mempengaruhi/tidak */
+/* .App {
+  text-align: center;
+} */
 
 body {
   margin: 0;
@@ -52,9 +52,9 @@ body {
 .text-link:hover {
   color: initial;
 }
-/* ? ------------------------------------------------- */
+/* ! ------------------------------------------------- */
 
-/* REACT TOASTIFY CUSTOM STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
+/* ? REACT TOASTIFY CUSTOM STYLING FOR ADMIN & NON USER/NON ADMIN ROUTE */
 .Toastify__toast-theme--light {
   font-size: 0.95em;
   font-weight: 400;

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import "./styles/ManageWarehouse.css";
+import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -12,21 +13,63 @@ import {API_URL} from "../../constants/api";
 import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
 import Swal from 'sweetalert2';
-import { successToast, errorToast } from "../../redux/actions/ToastAction";
+import { errorToast } from "../../redux/actions/ToastAction";
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
+import {Link} from "react-router-dom";
+import { useSelector } from "react-redux";
+import Stack from '@mui/material/Stack';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
+import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
+import NotFoundPage from "../non-user/NotFoundV1";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      border: 0,
+      fontWeight: 600
+    },
+    [`&.${tableCellClasses.body}`]: {
+        border: 0,
+        color: "#5A5A5A"
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: "white",
+    },
+    '&:nth-of-type(even)': {
+      backgroundColor: "#F4F4F4",
+    },
+    // Show last border
+    '&:last-child td, &:last-child th': {
+      borderBottom: "1px solid #CACACA"
+    },
+}));
 
 function ManageWarehouse() {
+    const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
+    
+    const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
+
     const [warehouses, setWarehouses] = useState([]);
 
     const [toggleModal, setToggleModal] = useState(false);
 
-    const [addWhInput, setAddWhInput] = useState({ // Utk bawa input data warehouse ke BE
+    const [addWhInput, setAddWhInput] = useState({ //* Utk bawa input data warehouse ke BE
         warehouse_name: "",
         warehouse_address: "",
         // warehouse_lat: "",
         // warehouse_long: ""
-      });
+    });
 
-    const fetchWarehouse = async () => { // Utk render data list warehouse
+    const charMax = 45;
+
+    // FETCH & useEFFECT SECTION
+    const getRoleId = useSelector((state) => state.auth.role_id);
+    
+    const fetchWarehouse = async () => { //* Utk render data list warehouse
         try {
             const res = await axios.get(`${API_URL}/warehouse/list`);
             res.data.forEach((val) => {
@@ -35,15 +78,30 @@ function ManageWarehouse() {
             });
             setWarehouses(res.data);
         } catch (error) {
-            console.log(error)
+            errorToast("Server Error, from ManageWarehouse");
+            console.log(error);
+            setErrorFetch(true);
         }
     };
 
     const {warehouse_name, warehouse_address} = addWhInput;
 
     useEffect(() => {
-        fetchWarehouse();
+        const fetchData = async () => {
+            await fetchWarehouse();
+            await setLoadData(false);
+        };
+        fetchData();
     }, []);
+
+    const breadcrumbs = [
+        <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
+          Dashboard
+        </Link>,
+        <Typography key="2" color="#070707" style={{fontSize: "0.75rem", margin: "auto"}}>
+          Manage Warehouse
+        </Typography>,
+    ];
 
     // RENDER MODAL CREATE WAREHOUSE
     const modalClick = () => {
@@ -58,7 +116,7 @@ function ManageWarehouse() {
         setToggleModal(false);
     };
 
-    const addWhStringHandler = (event) => { // Utk setState data berbentuk string
+    const addWhStringHandler = (event) => { //* Utk setState data berbentuk string
         setAddWhInput((prevState) => {
             return { ...prevState, [event.target.name]: event.target.value };
         });
@@ -78,6 +136,7 @@ function ManageWarehouse() {
                         value={warehouse_name}
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse name"
+                        maxLength={charMax}
                     />
                     <Textbox
                         type="text"
@@ -86,6 +145,7 @@ function ManageWarehouse() {
                         value={warehouse_address}
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse address"
+                        maxLength={charMax}
                     />
                     {/* <Textbox
                         type="text"
@@ -95,23 +155,23 @@ function ManageWarehouse() {
                     /> */}
                 </div>
                 <div className="create-wh-modal-foot">
-                    <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
                     <button onClick={onCloseModal}>Cancel</button>
+                    <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
                 </div>
             </>
         )
     };
 
-    const onSubmitNewWh = async (event) => { // Untuk trigger submit button
+    const onSubmitNewWh = async (event) => { //* Untuk trigger submit button
         event.preventDefault();
         document.querySelector("div.create-wh-modal-foot > button").disabled = true;
         
         let inputtedNewWh = {
             warehouse_name: warehouse_name,
-            warehouse_address: warehouse_address,
+            warehouse_address: warehouse_address
         };
 
-        if (warehouse_name && warehouse_address) {
+        if (warehouse_name && warehouse_address && warehouse_name.length <= charMax && warehouse_address.length <= charMax) {
             try {
                 await axios.post(`${API_URL}/warehouse/add`, inputtedNewWh);
                 setAddWhInput((prevState) => {
@@ -122,7 +182,12 @@ function ManageWarehouse() {
                     icon: 'success',
                     title: 'Create new warehouse success!',
                     text: `${inputtedNewWh.warehouse_name}`,
-                    confirmButtonColor: '#B24629',
+                    customClass: { //* CSS custom nya ada di AdminMainParent
+                        popup: 'adm-swal-popup-override'
+                    },
+                    confirmButtonText: 'Continue',
+                    confirmButtonAriaLabel: 'Continue',
+                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
                   });
                 fetchWarehouse();
             } catch (err) {
@@ -131,66 +196,96 @@ function ManageWarehouse() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
-                    confirmButtonColor: '#B24629',
-                  });
+                    customClass: { //* CSS custom nya ada di AdminMainParent
+                        popup: 'adm-swal-popup-override'
+                    },
+                    confirmButtonText: 'Continue',
+                    confirmButtonAriaLabel: 'Continue',
+                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                });
             };
         } else {
             document.querySelector("div.create-wh-modal-foot > button").disabled = false;
-            errorToast("Pastikan terisi semua (discount price tidak wajib)");
+            errorToast("Please make sure all input filled & below 46 characters");
         };
     };
 
     return (
-        <div className="manage-wh-main-wrap">
-            <div className="manage-wh-header-wrap">
-                <h4>Manage Warehouse</h4>
-                <h4>nanti breadcrumb {`>`} admin {`>`} xxx</h4>
-            </div>
-            <div className="manage-wh-contents-wrap">
-                <TableContainer component={Paper} style={{borderRadius: "12px"}}>
-                    <div className="manage-wh-add-wrap">
-                        <button onClick={modalClick}>+ Create Warehouse</button>
-                    </div>
-                    <Table sx={{ minWidth: 650 }} aria-label="warehouse table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="left">Warehouse ID</TableCell>
-                                <TableCell align="left">Name</TableCell>
-                                <TableCell align="left">Address</TableCell>
-                                <TableCell align="left">Geolocation</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {warehouses
-                            .map((val) => (
-                                <TableRow
-                                key={`${val.id}-${val.name}`}
-                                >
-                                    <TableCell 
-                                        align="left" 
-                                        component="th" 
-                                        scope="row" 
-                                        style={{width: "200px"}}
+        <>
+            {(getRoleId === 1) ?
+                <div className="manage-wh-main-wrap">
+                    {!loadData ?
+                        <>
+                            <div className="manage-wh-breadcrumb-wrap">
+                                <Stack spacing={2}>
+                                    <Breadcrumbs
+                                        separator={<NavigateNextIcon fontSize="small" />}
+                                        aria-label="manage warehouse breadcrumb"
                                     >
-                                        {val.id}
-                                    </TableCell>
-                                    <TableCell align="left" className="txt-capitalize">{val.name}</TableCell>
-                                    <TableCell align="left" className="txt-capitalize">{val.address}</TableCell>
-                                    <TableCell align="left">
-                                        lat: {val.latitude}
-                                        <br />
-                                        long: {val.longitude}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Modal open={toggleModal} close={onCloseModal}>
-                    {createWhModal()}
-                </Modal>
-            </div>
-        </div>
+                                        {breadcrumbs}
+                                    </Breadcrumbs>
+                                </Stack>
+                            </div>
+                            { (!loadData && errorFetch) ?
+                                <AdminFetchFailed />
+                                :
+                                <>
+                                    <div className="manage-wh-header-wrap">
+                                        <h4>Manage Warehouse</h4>
+                                        <button onClick={modalClick}>+ Create Warehouse</button>
+                                    </div>
+                                    <div className="manage-wh-contents-wrap">
+                                        <TableContainer component={Paper} style={{borderRadius: 0, boxShadow: "none"}}>
+                                            <Table sx={{ minWidth: "100%" }} aria-label="transaction items detail">
+                                                <TableHead style={{backgroundColor: "#FCB537"}}>
+                                                    <TableRow>
+                                                        <StyledTableCell align="left">Warehouse ID</StyledTableCell>
+                                                        <StyledTableCell align="left">Name</StyledTableCell>
+                                                        <StyledTableCell align="left">Address</StyledTableCell>
+                                                        <StyledTableCell align="left">Geolocation</StyledTableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {warehouses
+                                                    .map((val) => (
+                                                        <StyledTableRow
+                                                        key={`${val.id}-${val.name}`}
+                                                        >
+                                                            <StyledTableCell 
+                                                                align="left" 
+                                                                component="th" 
+                                                                scope="row" 
+                                                                style={{width: "200px"}}
+                                                            >
+                                                                {val.id}
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{val.address}</StyledTableCell>
+                                                            <StyledTableCell align="left">
+                                                                lat: {val.latitude}
+                                                                <br />
+                                                                long: {val.longitude}
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                        <Modal open={toggleModal} close={onCloseModal}>
+                                            {createWhModal()}
+                                        </Modal>
+                                    </div>
+                                </>       
+                            }
+                        </>
+                        :
+                        <AdminSkeletonSimple />
+                    } 
+                </div>
+                :
+                <NotFoundPage />
+            }
+        </>
     )
 }
 
