@@ -37,3 +37,6 @@
 .btn-send-email:hover {
   background-color: var(--primary-3rd-color);
 }
+.VerifyEmail {
+  text-align: center;
+}

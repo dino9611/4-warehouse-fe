@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import "./styles/header.css";
+import { logoutAction } from "../redux/actions";
 
 // Library react
 
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTransition, animated } from "react-spring";
 
 // Komponen
@@ -45,6 +46,8 @@ function Header() {
   const dataCart = useSelector((state) => state.cartReducer); // Data redux untuk cart detail
   const dataUser = useSelector((state) => state.auth); // Data redux untuk data user
 
+  const dispatch = useDispatch();
+
   // Function click outside dropdown
 
   ClickOutside(ref, () => setHandlerCategory(false)); // Click outside untuk dropdown category
@@ -76,6 +79,13 @@ function Header() {
         return el.qty;
       })
       .reduce((prev, curr) => prev + curr);
+  };
+
+  //function logout
+
+  const onLogout = () => {
+    localStorage.removeItem("token");
+    dispatch(logoutAction());
   };
 
   // RENDERING
@@ -198,12 +208,17 @@ function Header() {
                 <div>Alamat</div>
               </div>
             </Link>
-            <div className="header-ddlist-wrapper d-flex align-items-center p-2">
-              <div className="mr-2">
-                <img src={asset.logout} alt="alamat" />
+            <Link to="/" className="text-link">
+              <div
+                className="header-ddlist-wrapper d-flex align-items-center p-2 "
+                onClick={onLogout}
+              >
+                <div className="mr-2">
+                  <img src={asset.logout} alt="alamat" />
+                </div>
+                <div>Logout</div>
               </div>
-              <div>Logout</div>
-            </div>
+            </Link>
           </div>
         </animated.div>
       ) : null
