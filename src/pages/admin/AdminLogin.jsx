@@ -89,7 +89,7 @@ function AdminLogin() {
                 </div>
                 <div className="adm-login-right-form">
                     <div className="adm-login-right-img">
-                        <img src={localLogo} alt="The-Local-Logo" onClick={toHome}/>
+                        <img src={localLogo} alt="The-Local-Logo-For-Back-To-Home" onClick={toHome}/>
                     </div>
                     <div className="adm-login-heading-wrap">
                         <h1>Admin Sign In</h1>
@@ -101,7 +101,7 @@ function AdminLogin() {
                             type="text"
                             name="inputtedUsername"
                             value={inputtedUsername}
-                            onChange={(event) => inputChangeHandler(event)}
+                            onChange={inputChangeHandler}
                             placeholder="Enter your username"
                         />
                         <p>Password</p>
@@ -110,7 +110,7 @@ function AdminLogin() {
                                 type={showPass}
                                 name="inputtedPassword"
                                 value={inputtedPassword}
-                                onChange={(event) => inputChangeHandler(event)}
+                                onChange={inputChangeHandler}
                                 placeholder="Enter your password"
                             />
                             <img 

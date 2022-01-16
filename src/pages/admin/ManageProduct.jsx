@@ -489,7 +489,7 @@ function ManageProduct() {
                                                     <StyledTableCell align="center" component="th" scope="row">
                                                         <img 
                                                             src={`${API_URL}/${val.images[0]}`} 
-                                                            style={{height: "100px", width: "100px"}} 
+                                                            style={{height: "80px", width: "80px"}} 
                                                             alt={val.name}
                                                         />
                                                     </StyledTableCell>
