@@ -210,7 +210,7 @@ function ManageStock() {
                     </AdmBtnSecondary>
                     <AdmBtnPrimary 
                         width={"6rem"} 
-                        onClick={(event) => submitEditStock(event, currentStock, prodId, whId)}
+                        onClick={() => submitEditStock(currentStock, prodId)}
                         disabled={submitLoad}
                     >
                         {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
@@ -308,7 +308,7 @@ function ManageStock() {
     };
 
     // CLICK/SUBMIT FUNCTION SECTION
-    const submitEditStock = async (event, prevStock, prodId, whId) => {
+    const submitEditStock = async (prevStock, prodId) => {
         setSubmitLoad(true);
 
         let inputtedStock = {
@@ -425,7 +425,7 @@ function ManageStock() {
                                                         <StyledTableCell align="left">Name</StyledTableCell>
                                                         <StyledTableCell align="left">Category</StyledTableCell>
                                                         <StyledTableCell align="left">
-                                                            Stock
+                                                            Current Stock
                                                         </StyledTableCell>
                                                         <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
                                                     </TableRow>
