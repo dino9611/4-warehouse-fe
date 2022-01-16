@@ -68,20 +68,24 @@ function a11yProps(index) {
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       border: 0,
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
       fontWeight: 600
     },
     [`&.${tableCellClasses.body}`]: {
         border: 0,
-        color: "#5A5A5A"
+        color: "#5A5A5A",
+        fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
       backgroundColor: "white",
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
     '&:nth-of-type(even)': {
       backgroundColor: "#F4F4F4",
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
     // Show last border
     '&:last-child td, &:last-child th': {
