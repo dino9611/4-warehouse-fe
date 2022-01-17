@@ -69,8 +69,8 @@ function ManageWarehouse() {
     const [addWhInput, setAddWhInput] = useState({ //* Utk bawa input data warehouse ke BE
         warehouse_name: "",
         warehouse_address: "",
-        // warehouse_lat: "",
-        // warehouse_long: ""
+        warehouse_latitude: "",
+        warehouse_longitude: ""
     });
 
     const [dataProvince, setDataProvince] = useState([]);
@@ -83,7 +83,7 @@ function ManageWarehouse() {
 
     const charMax = 45;
 
-    const {warehouse_name, warehouse_address} = addWhInput;
+    const {warehouse_name, warehouse_address, warehouse_latitude, warehouse_longitude} = addWhInput;
 
     // FETCH & useEFFECT SECTION
     const getRoleId = useSelector((state) => state.auth.role_id);
@@ -195,7 +195,7 @@ function ManageWarehouse() {
                         label="Warehouse Name"
                         name="warehouse_name"
                         value={warehouse_name}
-                        onChange={(event) => addWhStringHandler(event)}
+                        onChange={addWhStringHandler}
                         placeholder="Input the warehouse name"
                         maxLength={charMax}
                         borderRadius={"8px"}
@@ -205,26 +205,46 @@ function ManageWarehouse() {
                         label="Warehouse Address"
                         name="warehouse_address"
                         value={warehouse_address}
-                        onChange={(event) => addWhStringHandler(event)}
+                        onChange={addWhStringHandler}
                         placeholder="Input the warehouse address"
                         maxLength={charMax}
                         borderRadius={"8px"}
                     />
-                    <h6 className="mt-3">Provinsi</h6>
+                    <label>Province</label>
                     <Select
                         defaultValue={pickProvince}
                         className="dropdown-form createWh-select-override"
-                        placeholder="Masukkan Provinsi"
+                        placeholder="Select Province"
                         onChange={debounce(250, (pickProvince) => provinceChange(pickProvince))}
                         options={dataProvince}
                     />
-                    <h6 className="mt-3">Kota</h6>
+                    <label>City</label>
                     <Select
                         defaultValue={pickCity}
                         className="dropdown-form"
-                        placeholder="Masukkan Kota"
+                        placeholder="Select City"
                         onChange={(pickCity) => cityChange(pickCity)}
                         options={dataCity}
+                    />
+                    <Textbox
+                        type="text"
+                        label="Address Latitude"
+                        name="warehouse_latitude"
+                        value={warehouse_latitude}
+                        onChange={addWhStringHandler}
+                        placeholder="Input address latitude (check on google map)"
+                        maxLength={charMax}
+                        borderRadius={"8px"}
+                    />
+                    <Textbox
+                        type="text"
+                        label="Address Longitude"
+                        name="warehouse_longitude"
+                        value={warehouse_longitude}
+                        onChange={addWhStringHandler}
+                        placeholder="Input address longitude (check on google map)"
+                        maxLength={charMax}
+                        borderRadius={"8px"}
                     />
                     {/* <Textbox
                         type="text"
@@ -237,7 +257,7 @@ function ManageWarehouse() {
                     <button onClick={onCloseModal} disabled={submitLoad}>Cancel</button>
                     <button 
                         onClick={onSubmitNewWh} 
-                        disabled={!warehouse_name || !warehouse_address || !pickProvince || !pickCity || submitLoad}
+                        disabled={!warehouse_name || !warehouse_address || !pickProvince || !pickCity || !warehouse_latitude || !warehouse_longitude || submitLoad}
                     >
                         {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Confirm"}
                     </button>
@@ -252,19 +272,21 @@ function ManageWarehouse() {
         setSubmitLoad(true);
         
         let inputtedNewWh = {
-            warehouse_name: warehouse_name,
-            warehouse_address: warehouse_address,
+            warehouse_name,
+            warehouse_address,
             province_id: pickProvince.province_id,
             province: pickProvince.province,
             city_id: pickCity.city_id,
-            city: pickCity.label
+            city: pickCity.label,
+            warehouse_latitude,
+            warehouse_longitude
         };
 
-        if (warehouse_name && warehouse_address && warehouse_name.length <= charMax && warehouse_address.length <= charMax && pickProvince && pickCity) {
+        if (warehouse_name && warehouse_address &&  warehouse_latitude && warehouse_longitude && warehouse_name.length <= charMax && warehouse_address.length <= charMax && warehouse_latitude.length <= charMax && warehouse_longitude.length <= charMax && pickProvince && pickCity) {
             try {
                 await axios.post(`${API_URL}/warehouse/add`, inputtedNewWh);
                 setAddWhInput((prevState) => {
-                    return {...prevState, warehouse_name: "", warehouse_address: ""}
+                    return {...prevState, warehouse_name: "", warehouse_address: "", warehouse_latitude: "", warehouse_longitude: ""}
                 });
                 setPickProvince("");
                 setPickCity("");
@@ -381,3 +403,10 @@ function ManageWarehouse() {
 }
 
 export default ManageWarehouse;
+
+
+//? CHECKER FUNCTIONS SECTION - Ga jd dipake
+// const latitudeCheck = (value) => {
+//     let pattern = /[-.]/mig;
+//     return pattern.test(value);
+// };

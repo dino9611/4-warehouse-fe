@@ -107,6 +107,13 @@
     row-gap: 1rem;
 }
 
+.create-wh-modal-body > label:first-of-type, /* Klo ga gini, label first type nya ga mau keatur margin bottom nya */
+.create-wh-modal-body > label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: -0.5rem;
+}
+
 /* * WH MODAL FOOT WRAP & CONTENTS ON WH MODAL SECTION */
 .create-wh-modal-foot {
     column-gap: 1rem;
