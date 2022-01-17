@@ -55,6 +55,22 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
+const customStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        height: "50px",
+        boxShadow: state.isFocused ? "none" : "none",
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        color: "#CACACA"
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      color: state.isSelected ? '#fff' : '#5A5A5A'
+    }),
+}
+
 function ManageWarehouse() {
     const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
     
@@ -213,18 +229,38 @@ function ManageWarehouse() {
                     <label>Province</label>
                     <Select
                         defaultValue={pickProvince}
-                        className="dropdown-form createWh-select-override"
+                        styles={customStyles}
                         placeholder="Select Province"
                         onChange={debounce(250, (pickProvince) => provinceChange(pickProvince))}
                         options={dataProvince}
+                        theme={(theme) => ({
+                            ...theme,
+                            border: "none",
+                            borderRadius: "8px",
+                            colors: {
+                              ...theme.colors,
+                              primary: '#B24629',
+                              primary25: '#F4F4F4',
+                            },
+                        })}
                     />
                     <label>City</label>
                     <Select
                         defaultValue={pickCity}
-                        className="dropdown-form"
+                        styles={customStyles}
                         placeholder="Select City"
                         onChange={(pickCity) => cityChange(pickCity)}
                         options={dataCity}
+                        theme={(theme) => ({
+                            ...theme,
+                            border: "none",
+                            borderRadius: "8px",
+                            colors: {
+                              ...theme.colors,
+                              primary: '#B24629',
+                              primary25: '#F4F4F4',
+                            },
+                        })}
                     />
                     <Textbox
                         type="text"
