@@ -60,7 +60,6 @@ function App() {
     })();
   }, []);
 
-  const role = "user";
   const [loading, setLoading] = useState(true);
 
   // GET ROLE_ID DATA FROM REDUX STORE

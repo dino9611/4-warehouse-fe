@@ -103,7 +103,7 @@ function AdminSideBar(props) {
                             {currentPath.includes(routes.manageProduct) ? <div className="adm-sidebar-active-nav" /> : null}
                         </Link>
                         <Link 
-                            to={routes.transactions} className="link-no-decoration"
+                            to={routes.transactions}
                             className="link-no-decoration"
                             style={{
                                 color: currentPath.includes(routes.transactions) ? "#FCB537" : null,
@@ -120,62 +120,66 @@ function AdminSideBar(props) {
                         </Link>
                     </div>
                 </div>
-                <div className="adm-sidebar-dropdown-wrap">
-                    <div 
-                        className={currentPath.includes(routes.stockRequest) ? 
-                            "adm-sidebar-item-wrap sidebar-active" 
-                            : 
-                            "adm-sidebar-item-wrap"
-                        }
-                        onClick={inventoryToggleClick}
-                    >
-                        <div className="adm-sidebar-item-label">
-                            <div className="adm-inventory-icon" />
-                            <h6>Inventory</h6>
+                {role_id === 2 ?
+                    <div className="adm-sidebar-dropdown-wrap">
+                        <div 
+                            className={(currentPath.includes(routes.stockRequest) ||  currentPath.includes(routes.manageStock)) ? 
+                                "adm-sidebar-item-wrap sidebar-active" 
+                                : 
+                                "adm-sidebar-item-wrap"
+                            }
+                            onClick={inventoryToggleClick}
+                        >
+                            <div className="adm-sidebar-item-label">
+                                <div className="adm-inventory-icon" />
+                                <h6>Inventory</h6>
+                            </div>
+                            <div className="adm-toggle-icon" style={{transform: inventoryToggle ? "rotate(-180deg)" : "rotate(0deg)"}} />
                         </div>
-                        <div className="adm-toggle-icon" style={{transform: inventoryToggle ? "rotate(-180deg)" : "rotate(0deg)"}} />
-                    </div>
-                    <div 
-                        className="adm-sidebar-dropdown-menu"
-                        style={{
-                            height: inventoryToggle ? "100%" : 0, 
-                            paddingTop: inventoryToggle ? "1rem" : 0,
-                        }}
-                    >
-                        <Link 
-                            to={routes.stockRequest}
-                            className="link-no-decoration"
+                        <div 
+                            className="adm-sidebar-dropdown-menu"
                             style={{
-                                color: currentPath.includes(routes.stockRequest) ? "#FCB537" : null, 
-                                fontSize: inventoryToggle ? "0.75rem" : 0,
-                                marginLeft: inventoryToggle ? 0 : "-20%",
-                                marginTop: inventoryToggle ? 0 : "-10%",
-                                opacity: inventoryToggle ? 1 : 0, 
-                                zIndex: inventoryToggle ? 1 : -1
+                                height: inventoryToggle ? "100%" : 0, 
+                                paddingTop: inventoryToggle ? "1rem" : 0,
                             }}
-    
                         >
-                            Stock Request
-                            {currentPath.includes(routes.stockRequest) ? <div className="adm-sidebar-active-nav" /> : null}
-                        </Link>
-                        {/* <Link //? Fitur stock opname utk warehouse admin blm ada
-                            to={routes.stockOpname} className="link-no-decoration"
-                            className="link-no-decoration"
-                            style={{
-                                color: currentPath.includes(routes.stockOpname) ? "#FCB537" : null,
-                                marginLeft: inventoryToggle ? 0 : "-20%",
-                                fontSize: inventoryToggle ? "0.75rem" : 0,
-                                marginTop: inventoryToggle ? 0 : "-10%",
-                                opacity: inventoryToggle ? 1 : 0, 
-                                zIndex: inventoryToggle ? 1 : -1
-                            }}
-    
-                        >
-                            Manage Transaction
-                            {currentPath.includes(routes.stockOpname) ? <div className="adm-sidebar-active-nav" /> : null}
-                        </Link> */}
+                            <Link //? Fitur stock opname utk warehouse admin blm ada
+                                to={routes.manageStock}
+                                className="link-no-decoration"
+                                style={{
+                                    color: currentPath.includes(routes.manageStock) ? "#FCB537" : null,
+                                    marginLeft: inventoryToggle ? 0 : "-20%",
+                                    fontSize: inventoryToggle ? "0.75rem" : 0,
+                                    marginTop: inventoryToggle ? 0 : "-10%",
+                                    opacity: inventoryToggle ? 1 : 0, 
+                                    zIndex: inventoryToggle ? 1 : -1
+                                }}
+        
+                            >
+                                Manage Stock
+                                {currentPath.includes(routes.manageStock) ? <div className="adm-sidebar-active-nav" /> : null}
+                            </Link>
+                            <Link 
+                                to={routes.stockRequest}
+                                className="link-no-decoration"
+                                style={{
+                                    color: currentPath.includes(routes.stockRequest) ? "#FCB537" : null, 
+                                    fontSize: inventoryToggle ? "0.75rem" : 0,
+                                    marginLeft: inventoryToggle ? 0 : "-20%",
+                                    marginTop: inventoryToggle ? 0 : "-10%",
+                                    opacity: inventoryToggle ? 1 : 0, 
+                                    zIndex: inventoryToggle ? 1 : -1
+                                }}
+        
+                            >
+                                Stock Request
+                                {currentPath.includes(routes.stockRequest) ? <div className="adm-sidebar-active-nav" /> : null}
+                            </Link>
+                        </div>
                     </div>
-                </div>
+                    :
+                    null
+                }
                 {role_id === 1 ?
                     <>
                         <Link 
@@ -216,7 +220,7 @@ function AdminSideBar(props) {
             <div className="adm-sidebar-foot-wrap">
                 <div className="adm-sidebar-foot-profile">
                     <div className="adm-sidebar-foot-profile-pic">
-                        <img src={profileIcon} alt="admin-profile-picture" />
+                        <img src={profileIcon} alt="admin-profpic" />
                     </div>
                     <div className="adm-sidebar-foot-profile-info">
                         <div>{username}</div>

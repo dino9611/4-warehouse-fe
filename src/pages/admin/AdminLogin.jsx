@@ -1,5 +1,5 @@
 import "./styles/AdminLogin.css";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AdminLoginImg from "../../assets/visuals/Admin_Login_02.png";
 import localLogo from "../../assets/logo.svg";
 import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
@@ -71,7 +71,7 @@ function AdminLogin() {
     };
 
     // REDIRECT CONDITION IF ALREADY LOGIN & TRY ACCESS LOGIN PAGE
-    if (getIsLogin && getRoleId === 1 || getRoleId === 2) {
+    if (getIsLogin && (getRoleId === 1 || getRoleId === 2)) {
         return (
             <Redirect to="/admin/dashboard" />
         );
@@ -89,7 +89,7 @@ function AdminLogin() {
                 </div>
                 <div className="adm-login-right-form">
                     <div className="adm-login-right-img">
-                        <img src={localLogo} alt="The-Local-Logo" onClick={toHome}/>
+                        <img src={localLogo} alt="The-Local-Logo-For-Back-To-Home" onClick={toHome}/>
                     </div>
                     <div className="adm-login-heading-wrap">
                         <h1>Admin Sign In</h1>
@@ -101,7 +101,7 @@ function AdminLogin() {
                             type="text"
                             name="inputtedUsername"
                             value={inputtedUsername}
-                            onChange={(event) => inputChangeHandler(event)}
+                            onChange={inputChangeHandler}
                             placeholder="Enter your username"
                         />
                         <p>Password</p>
@@ -110,7 +110,7 @@ function AdminLogin() {
                                 type={showPass}
                                 name="inputtedPassword"
                                 value={inputtedPassword}
-                                onChange={(event) => inputChangeHandler(event)}
+                                onChange={inputChangeHandler}
                                 placeholder="Enter your password"
                             />
                             <img 

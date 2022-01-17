@@ -10,7 +10,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import thousandSeparator from "../../helpers/ThousandSeparator";
-import AdminWhStockModal from "../../components/admin/AdminWhStockModal";
 import {API_URL} from "../../constants/api";
 import paginationPrevArrow from "../../assets/components/Pagination-Prev-Bg-White.svg";
 import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-White.svg";
@@ -34,20 +33,24 @@ import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       border: 0,
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
       fontWeight: 600
     },
     [`&.${tableCellClasses.body}`]: {
         border: 0,
-        color: "#5A5A5A"
+        color: "#5A5A5A",
+        fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
       backgroundColor: "white",
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
     '&:nth-of-type(even)': {
       backgroundColor: "#F4F4F4",
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
     // Show last border
     '&:last-child td, &:last-child th': {
@@ -299,34 +302,44 @@ function ManageProduct() {
 
     // RENDER PAGE RANGE SECTION
     const renderPageRange = () => { //* Utk render button select page pagination
-        const disabledBtn = (value) => { //* Button page pagination yg saat ini aktif
+        const disabledBtn = (value, index) => { //* Button page pagination yg saat ini aktif
             return (
-                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)} disabled>
+                <button 
+                    className="adm-products-pagination-btn" 
+                    value={value} onClick={(event) => selectPage(event)} 
+                    disabled
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
-        const clickableBtn = (value) => { //* Button page pagination yg tdk aktif & bisa di-klik
+        const clickableBtn = (value, index) => { //* Button page pagination yg tdk aktif & bisa di-klik
             return (
-                <button className="adm-products-pagination-btn" value={value} onClick={(event) => selectPage(event)}>
+                <button 
+                    className="adm-products-pagination-btn" 
+                    value={value} 
+                    onClick={(event) => selectPage(event)}
+                    key={index}
+                >
                     {value}
                 </button>
             );
         };
 
         if (pageCountRange.length <= showMaxRange) {
-            return pageCountRange.map((val) => {
+            return pageCountRange.map((val, index) => {
                 if (val === page) { //* Bila value button = value page --> aktif saat ini
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         } else {
             let filteredArr;
 
-            if (page <= 5) {
+            if (page < 5) {
                 filteredArr = pageCountRange.slice(0, 0 + 5); //* Slice array utk tampilan button select page pagination bila <= 5 buah
             } else {
                 let slicingCounter = page - 6;
@@ -336,13 +349,13 @@ function ManageProduct() {
     
             return filteredArr.map((val, index) => {
                 if (val === page) {
-                    return disabledBtn(val);
+                    return disabledBtn(val, index);
                 } else if (index >= showMaxRange) { //* Bila index >= range maksimum = tidak render
                     return
                 } else if (index > showMaxRange && index < pageCountTotal - 1) {
                     return
                 } else {
-                    return clickableBtn(val);
+                    return clickableBtn(val, index);
                 };
             });
         };
@@ -434,6 +447,7 @@ function ManageProduct() {
                                                         style={{
                                                             transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                         }}
+                                                        alt="Dropdown-Arrow"
                                                     />
                                                 </button>
                                                 <ul 
@@ -444,15 +458,11 @@ function ManageProduct() {
                                                         zIndex: toggleDropdown ? 100 : -10,
                                                     }}
                                                 >
-                                                    {rowsPerPageOptions.map((val) => (
+                                                    {rowsPerPageOptions.map((val, index) => (
                                                         val === itemPerPage ? 
-                                                        <li className="adm-products-filter-dropdown-selected">{val}</li> 
+                                                        <li className="adm-products-filter-dropdown-selected" key={index}>{val}</li> 
                                                         : 
-                                                        <li
-                                                            onClick={() => filterItemPerPage(val)}
-                                                        >
-                                                            {val}
-                                                        </li>
+                                                        <li onClick={() => filterItemPerPage(val)} key={index}>{val}</li>
                                                     ))}
                                                 </ul>
                                             </div>
@@ -479,13 +489,11 @@ function ManageProduct() {
                                         <TableBody>
                                             {products
                                             .map((val, index) => (
-                                                <StyledTableRow
-                                                key={val.SKU}
-                                                >
+                                                <StyledTableRow key={val.SKU}>
                                                     <StyledTableCell align="center" component="th" scope="row">
                                                         <img 
                                                             src={`${API_URL}/${val.images[0]}`} 
-                                                            style={{height: "100px", width: "100px"}} 
+                                                            style={{height: "80px", width: "80px"}} 
                                                             alt={val.name}
                                                         />
                                                     </StyledTableCell>
@@ -515,6 +523,7 @@ function ManageProduct() {
                                                                     style={{
                                                                         transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
                                                                     }}
+                                                                    alt="Dropdown-Arrow"
                                                                 />
                                                             </button>
                                                             <ul 
@@ -573,7 +582,11 @@ function ManageProduct() {
                                     </div>
                                 </div>
                                 {products.map((val, index) => (
-                                    <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                                    <Modal 
+                                        open={modalLength[index]} 
+                                        close={() => onCloseModal(index)}
+                                        key={`del-prod-#${val.id}-modal`}
+                                    >
                                         {delModalContent(val.id, val.SKU, val.name, index)}
                                     </Modal>
                                 ))}

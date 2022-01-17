@@ -10,13 +10,14 @@ import HomeDashboard from "./HomeDashboard";
 import ManageTransaction from "./ManageTransaction";
 import AdminTransactionDetail from "./AdminTransactionDetail";
 import NotFoundPage from "../non-user/NotFoundV1";
+import ManageStock from "./ManageStock";
 
 const routePath = {
     dashboard: "/admin/dashboard",
     manageProduct: "/admin/manage-product",
     addProduct: "/admin/manage-product/add",
     editProduct: "/admin/manage-product/edit",
-    // stockOpname: "/admin/stock-opname", //? Fitur stock opname utk warehouse admin blm ada
+    manageStock: "/admin/manage-stock",
     transactions: "/admin/manage-transaction",
     detailTransaction: "/admin/manage-transaction/detail",
     warehouses: "/admin/manage-warehouse",
@@ -45,11 +46,11 @@ const routes = [
       exact: true,
       main: () => <EditProduct />
     },
-    // { //? Fitur stock opname utk warehouse admin blm ada
-    //   path: routePath.stockOpname,
-    //   exact: true,
-    //   main: () => <div>Belum ada page stock opname</div>
-    // },
+    {
+      path: routePath.manageStock,
+      exact: true,
+      main: () => <ManageStock />
+    },
     {
       path: routePath.transactions,
       exact: true,
