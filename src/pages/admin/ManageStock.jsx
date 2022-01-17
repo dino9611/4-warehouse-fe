@@ -130,6 +130,7 @@ function ManageStock() {
     useEffect(() => {
         const fetchData = async () => {
             await fetchProdData();
+            await setLoadTable(false);
             await setLoadData(false);
         };
         fetchData();
@@ -161,6 +162,7 @@ function ManageStock() {
         setItemPerPage(itemValue);
         setPage(1);
         setToggleDropdown(false);
+        setLoadTable(true);
         setLoadData(true);
     };
     
@@ -291,6 +293,7 @@ function ManageStock() {
     // SELECT PAGE FUNCTION SECTION
     const selectPage = (event) => { //* Rubah value page sesuai value button pagination yg di-klik
         setPage(parseInt(event.target.value));
+        setLoadTable(true);
     };
     
     const prevPage = () => { //* Ganti value page ketika klik previous arrow pagination
@@ -298,6 +301,7 @@ function ManageStock() {
             return
         } else {
             setPage(page - 1);
+            setLoadTable(true);
         }
     };
 
@@ -306,6 +310,7 @@ function ManageStock() {
             return
         } else {
             setPage(page + 1);
+            setLoadTable(true);
         }
     };
 

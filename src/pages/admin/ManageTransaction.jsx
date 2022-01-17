@@ -96,6 +96,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function ManageTransaction() {
     const [loadData, setLoadData] = useState(true);
 
+    const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat loading table stlh select page pagination
+
     const [transactions, setTransactions] = useState([]); //* Data utama render tabel transactions
 
     const [value, setValue] = React.useState(0); //* Atur value tabbing
@@ -177,6 +179,7 @@ function ManageTransaction() {
     useEffect(() => {
         const fetchData = async () => {
             await fetchTransactions();
+            await setLoadTable(false);
             await setLoadData(false);
         };
         fetchData();
@@ -263,60 +266,66 @@ function ManageTransaction() {
                                         <StyledTableCell align="center">Action</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
-                                <TableBody>
-                                    {arrayToMap.length ?
-                                        arrayToMap
-                                        .map((val, index) => (
-                                            <StyledTableRow key={`transaction-0${val.id}`}>
-                                                <StyledTableCell align="left" component="th" scope="row">
-                                                    {val.id}
-                                                </StyledTableCell>
-                                                <StyledTableCell align="left">{val.transaction_date}</StyledTableCell>
-                                                <StyledTableCell align="left" className="txt-capitalize">
-                                                    <div
-                                                        id="adm-status-label"
-                                                        className={
-                                                            val.status_id === 1 || val.status_id === 2 ||  val.status_id === 3 ? "adm-process"
-                                                            :
-                                                            val.status_id === 4 ||  val.status_id === 5 ? "adm-success"
-                                                            :
-                                                            "adm-fail"
-                                                        }
-                                                    >
-                                                        {val.status}
-                                                    </div>
-                                                </StyledTableCell>
-                                                <StyledTableCell align="left">
-                                                    {`Rp ${thousandSeparator(val.transaction_amount + val.shipping_fee)}`}
-                                                </StyledTableCell>
-                                                <StyledTableCell align="left">
-                                                    {val.warehouse_name}
-                                                </StyledTableCell>
-                                                <StyledTableCell align="left">
-                                                    <span className="adm-transaction-payproof-action" onClick={() => modalClick(index)}>
-                                                        Detail
-                                                    </span>
-                                                </StyledTableCell>
-                                                <StyledTableCell align="center" style={{width: "176px"}}>
-                                                    <Link 
-                                                        to={{
-                                                            pathname: "/admin/manage-transaction/detail",
-                                                            state: val
-                                                        }}
-                                                        className="link-no-decoration adm-transaction-detail-action"
-                                                    >
-                                                        Transaction Detail
-                                                    </Link>
-                                                </StyledTableCell>
-                                            </StyledTableRow>
-                                        ))
-                                        :
-                                        <td colspan="7" className="adm-transaction-empty-state">
-                                            <img src={emptyState} alt="Data Empty" />
-                                            <h6>No data available</h6>
-                                        </td>
-                                    }
-                                </TableBody>
+                                {!loadTable ?
+                                    <TableBody>
+                                        {arrayToMap.length ?
+                                            arrayToMap
+                                            .map((val, index) => (
+                                                <StyledTableRow key={`transaction-0${val.id}`}>
+                                                    <StyledTableCell align="left" component="th" scope="row">
+                                                        {val.id}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="left">{val.transaction_date}</StyledTableCell>
+                                                    <StyledTableCell align="left" className="txt-capitalize">
+                                                        <div
+                                                            id="adm-status-label"
+                                                            className={
+                                                                val.status_id === 1 || val.status_id === 2 ||  val.status_id === 3 ? "adm-process"
+                                                                :
+                                                                val.status_id === 4 ||  val.status_id === 5 ? "adm-success"
+                                                                :
+                                                                "adm-fail"
+                                                            }
+                                                        >
+                                                            {val.status}
+                                                        </div>
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="left">
+                                                        {`Rp ${thousandSeparator(val.transaction_amount + val.shipping_fee)}`}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="left">
+                                                        {val.warehouse_name}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="left">
+                                                        <span className="adm-transaction-payproof-action" onClick={() => modalClick(index)}>
+                                                            Detail
+                                                        </span>
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center" style={{width: "176px"}}>
+                                                        <Link 
+                                                            to={{
+                                                                pathname: "/admin/manage-transaction/detail",
+                                                                state: val
+                                                            }}
+                                                            className="link-no-decoration adm-transaction-detail-action"
+                                                        >
+                                                            Transaction Detail
+                                                        </Link>
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            ))
+                                            :
+                                            <td colspan="7" className="adm-transaction-empty-state">
+                                                <img src={emptyState} alt="Data Empty" />
+                                                <h6>No data available</h6>
+                                            </td>
+                                        }
+                                    </TableBody>
+                                    :
+                                    <StyledTableCell colSpan={7} style={{height: "30rem"}}>
+                                        <AdminLoadSpinner />
+                                    </StyledTableCell>
+                                }
                             </Table>
                         </TableContainer>
                         <div className="adm-transaction-pagination">
@@ -359,6 +368,7 @@ function ManageTransaction() {
         setItemPerPage(itemValue);
         setPage(1);
         setToggleDropdown(false);
+        setLoadTable(true);
         setLoadData(true);
     };
 
@@ -477,6 +487,7 @@ function ManageTransaction() {
     // SELECT PAGE FUNCTION FOR PAGINATION SECTION
     const selectPage = (event) => { //* Rubah value page sesuai value button pagination yg di-klik
         setPage(parseInt(event.target.value));
+        setLoadTable(true);
     };
     
     const prevPage = () => { //* Ganti value page ketika klik previous arrow pagination
@@ -484,6 +495,7 @@ function ManageTransaction() {
             return
         } else {
             setPage(page - 1);
+            setLoadTable(true);
         }
     };
 
@@ -492,6 +504,7 @@ function ManageTransaction() {
             return
         } else {
             setPage(page + 1);
+            setLoadTable(true);
         }
     };
 
