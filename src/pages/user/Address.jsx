@@ -42,6 +42,7 @@ class Address extends React.Component {
     pickCity: "",
     successSnack: false,
     errorSnack: false,
+    addressEdit: {},
   };
 
   handleClose = (event, reason) => {
@@ -52,15 +53,42 @@ class Address extends React.Component {
     this.setState({ errorSnack: false, successSnack: false });
   };
 
-  // provinceOptions =
+  fetchProvince = async () => {
+    try {
+      let res = await axios.get(`${API_URL}/user/address/province`);
+      this.setState({ dataProvince: res.data });
+      console.log(this.state.dataProvince);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  fetchCity = async () => {
+    const { pickProvince } = this.state;
+    try {
+      let res = await axios.get(
+        `${API_URL}/user/address/city/${pickProvince.province}`
+      );
+      this.setState({ dataCity: res.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // get data address
-  async componentDidMount(prevState) {
+  async componentDidMount() {
     const { user_id } = this.props;
+    const { dataProvince, modalAddress, modalEdit, pickProvince } = this.state;
+    // console.log(prevState, "tes prevstate");
     try {
       //get address
       let dataAddress = await axios.get(`${API_URL}/user/address/${user_id}`);
       // console.log(dataAddress.data);
+      //get data province
+      if ((!modalAddress || !modalEdit) && !dataProvince.length) {
+        this.fetchProvince();
+        console.log("lewat fetchProvince");
+      }
 
       // cek address
       if (!dataAddress.data.length) {
@@ -70,12 +98,16 @@ class Address extends React.Component {
         this.setState({ resAddress: dataAddress.data });
         // console.log(this.state.resAddress);
       }
-      //get data province
-      if (prevState !== this.state.modalAddress) {
-        let res = await axios.get(`${API_URL}/user/address/province`);
-        this.setState({ dataProvince: res.data });
-        console.log(this.state.dataProvince);
-      }
+      // if (!modalAddress) {
+      //   // let res = await axios.get(`${API_URL}/user/address/province`);
+      //   // this.setState({ dataProvince: res.data });
+      //   this.fetchProvince();
+      //   console.log(this.state.dataProvince);
+      // }
+      // if (!pickProvince && (modalAddress || modalEdit)) {
+      //   this.fetchCity();
+      //   console.log("lewat fetchCIty");
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -102,14 +134,13 @@ class Address extends React.Component {
   };
 
   // get data kota
-  async componentDidUpdate() {
-    const { pickProvince } = this.state;
+  async componentDidUpdate(prevProps, prevState) {
+    const { pickProvince, modalEdit, modalAddress } = this.state;
     try {
-      if (pickProvince) {
-        let res = await axios.get(
-          `${API_URL}/user/address/city/${pickProvince.province}`
-        );
-        this.setState({ dataCity: res.data });
+      console.log(prevState.pickProvince);
+      if (prevState.pickProvince !== pickProvince) {
+        this.fetchCity();
+        console.log("lewat fetchCIty");
       }
     } catch (error) {
       console.log(error);
@@ -192,46 +223,50 @@ class Address extends React.Component {
   renderAddressTrue = () => {
     const { resAddress } = this.state;
     return (
-      <div>
-        <div>
-          {resAddress?.map((val, index) => {
-            return (
-              <div key={index} className="render-address ">
-                <div className="test-kiri">
+      <div className="parent-address">
+        {resAddress?.map((val, index) => {
+          return (
+            // <div key={index} className="render-address ">
+            <div key={index} className="row render-address-test">
+              <div className="test-kiri">
+                <div>
                   <h4>{val.recipient}</h4>
                   <h6>{val.phone_number}</h6>
 
                   <h6>{`${val.address},${val.province},${val.city}`}</h6>
-
+                </div>
+                <div>
                   {val.is_main_address ? (
                     <h5 className="main-address">Utama</h5>
-                  ) : (
-                    <button
-                      onClick={(e) => this.onMainAddressClick(e, val.id)}
-                      className="btn-alamat-utama"
-                    >
-                      Jadikan Alamat Utama
-                    </button>
-                  )}
-                </div>
-                <div className="test-kanan">
-                  <button
-                    onClick={(e) => this.onDeleteModalClick(e, val.id)}
-                    className="btn-delete-alamat"
-                  >
-                    Hapus
-                  </button>
-                  <button
-                    onClick={(e) => this.onEditClick(e, val.id)}
-                    className="btn-edit-alamat"
-                  >
-                    Ubah
-                  </button>
+                  ) : null}
                 </div>
               </div>
-            );
-          })}
-        </div>
+              <div className="test-kanan">
+                <button
+                  onClick={(e) => this.onDeleteModalClick(e, val.id)}
+                  className="btn-delete-alamat"
+                >
+                  Hapus
+                </button>
+                <button
+                  onClick={(e) => this.onEditClick(e, val)}
+                  className="btn-edit-alamat"
+                >
+                  Ubah
+                </button>
+                {val.is_main_address ? null : (
+                  <button
+                    onClick={(e) => this.onMainAddressClick(e, val.id)}
+                    className="btn-alamat-utama"
+                  >
+                    Jadikan Alamat Utama
+                  </button>
+                )}
+              </div>
+            </div>
+            // </div>
+          );
+        })}
       </div>
     );
   };
@@ -241,7 +276,7 @@ class Address extends React.Component {
   };
 
   provinceChange = (pickProvince) => {
-    this.setState({ pickProvince });
+    this.setState({ pickProvince, pickCity: "" });
     console.log(pickProvince);
   };
 
@@ -327,8 +362,12 @@ class Address extends React.Component {
     this.setState({ modalAddress: !this.state.modalAddress });
   };
   //buka modal untuk edit
-  onEditClick = (e, id) => {
-    this.setState({ modalEdit: !this.state.modalEdit, idAddress: id });
+  onEditClick = (e, val) => {
+    this.setState({
+      modalEdit: !this.state.modalEdit,
+      idAddress: val.id,
+      addressEdit: val,
+    });
   };
   // buka modal delete
   onDeleteModalClick = (e, id) => {
@@ -409,11 +448,18 @@ class Address extends React.Component {
     return (
       <div>
         <div>
-          <h4>apakah anda yakin ingin menghapus alamat ini?</h4>
+          <h4>Anda yakin ingin menghapus alamat ini?</h4>
         </div>
         <div>
-          <button onClick={this.onDeleteClick}> Yes</button>
-          <button onClick={this.onCancelDeleteClick}> Cancel</button>
+          <button onClick={this.onDeleteClick} className="btn-yes-delete">
+            Yes
+          </button>
+          <button
+            onClick={this.onCancelDeleteClick}
+            className="btn-cancel-delete"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     );
@@ -428,6 +474,9 @@ class Address extends React.Component {
       dataProvince,
       resAddress,
       dataCity,
+      addressEdit,
+      pickProvince,
+      pickCity,
     } = this.state;
 
     return (
@@ -443,7 +492,7 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="nama penerima"
               onChange={this.onInputChange}
-              value={resAddress.recipient}
+              value={addressEdit.recipient}
             />
             <h6 className="mt-3">Nomor telepon</h6>
             <input
@@ -452,7 +501,7 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="nomor handphone"
               onChange={this.onInputChange}
-              value={resAddress.phone_number}
+              value={addressEdit.phone_number}
             />
             <h6 className="mt-3">Alamat Lengkap</h6>
             <input
@@ -461,7 +510,7 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="alamat"
               onChange={this.onInputChange}
-              value={resAddress.address}
+              value={addressEdit.address}
             />
             <h6 className="mt-3">Provinsi</h6>
 
@@ -505,6 +554,7 @@ class Address extends React.Component {
               className="dropdown-form"
               placeholder="Masukkan Provinsi"
               onChange={this.provinceChange}
+              defaultValue={pickProvince}
               // {(e) => this.setState({ pickProvince: e.target.value })}
               options={dataProvince}
             />
@@ -515,6 +565,7 @@ class Address extends React.Component {
               className="dropdown-form"
               placeholder="Masukkan Kota"
               onChange={this.cityChange}
+              defaultValue={pickCity}
               options={dataCity}
             />
 
@@ -549,6 +600,9 @@ class Address extends React.Component {
               <button
                 className="btn-simpan-alamat"
                 onClick={this.onEditAddressClick}
+                disabled={
+                  !recipient || !phone_number || !pickCity || !pickProvince
+                }
               >
                 Ubah
               </button>
@@ -569,8 +623,8 @@ class Address extends React.Component {
       recipient,
       phone_number,
       address,
-      city,
-      province,
+      pickCity,
+      pickProvince,
       dataProvince,
       dataCity,
     } = this.state;
@@ -615,6 +669,7 @@ class Address extends React.Component {
             className="dropdown-form"
             placeholder="Masukkan Provinsi"
             onChange={this.provinceChange}
+            defaultValue={pickProvince}
             // {(e) => this.setState({ pickProvince: e.target.value })}
             options={dataProvince}
           />
@@ -649,6 +704,7 @@ class Address extends React.Component {
             className="dropdown-form"
             placeholder="Masukkan Kota"
             onChange={this.cityChange}
+            defaultValue={pickCity}
             options={dataCity}
           />
 
@@ -689,6 +745,9 @@ class Address extends React.Component {
             <button
               className="btn-simpan-alamat"
               onClick={this.onSaveAddressClick}
+              disabled={
+                !recipient || !phone_number || !pickCity || !pickProvince
+              }
             >
               Simpan
             </button>
@@ -703,10 +762,12 @@ class Address extends React.Component {
   };
 
   render() {
-    console.log(this.state.pickCity);
+    console.log("testes", this.state.pickProvince);
     return (
       <div>
-        <div>
+        <div className="row">
+          <h5 className="daftar-alamat">Daftar Alamat</h5>
+
           <button
             className="btn-tambah-alamat"
             onClick={this.onAddAddressClick}
