@@ -31,6 +31,7 @@ import Modal from '../../components/Modal';
 import Textbox from "../../components/Textbox";
 import AdmBtnSecondary from '../../components/admin/AdmBtnSecondary';
 import CircularProgress from '@mui/material/CircularProgress';
+import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -66,6 +67,8 @@ function ManageStock() {
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
     const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
+
+    const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat loading table stlh select page pagination
 
     const [products, setProducts] = useState([]);
 
@@ -127,6 +130,7 @@ function ManageStock() {
     useEffect(() => {
         const fetchData = async () => {
             await fetchProdData();
+            await setLoadTable(false);
             await setLoadData(false);
         };
         fetchData();
@@ -158,6 +162,7 @@ function ManageStock() {
         setItemPerPage(itemValue);
         setPage(1);
         setToggleDropdown(false);
+        setLoadTable(true);
         setLoadData(true);
     };
     
@@ -288,6 +293,7 @@ function ManageStock() {
     // SELECT PAGE FUNCTION SECTION
     const selectPage = (event) => { //* Rubah value page sesuai value button pagination yg di-klik
         setPage(parseInt(event.target.value));
+        setLoadTable(true);
     };
     
     const prevPage = () => { //* Ganti value page ketika klik previous arrow pagination
@@ -295,6 +301,7 @@ function ManageStock() {
             return
         } else {
             setPage(page - 1);
+            setLoadTable(true);
         }
     };
 
@@ -303,6 +310,7 @@ function ManageStock() {
             return
         } else {
             setPage(page + 1);
+            setLoadTable(true);
         }
     };
 
@@ -434,38 +442,44 @@ function ManageStock() {
                                                         <StyledTableCell align="center" style={{width: "176px"}}>Action</StyledTableCell>
                                                     </TableRow>
                                                 </TableHead>
-                                                <TableBody>
-                                                    {products
-                                                    .map((val, index) => (
-                                                        <StyledTableRow key={val.SKU}>
-                                                            <StyledTableCell align="center" component="th" scope="row">
-                                                                <img 
-                                                                    src={`${API_URL}/${val.images[0]}`} 
-                                                                    style={{height: "80px", width: "80px"}} 
-                                                                    alt={val.name}
-                                                                />
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align="left">
-                                                                {val.id}
-                                                                <br />
-                                                                SKU: {val.SKU}
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
-                                                            <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
-                                                            <StyledTableCell align="left">
-                                                                {val.warehouse_stock}
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align="center" className="txt-capitalize">
-                                                                <span 
-                                                                    className="adm-edit-stock-txtBtn" 
-                                                                    onClick={() => modalClick(index)}
-                                                                >
-                                                                    Edit Stock
-                                                                </span>
-                                                            </StyledTableCell>
-                                                        </StyledTableRow>
-                                                    ))}
-                                                </TableBody>
+                                                {!loadTable ?
+                                                    <TableBody>
+                                                        {products
+                                                        .map((val, index) => (
+                                                            <StyledTableRow key={val.SKU}>
+                                                                <StyledTableCell align="center" component="th" scope="row">
+                                                                    <img 
+                                                                        src={`${API_URL}/${val.images[0]}`} 
+                                                                        style={{height: "80px", width: "80px"}} 
+                                                                        alt={val.name}
+                                                                    />
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align="left">
+                                                                    {val.id}
+                                                                    <br />
+                                                                    SKU: {val.SKU}
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
+                                                                <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
+                                                                <StyledTableCell align="left">
+                                                                    {val.warehouse_stock}
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align="center" className="txt-capitalize">
+                                                                    <span 
+                                                                        className="adm-edit-stock-txtBtn" 
+                                                                        onClick={() => modalClick(index)}
+                                                                    >
+                                                                        Edit Stock
+                                                                    </span>
+                                                                </StyledTableCell>
+                                                            </StyledTableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                    :
+                                                    <StyledTableCell colSpan={7} style={{height: "30rem"}}>
+                                                        <AdminLoadSpinner />
+                                                    </StyledTableCell>
+                                                }
                                             </Table>
                                         </TableContainer>
                                         <div className="admWh-stock-pagination">
