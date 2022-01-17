@@ -23,6 +23,9 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import NotFoundPage from "../non-user/NotFoundV1";
+import Select from "react-select";
+import { debounce } from "throttle-debounce";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -57,6 +60,8 @@ function ManageWarehouse() {
     
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
+    const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
+
     const [warehouses, setWarehouses] = useState([]);
 
     const [toggleModal, setToggleModal] = useState(false);
@@ -68,7 +73,17 @@ function ManageWarehouse() {
         // warehouse_long: ""
     });
 
+    const [dataProvince, setDataProvince] = useState([]);
+
+    const [pickProvince, setPickProvince] = useState("");
+
+    const [dataCity, setDataCity] = useState([]);
+
+    const [pickCity, setPickCity] = useState("");
+
     const charMax = 45;
+
+    const {warehouse_name, warehouse_address} = addWhInput;
 
     // FETCH & useEFFECT SECTION
     const getRoleId = useSelector((state) => state.auth.role_id);
@@ -88,7 +103,27 @@ function ManageWarehouse() {
         }
     };
 
-    const {warehouse_name, warehouse_address} = addWhInput;
+    const fetchProvince = async () => { //* Utk render selection data province rajaongkir
+        try {
+            const res = await axios.get(`${API_URL}/warehouse/province`);
+            setDataProvince(res.data);
+        } catch (error) {
+            errorToast("Server Error, from ManageWarehouse");
+            console.log(error);
+            setErrorFetch(true);
+        }
+    };
+
+    const fetchCity = async () => { //* Utk render selection data city rajaongkir
+        try {
+            const res = await axios.get(`${API_URL}/warehouse/city/${pickProvince.province}`);
+            setDataCity(res.data);
+        } catch (error) {
+            errorToast("Server Error, from ManageWarehouse");
+            console.log(error);
+            setErrorFetch(true);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -98,6 +133,18 @@ function ManageWarehouse() {
         fetchData();
     }, []);
 
+    useEffect(() => { //* Get selection data province ketika buka modal create warehouse
+        if (!dataProvince.length && toggleModal) {
+            fetchProvince();
+        }
+    }, [toggleModal]);
+
+    useEffect(() => { //* Get selection data city ketika province sudah dipilih
+        if (pickProvince && toggleModal) {
+            fetchCity();
+        }
+    }, [pickProvince]);
+
     const breadcrumbs = [
         <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
           Dashboard
@@ -106,6 +153,16 @@ function ManageWarehouse() {
           Manage Warehouse
         </Typography>,
     ];
+
+    // HANDLER FUNCTIONS SECTION
+    const provinceChange = (pickProvince) => {
+        setPickCity(""); //* Biar klo close modal saat value pickCity terisi kemudian ganti province, value pickCity dibersihkan
+        setPickProvince(pickProvince);
+    };
+
+    const cityChange = (pickCity) => {
+        setPickCity(pickCity);
+    };
 
     // RENDER MODAL CREATE WAREHOUSE
     const modalClick = () => {
@@ -141,6 +198,7 @@ function ManageWarehouse() {
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse name"
                         maxLength={charMax}
+                        borderRadius={"8px"}
                     />
                     <Textbox
                         type="text"
@@ -150,6 +208,23 @@ function ManageWarehouse() {
                         onChange={(event) => addWhStringHandler(event)}
                         placeholder="Input the warehouse address"
                         maxLength={charMax}
+                        borderRadius={"8px"}
+                    />
+                    <h6 className="mt-3">Provinsi</h6>
+                    <Select
+                        defaultValue={pickProvince}
+                        className="dropdown-form createWh-select-override"
+                        placeholder="Masukkan Provinsi"
+                        onChange={debounce(250, (pickProvince) => provinceChange(pickProvince))}
+                        options={dataProvince}
+                    />
+                    <h6 className="mt-3">Kota</h6>
+                    <Select
+                        defaultValue={pickCity}
+                        className="dropdown-form"
+                        placeholder="Masukkan Kota"
+                        onChange={(pickCity) => cityChange(pickCity)}
+                        options={dataCity}
                     />
                     {/* <Textbox
                         type="text"
@@ -159,8 +234,13 @@ function ManageWarehouse() {
                     /> */}
                 </div>
                 <div className="create-wh-modal-foot">
-                    <button onClick={onCloseModal}>Cancel</button>
-                    <button onClick={onSubmitNewWh} disabled={!warehouse_name || !warehouse_address}>Confirm</button>
+                    <button onClick={onCloseModal} disabled={submitLoad}>Cancel</button>
+                    <button 
+                        onClick={onSubmitNewWh} 
+                        disabled={!warehouse_name || !warehouse_address || !pickProvince || !pickCity || submitLoad}
+                    >
+                        {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Confirm"}
+                    </button>
                 </div>
             </>
         )
@@ -168,20 +248,27 @@ function ManageWarehouse() {
 
     const onSubmitNewWh = async (event) => { //* Untuk trigger submit button
         event.preventDefault();
-        document.querySelector("div.create-wh-modal-foot > button").disabled = true;
+
+        setSubmitLoad(true);
         
         let inputtedNewWh = {
             warehouse_name: warehouse_name,
-            warehouse_address: warehouse_address
+            warehouse_address: warehouse_address,
+            province_id: pickProvince.province_id,
+            province: pickProvince.province,
+            city_id: pickCity.city_id,
+            city: pickCity.label
         };
 
-        if (warehouse_name && warehouse_address && warehouse_name.length <= charMax && warehouse_address.length <= charMax) {
+        if (warehouse_name && warehouse_address && warehouse_name.length <= charMax && warehouse_address.length <= charMax && pickProvince && pickCity) {
             try {
                 await axios.post(`${API_URL}/warehouse/add`, inputtedNewWh);
                 setAddWhInput((prevState) => {
                     return {...prevState, warehouse_name: "", warehouse_address: ""}
                 });
-                document.querySelector("div.create-wh-modal-foot > button").disabled = false;
+                setPickProvince("");
+                setPickCity("");
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Create new warehouse success!',
@@ -194,9 +281,9 @@ function ManageWarehouse() {
                     confirmButtonAriaLabel: 'Continue'
                   });
                 fetchWarehouse();
-            } catch (err) {
-                console.log(err);
-                document.querySelector("div.create-wh-modal-foot > button").disabled = false;
+            } catch (error) {
+                console.log(error);
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
@@ -209,8 +296,8 @@ function ManageWarehouse() {
                 });
             };
         } else {
-            document.querySelector("div.create-wh-modal-foot > button").disabled = false;
-            errorToast("Please make sure all input filled & below 46 characters");
+            setSubmitLoad(false);
+            errorToast("Please make sure all input filled & all max 45 characters");
         };
     };
 
@@ -264,7 +351,7 @@ function ManageWarehouse() {
                                                                 {val.id}
                                                             </StyledTableCell>
                                                             <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
-                                                            <StyledTableCell align="left" className="txt-capitalize">{val.address}</StyledTableCell>
+                                                            <StyledTableCell align="left" className="txt-capitalize">{val.address}, {val.province}, {val.city}</StyledTableCell>
                                                             <StyledTableCell align="left">
                                                                 lat: {val.latitude}
                                                                 <br />

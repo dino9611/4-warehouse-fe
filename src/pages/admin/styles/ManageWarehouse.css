@@ -115,8 +115,10 @@
     margin-top: 2.5rem;
 }
 
+.create-wh-modal-foot > button:first-child:disabled,
 .create-wh-modal-foot > button:disabled {
     background-color: var(--neutral-3rd-color);
+    border-color: var(--neutral-3rd-color);
     color: var(--neutral-5th-color);
     cursor: default;
 }
@@ -132,3 +134,21 @@
     color: var(--primary-3rd-color);
     transition: 400ms;
 }
+
+/* ? REACT SELECT OVERRIDE SECTION */
+/* .createWh-select-override {
+    border-radius: var(--b-rad-table);
+}
+
+.createWh-select-override:enabled {
+    outline-color: #b24629;
+}
+
+.createWh-select-override:focus {
+    border-color: #b24629 !important;
+    outline: none !important;
+}
+
+.createWh-select-override::placeholder {
+    color: #cacaca !important;
+} */
