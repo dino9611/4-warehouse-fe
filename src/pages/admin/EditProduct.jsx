@@ -1,5 +1,5 @@
 import "./styles/EditProduct.css";
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useLocation} from "react-router-dom";
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
@@ -22,12 +22,12 @@ import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary";
 import infoIcon from "../../assets/components/Info-Yellow.svg";
 import CircularProgress from '@mui/material/CircularProgress';
-import { debounce } from "throttle-debounce";
+// import { debounce } from "throttle-debounce";
 
 function EditProduct() {
     const prodIdFromParent = useLocation();
 
-    const {id, name: prevName} = prodIdFromParent.state; //* Utk fetch data produk yang ingin di-edit, sengaja agar saat selesai edit, tampilan akan render ulang
+    const {id, name: prevName} = prodIdFromParent.state || {id : null, name : ""}; //* Utk fetch data produk yang ingin di-edit, sengaja agar saat selesai edit, tampilan akan render ulang
 
     const [skeletonLoad, setSkeletonLoad] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
     
@@ -41,14 +41,10 @@ function EditProduct() {
 
     const [editCategory, setEditCategory] = useState([]);
 
-    const [prodNameCounter, setProdNameCounter] = useState(0); //* Utk check characters left input nama produk
-
-    const [charCounter, setCharCounter] = useState(0); //* Utk check characters left input deskripsi produk
-
     const [editImage, setEditImage] = useState([]); //* State awal image, akan selalu 3 length nya setelah function fetch berjalan
 
     const [imgCarrier, setImgCarrier] = useState([]); //* Utk membawa data image baru yang akan menggantikan image sebelumnya ke BE
-
+    
     const [prevImgCarrier, setPrevImgCarrier] = useState(""); //* Utk deteksi image sebelumnya yang akan dihapus di BE
 
     const [imgIndex, setImgIndex] = useState(null); //* Utk deteksi index image keberapa yang di-edit
@@ -64,7 +60,7 @@ function EditProduct() {
     const prodNameCharMax = 75; //* Max char input nama produk
 
     const descCharLimit = 2000; //* Max char input deskripsi produk
-
+    
     let {name, category_id, weight, price, product_cost, description} = editProdInput;
 
     // FETCH & useEFFECT SECTION
@@ -72,16 +68,13 @@ function EditProduct() {
 
     let history = useHistory();
 
-    //* Utk kembali ke manage product
-    const toManageProduct = () => history.push("/admin/manage-product");
+    const toManageProduct = () => history.push("/admin/manage-product"); //* Utk kembali ke manage product
     
     const fetchProdToEdit = async () => { //* Utk render data produk yang ingin di-edit
         try {
             const res = await axios.get(`${API_URL}/admin/product/detail?id=${id}`);
             setEditProdInput(res.data);
             setSelectedCategory(res.data.category);
-            setProdNameCounter(res.data.name.length) //* Utk kalkulasi sisa max char product name
-            setCharCounter(res.data.description.length); //* Utk kalkulasi sisa max char description
             let imagesLoop = res.data.images;
             if (imagesLoop.length === 1) { //* Utk bikin length array editImage selalu 3
                 for (let i = 0; i < 3; i++) {
@@ -131,7 +124,7 @@ function EditProduct() {
         }
     };
 
-    const fetchCategory = async () => { // Utk render data kategori produk
+    const fetchCategory = async () => { //* Utk render data kategori produk
         try {
             const res = await axios.get(`${API_URL}/product/category`);
             setEditCategory(res.data);
@@ -170,9 +163,11 @@ function EditProduct() {
         });
     };
 
+    //? Klo input mau pake debounce
     // const debouncedChangeHandler = useCallback(
-    //     debounce(editProdStringHandler, 1000)
+    //     debounce(75, true, editProdStringHandler)
     //   , []);
+    // Kasih true, klo false, diawal2 function tidak dipanggil, utk menghindari pas render pertama fungsi ga jalan, pas di callback ga ada fungsi yg tersimpan
 
     const editProdNumberHandler = (event, cb) => { //* Utk setState data berbentuk number
         cb((prevState) => {
@@ -188,7 +183,7 @@ function EditProduct() {
             });
         } else if (weight === 0 || price === 0 || product_cost === 0) {
             cb((prevState) => {
-                return { ...prevState, [event.target.name]: ""};
+                return { ...prevState, [event.target.name]: 1};
             });
         } else {
             return
@@ -206,18 +201,9 @@ function EditProduct() {
             setPrevImgCarrier(prevImg);
             setImgIndex(index);
         } else {
-            setImgCarrier("");
+            setImgCarrier([]);
             setImgIndex(null);
         };
-    };
-
-    // CHECKER FUNCTIONS SECTION
-    const prodNameCharCounter = (event) => { //* Hitung characters left utk input product name
-        return setProdNameCounter(event.target.value.length);
-    };
-
-    const charCounterHandler = (event) => {
-        return setCharCounter(event.target.value.length);
     };
 
     // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
@@ -265,7 +251,7 @@ function EditProduct() {
                                 <>
                                     <img 
                                         src={URL.createObjectURL(imgCarrier[0])} 
-                                        alt="Preview-Image-To-Upload"
+                                        alt="Preview-To-Upload"
                                         className="edit-images-preview"
                                         style={{cursor: "pointer"}}
                                     />
@@ -277,16 +263,21 @@ function EditProduct() {
                     </div>
                 </div>
                 <div className="edit-img-modal-foot">
-                    <button onClick={() => onCloseModal(index)}>Cancel</button>
+                    <button 
+                        onClick={() => onCloseModal(index)}
+                        disabled={sbmtEditImgLoad || sbmtDelImgLoad}
+                    >
+                        Cancel
+                    </button>
                     <button 
                         onClick={(event) => onDeleteImg(event, index, imgSrc)} 
-                        disabled={index === 0 || !imgSrc}
+                        disabled={index === 0 || !imgSrc || sbmtEditImgLoad || sbmtDelImgLoad}
                     >
                         {sbmtDelImgLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Delete Image File"}
                     </button>
                     <button 
                         onClick={(event) => onSubmitImgCarrier(event)} 
-                        disabled={!imgCarrier[0]}
+                        disabled={!imgCarrier[0] || sbmtEditImgLoad || sbmtDelImgLoad}
                     >
                         {sbmtEditImgLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit Edit"}
                     </button>
@@ -324,8 +315,6 @@ function EditProduct() {
         event.preventDefault();
 
         setSbmtEditImgLoad(true);
-        document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = true; //! Disable submit button utk prevent submit berulang kali
-        document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true; //! Disable delete img button utk prevent trigger berulang kali
         
         let imgToChange = imgCarrier[0];
         let prevImgToDelete = prevImgCarrier;
@@ -347,37 +336,33 @@ function EditProduct() {
         //* Kirim data kategori utk menentukan folder kategori image yang di-upload
         try {
             await axios.patch(`${API_URL}/product/edit/image/${id}`, formData, config);
+            setSbmtEditImgLoad(false);
             Swal.fire({
                 icon: 'success',
                 title: 'Edit product image success!',
                 text: `Product image will refresh`,
                 customClass: { //* CSS custom nya ada di AdminMainParent
-                    popup: 'adm-swal-popup-override'
+                    popup: 'adm-swal-popup-override',
+                    confirmButton: 'adm-swal-btn-override'
                 },
                 confirmButtonText: 'Continue',
                 confirmButtonAriaLabel: 'Continue',
-                confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
             });
             setImgCarrier([]);
-            setSbmtEditImgLoad(false);
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
             fetchProdToEdit();
         } catch (err) {
             console.log(err);
+            setSbmtEditImgLoad(false);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...something went wrong, reload/try again',
                 customClass: { //* CSS custom nya ada di AdminMainParent
-                    popup: 'adm-swal-popup-override'
+                    popup: 'adm-swal-popup-override',
+                    confirmButton: 'adm-swal-btn-override',
                 },
                 confirmButtonText: 'Continue',
-                confirmButtonAriaLabel: 'Continue',
-                confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                confirmButtonAriaLabel: 'Continue'
             });
-            setSbmtEditImgLoad(false);
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
         };
     };
 
@@ -385,42 +370,36 @@ function EditProduct() {
         event.preventDefault();
 
         setSbmtDelImgLoad(true);
-        document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = true; //! Disable submit button utk prevent submit berulang kali
-        document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = true; //! Disable delete img button utk prevent trigger berulang kali
 
         try {
             await axios.delete(`${API_URL}/product/delete/image/${id}`, {headers: {index_del_img: index, prev_img_path: prevImg}});
+            setSbmtDelImgLoad(false);
             Swal.fire({
                 icon: 'success',
                 title: 'Delete product image success!',
                 text: `Product image will refresh`,
                 customClass: { //* CSS custom nya ada di AdminMainParent
-                    popup: 'adm-swal-popup-override'
+                    popup: 'adm-swal-popup-override',
+                    confirmButton: 'adm-swal-btn-override'
                 },
                 confirmButtonText: 'Continue',
-                confirmButtonAriaLabel: 'Continue',
-                confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                confirmButtonAriaLabel: 'Continue'
             });
             setImgCarrier([]);
-            setSbmtDelImgLoad(false);
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
             fetchProdToEdit();
         } catch (err) {
             console.log(err);
+            setSbmtDelImgLoad(false);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...something went wrong, reload/try again',
                 customClass: { //* CSS custom nya ada di AdminMainParent
-                    popup: 'adm-swal-popup-override'
+                    popup: 'adm-swal-popup-override',
+                    confirmButton: 'adm-swal-btn-override'
                 },
                 confirmButtonText: 'Continue',
-                confirmButtonAriaLabel: 'Continue',
-                confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                confirmButtonAriaLabel: 'Continue'
             });
-            setSbmtDelImgLoad(false);
-            document.querySelector("div.edit-img-modal-foot > button:last-of-type").disabled = false;
-            document.querySelector("div.edit-img-modal-foot > button:nth-of-type(2)").disabled = false;
         };
     };
 
@@ -429,7 +408,6 @@ function EditProduct() {
         event.preventDefault();
         
         setSubmitLoad(true);
-        document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = true; //! Disable submit button input edit product utk prevent submit berulang kali
         const successRedirect = () => history.push("/admin/manage-product");
         
         let inputtedProd = {
@@ -444,38 +422,36 @@ function EditProduct() {
         if (name || category_id || weight || price || product_cost || description) {
             try {
                 await axios.patch(`${API_URL}/product/edit/${id}`, inputtedProd);
-                await Swal.fire({
+                setSubmitLoad(false);
+                Swal.fire({
                     icon: 'success',
                     title: 'Edit product success!',
                     text: `Page will go to manage product page after confirm`,
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
-                setSubmitLoad(false);
                 successRedirect();
             } catch (err) {
                 console.log(err);
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
-                setSubmitLoad(false);
-                document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
             };
         } else {
             errorToast("Please make sure all inputs are filled");
             setSubmitLoad(false);
-            document.querySelector("div.edit-product-submission-wrap > button:last-of-type").disabled = false;
         };
     };
 
@@ -526,7 +502,7 @@ function EditProduct() {
                                             <div className="edit-images-right-wrap"> {/* Bagian kanan upload image produk */}
                                                 {editImage.map((val, index) => {
                                                     return (
-                                                        <div className="edit-images-tile-wrap">
+                                                        <div className="edit-images-tile-wrap" key={`tile-0${index}`}>
                                                             <label 
                                                                 htmlFor={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
                                                                 className={editImage[index] ? "edit-images-upload-preview" : "edit-images-upload-item"}
@@ -549,7 +525,7 @@ function EditProduct() {
                                                                     className="edit-images-icon"
                                                                     onClick={() => modalClick(index)}
                                                                 >
-                                                                    <img src={editIcon} />
+                                                                    <img src={editIcon} alt="Edit"/>
                                                                 </span>
                                                                 :
                                                                 null
@@ -572,18 +548,12 @@ function EditProduct() {
                                                             id="name" 
                                                             name="name" 
                                                             value={name}
-                                                            onChange={(event) => editProdStringHandler(event)}
+                                                            onChange={editProdStringHandler}
                                                             // onChange={debouncedChangeHandler}
-                                                            // onChange={debounce(100, (event) =>
-                                                            //     setEditProdInput((prevState) => {
-                                                            //         return { ...prevState, [event.target.name]: event.target.value };
-                                                            //     })
-                                                            // )}
-                                                            onKeyUp={(event) => prodNameCharCounter(event)}
                                                             placeholder="Ex: Javara Coconut Sugar 250gr"
                                                             maxLength={prodNameCharMax}
                                                         />
-                                                        <span>{prodNameCounter}/{prodNameCharMax}</span>
+                                                        <span>{name.length}/{prodNameCharMax}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -604,6 +574,7 @@ function EditProduct() {
                                                                 style={{
                                                                     transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                                                 }}
+                                                                alt="Dropdown-Arrow"
                                                             />
                                                         </button>
                                                         <ul 
@@ -614,13 +585,14 @@ function EditProduct() {
                                                                 zIndex: toggleDropdown ? 100 : -10,
                                                             }}
                                                         >
-                                                            {editCategory.map((val) => (
+                                                            {editCategory.map((val, index) => (
                                                                 val.id === category_id? 
-                                                                <li className="info-right-editCat-dropdown-selected">{val.category}</li> 
+                                                                <li className="info-right-editCat-dropdown-selected" key={`category-0${index}`}>{val.category}</li> 
                                                                 : 
                                                                 <li
                                                                     value={val.id}
                                                                     onClick={(event) => selectCategoryClick(event, val.category)}
+                                                                    key={`category-0${index}`}
                                                                 >
                                                                     {val.category}
                                                                 </li>
@@ -708,30 +680,35 @@ function EditProduct() {
                                                             cols="100"
                                                             name="description" 
                                                             value={description}
-                                                            onChange={(event) => editProdStringHandler(event)}
-                                                            onKeyUp={(event) => charCounterHandler(event)}
+                                                            onChange={editProdStringHandler}
                                                             placeholder="High quality Indonesia cacao beans, harvested from the best source possible, offering rich chocolaty taste which will indulge you in satisfaction."
-                                                            maxlength="2000"
+                                                            maxLength="2000"
                                                         >
                                                         </textarea>
-                                                        <span>max char: {charCounter}/{descCharLimit}</span>
+                                                        <span>max char: {description.length}/{descCharLimit}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div> {/* ------ End of bagian input deskripsi produk ------ */}
                                         <div className="edit-product-submission-wrap"> {/* Bagian submit form */}
-                                            <AdmBtnSecondary width={"10rem"} onClick={toManageProduct}>Cancel</AdmBtnSecondary>
+                                            <AdmBtnSecondary 
+                                                width={"10rem"} 
+                                                onClick={toManageProduct}
+                                                disabled={submitLoad}
+                                            >
+                                                Cancel
+                                            </AdmBtnSecondary>
                                             <AdmBtnPrimary
                                                 width={"10rem"}
                                                 onClick={onSubmitedEditProd}
-                                                disabled={!name || !category_id || !weight || !price || !product_cost || !description}
+                                                disabled={!name || !category_id || !weight || !price || !product_cost || !description || submitLoad}
                                             >
                                                 {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
                                             </AdmBtnPrimary>
                                         </div>
                                     </div>
                                     {editImage.map((val, index) => (
-                                        <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+                                        <Modal open={modalLength[index]} close={() => onCloseModal(index)} key={`modal-0${index}`}>
                                             {editImgModalContent(val, index)}
                                         </Modal>
                                     ))}
@@ -750,3 +727,8 @@ function EditProduct() {
 }
 
 export default EditProduct;
+
+
+//? Alternatif biar ga error klo non authorized/no data from parent tapi tembak lsg url
+// prodIdFromParent.state || { id : null, name : "" }
+// prodIdFromParent.state ? prodIdFromParent.state : { id : null, name : "" }

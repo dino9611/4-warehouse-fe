@@ -30,20 +30,24 @@ import chevronDown from "../../assets/components/Chevron-Down.svg";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       border: 0,
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
       fontWeight: 600
     },
     [`&.${tableCellClasses.body}`]: {
         border: 0,
-        color: "#5A5A5A"
+        color: "#5A5A5A",
+        fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
       backgroundColor: "white",
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
     '&:nth-of-type(even)': {
       backgroundColor: "#F4F4F4",
+      fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     },
     // Show last border
     '&:last-child td, &:last-child th': {
@@ -202,6 +206,7 @@ function ManageAdmin() {
                                     style={{
                                         transform: toggleDropdown ? "rotate(-180deg)" : "rotate(0deg)"
                                     }}
+                                    alt="Dropdown-Arrow"
                                 />
                             </button>
                             <ul 
@@ -212,11 +217,12 @@ function ManageAdmin() {
                                     zIndex: toggleDropdown ? 100 : -10,
                                 }}
                             >
-                                {warehouses?.map((val) => (
+                                {warehouses?.map((val, index) => (
                                     parseInt(val.id) === addAdmInput.assign_warehouse ? //* parseInt karena yg dri BE berbentuk string
                                     <li 
                                         value={val.id} 
                                         className="manage-adm-dropdown-selected"
+                                        key={index}
                                     >
                                         {val.name}
                                     </li> 
@@ -224,6 +230,7 @@ function ManageAdmin() {
                                     <li
                                         value={val.id}
                                         onClick={(event) => selectWarehouse(event, val.name)}
+                                        key={index}
                                     >
                                         {val.name}
                                     </li>
@@ -288,11 +295,11 @@ function ManageAdmin() {
                     title: 'Add new admin/warehouse admin success!',
                     text: `Username: ${inputtedAdm.new_username}`,
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                   });
                 fetchAdminList();
                 fetchWarehouse();
@@ -303,11 +310,11 @@ function ManageAdmin() {
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
                     customClass: { //* CSS custom nya ada di AdminMainParent
-                        popup: 'adm-swal-popup-override'
+                        popup: 'adm-swal-popup-override',
+                        confirmButton: 'adm-swal-btn-override'
                     },
                     confirmButtonText: 'Continue',
-                    confirmButtonAriaLabel: 'Continue',
-                    confirmButtonClass: 'adm-swal-btn-override', //* CSS custom nya ada di AdminMainParent
+                    confirmButtonAriaLabel: 'Continue'
                 });
             };
         } else {
@@ -355,9 +362,7 @@ function ManageAdmin() {
                                                 <TableBody>
                                                     {adminList
                                                     .map((val) => (
-                                                        <StyledTableRow
-                                                        key={`${val.id}-${val.name}`}
-                                                        >
+                                                        <StyledTableRow key={`${val.id}-${val.name}`}>
                                                             <StyledTableCell 
                                                                 align="left" 
                                                                 component="th" 
