@@ -276,6 +276,8 @@ function HomeDashboard() {
     // CHECK CONDITION FOR DATA AVAILABILITY
     const isAllNull = (value) => value === null;
 
+    const isSomeTrue = (value) => value;
+
     return (
         <div className="adm-dashboard-main-wrap">
             { (!loadData && errorFetch) ?
@@ -411,7 +413,7 @@ function HomeDashboard() {
                             <div className="adm-dashboard-2ndRow-left">
                                 {!loadData ? 
                                     <>
-                                        {!(Object.values(potentialRevenue).every(isAllNull)) && !(Object.values(monthlyRevenue).every(isAllNull)) ?
+                                        {!(Object.values(potentialRevenue).every(isAllNull)) || !(Object.values(monthlyRevenue).every(isAllNull)) ?
                                             <>
                                                 <div className="dashboard-2ndRow-left-heading">
                                                     <h6>{`Monthly Actual vs Potential Revenue ${filterYear}`}</h6>
