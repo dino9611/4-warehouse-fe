@@ -64,7 +64,7 @@ function ManageProduct() {
 
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
-    const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
+    const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat loading table stlh select page pagination
 
     const [products, setProducts] = useState([]);
     
