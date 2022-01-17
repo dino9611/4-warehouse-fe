@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
+import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -62,6 +63,8 @@ function ManageProduct() {
     const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
 
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
+
+    const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
 
     const [products, setProducts] = useState([]);
     
@@ -129,6 +132,7 @@ function ManageProduct() {
     useEffect(() => {
         const fetchData = async () => {
             await fetchProdData();
+            await setLoadTable(false);
             await setLoadData(false);
         };
         fetchData();
@@ -173,6 +177,7 @@ function ManageProduct() {
         setItemPerPage(itemValue);
         setPage(1);
         setToggleDropdown(false);
+        setLoadTable(true);
         setLoadData(true);
     };
 
@@ -364,6 +369,7 @@ function ManageProduct() {
     // SELECT PAGE FUNCTION SECTION
     const selectPage = (event) => { //* Rubah value page sesuai value button pagination yg di-klik
         setPage(parseInt(event.target.value));
+        setLoadTable(true);
     };
     
     const prevPage = () => { //* Ganti value page ketika klik previous arrow pagination
@@ -371,6 +377,7 @@ function ManageProduct() {
             return
         } else {
             setPage(page - 1);
+            setLoadTable(true);
         }
     };
 
@@ -379,6 +386,7 @@ function ManageProduct() {
             return
         } else {
             setPage(page + 1);
+            setLoadTable(true);
         }
     };
 
@@ -486,80 +494,86 @@ function ManageProduct() {
                                                 }
                                             </TableRow>
                                         </TableHead>
-                                        <TableBody>
-                                            {products
-                                            .map((val, index) => (
-                                                <StyledTableRow key={val.SKU}>
-                                                    <StyledTableCell align="center" component="th" scope="row">
-                                                        <img 
-                                                            src={`${API_URL}/${val.images[0]}`} 
-                                                            style={{height: "80px", width: "80px"}} 
-                                                            alt={val.name}
-                                                        />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell align="left">
-                                                        {val.id}
-                                                        <br />
-                                                        SKU: {val.SKU}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
-                                                    <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
-                                                    <StyledTableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</StyledTableCell>
-                                                    <StyledTableCell align="left">
-                                                        <span style={{cursor: "pointer"}}>
-                                                            {val.total_stock}
-                                                        </span>
-                                                    </StyledTableCell>
-                                                    {getRoleId === 1 ?
-                                                        <StyledTableCell align="center" className="adm-products-action-cell">
-                                                            <button 
-                                                                className="adm-products-dropdown-btn" 
-                                                                onClick={() => dropdownClick(index)}
-                                                                onBlur={() => dropdownBlur(index)}
-                                                            >
-                                                                Options
-                                                                <img 
-                                                                    src={chevronDown} 
-                                                                    style={{
-                                                                        transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
-                                                                    }}
-                                                                    alt="Dropdown-Arrow"
-                                                                />
-                                                            </button>
-                                                            <ul 
-                                                                className="adm-products-dropdown-menu" 
-                                                                style={{
-                                                                    transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
-                                                                    opacity: dropdownLength[index] ? 1 : 0,
-                                                                    zIndex: dropdownLength[index] ? 100 : -10,
-                                                                }}
-                                                            >
-                                                                <Link 
-                                                                    to={{
-                                                                        pathname: "/admin/manage-product/edit",
-                                                                        state: val
-                                                                    }}
-                                                                    className="link-no-decoration"
-                                                                >
-                                                                    <li>
-                                                                        <div className="adm-edit-icon" />
-                                                                        Edit
-                                                                    </li>
-                                                                </Link>
-                                                                <li 
-                                                                    onClick={() => modalClick(index)}
-                                                                >
-                                                                    <div className="adm-delete-icon" />
-                                                                    Delete
-                                                                </li>
-                                                            </ul>
+                                        {!loadTable ?
+                                            <TableBody>
+                                                {products
+                                                .map((val, index) => (
+                                                    <StyledTableRow key={val.SKU}>
+                                                        <StyledTableCell align="center" component="th" scope="row">
+                                                            <img 
+                                                                src={`${API_URL}/${val.images[0]}`} 
+                                                                style={{height: "80px", width: "80px"}} 
+                                                                alt={val.name}
+                                                            />
                                                         </StyledTableCell>
-                                                        :
-                                                        null
-                                                    }
-                                                </StyledTableRow>
-                                            ))}
-                                        </TableBody>
+                                                        <StyledTableCell align="left">
+                                                            {val.id}
+                                                            <br />
+                                                            SKU: {val.SKU}
+                                                        </StyledTableCell>
+                                                        <StyledTableCell align="left" className="txt-capitalize">{val.name}</StyledTableCell>
+                                                        <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
+                                                        <StyledTableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</StyledTableCell>
+                                                        <StyledTableCell align="left">
+                                                            <span style={{cursor: "pointer"}}>
+                                                                {val.total_stock}
+                                                            </span>
+                                                        </StyledTableCell>
+                                                        {getRoleId === 1 ?
+                                                            <StyledTableCell align="center" className="adm-products-action-cell">
+                                                                <button 
+                                                                    className="adm-products-dropdown-btn" 
+                                                                    onClick={() => dropdownClick(index)}
+                                                                    onBlur={() => dropdownBlur(index)}
+                                                                >
+                                                                    Options
+                                                                    <img 
+                                                                        src={chevronDown} 
+                                                                        style={{
+                                                                            transform: dropdownLength[index] ? "rotate(-180deg)" : "rotate(0deg)"
+                                                                        }}
+                                                                        alt="Dropdown-Arrow"
+                                                                    />
+                                                                </button>
+                                                                <ul 
+                                                                    className="adm-products-dropdown-menu" 
+                                                                    style={{
+                                                                        transform: dropdownLength[index] ? "translateY(0)" : "translateY(-5px)",
+                                                                        opacity: dropdownLength[index] ? 1 : 0,
+                                                                        zIndex: dropdownLength[index] ? 100 : -10,
+                                                                    }}
+                                                                >
+                                                                    <Link 
+                                                                        to={{
+                                                                            pathname: "/admin/manage-product/edit",
+                                                                            state: val
+                                                                        }}
+                                                                        className="link-no-decoration"
+                                                                    >
+                                                                        <li>
+                                                                            <div className="adm-edit-icon" />
+                                                                            Edit
+                                                                        </li>
+                                                                    </Link>
+                                                                    <li 
+                                                                        onClick={() => modalClick(index)}
+                                                                    >
+                                                                        <div className="adm-delete-icon" />
+                                                                        Delete
+                                                                    </li>
+                                                                </ul>
+                                                            </StyledTableCell>
+                                                            :
+                                                            null
+                                                        }
+                                                    </StyledTableRow>
+                                                ))}
+                                            </TableBody>
+                                            :
+                                            <StyledTableCell colSpan={7} style={{height: "30rem"}}>
+                                                <AdminLoadSpinner />
+                                            </StyledTableCell>
+                                        }
                                     </Table>
                                 </TableContainer>
                                 <div className="adm-products-pagination">
