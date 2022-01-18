@@ -1,107 +1,110 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./styles/profileSidebar.css";
-import images from "./../assets";
-import { Link, useRouteMatch } from "react-router-dom";
-import axios from "axios";
-import { API_URL } from "./../constants/api";
+
+// Library
+
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Avatar from "@mui/material/Avatar";
+
+// Komponen
+
+import images from "./../assets";
+import { API_URL } from "./../constants/api";
 
 function ProfileSidebar() {
-  // Untuk url nesting route
-  let { url } = useRouteMatch();
-  const data = useSelector((state) => state.ProfileReducer);
-  console.log(data);
-  const [file, setFile] = useState(null);
+  let { url } = useRouteMatch(); // Use route match untuk nesting route
 
-  useEffect(() => {
-    if (file) {
-      (async () => {
-        try {
-          if (!file) {
-            return;
-          }
+  const dataUser = useSelector((state) => state.auth); // Selector redux untuk get data user dari redux
+  const location = useLocation(); // Get lokasi params sedang berada di mana
 
-          const formData = new FormData();
-          formData.append("image", file);
+  // Render photo profile dan username
 
-          await axios.patch(`${API_URL}/profile/upload-photo/2`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+  const renderProfpic = () => {
+    return dataUser.profile_picture ? (
+      <div className="mr-3">
+        <img
+          src={`${API_URL}/${dataUser.profile_picture}`}
+          alt="profpic"
+          style={{
+            width: "56px",
+            height: "56px",
+            objectFit: "cover",
+            borderRadius: "100%",
+          }}
+        />
+      </div>
+    ) : (
+      <div className="profile-sidebar-profpic d-flex align-items-center justify-content-center mr-3">
+        <img
+          src={images.profpic}
+          alt="profpic"
+          style={{ width: "32px", height: "32px" }}
+        />
+      </div>
+    );
+  };
 
-          alert("berhasil");
-        } catch (error) {
-          console.log(error);
-        }
-      })();
-    }
-  }, [file]);
+  // Render menu profile pada sidebar
+
+  const renderMenuProfile = () => {
+    return (
+      <div>
+        <Link to="/profile" className="text-link">
+          <button
+            className={`profile-btn-menu d-flex align-items-center w-100 p-2 ${
+              location.pathname === "/profile" ? "profile-btn-active" : null
+            }`}
+          >
+            <img src={images.editProfile} alt="editprofile" className="mr-2" />
+            <div>Atur akun</div>
+          </button>
+        </Link>
+        <Link to={`${url}/history`} className="text-link">
+          <button
+            className={`profile-btn-menu d-flex align-items-center w-100 p-2 ${
+              location.pathname === "/profile/history"
+                ? "profile-btn-active"
+                : null
+            }`}
+          >
+            <img src={images.history} alt="editprofile" className="mr-2" />
+            <div>Pesanan saya</div>
+          </button>
+        </Link>
+        <Link to={`${url}/address`} className="text-link">
+          <button
+            className={`profile-btn-menu d-flex align-items-center w-100 p-2 ${
+              location.pathname === "/profile/address"
+                ? "profile-btn-active"
+                : null
+            }`}
+          >
+            <img src={images.alamat} alt="editprofile" className="mr-2" />
+            <div>Daftar alamat</div>
+          </button>
+        </Link>
+      </div>
+    );
+  };
 
   return (
-    <>
-      <div className="profile-sidebar-container mb-4">
-        <div className="profile-photo-wrapper w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-          <div className="d-flex justify-content-center align-items-center w-100 h-100 mb-3">
-            {file || data.profile_picture ? (
-              <img
-                src={
-                  file
-                    ? URL.createObjectURL(file)
-                    : `${API_URL}${data.profile_picture}`
-                }
-                alt="photo-profile"
-                className="profile-photo"
-              />
-            ) : (
-              <div className="profile-photo">
-                <Avatar className="w-100 h-100 d-flex align-items-center justify-content-center">
-                  {data.username.slice(0, 1).toUpperCase()}
-                </Avatar>
-              </div>
-            )}
-          </div>
-          <div className="w-100 d-flex justify-content-center">
-            <label htmlFor="photo-profile" className="photo-profile-btn">
-              Pilih foto
-            </label>
-            <input
-              type="file"
-              id="photo-profile"
-              style={{ display: "none" }}
-              onChange={(e) => setFile(e.target.files[0])}
-            />
-          </div>
-
-          <div className="profile-username">{data.username}</div>
+    <div className="profile-sidebar-container pt-4 pb-2">
+      <div className="d-flex align-items-center">
+        <div className="profile-sidebar-ppusername d-flex align-items-center px-4">
+          {renderProfpic()}
+          <div className="profile-1em-500">{dataUser.username}</div>
         </div>
       </div>
-      <div className="profile-route-container w-100">
-        <div className="profile-route-wrapper d-flex flex-column justify-content-around h-100">
-          <Link to="/profile" className="text-link">
-            <div className="d-flex align-items-center">
-              <img src={images.profil} alt="" className="mr-3" />
-              <div className="profile-route-name">Profil Saya</div>
-            </div>
-          </Link>
-          <div className="profile-route-border"></div>
-          <Link to={`${url}/history`} className="text-link">
-            <div className="d-flex align-items-center">
-              <img src={images.cart} alt="" className="mr-3" />
-              <div className="profile-route-name">History Pesanan</div>
-            </div>
-          </Link>
-          <div className="profile-route-border"></div>
-          <Link to={`${url}/address`} className="text-link">
-            <div className="d-flex align-items-center">
-              <img src={images.search} alt="" className="mr-3" />
-              <div className="profile-route-name">Daftar Alamat</div>
-            </div>
-          </Link>
-        </div>
+      <div className="px-2 mt-4">
+        <div className="profile-border mb-2"></div>
+        {renderMenuProfile()}
+        <div className="profile-border my-2"></div>
+        <button className="profile-btn-menu d-flex align-items-center w-100 p-2">
+          <img src={images.logout} alt="editprofile" className="mr-2" />
+          <div>Logout</div>
+        </button>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -20,6 +20,8 @@ function Textbox({
   borderRadius,
   type = "text",
   onBlur,
+  changeMessage,
+  color,
   maxLength,
 }) {
   return (
@@ -32,16 +34,25 @@ function Textbox({
           {label}
         </label>
       ) : null}
-      <div className="d-flex flex-column" onClick={onClick}>
+      <div
+        className={`textbox-styling d-flex align-items-center ${
+          error ? "textbox-error" : null
+        }`}
+        onClick={onClick}
+        style={{ cursor }}
+      >
         <input
           type={type}
           placeholder={placeholder}
-          className={`textbox-styling ${error ? "textbox-error" : null}`}
+          className={`textbox-input-styling ${
+            error ? "textbox-error-input" : null
+          }`}
           style={{
             width,
             height,
             cursor,
             backgroundColor,
+            color,
             borderRadius,
           }}
           value={value}
@@ -52,6 +63,9 @@ function Textbox({
           onBlur={onBlur}
           maxLength={maxLength}
         />
+        {changeMessage ? (
+          <button className="textbox-btn-styling">{changeMessage}</button>
+        ) : null}
       </div>
       {error ? (
         <div className="d-flex align-items-center mt-1">

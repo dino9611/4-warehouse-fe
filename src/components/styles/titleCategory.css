@@ -1,0 +1,32 @@
+.title-banner-category {
+  position: absolute;
+  width: 256px;
+  height: 297px;
+  border-radius: 12px;
+  z-index: -99;
+  overflow: hidden;
+  transition: all 700ms ease;
+}
+
+.title-banner-category-active {
+  opacity: 1;
+  pointer-events: all;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.title-banner-category-no-active {
+  opacity: 0;
+  pointer-events: none;
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+}
+
+.vector1 {
+  background-repeat: no-repeat;
+  background-image: url("./../../assets/vector1.png"),
+    url("./../../assets/vector2.png"), url("./../../assets/vector3.png");
+  background-position: 50px 20px, left top, 180px;
+  position: relative;
+}

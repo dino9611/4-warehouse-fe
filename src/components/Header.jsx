@@ -119,7 +119,7 @@ function Header() {
     return (
       <>
         <div className="header-right ">
-          <Link to={"/login"}>
+          <Link to="/login">
             <button className="header-masuk">Masuk</button>
           </Link>
         </div>
@@ -228,14 +228,14 @@ function Header() {
   // Render notif pada icon cart jika user menambahkan produk
 
   const renderNotifCart = () => {
-    return dataCart.cart.length ? (
-      dataCart.cart.length > 99 ? (
+    return dataCart.totalItem ? (
+      dataCart.totalItem > 99 ? (
         <div className="header-notif-cart d-flex align-items-center justify-content-center">
           99+
         </div>
       ) : (
         <div className="header-notif-cart d-flex align-items-center justify-content-center">
-          {totalItemInCart()}
+          {dataCart.totalItem}
         </div>
       )
     ) : null;
@@ -253,51 +253,57 @@ function Header() {
                 <img src={asset.logo} alt="logo" />
               </Link>
             </div>
-            <div
-              className="d-flex align-items-center"
-              style={{ fontWeight: "600", fontSize: "14px" }}
-            >
-              <Link to="/products" className="text-link">
-                <div style={{ position: "relative" }}>
-                  <div>Produk</div>
-                  {location.pathname === "/products" ? (
-                    <div className="header-focus-border"></div>
-                  ) : null}
+            {location.pathname === "/checkout" ||
+            location.pathname === "/checkout/payment" ? null : (
+              <div
+                className="d-flex align-items-center"
+                style={{ fontWeight: "600", fontSize: "14px" }}
+              >
+                <Link to="/products" className="text-link">
+                  <div style={{ position: "relative" }}>
+                    <div>Produk</div>
+                    {location.pathname === "/products" ? (
+                      <div className="header-focus-border"></div>
+                    ) : null}
+                  </div>
+                </Link>
+                <div ref={ref} className="header-kategori mx-5">
+                  <button
+                    className="header-focus-category"
+                    onClick={() => setHandlerCategory(!handlerCategory)}
+                  >
+                    Kategori
+                  </button>
+                  {renderDownCategory()}
                 </div>
-              </Link>
-              <div ref={ref} className="header-kategori mx-5">
-                <button
-                  className="header-focus-category"
-                  onClick={() => setHandlerCategory(!handlerCategory)}
-                >
-                  Kategori
-                </button>
-                {renderDownCategory()}
+                <div>Promo</div>
               </div>
-              <div>Promo</div>
-            </div>
-          </div>
-          <div className="d-flex align-items-center">
-            <div className="header-right">
-              <Link to="/cart">
-                <div>
-                  <img src={asset.cart} alt="cart-header" />
-                  {renderNotifCart()}
-                </div>
-              </Link>
-            </div>
-            <div className="header-right">
-              <img src={asset.notif} alt="notif-header" />
-            </div>
-            {dataUser.is_login ? (
-              <div className="header-profil-wrapper" ref={refProfile}>
-                {renderLoginTrue()}
-                {renderDownProfile()}
-              </div>
-            ) : (
-              renderLoginFalse()
             )}
           </div>
+          {location.pathname === "/checkout" ||
+          location.pathname === "/checkout/payment" ? null : (
+            <div className="d-flex align-items-center">
+              <div className="header-right">
+                <Link to="/cart">
+                  <div>
+                    <img src={asset.cart} alt="cart-header" />
+                    {renderNotifCart()}
+                  </div>
+                </Link>
+              </div>
+              <div className="header-right">
+                <img src={asset.notif} alt="notif-header" />
+              </div>
+              {dataUser.is_login ? (
+                <div className="header-profil-wrapper" ref={refProfile}>
+                  {renderLoginTrue()}
+                  {renderDownProfile()}
+                </div>
+              ) : (
+                renderLoginFalse()
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

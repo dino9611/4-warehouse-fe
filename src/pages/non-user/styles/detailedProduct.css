@@ -59,7 +59,7 @@
 
 .detailed-product-content-price {
   font-size: 1.25em;
-  color: #070707;
+  color: #0a4d3c;
   font-weight: 600;
 }
 
@@ -91,9 +91,7 @@
 }
 
 .detailed-product-content-description {
-  /* height: 180px; */
   overflow: hidden;
-  /* border: 1px solid black; */
   box-sizing: border-box;
 }
 
@@ -158,4 +156,32 @@
   font-size: 1em;
   font-weight: 600;
   color: #b24629;
+}
+
+.detailed-prod-snackbar-price {
+  font-size: 0.625em;
+  color: #0a4d3c;
+  font-weight: 500;
+}
+
+.detailed-prod-snackbar-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.detailed-prod-snackbar-btn {
+  padding: 10px 12px;
+  border-radius: 100px;
+  border: solid 1px #b24629;
+  background-color: transparent;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+}
+
+.detailed-prod-snackbar-btn:hover {
+  border: 1px solid #8d280c;
+  color: #8d280c;
 }

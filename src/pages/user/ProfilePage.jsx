@@ -22,11 +22,11 @@ function ProfilePage() {
   return (
     <div className="container mt-5">
       <div className="row">
-        <div className="profile-col col-3">
+        <div className="profile-col col-3 pr-2">
           <ProfileSidebar />
         </div>
         <div className="profile-col col-9 pl-4">
-          <div className="profile-container">
+          <div className="profile-container pt-4">
             <Switch>
               <Route path="/profile" exact component={Profile} />
               <Route

@@ -110,8 +110,9 @@ input[type="number"] {
 
 .product-sidebar-title {
   padding: 6.5% 8.5%;
-  background-color: #f4f4f4;
-  border-radius: 8px;
+  background-color: #0a4d3c;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 .product-sort-content {
@@ -121,14 +122,14 @@ input[type="number"] {
 .product-title-name {
   font-size: 0.875em;
   font-weight: 500;
-  color: #5a5a5a;
+  color: #ffffff;
 }
 
 .product-title-reset {
   font-size: 0.875em;
   font-weight: 600;
   cursor: pointer;
-  color: #b24629;
+  color: #ffffff;
 }
 
 .product-content-select {
@@ -215,4 +216,46 @@ input[type="number"] {
 
 .product-sort-sub:hover {
   color: #b24629;
+}
+
+.product-sort-sub-active {
+  color: #b24629;
+}
+
+.skeleton-category-checkbox {
+  width: 1rem;
+  height: 1rem;
+  background-color: hsl(200, 20%, 70%);
+  border-radius: 0.25rem;
+  opacity: 0.7;
+}
+
+.skeleton-category-name {
+  width: 75%;
+  height: 1rem;
+  background-color: hsl(200, 20%, 70%);
+  border-radius: 0.25rem;
+  opacity: 0.7;
+}
+
+.skeleton-category-anim {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.product-empty-data {
+  font-size: 1.25em;
+  font-weight: 600;
+  text-align: center;
 }

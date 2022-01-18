@@ -1,30 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
 import "./style/cart.css";
+
+// Library
+
+import { Link, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { Spinner } from "reactstrap";
 
 // Components
 
-import ButtonPrimary from "./../../components/ButtonPrimary";
-import Modal from "./../../components/Modal";
 import thousandSeparator from "../../helpers/ThousandSeparator";
+import ButtonPrimary from "./../../components/ButtonPrimary";
 import { API_URL } from "../../constants/api";
+import Modal from "./../../components/Modal";
 import images from "./../../assets";
 import assets from "./../../assets";
+import SkeletonListCart from "../../components/SkeletonListCart";
+import SnackbarMessage from "../../components/SnackbarMessage";
 
 function Cart() {
   const [dataCart, setDataCart] = useState([]); // Data cart detail
   const [handleDelete, setHandleDelete] = useState(false); // State untuk delete product di cart detail
   const [errorStock, setErrorStock] = useState([]); // Array untuk produk yang melebihi stok pada saat button "Beli" dipencet
+  const [loading, setLoading] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [errorInput, setErrorInput] = useState(false);
 
   // Id dan name product di cart detail untuk delete dan update qty
 
   const [idProd, setIdProd] = useState("");
   const [nameProd, setNameProd] = useState("");
 
+  const dataUser = useSelector((state) => state.auth); // Get data user dari redux
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
+  const dispatch = useDispatch();
+
   // Use history
 
-  const history = useHistory();
+  const history = useHistory(); // Untuk navigasi ke checkout setelah cek stok
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let res = await axios.get(
+          `${API_URL}/transaction/check-stock/${dataUser.id}`
+        );
+
+        setErrorStock(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [dataCart]);
 
   // Get data cart detail dari database
 
@@ -32,9 +60,15 @@ function Cart() {
     (async () => {
       try {
         if (!handleDelete) {
-          let res = await axios.get(`${API_URL}/transaction/get/cart-detail/2`); // User id menggunakan redux (sementara seperti ini)
+          setLoadingPage(true);
+
+          let res = await axios.get(
+            `${API_URL}/transaction/get/cart-detail/${dataUser.id}`
+          );
 
           setDataCart(res.data);
+
+          setLoadingPage(false);
         }
       } catch (error) {
         console.log(error.response.data.message);
@@ -47,18 +81,33 @@ function Cart() {
   const renderModalDelete = () => {
     return (
       <>
-        <div className="mb-3">
-          {`Apakah anda yakin ingin menghapus ${
+        <div className="cart-del-content  mb-3 p-4">
+          {`Apakah Anda yakin ingin menghapus ${
             nameProd.charAt(0).toUpperCase() + nameProd.slice(1)
           } dari keranjang?`}
         </div>
-        <div className="d-flex justify-content-end">
-          <div className="mr-2">
-            <ButtonPrimary onClick={deleteProductCart}>Delete</ButtonPrimary>
-          </div>
-          <ButtonPrimary onClick={() => setHandleDelete(false)}>
-            Cancel
-          </ButtonPrimary>
+        <div className="d-flex  w-100">
+          <button
+            className="cart-del-btn w-100"
+            onClick={() => setHandleDelete(false)}
+          >
+            Batal
+          </button>
+          <button
+            className="cart-del-btn w-100  d-flex align-items-center justify-content-center"
+            onClick={deleteProductCart}
+          >
+            {!loading ? (
+              <>
+                <img src={images.trashpolos} alt="trash" className="mr-1" />
+                Hapus
+              </>
+            ) : (
+              <Spinner color="dark" size="sm">
+                Loading...
+              </Spinner>
+            )}
+          </button>
         </div>
       </>
     );
@@ -76,11 +125,30 @@ function Cart() {
 
   const deleteProductCart = async () => {
     try {
+      setLoading(true);
+
       await axios.patch(`${API_URL}/transaction/delete/cart-detail/${idProd}`);
 
+      let resTotalItem = await axios.get(
+        `${API_URL}/transaction/get/total-item/${dataUser.id}`
+      );
+
+      dispatch({ type: "DATACART", payload: resTotalItem.data });
+
+      setLoading(false);
       setHandleDelete(false);
-      alert("produk berhasil dihapus"); // Sementara pake alert (diganti snackbar)
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Produk berhasil dihapus dari keranjang",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
+      console.log(error);
       console.log(error.response.data.message);
     }
   };
@@ -100,6 +168,12 @@ function Cart() {
         await axios.patch(`${API_URL}/transaction/edit/cart-detail/${id}`, {
           qty: dataCart[index].qty + 1,
         });
+
+        let resTotalItem = await axios.get(
+          `${API_URL}/transaction/get/total-item/${dataUser.id}`
+        );
+
+        dispatch({ type: "DATACART", payload: resTotalItem.data });
       } catch (error) {
         console.log(error.response.data.message);
       }
@@ -108,9 +182,10 @@ function Cart() {
 
   // Kurang qty produk
 
-  const onClickMinusQty = async (index, id, qty, stock) => {
+  const onClickMinusQty = async (index, id, qty, stock, name) => {
     if (qty <= 1) {
       setIdProd(id);
+      setNameProd(name);
       setHandleDelete(true);
       return;
     }
@@ -125,6 +200,12 @@ function Cart() {
       await axios.patch(`${API_URL}/transaction/edit/cart-detail/${id}`, {
         qty: dataCart[index].qty - 1,
       });
+
+      let resTotalItem = await axios.get(
+        `${API_URL}/transaction/get/total-item/${dataUser.id}`
+      );
+
+      dispatch({ type: "DATACART", payload: resTotalItem.data });
     } catch (error) {
       console.log(error.response.data.message);
     }
@@ -133,29 +214,35 @@ function Cart() {
   // Input qty dengan on change
 
   const onChangeInputQty = (e, index, id, qty, stock) => {
-    if (e.target.value === "" || e.target.value <= 0) {
+    let qtyProd = parseInt(e.target.value);
+
+    if (e.target.value === "" || qtyProd <= 0) {
       setDataCart([
         ...dataCart.slice(0, index),
         { ...dataCart[index], qty: 0 },
         ...dataCart.slice(index + 1),
       ]);
-      console.log("Jumlah harus diisi"); // Sementara seperti ini dulu, nanti diganti yang lebih bagus
+
+      setErrorInput(true);
       return;
     }
 
-    if (e.target.value > stock) {
+    if (qtyProd > stock) {
       setDataCart([
         ...dataCart.slice(0, index),
-        { ...dataCart[index], qty: parseInt(e.target.value) },
+        { ...dataCart[index], qty: qtyProd },
         ...dataCart.slice(index + 1),
       ]);
-      console.log(`maksimal pembelian ${stock} barang`); // Sementara seperti ini dulu, nanti diganti yang lebih bagus
+
+      setErrorInput(true);
       return;
     }
+
+    setErrorInput(false);
 
     setDataCart([
       ...dataCart.slice(0, index),
-      { ...dataCart[index], qty: parseInt(e.target.value) },
+      { ...dataCart[index], qty: qtyProd },
       ...dataCart.slice(index + 1),
     ]);
   };
@@ -184,6 +271,8 @@ function Cart() {
     }
 
     try {
+      setErrorInput(false);
+
       await axios.patch(`${API_URL}/transaction/edit/cart-detail/${id}`, {
         qty: qtyProd,
       });
@@ -194,7 +283,6 @@ function Cart() {
 
   // Render list product cart detail yang ada di state dataProduct
 
-  console.log(dataCart);
   const renderListCart = () => {
     return dataCart.map((el, index) => {
       let error = errorStock.findIndex((element) => element == el.product_id);
@@ -206,7 +294,7 @@ function Cart() {
               <img
                 src={`${API_URL}/${el.images[0]}`}
                 alt="photo-prod"
-                className="cart-list-img "
+                className="cart-list-img skeleton"
               />
             </div>
             <div className="w-100 d-flex justify-content-between">
@@ -248,7 +336,13 @@ function Cart() {
                   <button
                     className="cart-btn"
                     onClick={() =>
-                      onClickMinusQty(index, el.id, el.qty, el.total_stock)
+                      onClickMinusQty(
+                        index,
+                        el.id,
+                        el.qty,
+                        el.total_stock,
+                        el.name
+                      )
                     }
                   >
                     <img src={images.minus} alt="minus" />
@@ -274,7 +368,11 @@ function Cart() {
                   </div>
                   <button className="cart-btn">
                     <img
-                      src={images.plusactive}
+                      src={
+                        dataCart.qty === dataCart.total_stock
+                          ? images.plus
+                          : images.plusactive
+                      }
                       alt="plus"
                       onClick={() =>
                         onClickPlusQty(index, el.id, el.qty, el.total_stock)
@@ -302,7 +400,7 @@ function Cart() {
   const totalItem = () => {
     return dataCart
       .map((el) => {
-        return el.qty;
+        return parseInt(el.qty);
       })
       .reduce((prev, curr) => prev + curr, 0);
   };
@@ -321,16 +419,80 @@ function Cart() {
 
   const checkStock = async () => {
     try {
-      let res = await axios.get(`${API_URL}/transaction/check-stock/2`); // :userId dapat dari auth user di redux
+      setLoading(true);
+
+      let res = await axios.get(
+        `${API_URL}/transaction/check-stock/${dataUser.id}`
+      );
 
       setErrorStock(res.data);
 
+      setLoading(false);
+
       if (!res.data.length) {
-        history.push("/checkout");
+        history.push({ pathname: "/checkout", state: dataCart });
+
+        return;
       }
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "error",
+          message:
+            "Stock produk mengalami perubahan, cek pesanan kamu dulu sebelum membeli",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
       console.log(error.response.data.message);
     }
+  };
+
+  // Render notif apabila ada stock yang kurang
+
+  const renderErrorStock = () => {
+    return (
+      <div className="cart-errorstock profile-fs14-500-black d-flex align-items-center px-3 py-2 mb-4">
+        <img src={images.error} alt="errorstock" className="mr-2" />
+        <div>{`Ada ${errorStock.length} barang yang tidak bisa diproses!`}</div>
+      </div>
+    );
+  };
+
+  // RENDER EMPTY CART
+  const renderEmptyCart = () => {
+    return (
+      <div className="d-flex flex-column align-items-center justify-content-center w-100 my-5">
+        <img src={images.cartkosong} alt="empty" className="mb-3" />
+        <div
+          style={{ fontSize: "0.75em", color: "#070707", fontWeight: "500" }}
+          className="mb-2"
+        >
+          Keranjang belanjaan kamu masih kosong
+        </div>
+        <Link to="/products" className="text-link">
+          <div
+            style={{ fontSize: "0.875em", color: "#b24629", fontWeight: "600" }}
+          >
+            Belanja sekarang
+          </div>
+        </Link>
+      </div>
+    );
+  };
+
+  // RENDER SKELETON LIST CART
+  const renderSkeletonListCart = () => {
+    return [1, 2, 3].map((el, index) => {
+      return (
+        <div>
+          <SkeletonListCart />
+          <div className="cart-border my-3"></div>
+        </div>
+      );
+    });
   };
 
   // Render kolom sebelah kiri dari page cart
@@ -340,7 +502,14 @@ function Cart() {
       <div className="cart-left col-8 ">
         <div className="cart-left-container p-4">
           <div className="cart-title mb-4">Keranjang</div>
-          <div className="cart-list-wrapper">{renderListCart()}</div>
+          {errorStock.length ? renderErrorStock() : null}
+          <div className="cart-list-wrapper">
+            {loadingPage
+              ? renderSkeletonListCart()
+              : dataCart.length
+              ? renderListCart()
+              : renderEmptyCart()}
+          </div>
         </div>
       </div>
     );
@@ -389,8 +558,22 @@ function Cart() {
             )}`}</div>
           </div>
           <div>
-            <ButtonPrimary width="w-100" onClick={checkStock}>
-              Beli
+            <ButtonPrimary
+              width="w-100"
+              onClick={checkStock}
+              disabled={
+                errorStock.length || loading || !dataCart.length || errorInput
+                  ? true
+                  : null
+              }
+            >
+              {!loading ? (
+                "Beli"
+              ) : (
+                <Spinner color="light" size="sm">
+                  Loading...
+                </Spinner>
+              )}
             </ButtonPrimary>
           </div>
         </div>
@@ -405,7 +588,11 @@ function Cart() {
         {renderRightSide()}
       </div>
       <div className="container-modal">
-        <Modal open={handleDelete} close={() => setHandleDelete(false)}>
+        <Modal
+          open={handleDelete}
+          close={() => setHandleDelete(false)}
+          classModal="cart-del-modal"
+        >
           {renderModalDelete()}
         </Modal>
       </div>

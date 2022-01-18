@@ -1,5 +1,5 @@
 const INITIAL_STATE = {
-  chooseDate: "",
+  chooseDate: null,
   handleCalender: false,
   profile_picture: "",
   username: "",

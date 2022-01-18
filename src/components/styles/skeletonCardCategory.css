@@ -1,0 +1,44 @@
+.skel-card-category-wrapper {
+  width: 100px;
+  height: 165px;
+  border-radius: 100px;
+  background-color: #fff;
+  box-shadow: 0 1px 12px 0 #d4c7b2;
+}
+
+.skel-card-category-inner-circle {
+  width: 80px;
+  aspect-ratio: 1;
+  border-radius: 100%;
+  background-color: hsl(200, 20%, 70%);
+}
+
+.skel-card-category-text {
+  width: 75%;
+  height: 1rem;
+  background-color: hsl(200, 20%, 70%);
+  border-radius: 0.125rem;
+}
+
+.skel-card-category-text-sm {
+  width: 50%;
+  height: 1rem;
+  background-color: hsl(200, 20%, 70%);
+  border-radius: 0.125rem;
+}
+
+.skel-card-category-anim {
+  animation: pulse-card-category 2s infinite;
+}
+
+@keyframes pulse-card-category {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

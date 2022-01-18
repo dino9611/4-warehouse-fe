@@ -1,0 +1,61 @@
+.carousel-product-btn {
+  border: none;
+  border-radius: 100%;
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08);
+  background-color: #f4f4f4;
+  width: 40px;
+  height: 40px;
+}
+
+#next-product,
+#prev-product {
+  position: absolute;
+  top: 37%;
+  z-index: 2;
+}
+
+.next-product-active {
+  animation: btn-in 500ms forwards;
+}
+
+.next-product-inactive {
+  animation: btn-out 500ms forwards;
+}
+
+.prev-product-active {
+  animation: btn-in 500ms forwards;
+}
+
+.prev-product-inactive {
+  animation: btn-out 500ms forwards;
+}
+
+#next-product {
+  right: 0%;
+}
+
+#prev-product {
+  left: 0%;
+}
+
+@keyframes btn-out {
+  from {
+    opacity: 1;
+    pointer-events: all;
+  }
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes btn-in {
+  from {
+    opacity: 0;
+    pointer-events: none;
+  }
+  to {
+    opacity: 1;
+    pointer-events: all;
+  }
+}
