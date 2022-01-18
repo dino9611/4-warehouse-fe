@@ -19,15 +19,3 @@
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 1000;
 }
-<<<<<<< HEAD
-=======
-.modal-address {
-  width: 544px !important;
-  height: 544px;
-  overflow-y: scroll;
-}
-
-.checkout-modal {
-  width: 50% !important;
-}
->>>>>>> origin/develop

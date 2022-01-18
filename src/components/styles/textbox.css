@@ -9,7 +9,6 @@
   outline-color: #b24629;
 }
 
-<<<<<<< HEAD
 .textbox-input-styling {
   width: 100%;
   color: #5a5a5a;
@@ -25,7 +24,8 @@
   background-color: transparent;
   font-weight: 500;
   color: #b24629;
-=======
+}
+
 .textbox-styling::placeholder {
   color: #cacaca;
 }
@@ -33,7 +33,6 @@
 .textbox-styling:focus {
   border-color: #b24629;
   outline: none;
->>>>>>> origin/develop
 }
 
 .textbox-error {
