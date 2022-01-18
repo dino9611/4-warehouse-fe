@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useParams, Redirect } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useParams,
+  Redirect,
+  useHistory,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./styles/detailedProduct.css";
@@ -31,11 +37,13 @@ function DetailedProduct(props) {
 
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state.auth);
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
 
   const location = useLocation(); // Location untuk params product Id
   const { productId } = useParams();
 
   const roleId = useSelector((state) => state.auth.role_id);
+  let history = useHistory();
 
   // Set state untuk data produk
 
@@ -354,8 +362,16 @@ function DetailedProduct(props) {
     try {
       //proteksi user belom terdaftar tidak bisa transaksi
       if (!roleId) {
-        alert("Mohon untuk Login terlebih dahulu");
-        return <Redirect to="/login" />;
+        dispatch({
+          type: "SHOWSNACKBAR",
+          payload: {
+            status: "error",
+            message: "Kamu belum login, silahkan login dulu.",
+          },
+        });
+
+        dataSnackbar.ref.current.showSnackbarMessage();
+        history.push("/login");
       }
       setLoading(true);
 
