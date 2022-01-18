@@ -70,11 +70,6 @@ const routes = [
     main: () => <ManageWarehouse />,
   },
   {
-    path: routePath.stockRequest,
-    exact: true,
-    main: () => <div>Belum ada page stock request</div>,
-  },
-  {
     path: routePath.manageAdmin,
     exact: true,
     main: () => <ManageAdmin />,

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./styles/detailedProduct.css";
@@ -12,7 +12,7 @@ import ButtonPrimary from "../../components/ButtonPrimary";
 import { API_URL } from "./../../constants/api.js";
 import { Spinner } from "reactstrap";
 import images from "./../../assets";
-import { useSelector, useDispatch } from "react-redux";
+
 // Material UI
 
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
