@@ -26,7 +26,17 @@
     --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
-/* UTILITY CLASS */
+/* ? UTILITY CLASS & USED IN CHILD COMPONENTS */
+.adm-main-parent-wrap h1,
+.adm-main-parent-wrap h2,
+.adm-main-parent-wrap h3,
+.adm-main-parent-wrap h4,
+.adm-main-parent-wrap h5,
+.adm-main-parent-wrap h6
+.adm-main-parent-wrap p {
+    margin: 0;
+}
+
 .txt-capitalize {
     text-transform: capitalize;
 }
@@ -53,6 +63,30 @@
     transition: 300ms;
 }
 
+.control-zIndex {
+    z-index: 1;
+}
+
+/* ? SWEETALERT2 CUSTOM STYLING FOR ADMIN CHILD COMPONENTS */
+.adm-swal-popup-override {
+    border-radius: var(--b-rad-table) !important;
+}
+
+.adm-swal-btn-override {
+    background-color: var(--primary-4th-color) !important;
+    border: none !important;
+    border-radius: 100px !important;
+    box-shadow: none !important;
+    height: 42px !important;
+    outline: none !important;
+}
+
+.adm-swal-btn-override:hover {
+    background-color: var(--primary-3rd-color) !important;
+    transition: 300ms;
+}
+
+/* ? MAIN WRAPPER & CONTENTS SECTION */
 .adm-main-parent-wrap {
     display: flex;
     height: 100%;
@@ -60,24 +94,11 @@
     width: 100vw;
 }
 
-.adm-main-parent-wrap h1,
-.adm-main-parent-wrap h2,
-.adm-main-parent-wrap h3,
-.adm-main-parent-wrap h4,
-.adm-main-parent-wrap h5,
-.adm-main-parent-wrap h6
-.adm-main-parent-wrap p {
-    margin: 0;
-}
-
-.control-zIndex {
-    z-index: 1;
-}
-
 .adm-main-content-wrap {
     background-color: var(--primary-5th-color);
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: calc(100% - 15%);
+    /* width: calc(100% - 15%); */
+    width: max(100% - 15%, 100% - 248px);
 }

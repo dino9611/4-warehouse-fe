@@ -10,65 +10,314 @@
     --neutral-3rd-color: #CACACA;
     --neutral-4th-color: #F4F4F4;
     --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-rad-table: 8px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
 }
 
-.link-no-decoration {
-    color: inherit;
+/* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
+.adm-sidebar-item-label,
+.adm-sidebar-foot-logout {
+    align-items: center;
+    column-gap: 0.5rem;
+    display: flex;
 }
 
-.link-no-decoration:hover {
-    color: inherit;
-    text-decoration: none;
-}
-
+/* ? MAIN WRAPPER SECTION */
 .adm-sidebar-main-wrap {
     background-color:  var(--primary-1st-color);
-    color: var(--neutral-3rd-color);
+    color: var(--neutral-5th-color);
     display: flex;
     flex-direction: column;
     height: 100vh;
-    min-width: 15%;
-    padding: 0 16px 8px;
+    /* min-width: 15%; */
+    padding: 2.5rem 0;
+    position: relative;
+    width: max(15%, 248px);
 }
 
+/* ? BRAND LOGO WRAP SECTION */
 .adm-sidebar-brand-wrap {
     align-items: center;
     display: flex;
-    min-height: 72px;
+    min-height: 10%;
     justify-content: center;
 }
 
 .adm-sidebar-brand-wrap > img {
-    height: 72px;
+    height: 88px;
     width: 100%;
 }
 
+/* ? SIDEBAR NAVIGATION LISTS WRAP & CONTENTS SECTION */
 .adm-sidebar-list-wrap {
     display: flex;
     flex-direction: column;
+    margin-top: 2.5rem;
+    row-gap: 1.5rem;
+}
+
+.adm-sidebar-list-wrap h6 {
+    font-size: 0.875rem;
+    margin: 0;
 }
 
 .adm-sidebar-item-wrap {
     align-items: center;
+    column-gap: 0.5rem;
+    cursor: pointer;
     display: flex;
-    margin-top: 32px;
+    justify-content: space-between;
+    padding-left: 1.5rem;
+    height: 100%;
+    width: 100%;
 }
 
-.adm-sidebar-item-wrap:hover {
-    color: var(--neutral-4th-color);
+.sidebar-active h6 {
+    color: var(--primary-2nd-color) !important;
+}
+
+.adm-sidebar-item-wrap:hover h6,
+a.sidebar-active:hover,
+.adm-sidebar-dropdown-menu a:hover,
+.adm-sidebar-foot-logout:hover > button {
+    color: #fcb537cc !important;
     transition: 400ms;
 }
 
-.test-add {
+/* ? SIDEBAR NAVIGATION DROPDOWN SECTION */
+.adm-sidebar-dropdown-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.adm-sidebar-dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    padding: 1rem 0 0 4rem;
+    row-gap: 1rem;
+    transition: 400ms;
+}
+
+.adm-sidebar-dropdown-menu > a {
+    align-items: center;
+    display: flex;
+    font-size: 0.75rem;
+    font-weight: 500;
+    justify-content: space-between;
+
+    /* Utk atur efek transisi dropdown */
+    margin-left: -20%;
+    margin-top: -10%;
+    opacity: 0;
+    transition: 400ms;
+    z-index: -1;
+}
+
+.adm-sidebar-active-nav {
+    background: var(--primary-2nd-color);
+    border-radius: var(--b-rad-table) 0 0 var(--b-rad-table);
+    height: 140%;
+    width: 4px;
+}
+
+/* ? SIDEBAR NAVIGATION ICON SECTION */
+
+/* * ARROW TOGGLE ICON */
+.adm-toggle-icon {
+    background: url("../../../assets/components/Chevron-Down-White.svg") no-repeat 0 0;
+    height: 24px;
+    margin-right: 1rem;
+    min-width: 24px;
+    width: 24px;
+}
+
+.sidebar-active .adm-toggle-icon {
+    background: url("../../../assets/components/Chevron-Down-Main-Yellow.svg");
+    transition: 400ms;
+}
+
+.adm-sidebar-item-wrap:hover .adm-toggle-icon {
+    background: url("../../../assets/components/Chevron-Down-Yellow.svg") no-repeat 0 0;
+    transition: 400ms;
+}
+
+/* * DASHBOARD ICON */
+.adm-dashboard-icon {
+    background: url("../../../assets/components/Dashboard.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -3.5px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.sidebar-active .adm-dashboard-icon {
+    background: url("../../../assets/components/Dashboard-Main-Yellow.svg");
+    transition: 400ms;
+}
+
+.adm-sidebar-item-wrap:hover .adm-dashboard-icon {
+    background: url("../../../assets/components/Dashboard-Yellow.svg");
+    transition: 400ms;
+}
+
+/* * ECOMMERCE ICON */
+.adm-ecommerce-icon {
+    background: url("../../../assets/components/Ecommerce.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -3.5px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.sidebar-active .adm-ecommerce-icon {
+    background: url("../../../assets/components/Ecommerce-Main-Yellow.svg");
+    transition: 400ms;
+}
+
+.adm-sidebar-item-wrap:hover .adm-ecommerce-icon {
+    background: url("../../../assets/components/Ecommerce-Yellow.svg");
+    transition: 400ms;
+}
+
+/* * INVENTORY ICON */
+.adm-inventory-icon {
+    background: url("../../../assets/components/Inventory.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -2.5px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.sidebar-active .adm-inventory-icon {
+    background: url("../../../assets/components/Inventory-Main-Yellow.svg");
+    transition: 400ms;
+}
+
+.adm-sidebar-item-wrap:hover .adm-inventory-icon {
+    background: url("../../../assets/components/Inventory-Yellow.svg");
+    transition: 400ms;
+}
+
+/* * MANAGE WAREHOUSE ICON */
+.adm-warehouse-icon {
+    background: url("../../../assets/components/Warehouse.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -3.5px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.sidebar-active .adm-warehouse-icon {
+    background: url("../../../assets/components/Warehouse-Main-Yellow.svg");
+    transition: 400ms;
+}
+
+.adm-sidebar-item-wrap:hover .adm-warehouse-icon {
+    background: url("../../../assets/components/Warehouse-Yellow.svg");
+    transition: 400ms;
+}
+
+/* * MANAGE ADMIN ICON */
+.adm-admins-icon {
+    background: url("../../../assets/components/Admin.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -2px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.sidebar-active .adm-admins-icon {
+    background: url("../../../assets/components/Admin-Main-Yellow.svg");
+    transition: 400ms;
+}
+
+.adm-sidebar-item-wrap:hover .adm-admins-icon {
+    background: url("../../../assets/components/Admin-Yellow.svg");
+    transition: 400ms;
+}
+
+/* * LOGOUT ICON */
+.adm-logout-icon {
+    background: url("../../../assets/components/Logout.svg") no-repeat 0 0;
+    height: 24px;
+    margin-top: -1px; /* Utk centering icon dgn text */
+    min-width: 24px;
+    width: 24px;
+}
+
+.adm-sidebar-foot-logout:hover .adm-logout-icon {
+    background: url("../../../assets/components/Logout-Yellow.svg");
+    transition: 400ms;
+}
+
+/* ? SIDEBAR NAVIGATION FOOT WRAP & CONTENTS SECTION */
+.adm-sidebar-foot-wrap {
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4.5rem;
+    padding: 0 1.375rem 0 1.5rem;
+    position: absolute;
+    row-gap: 2rem;
+    width: 100%;
+}
+
+.adm-sidebar-foot-profile {
+    background: var(--neutral-5th-color);
+    border-radius: var(--b-rad-root);
+    column-gap: 0.5rem;
+    display: flex;
+    padding: 0.675rem;
+}
+
+.adm-sidebar-foot-profile-pic {
+    align-items: center;
+    background: var(--primary-2nd-color);
+    border: none;
+    border-radius: var(--b-rad-table);
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    width: 17%;
+}
+
+.adm-sidebar-foot-profile-pic > img {
+    height: 80%;
+    width: 80%;
+}
+
+.adm-sidebar-foot-profile-info {
+    color: var(--primary-3rd-color);
+    display: flex;
+    flex-direction: column;
+    width: 83%;
+}
+
+.adm-sidebar-foot-profile-info > div:first-of-type {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.adm-sidebar-foot-profile-info > div:not(:nth-of-type(1)) {
+    font-size: 0.625rem;
+}
+
+.adm-sidebar-foot-logout { /* * Struktur utama wrap nya ada di grouped utility class */
+    width: fit-content;
+}
+
+.adm-sidebar-foot-logout > button {
+    background: none;
+    border: none;
     color: var(--neutral-5th-color);
-}
-
-.adm-sidebar-item-wrap > h5 {
-    margin: 0;
-    text-align: start;
-    
-}
-
-.adm-sidebar-icon {
-    margin-right: 16px;
+    font-size: 0.875rem;
+    padding: 0;
 }

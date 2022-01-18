@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { Login } from "./pages/user";
 import { Register, VerifyEmail } from "./pages/non-user";
 
@@ -22,39 +22,30 @@ import Checkout from "./pages/user/Checkout";
 import Cart from "./pages/user/Cart";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
+import Payment from "./pages/user/Payment";
+import LoadingApp from "./components/LoadingApp";
 
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SnackbarMessage from "./components/SnackbarMessage";
 
 function App() {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let resCart = await axios.get(
-          `${API_URL}/transaction/get/cart-detail/2`
-        ); // userId harusnya dari auth user redux
-        let resProfile = await axios.get(`${API_URL}/profile/personal-data/2`); // User id sementara ( nanti dari redux)
-
-        dispatch({
-          type: "PICKIMAGE",
-          payload: {
-            profile_picture: resProfile.data[0].profile_picture,
-            username: resProfile.data[0].username,
-          },
-        });
-
-        dispatch({ type: "DATACART", payload: resCart.data });
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
-
-  const role = "user";
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
   const [loading, setLoading] = useState(true);
+  const DetectPath = () => {
+    return useLocation().pathname;
+  };
+
+  let currentPath = DetectPath();
+
+  const snackbarMessageRef = useRef();
+
+  useEffect(() => {
+    dispatch({ type: "SHOWSNACKBAR", payload: { ref: snackbarMessageRef } });
+  }, []);
 
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector((state) => state.auth.role_id);
@@ -68,6 +59,15 @@ function App() {
           },
         })
         .then((res) => {
+          axios
+            .get(`${API_URL}/transaction/get/total-item/${res.data.id}`)
+            .then((resCart) => {
+              dispatch({ type: "DATACART", payload: resCart.data });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
           dispatch(LoginAction(res.data));
         })
         .catch((err) => {
@@ -98,9 +98,9 @@ function App() {
           />
           <Route path="/products/:category" exact component="" />
           <Route path="/checkout" exact component={Checkout} />
-          <Route path="/checkout/payment" exact component="" />
+          <Route path="/checkout/payment" exact component={Payment} />
           <Route path="/cart" exact component={Cart} />
-          <Route path="*" exact component="" />
+          <Route path="*" component={NotFound} />
         </Switch>
       );
     } else if (getRoleId === 1 || getRoleId === 2) {
@@ -146,9 +146,27 @@ function App() {
   return (
     <div className="App">
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
-      {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
-      {loading ? <div>Loading</div> : renderRouting()}
-      <div>{getRoleId === 1 || getRoleId === 2 ? null : <Footer />}</div>
+      {getRoleId === 3 || !getRoleId ? (
+        <SnackbarMessage
+          ref={snackbarMessageRef}
+          status={dataSnackbar.status}
+          message={dataSnackbar.message}
+        />
+      ) : null}
+      {getRoleId === 1 ||
+      getRoleId === 2 ||
+      loading ||
+      currentPath.includes("/admin") ? null : (
+        <Header />
+      )}
+      {loading ? <LoadingApp /> : renderRouting()}
+      <div>
+        {getRoleId === 1 ||
+        getRoleId === 2 ||
+        loading | currentPath.includes("/admin") ? null : (
+          <Footer />
+        )}
+      </div>
     </div>
   );
 }

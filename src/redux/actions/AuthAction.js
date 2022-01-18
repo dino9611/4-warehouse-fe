@@ -10,3 +10,10 @@ export const logoutAction = () => {
     type: "LOGOUT",
   };
 };
+
+export const totalItem = (data) => {
+  return {
+    type: "DATACART",
+    payload: data,
+  };
+};

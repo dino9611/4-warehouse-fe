@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactDom from "react-dom";
 import ClickOutside from "./ClickOutside";
 import { useTransition, animated } from "react-spring";
@@ -6,6 +6,14 @@ import "./styles/modal.css";
 
 function Modal({ open, close, children, classModal }) {
   const ref = useRef();
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [open]);
 
   // Transition modal
 

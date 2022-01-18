@@ -1,4 +1,3 @@
-import { Children } from "react";
 import "./styles/buttonPrimary.css";
 
 function ButtonPrimary({
@@ -11,7 +10,9 @@ function ButtonPrimary({
 }) {
   return (
     <button
-      className={`button-primary ${width}`}
+      className={`button-primary ${width} ${
+        disabled ? "button-primary-disabled" : null
+      }`}
       onClick={onClick}
       onMouseUp={onMouseUp}
       style={{ fontSize }}

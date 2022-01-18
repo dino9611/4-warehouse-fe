@@ -1,7 +1,6 @@
 import "./styles/AdminMainParent.css";
 import { Switch, Route } from "react-router-dom";
 import AdminSideBar from "../../components/admin/AdminSideBar";
-import AdminNavbar from "../../components/admin/AdminNavbar";
 import ManageProduct from "./ManageProduct";
 import AdminAddProduct from "./AddProduct";
 import EditProduct from "./EditProduct";
@@ -12,13 +11,15 @@ import ManageTransaction from "./ManageTransaction";
 import AdminTransactionDetail from "./AdminTransactionDetail";
 import StockRequest from "./StockRequest";
 import LogRequest from "./LogRequest";
+import NotFoundPage from "../non-user/NotFoundV1";
+import ManageStock from "./ManageStock";
 
 const routePath = {
   dashboard: "/admin/dashboard",
   manageProduct: "/admin/manage-product",
   addProduct: "/admin/manage-product/add",
   editProduct: "/admin/manage-product/edit",
-  stockOpname: "/admin/stock-opname",
+  manageStock: "/admin/manage-stock",
   transactions: "/admin/manage-transaction",
   detailTransaction: "/admin/manage-transaction/detail",
   warehouses: "/admin/manage-warehouse",
@@ -49,9 +50,9 @@ const routes = [
     main: () => <EditProduct />,
   },
   {
-    path: routePath.stockOpname,
+    path: routePath.manageStock,
     exact: true,
-    main: () => <div>Belum ada page stock opname</div>,
+    main: () => <ManageStock />,
   },
   {
     path: routePath.transactions,
@@ -71,7 +72,7 @@ const routes = [
   {
     path: routePath.stockRequest,
     exact: true,
-    main: () => <StockRequest />,
+    main: () => <div>Belum ada page stock request</div>,
   },
   {
     path: routePath.manageAdmin,
@@ -79,9 +80,19 @@ const routes = [
     main: () => <ManageAdmin />,
   },
   {
+    path: routePath.stockRequest,
+    exact: true,
+    main: () => <StockRequest />,
+  },
+  {
     path: routePath.logRequest,
     exact: true,
     main: () => <LogRequest />,
+  },
+  {
+    path: "*",
+    exact: true,
+    main: () => <NotFoundPage />,
   },
 ];
 
@@ -90,7 +101,6 @@ function AdminMainParent() {
     <div className="adm-main-parent-wrap">
       <AdminSideBar routes={routePath} className="control-zIndex" />
       <div className="adm-main-content-wrap">
-        <AdminNavbar />
         <Switch>
           {routes.map((route, index) => (
             <Route

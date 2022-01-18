@@ -1,17 +1,53 @@
 .textbox-styling {
-  border-radius: 12px;
+  border-radius: 8px;
   border: solid 1px #cacaca;
-  padding: 12px;
-  font-size: 1em;
+  padding: 10px 12px;
+  font-size: 0.875em;
 }
 
 .textbox-styling:enabled {
   outline-color: #b24629;
 }
 
+.textbox-input-styling {
+  width: 100%;
+  color: #5a5a5a;
+  border: none;
+}
+
+.textbox-input-styling:enabled {
+  outline-color: transparent;
+}
+
+.textbox-btn-styling {
+  border: none;
+  background-color: transparent;
+  font-weight: 500;
+  color: #b24629;
+}
+
+.textbox-styling::placeholder {
+  color: #cacaca;
+}
+
+.textbox-styling:focus {
+  border-color: #b24629;
+  outline: none;
+}
+
 .textbox-error {
   border: solid 1px #c83532 !important;
   background-color: #fbefef !important;
+}
+
+.textbox-error-input {
+  background-color: #fbefef !important;
+  border: none;
+}
+
+.textbox-error-input:enabled {
+  background-color: #fbefef !important;
+  outline: none;
 }
 
 .textbox-error-msg {

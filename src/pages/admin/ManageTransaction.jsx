@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/ManageTransaction.css";
 import axios from "axios";
 import { API_URL } from "../../constants/api";
@@ -15,7 +15,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import thousandSeparator from "../../helpers/ThousandSeparator";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useSelector } from "react-redux";
 import Modal from "../../components/Modal";
 import AdmBtnPrimary from "../../components/admin/AdmBtnPrimary";
@@ -31,6 +30,7 @@ import { Link } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { errorToast } from "../../redux/actions/ToastAction";
+import AdminLoadSpinner from "../../components/admin/AdminLoadSpinner";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -66,20 +66,24 @@ function a11yProps(index) {
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     border: 0,
+    fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
     fontWeight: 600,
   },
   [`&.${tableCellClasses.body}`]: {
     border: 0,
     color: "#5A5A5A",
+    fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: "white",
+    fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
   },
   "&:nth-of-type(even)": {
     backgroundColor: "#F4F4F4",
+    fontSize: "clamp(0.75rem, 1vw, 0.875rem)",
   },
   // Show last border
   "&:last-child td, &:last-child th": {
@@ -90,6 +94,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function ManageTransaction() {
   const [loadData, setLoadData] = useState(true);
 
+  const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat loading table stlh select page pagination
+
   const [transactions, setTransactions] = useState([]); //* Data utama render tabel transactions
 
   const [value, setValue] = React.useState(0); //* Atur value tabbing
@@ -99,7 +105,7 @@ function ManageTransaction() {
   // PAGINATION SECTION
   const [page, setPage] = useState(1);
 
-  const [toggleDropdown, setToggleDropwdown] = useState(false); //* Atur toggle dropdown filter product per page
+  const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
 
   const [itemPerPage, setItemPerPage] = useState(10);
 
@@ -117,7 +123,7 @@ function ManageTransaction() {
     .fill(null)
     .map((val, index) => index + 1); //* Itung range page yang bisa di-klik
 
-  let showMaxRange = 10; //* Tentuin default max range yg tampil/di-render berapa buah
+  let showMaxRange = 5; //* Tentuin default max range yg tampil/di-render berapa buah
 
   // FILTER ITEM PER PAGE SECTION
   const rowsPerPageOptions = [10, 50];
@@ -209,12 +215,14 @@ function ManageTransaction() {
   useEffect(() => {
     const fetchData = async () => {
       await fetchTransactions();
+      await setLoadTable(false);
       await setLoadData(false);
     };
     fetchData();
   }, [value, page, itemPerPage]);
 
   useEffect(() => {
+    //* Utk sumber array showing n - n data of total N data (ex: 1-5 of 25)
     transactionRangeSlice();
   }, [transactionLength, value, page, itemPerPage]);
 
@@ -279,6 +287,7 @@ function ManageTransaction() {
                             ? "rotate(-180deg)"
                             : "rotate(0deg)",
                         }}
+                        alt="Dropdown-Arrow"
                       />
                     </button>
                     <ul
@@ -291,13 +300,21 @@ function ManageTransaction() {
                         zIndex: toggleDropdown ? 100 : -10,
                       }}
                     >
-                      {rowsPerPageOptions.map((val) =>
+                      {rowsPerPageOptions.map((val, index) =>
                         val === itemPerPage ? (
-                          <li className="adm-transaction-dropdown-selected">
+                          <li
+                            className="adm-transaction-dropdown-selected"
+                            key={index}
+                          >
                             {val}
                           </li>
                         ) : (
-                          <li onClick={() => filterItemPerPage(val)}>{val}</li>
+                          <li
+                            onClick={() => filterItemPerPage(val)}
+                            key={index}
+                          >
+                            {val}
+                          </li>
                         )
                       )}
                     </ul>
@@ -329,78 +346,84 @@ function ManageTransaction() {
                     <StyledTableCell align="center">Action</StyledTableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {arrayToMap.length ? (
-                    arrayToMap.map((val, index) => (
-                      <StyledTableRow key={`transaction-0${val.id}`}>
-                        <StyledTableCell
-                          align="left"
-                          component="th"
-                          scope="row"
-                        >
-                          {val.id}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {val.transaction_date}
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="left"
-                          className="txt-capitalize"
-                        >
-                          <div
-                            id="adm-status-label"
-                            className={
-                              val.status_id === 1 ||
-                              val.status_id === 2 ||
-                              val.status_id === 3
-                                ? "adm-process"
-                                : val.status_id === 4 || val.status_id === 5
-                                ? "adm-success"
-                                : "adm-fail"
-                            }
+                {!loadTable ? (
+                  <TableBody>
+                    {arrayToMap.length ? (
+                      arrayToMap.map((val, index) => (
+                        <StyledTableRow key={`transaction-0${val.id}`}>
+                          <StyledTableCell
+                            align="left"
+                            component="th"
+                            scope="row"
                           >
-                            {val.status}
-                          </div>
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {`Rp ${thousandSeparator(
-                            val.transaction_amount + val.shipping_fee
-                          )}`}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {val.warehouse_name}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          <span
-                            className="adm-transaction-payproof-action"
-                            onClick={() => modalClick(index)}
+                            {val.id}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {val.transaction_date}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="left"
+                            className="txt-capitalize"
                           >
-                            Detail
-                          </span>
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="center"
-                          style={{ width: "176px" }}
-                        >
-                          <Link
-                            to={{
-                              pathname: "/admin/manage-transaction/detail",
-                              state: val,
-                            }}
-                            className="link-no-decoration adm-transaction-detail-action"
+                            <div
+                              id="adm-status-label"
+                              className={
+                                val.status_id === 1 ||
+                                val.status_id === 2 ||
+                                val.status_id === 3
+                                  ? "adm-process"
+                                  : val.status_id === 4 || val.status_id === 5
+                                  ? "adm-success"
+                                  : "adm-fail"
+                              }
+                            >
+                              {val.status}
+                            </div>
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {`Rp ${thousandSeparator(
+                              val.transaction_amount + val.shipping_fee
+                            )}`}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {val.warehouse_name}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            <span
+                              className="adm-transaction-payproof-action"
+                              onClick={() => modalClick(index)}
+                            >
+                              Detail
+                            </span>
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="center"
+                            style={{ width: "176px" }}
                           >
-                            Transaction Detail
-                          </Link>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))
-                  ) : (
-                    <td colspan="7" className="adm-transaction-empty-state">
-                      <img src={emptyState} alt="Data Empty" />
-                      <h6>No data available</h6>
-                    </td>
-                  )}
-                </TableBody>
+                            <Link
+                              to={{
+                                pathname: "/admin/manage-transaction/detail",
+                                state: val,
+                              }}
+                              className="link-no-decoration adm-transaction-detail-action"
+                            >
+                              Transaction Detail
+                            </Link>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      ))
+                    ) : (
+                      <td colspan="7" className="adm-transaction-empty-state">
+                        <img src={emptyState} alt="Data Empty" />
+                        <h6>No data available</h6>
+                      </td>
+                    )}
+                  </TableBody>
+                ) : (
+                  <StyledTableCell colSpan={7} style={{ height: "30rem" }}>
+                    <AdminLoadSpinner />
+                  </StyledTableCell>
+                )}
               </Table>
             </TableContainer>
             <div className="adm-transaction-pagination">
@@ -444,9 +467,7 @@ function ManageTransaction() {
             </div>
           </>
         ) : (
-          <div className="adm-transaction-spinner-wrap">
-            <CircularProgress />
-          </div>
+          <AdminLoadSpinner />
         )}
       </>
     );
@@ -455,19 +476,20 @@ function ManageTransaction() {
   // RENDER DROPDOWN FILTER PRODUCT PER PAGE AMOUNT
   const dropdownClick = () => {
     //* Buka tutup menu dropdown
-    setToggleDropwdown(!toggleDropdown);
+    setToggleDropdown(!toggleDropdown);
   };
 
   const dropdownBlur = () => {
     //* Tutup menu dropdown ketika click diluar wrap menu dropdown
-    setToggleDropwdown(false);
+    setToggleDropdown(false);
   };
 
   const filterItemPerPage = (itemValue) => {
     //* Atur value filter item per page & behavior dropdown stlh action terjadi
     setItemPerPage(itemValue);
     setPage(1);
-    setToggleDropwdown(false);
+    setToggleDropdown(false);
+    setLoadTable(true);
     setLoadData(true);
   };
 
@@ -529,27 +551,29 @@ function ManageTransaction() {
   // RENDER PAGE RANGE FOR PAGINATION SECTION
   const renderPageRange = () => {
     //* Utk render button select page pagination
-    const disabledBtn = (value) => {
+    const disabledBtn = (value, index) => {
       //* Button page pagination yg saat ini aktif
       return (
         <button
           className="adm-transaction-pagination-btn"
           value={value}
-          onClick={(event) => selectPage(event)}
+          onClick={selectPage}
           disabled
+          key={index}
         >
           {value}
         </button>
       );
     };
 
-    const clickableBtn = (value) => {
+    const clickableBtn = (value, index) => {
       //* Button page pagination yg tdk aktif & bisa di-klik
       return (
         <button
           className="adm-transaction-pagination-btn"
           value={value}
-          onClick={(event) => selectPage(event)}
+          onClick={selectPage}
+          key={index}
         >
           {value}
         </button>
@@ -560,15 +584,15 @@ function ManageTransaction() {
       return pageCountRange.map((val, index) => {
         if (val === page) {
           //* Bila value button = value page --> aktif saat ini
-          return disabledBtn(val);
+          return disabledBtn(val, index);
         } else {
-          return clickableBtn(val);
+          return clickableBtn(val, index);
         }
       });
     } else {
       let filteredArr;
 
-      if (page <= 5) {
+      if (page < 5) {
         filteredArr = pageCountRange.slice(0, 0 + 5); //* Slice array utk tampilan button select page pagination bila <= 5 buah
       } else {
         let slicingCounter = page - 6;
@@ -581,14 +605,14 @@ function ManageTransaction() {
 
       return filteredArr.map((val, index) => {
         if (val === page) {
-          return disabledBtn(val);
+          return disabledBtn(val, index);
         } else if (index >= showMaxRange) {
           //* Bila index >= range maksimum = tidak render
           return;
         } else if (index > showMaxRange && index < pageCountTotal - 1) {
           return;
         } else {
-          return clickableBtn(val);
+          return clickableBtn(val, index);
         }
       });
     }
@@ -598,6 +622,7 @@ function ManageTransaction() {
   const selectPage = (event) => {
     //* Rubah value page sesuai value button pagination yg di-klik
     setPage(parseInt(event.target.value));
+    setLoadTable(true);
   };
 
   const prevPage = () => {
@@ -606,6 +631,7 @@ function ManageTransaction() {
       return;
     } else {
       setPage(page - 1);
+      setLoadTable(true);
     }
   };
 
@@ -615,6 +641,7 @@ function ManageTransaction() {
       return;
     } else {
       setPage(page + 1);
+      setLoadTable(true);
     }
   };
 
@@ -624,7 +651,7 @@ function ManageTransaction() {
         <Stack spacing={2}>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" />}
-            aria-label="transaction detail breadcrumb"
+            aria-label="manage transaction breadcrumb"
           >
             {breadcrumbs}
           </Breadcrumbs>
@@ -710,7 +737,11 @@ function ManageTransaction() {
           </Box>
         </div>
         {transactions.map((val, index) => (
-          <Modal open={modalLength[index]} close={() => onCloseModal(index)}>
+          <Modal
+            open={modalLength[index]}
+            close={() => onCloseModal(index)}
+            key={`payproof-#${val.id}-modal`}
+          >
             {payProofModal(val.id, val.payment_proof, index)}
           </Modal>
         ))}

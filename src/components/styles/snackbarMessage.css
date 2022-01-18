@@ -1,0 +1,22 @@
+.snack-message-wrapper {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  box-shadow: 0 1px 12px 0 rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  border-radius: 12px;
+  z-index: 997;
+  overflow: hidden;
+}
+
+.snack-message-shape {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  transform: translate(-50%, -10%);
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+}
