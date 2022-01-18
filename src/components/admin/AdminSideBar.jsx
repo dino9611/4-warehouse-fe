@@ -202,6 +202,25 @@ function AdminSideBar(props) {
                   <div className="adm-sidebar-active-nav" />
                 ) : null}
               </Link>
+              <Link
+                to={routes.logRequest}
+                className="link-no-decoration"
+                style={{
+                  color: currentPath.includes(routes.logRequest)
+                    ? "#FCB537"
+                    : null,
+                  fontSize: inventoryToggle ? "0.75rem" : 0,
+                  marginLeft: inventoryToggle ? 0 : "-20%",
+                  marginTop: inventoryToggle ? 0 : "-10%",
+                  opacity: inventoryToggle ? 1 : 0,
+                  zIndex: inventoryToggle ? 1 : -1,
+                }}
+              >
+                Log Request
+                {currentPath.includes(routes.logRequest) ? (
+                  <div className="adm-sidebar-active-nav" />
+                ) : null}
+              </Link>
             </div>
           </div>
         ) : null}

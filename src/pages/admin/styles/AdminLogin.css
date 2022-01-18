@@ -1,273 +1,272 @@
 :root {
-    --primary-1st-color: #0A4D3C;
-    --primary-2nd-color: #FCB537;
-    --primary-3rd-color: #8D280C;
-    --primary-4th-color: #B24629;
-    --primary-5th-color: #F1EDE7;
+  --primary-1st-color: #0a4d3c;
+  --primary-2nd-color: #fcb537;
+  --primary-3rd-color: #8d280c;
+  --primary-4th-color: #b24629;
+  --primary-5th-color: #f1ede7;
 
-    --neutral-1st-color: #070707;
-    --neutral-2nd-color: #5A5A5A;
-    --neutral-3rd-color: #CACACA;
-    --neutral-4th-color: #F4F4F4;
-    --neutral-5th-color: #FFFFFF;
+  --neutral-1st-color: #070707;
+  --neutral-2nd-color: #5a5a5a;
+  --neutral-3rd-color: #cacaca;
+  --neutral-4th-color: #f4f4f4;
+  --neutral-5th-color: #ffffff;
 
-    --semantic-error: #CB3A31;
-    --semantic-warning: #EF8943;
-    --semantic-success: #43936C;
-    --semantic-info: #27A0E3;
+  --semantic-error: #cb3a31;
+  --semantic-warning: #ef8943;
+  --semantic-success: #43936c;
+  --semantic-info: #27a0e3;
 
-    --b-rad-root: 12px;
-    --b-rad-table: 8px;
-    --b-shadow-root: 0px 1px 6px #D7D7D8;
+  --b-rad-root: 12px;
+  --b-rad-table: 8px;
+  --b-shadow-root: 0px 1px 6px #d7d7d8;
 }
 
 /* ? GROUPED UTILITY CLASS FROM DIFFERENT SECTIONS */
 .adm-login-left-img,
 .adm-login-right-form {
-    height: 100%;
-    width: 50%;
+  height: 100%;
+  width: 50%;
 }
 
 .adm-login-heading-wrap > h1,
 .adm-login-heading-wrap > p {
-    margin: 0;
-    text-align: start;
+  margin: 0;
+  text-align: start;
 }
 
 .adm-login-form-wrap > input,
 .adm-login-input-wrap > input {
-    border: 1px solid var(--neutral-3rd-color);
-    border-radius: var(--b-rad-table);
-    height: 42px;
-    padding: 0 .875rem;
-    width: 100%;
+  border: 1px solid var(--neutral-3rd-color);
+  border-radius: var(--b-rad-table);
+  height: 42px;
+  padding: 0 0.875rem;
+  width: 100%;
 }
 
 .adm-login-form-wrap > input:focus,
 .adm-login-input-wrap > input:focus {
-    border-color: var(--primary-4th-color);
-    outline: none;
+  border-color: var(--primary-4th-color);
+  outline: none;
 }
 
 .adm-login-form-wrap > input:disabled,
 .adm-login-input-wrap > input:disabled {
-    color: var(--neutral-3rd-color);
-    background-color: var(--neutral-4th-color);
+  color: var(--neutral-3rd-color);
+  background-color: var(--neutral-4th-color);
 }
 
 /* ? GROUPED INPUT PLACEHOLDERS STYLING SECTION */
 .adm-login-form-wrap > input::placeholder,
 .adm-login-input-wrap > input::placeholder {
-    /* ! Chrome, Firefox, Opera, Safari 10.1+ */
-    font-size: clamp(.75rem, 1vw, .875rem);
-    font-weight: 300;
-    opacity: 1; /* ! Firefox fix */
+  /* ! Chrome, Firefox, Opera, Safari 10.1+ */
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+  font-weight: 300;
+  opacity: 1; /* ! Firefox fix */
 }
 
 .adm-login-form-wrap > input:-ms-input-placeholder, /* ! Internet Explorer 10-11 */
 .adm-login-input-wrap > input:-ms-input-placeholder,
 .adm-login-form-wrap > input::-ms-input-placeholder, /* ! Microsoft Edge */
 .adm-login-input-wrap > input::-ms-input-placeholder {
-    font-size: clamp(.75rem, 1vw, .875rem);
-    font-weight: 300;
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+  font-weight: 300;
 }
 
 /* ? MAIN WRAPPER SECTION */
 .adm-login-main-wrap {
-    align-items: center;
-    background-color: var(--primary-5th-color);
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    padding: 6rem 0;
-    width: 100%;
+  align-items: center;
+  background-color: var(--primary-5th-color);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 6rem 0;
+  width: 100%;
 }
 
 .adm-login-main-wrap * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* ? SUB WRAPPER SECTION */
 .adm-login-sub-wrap {
-    align-items: flex-start;
-    background-color: var(--neutral-5th-color);
-    border-radius: var(--b-rad-root);
-    display: flex;
-    height: 100%;
-    margin: 0 10rem;
-    width: min(100% - 10rem * 2, 1600 - 10rem * 2);
-    /* * Start size suitable for >= 14000px viewport */
-    /* * Kalkulasi */
+  align-items: flex-start;
+  background-color: var(--neutral-5th-color);
+  border-radius: var(--b-rad-root);
+  display: flex;
+  height: 100%;
+  margin: 0 10rem;
+  width: min(100% - 10rem * 2, 1600 - 10rem * 2);
+  /* * Start size suitable for >= 14000px viewport */
+  /* * Kalkulasi */
 
-    box-shadow: var(--b-shadow-root);
-    -webkit-box-shadow: var(--b-shadow-root);
-    -moz-box-shadow: var(--b-shadow-root);
+  box-shadow: var(--b-shadow-root);
+  -webkit-box-shadow: var(--b-shadow-root);
+  -moz-box-shadow: var(--b-shadow-root);
 }
 
 /* ? SUB LEFT WRAPPER SECTION */
 .adm-login-left-img > img {
-    /* object-fit: cover; */
-    height: 100%;
-    width: 100%;
+  /* object-fit: cover; */
+  height: 100%;
+  width: 100%;
 }
 
 /* ? SUB RIGHT WRAPPER SECTION */
 .adm-login-right-form {
-    display: flex;
-    flex-direction: column;
-    padding: 2.5rem 4rem;
-    row-gap: 1.5rem;
-    width: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 4rem;
+  row-gap: 1.5rem;
+  width: 50%;
 }
 
 /* * IMG WRAP & CONTENTS ON SUB RIGHT WRAPPER SECTION */
 .adm-login-right-img {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 
 .adm-login-right-img > img {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 /* * HEADING WRAP & CONTENTS ON SUB RIGHT WRAPPER SECTION */
 .adm-login-heading-wrap {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 .adm-login-heading-wrap > h1 {
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
-    font-weight: 600;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 600;
 }
 
 .adm-login-heading-wrap > p {
-    color: var(--neutral-2nd-color);
-    font-size: clamp(.75rem, 1vw, .875rem);
+  color: var(--neutral-2nd-color);
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
 }
 
 /* * LOGIN INPUTS (BODY) WRAP & CONTENTS ON SUB RIGHT WRAPPER SECTION */
 .adm-login-form-wrap {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 100%;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .adm-login-form-wrap > p {
-    font-size: clamp(.875rem, 1vw, 1rem);
-    font-weight: 500;
-    margin-bottom: .5rem;
+  font-size: clamp(0.875rem, 1vw, 1rem);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .adm-login-form-wrap > input {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .adm-login-input-wrap {
-    margin-bottom: 2.625rem;
-    position: relative;
-    width: 100%;
+  margin-bottom: 2.625rem;
+  position: relative;
+  width: 100%;
 }
 
 .adm-login-input-wrap > img {
-    cursor: pointer;
-    position: absolute;
-    right: 14px;
-    top: 21%;
+  cursor: pointer;
+  position: absolute;
+  right: 14px;
+  top: 21%;
 }
 
 .adm-login-input-wrap > input {
-    padding-right: 3.25rem;
+  padding-right: 3.25rem;
 }
 
 /* * LOGIN BUTTON WRAP & CONTENTS ON SUB RIGHT WRAPPER SECTION */
 .adm-login-btn-wrap {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 
 .adm-login-btn {
-    background-color: var(--primary-4th-color);
-    border: none;
-    border-radius: 100px;
-    color: var(--neutral-5th-color);
-    cursor: pointer;
-    font-weight: 600;
-    height: 48px;
-    width: 160px;
+  background-color: var(--primary-4th-color);
+  border: none;
+  border-radius: 100px;
+  color: var(--neutral-5th-color);
+  cursor: pointer;
+  font-weight: 600;
+  height: 48px;
+  width: 160px;
 }
 
 .adm-login-btn:hover {
-    background-color: var(--primary-3rd-color);
-    transition: 400ms;
+  background-color: var(--primary-3rd-color);
+  transition: 400ms;
 }
 
 .adm-login-btn:disabled {
-    background-color: var(--neutral-3rd-color);
-    color: var(--neutral-5th-color);
-    cursor: default;
+  background-color: var(--neutral-3rd-color);
+  color: var(--neutral-5th-color);
+  cursor: default;
 }
 
 /* ? EXTRA LARGE SCREEN XL */
 @media (max-width: 1399px) {
-    .adm-login-sub-wrap {
-        margin: 0 2.5rem;
-        width: calc(100% - 2.5rem * 2);
-    }
+  .adm-login-sub-wrap {
+    margin: 0 2.5rem;
+    width: calc(100% - 2.5rem * 2);
+  }
 
-    .adm-login-left-img {
-        width: 53.5%;
-    }
+  .adm-login-left-img {
+    width: 53.5%;
+  }
 
-    .adm-login-right-form {
-        width: 46.5%;
-    }
+  .adm-login-right-form {
+    width: 46.5%;
+  }
 }
 
 /* ? DESKTOP SIZE LG */
 @media (max-width: 1199px) {
-    .adm-login-sub-wrap {
-        margin: 0 2.5rem;
-        width: calc(100% - 2.5rem * 2);
-    }
+  .adm-login-sub-wrap {
+    margin: 0 2.5rem;
+    width: calc(100% - 2.5rem * 2);
+  }
 }
 
 /* ? TABLET SIZE MD */
 @media (max-width: 991px) {
-    .adm-login-main-wrap {
-        padding: 0;
-    }
+  .adm-login-main-wrap {
+    padding: 0;
+  }
 
-    .adm-login-sub-wrap {
-        border-radius: 0;
-        margin: 0;
-        width: 100%;
-    }
+  .adm-login-sub-wrap {
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+  }
 
-    .adm-login-left-img {
-        display: none;
-    }
+  .adm-login-left-img {
+    display: none;
+  }
 
-    .adm-login-right-form {
-        width: 100%;
-    }
+  .adm-login-right-form {
+    width: 100%;
+  }
 
-    .adm-login-btn {
-        font-size: .875rem;
-        height: calc(48px - .5rem);
-        width: calc(160px - .5rem);
-    }
+  .adm-login-btn {
+    font-size: 0.875rem;
+    height: calc(48px - 0.5rem);
+    width: calc(160px - 0.5rem);
+  }
 }
 
 /* ? MOBILE SMALL SM */
 @media (max-width: 575px) {
-
-    .adm-login-btn {
-        width: 100%;
-    }
+  .adm-login-btn {
+    width: 100%;
+  }
 }
