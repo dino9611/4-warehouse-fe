@@ -1,10 +1,28 @@
+.skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.skeleton-text {
+  border-radius: 0.125rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 70%);
+  }
+
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+
 .card-product-wrapper {
   width: 211px;
   height: 265px;
   background-color: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 6px 0 rgba(141, 40, 12, 0.56);
+  box-shadow: 0 1px 12px 0 rgba(161, 132, 87, 0.16);
   cursor: pointer;
 }
 
@@ -15,6 +33,7 @@
 }
 
 .card-product-category {
+  content: none;
   font-size: 0.625em;
   font-weight: 500;
   color: #0a4d3c;

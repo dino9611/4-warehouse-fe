@@ -4,7 +4,7 @@ import { API_URL } from "../../constants/api";
 import "./style/Login.css";
 import axios from "axios";
 import { Link, Redirect } from "react-router-dom";
-import { LoginAction } from "../../redux/actions/AuthAction";
+import { LoginAction, totalItem } from "../../redux/actions/AuthAction";
 import { connect } from "react-redux";
 import gambar from "./../../assets/login.png";
 import SuccessSnack from "../../components/SuccessSnack";
@@ -39,9 +39,17 @@ class Login extends React.Component {
       .then((res) => {
         this.setState({ successSnack: true, message: "Login Berhasil" });
         localStorage.setItem("token", res.headers["x-token-access"]);
-        this.props.LoginAction(res.data);
 
-        console.log(res.data);
+        axios
+          .get(`${API_URL}/transaction/get/total-item/${res.data.id}`)
+          .then((resCart) => {
+            this.props.totalItem(resCart.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        this.props.LoginAction(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -157,4 +165,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { LoginAction })(Login);
+export default connect(mapStateToProps, { LoginAction, totalItem })(Login);

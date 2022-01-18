@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import { Route, Switch } from "react-router-dom";
@@ -27,13 +27,21 @@ import Payment from "./pages/user/Payment";
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SnackbarMessage from "./components/SnackbarMessage";
 
 function App() {
   const dispatch = useDispatch();
 
   const dataUser = useSelector((state) => state.auth);
   const dataCart = useSelector((state) => state.cartReducer);
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
   const [loading, setLoading] = useState(true);
+
+  const snackbarMessageRef = useRef();
+
+  useEffect(() => {
+    dispatch({ type: "SHOWSNACKBAR", payload: { ref: snackbarMessageRef } });
+  }, []);
 
   // GET ROLE_ID DATA FROM REDUX STORE
   const getRoleId = useSelector((state) => state.auth.role_id);
@@ -47,10 +55,6 @@ function App() {
           },
         })
         .then((res) => {
-          dispatch(LoginAction(res.data));
-
-          // Get cart detail user
-
           axios
             .get(`${API_URL}/transaction/get/total-item/${res.data.id}`)
             .then((resCart) => {
@@ -59,6 +63,8 @@ function App() {
             .catch((error) => {
               console.log(error);
             });
+
+          dispatch(LoginAction(res.data));
         })
         .catch((err) => {
           console.log(err);
@@ -136,6 +142,13 @@ function App() {
   return (
     <div className="App">
       {/* // ! Bila tidak menggunakan className App, cek terlebih dahulu apakah ada yg terpengaruh atau tidak */}
+      {getRoleId === 3 || !getRoleId ? (
+        <SnackbarMessage
+          ref={snackbarMessageRef}
+          status={dataSnackbar.status}
+          message={dataSnackbar.message}
+        />
+      ) : null}
       {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
       {loading ? <div>Loading</div> : renderRouting()}
       <div>{getRoleId === 1 || getRoleId === 2 ? null : <Footer />}</div>

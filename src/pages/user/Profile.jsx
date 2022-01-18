@@ -29,6 +29,7 @@ function Profile() {
   const dispatch = useDispatch(); // Memanggil fungsi dispatch redux
   const calenderData = useSelector((state) => state.ProfileReducer); // Mengambil data calender dari profile reducer
   const dataUser = useSelector((state) => state.auth); // Mengambil data auth user dari redux
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
 
   const location = useLocation(); // Use location untuk mengambil params dari sebuah url
 
@@ -37,9 +38,9 @@ function Profile() {
   const [initialData, setInitialData] = useState({}); // Reset data ketika tombol batal edit ditekan
   const [personalData, setPersonalData] = useState({}); // Personal data dari user
   const [handleGender, setHandleGender] = useState(false); // Handle untuk membuka dropdown gender
-  const [handleEmail, setHandleEmail] = useState(false); // Handle untuk membuka dan menutup modal email
   const [handleUbahData, setHandleUbahData] = useState(false); // Handle untuk user edit personal data
   const [loading, setLoading] = useState(false); // Handle loading pada saat user submit data
+  const [loadingPass, setLoadingPass] = useState(false);
 
   // State ganti photo profile
 
@@ -150,10 +151,18 @@ function Profile() {
 
       dispatch({ type: "EDITDATA", payload: res.data.message });
 
-      alert("Berhasil input data");
-
       setLoading(false);
       setHandleUbahData(false);
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Data kamu sudah berhasil tersimpan!",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
       console.log(error.response.data.message);
     }
@@ -220,18 +229,44 @@ function Profile() {
 
         if (!strongRegex.test(dataPassword.newPass)) {
           setIsPassTrue(false);
+
+          dispatch({
+            type: "SHOWSNACKBAR",
+            payload: {
+              status: "error",
+              message:
+                "Password harus lebih dari 8 karakter dan terdapat huruf kapital",
+            },
+          });
+
+          dataSnackbar.ref.current.showSnackbarMessage();
+
           return;
         } else {
           setIsPassTrue(true);
         }
+
+        setLoadingPass(true);
 
         let res = await axios.patch(
           `${API_URL}/profile/change-password/${dataUser.id}`,
           dataPassword
         );
 
+        setLoadingPass(false);
+
         if (!res.data.length) {
           setIsPassCorrect(false);
+
+          dispatch({
+            type: "SHOWSNACKBAR",
+            payload: {
+              status: "error",
+              message: "Password lama yang anda masukkan salah",
+            },
+          });
+
+          dataSnackbar.ref.current.showSnackbarMessage();
           return;
         }
 
@@ -248,9 +283,17 @@ function Profile() {
         setIsPassTrue(true);
       }
 
-      alert("Berhasil ganti password"); // Alert nanti diganti snackbar
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil ganti password",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
-      alert(error.response.data.message);
+      console.log(error);
     }
   };
 
@@ -637,7 +680,7 @@ function Profile() {
         </div>
         <div className="my-3">
           <Textbox
-            type="text"
+            type="password"
             label="Masukkan password baru Anda"
             placeholder="Password Baru"
             name="newPass"
@@ -674,15 +717,22 @@ function Profile() {
               onClick={onClickChangePassword}
               width="px-5"
               disabled={
-                dataPassword.currentPass &&
-                dataPassword.newPass &&
-                confirmNewPass &&
-                isPassFilled
+                (dataPassword.currentPass &&
+                  dataPassword.newPass &&
+                  confirmNewPass &&
+                  isPassFilled) ||
+                !loadingPass
                   ? false
                   : true
               }
             >
-              Simpan
+              {loadingPass ? (
+                <Spinner color="light" size="sm">
+                  Loading...
+                </Spinner>
+              ) : (
+                "Simpan"
+              )}
             </ButtonPrimary>
           </div>
         </div>

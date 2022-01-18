@@ -225,6 +225,13 @@
   width: 200px;
   aspect-ratio: 1;
   border-radius: 8px;
-  cursor: pointer;
   object-fit: cover;
+}
+
+.history-btn-empty {
+  border: none;
+  background-color: transparent;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
 }

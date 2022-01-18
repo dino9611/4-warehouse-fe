@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "./styles/detailedProduct.css";
@@ -7,6 +7,7 @@ import "./styles/detailedProduct.css";
 // Components
 
 import thousandSeparator from "./../../helpers/ThousandSeparator";
+import SnackbarCart from "../../components/SnackbarCart";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { API_URL } from "./../../constants/api.js";
 import { Spinner } from "reactstrap";
@@ -16,43 +17,69 @@ import images from "./../../assets";
 
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import SnackbarCart from "../../components/SnackbarCart";
+import CardProduct from "../../components/CardProduct";
+import SkeletonCardProduct from "../../components/SkeletonCardProduct";
 
 function DetailedProduct(props) {
   const [dataProduct, setDataProduct] = useState(); // Data produk
   const [inputQty, setInputQty] = useState(1); // Input qty produk
   const [mainImg, setMainImg] = useState(""); // Set untuk main photo
   const [handleSeeText, setHandleSeeText] = useState(false); // Handle untuk see more atau less deskripsi produk
-  const [handleSnackbarCart, setHandleSnackbarCart] = useState(false);
   const [loading, setLoading] = useState(false); // Loading pada saat add to cart
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [dataOthersProduct, setDataOthersProduct] = useState([]);
 
   const dispatch = useDispatch();
   const dataUser = useSelector((state) => state.auth);
 
   const location = useLocation(); // Location untuk params product Id
-
-  console.log(dataProduct);
+  const { productId } = useParams();
 
   // Set state untuk data produk
 
   useEffect(() => {
+    console.log("testing", productId);
+
     if (!props.location.state) {
       (async () => {
         try {
+          setLoadingPage(true);
+
           let res = await axios.get(
             `${API_URL}/product/detailed-product/${props.match.params.productId}`
           );
+          let resProduct = await axios.get(
+            `${API_URL}/product/get/product-category/${location.state.category_id}?limit=5`
+          );
 
+          setDataOthersProduct(resProduct.data);
           setDataProduct(res.data[0]);
+
+          setLoadingPage(false);
         } catch (error) {
           console.log(error);
         }
       })();
     } else {
-      setDataProduct(location.state);
-      setMainImg(location.state.images[0]);
+      (async () => {
+        try {
+          setLoadingPage(true);
+
+          let res = await axios.get(
+            `${API_URL}/product/get/product-category/${location.state.category_id}?limit=5`
+          );
+
+          setDataOthersProduct(res.data);
+          setDataProduct(location.state);
+          setMainImg(location.state.images[0]);
+
+          setLoadingPage(false);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
     }
-  }, []);
+  }, [productId]);
 
   // RENDERING
 
@@ -81,8 +108,8 @@ function DetailedProduct(props) {
             alt="list-photo"
             className={
               el === mainImg
-                ? `detailed-product-listcontent hover-active`
-                : "detailed-product-listcontent"
+                ? `detailed-product-listcontent hover-active skeleton`
+                : "detailed-product-listcontent skeleton"
             }
           />
         </div>
@@ -190,6 +217,51 @@ function DetailedProduct(props) {
         </div>
       </div>
     );
+  };
+
+  // RENDER PRODUK PILIH LAINNYA UNTUKMU
+  const renderListProdukLainnya = () => {
+    return dataOthersProduct.map((el, index) => {
+      return (
+        <CardProduct
+          key={index}
+          img={`${API_URL}/${el.images[0]}`}
+          category={el.category.charAt(0).toUpperCase() + el.category.slice(1)}
+          title={`${el.name.charAt(0).toUpperCase() + el.name.slice(1)} ${
+            el.weight
+          }`}
+          price={el.price}
+          total_stock={parseInt(el.total_stock)}
+          data={el}
+        />
+      );
+    });
+  };
+
+  // RENDER PILIH PRODUK LAINNYA WRAPPER
+  const renderProdukLainnya = () => {
+    return (
+      <div className="row mt-5">
+        <div
+          className="mb-3"
+          style={{ fontSize: "1.250em", fontWeight: "600", color: "#070707" }}
+        >
+          Pilihan lainnya untukmu
+        </div>
+        <div className="d-flex align-items-center justify-content-between w-100">
+          {loadingPage
+            ? renderSkeletonProdukLainnya()
+            : renderListProdukLainnya()}
+        </div>
+      </div>
+    );
+  };
+
+  // RENDER SKELETON PRODUK LAINNYA
+  const renderSkeletonProdukLainnya = () => {
+    return [1, 2, 3, 4, 5].map((el, index) => (
+      <SkeletonCardProduct key={index} />
+    ));
   };
 
   // EVENT
@@ -325,7 +397,7 @@ function DetailedProduct(props) {
             <img
               src={`${API_URL}/${mainImg}`}
               alt="photo-product"
-              className="detailed-product-img"
+              className="detailed-product-img skeleton"
             />
           </div>
         </div>
@@ -398,6 +470,7 @@ function DetailedProduct(props) {
           </div>
         </div>
       </div>
+      {renderProdukLainnya()}
       <div>
         <SnackbarCart ref={snackbarRef}>{renderSnackbarContent()}</SnackbarCart>
       </div>

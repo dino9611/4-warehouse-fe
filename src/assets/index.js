@@ -59,6 +59,17 @@ import edit from "./edit.svg";
 import utama from "./utama.svg";
 import checkoff from "./checkoff.svg";
 import checkon from "./checkon.svg";
+import banner1 from "./banner1.png";
+import banner2 from "./banner2.png";
+import banner3 from "./banner3.png";
+import btnright from "./btn-right.svg";
+import btnleft from "./btn-left.svg";
+import sort from "./sort.svg";
+import centangsort from "./centangsort.svg";
+import filter from "./filter.svg";
+import error1 from "./error1.svg";
+import cartkosong from "./cartkosong.svg";
+import emptyorder from "./emptyorder.svg";
 
 export default {
   logo,
@@ -122,4 +133,15 @@ export default {
   utama,
   checkoff,
   checkon,
+  banner1,
+  banner2,
+  banner3,
+  btnright,
+  btnleft,
+  sort,
+  centangsort,
+  filter,
+  error1,
+  cartkosong,
+  emptyorder,
 };

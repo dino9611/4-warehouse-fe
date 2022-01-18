@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
+import Skeleton from "@mui/material/Skeleton";
 import { debounce } from "throttle-debounce";
 import { Spinner } from "reactstrap";
 import axios from "axios";
@@ -39,7 +40,6 @@ function Checkout(props) {
   const [shipping, setShipping] = useState({}); // Get data ongkir
   const [pickShipping, setPickShipping] = useState(0); // Pilih jenis pengiriman
   const [pickBank, setPickBank] = useState({}); // State untuk menyimpan value dari bank yang dipilih
-  const [pickAddress, setPickAddress] = useState(null);
   const [mainAddress, setMainAddress] = useState(false); // State untuk menyimpan data dari alamat utama user
   const [pickProvince, setPickProvince] = useState(""); // State untuk menyimpan data provinsi yang dipilih
   const [errorFillAddress, setErrorFillAddress] = useState(false); // Jika kolom tambah alamat bellum diisi akan error true
@@ -48,6 +48,9 @@ function Checkout(props) {
   // State loading request data
 
   const [loadingNewAddress, setLoadingNewAddress] = useState(false); // State untuk loading ketika menambah alamat baru
+  const [loadingPilihAlamat, setLoadingPilihAlamat] = useState(false);
+  const [loadingAddress, setLoadingAddress] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false); // State untuk loading ketika checkout
 
   // Data input new address user
@@ -60,7 +63,12 @@ function Checkout(props) {
     is_main_address: 0,
   });
 
+  // STATE ADDRESS
+
+  const [pickAddress, setPickAddress] = useState(null);
+
   const dataUser = useSelector((state) => state.auth); // Get data auth user dari redux
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -69,6 +77,8 @@ function Checkout(props) {
     if (!loadingNewAddress) {
       (async () => {
         try {
+          setLoadingPage(true);
+
           // Get data cart detail
           if (location.state) {
             setDataCart(location.state);
@@ -107,12 +117,14 @@ function Checkout(props) {
           // Get shipping fee
 
           let resShipping = await axios.get(
-            `${API_URL}/location/shipping-fee/${resAddress.data[0]?.id}`
+            `${API_URL}/location/shipping-fee/${resAddress.data[0]?.id}?cartId=${location.state[0].cart_id}`
           );
 
-          setPickAddress(resAddress.data[0].id);
+          setPickAddress(resAddress.data[0]);
           setDataAddress(resAddress.data[0]);
           setShipping(resShipping.data);
+
+          setLoadingPage(false);
         } catch (error) {
           console.log(error);
           console.log(error.response.data.message);
@@ -143,7 +155,7 @@ function Checkout(props) {
 
       setListAddress(res.data);
     })();
-  }, []);
+  }, [handleAddress]);
 
   // EVENT
 
@@ -165,7 +177,16 @@ function Checkout(props) {
 
       if (!dataCheckout.bank_id || !pickShipping || !dataCart.length) {
         setLoadingCheckout(false);
-        alert("Lengkapi semua data terlebih dahulu");
+
+        dispatch({
+          type: "SHOWSNACKBAR",
+          payload: {
+            status: "error",
+            message: "Harap isi semua kolom yang diperlukan",
+          },
+        });
+
+        dataSnackbar.ref.current.showSnackbarMessage();
         return;
       }
 
@@ -174,11 +195,17 @@ function Checkout(props) {
         dataCheckout
       );
 
-      console.log(res.data);
-
       dispatch({ type: "TOTALNULL" });
 
-      alert("Berhasil checkout");
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil checkout! harap segera selesaikan pembayaran Anda",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
 
       setLoadingCheckout(false);
 
@@ -205,22 +232,38 @@ function Checkout(props) {
       .reduce((prev, curr) => prev + curr, 0);
   };
 
-  // Pilih alamat pengiriman
+  const onChangePilihAlamat = (e, data) => {
+    setPickAddress(data);
+  };
 
-  // const pickAddress = async (data) => {
-  //   try {
-  //     let resShipping = await axios.get(
-  //       `${API_URL}/location/shipping-fee/${data.id}`
-  //     );
+  const onClickPilihAlamat = async () => {
+    try {
+      setLoadingPilihAlamat(true);
 
-  //     setShipping(resShipping.data);
-  //     setDataAddress(data);
-  //     setHandleAddress(false);
-  //     setPickShipping(0);
-  //   } catch (error) {
-  //     console.log(error.response.data.message);
-  //   }
-  // };
+      let resShipping = await axios.get(
+        `${API_URL}/location/shipping-fee/${pickAddress.id}?cartId=${location.state[0].cart_id}`
+      );
+
+      setShipping(resShipping.data);
+      setDataAddress(pickAddress);
+      setPickShipping(0);
+      setHandleAddress(false);
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil pilih alamat",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+
+      setLoadingPilihAlamat(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Onclik tambah alamat baru
 
@@ -247,7 +290,7 @@ function Checkout(props) {
       let res = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${alamat}&key=AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w`
       );
-
+      console.log(res.data);
       let latitude = res.data.results[0]?.geometry.location.lat;
       let longitude = res.data.results[0]?.geometry.location.lng;
 
@@ -259,7 +302,16 @@ function Checkout(props) {
 
       setErrorFillAddress(false);
       setLoadingNewAddress(false);
-      alert("Berhasil tambah alamat");
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil menambah alamat!",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
       console.log(error);
       console.log(error.response.data.message);
@@ -276,20 +328,33 @@ function Checkout(props) {
 
   const onClickChangeMainAddress = async (id) => {
     const dataChangeAddress = {
-      user_id: 2, // user_id adalah data sementara, nanti didapat dari redux
+      user_id: dataUser.id,
       id,
     };
 
     try {
+      setLoadingAddress(true);
+
       let res = await axios.patch(
         `${API_URL}/location/edit/main-address`,
         dataChangeAddress
       );
 
       setListAddress(res.data);
-      alert("berhasil ubah alamat"); // sementara pake alert
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil mengganti alamat utama",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+
+      setLoadingAddress(false);
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error);
     }
   };
 
@@ -303,6 +368,7 @@ function Checkout(props) {
   // onClick close pada modal address
 
   const onClickCloseModal = () => {
+    setPickAddress(dataAddress);
     setHandleAddress(false);
     setBtnAdd(false);
   };
@@ -322,6 +388,8 @@ function Checkout(props) {
   // Render jika user belum mempunyai alamat
 
   const renderNewAddress = () => {
+    const { recipient, phone_number, address, pickProvince } = dataNewAddress;
+
     return (
       <div>
         <div className="mb-3">
@@ -505,7 +573,7 @@ function Checkout(props) {
       </div>
     );
   };
-  console.log(dataNewAddress);
+
   // Kondisi error message pada saat user mengisi alamat
 
   const errorMessage = () => {
@@ -524,23 +592,44 @@ function Checkout(props) {
       <>
         <div className="checkout-address p-3 mb-3">
           <div className="checkout-recipient mb-1">
-            {dataAddress.recipient?.charAt(0).toUpperCase() +
-              dataAddress.recipient?.slice(1)}
+            {loadingPage ? (
+              <Skeleton width="50%" />
+            ) : (
+              dataAddress.recipient?.charAt(0).toUpperCase() +
+              dataAddress.recipient?.slice(1)
+            )}
           </div>
           <div className="checkout-detail-add">
-            <div className="mb-1">{dataAddress.phone_number}</div>
             <div className="mb-1">
-              {dataAddress.address?.charAt(0).toUpperCase() +
-                dataAddress.address?.slice(1)}
+              {loadingPage ? (
+                <Skeleton width="30%" />
+              ) : (
+                dataAddress.phone_number
+              )}
+            </div>
+            <div className="mb-1">
+              {loadingPage ? (
+                <>
+                  <Skeleton width="70%" />
+                  <Skeleton width="50%" />
+                </>
+              ) : (
+                dataAddress.address?.charAt(0).toUpperCase() +
+                dataAddress.address?.slice(1)
+              )}
             </div>
             <div>
-              {`${
-                dataAddress.city?.charAt(0).toUpperCase() +
-                dataAddress.city?.slice(1)
-              }, ${
-                dataAddress.province?.charAt(0).toUpperCase() +
-                dataAddress.province?.slice(1)
-              }`}
+              {loadingPage ? (
+                <Skeleton width="60%" />
+              ) : (
+                `${
+                  dataAddress.city?.charAt(0).toUpperCase() +
+                  dataAddress.city?.slice(1)
+                }, ${
+                  dataAddress.province?.charAt(0).toUpperCase() +
+                  dataAddress.province?.slice(1)
+                }`
+              )}
             </div>
           </div>
         </div>
@@ -583,23 +672,56 @@ function Checkout(props) {
     );
   };
 
+  const renderBtnPilihAlamat = () => {
+    return (
+      <button
+        className={`${
+          loadingPilihAlamat
+            ? "checkout-btn-pilihalamat-loading"
+            : "checkout-btn-pilihalamat"
+        }  w-100 p-3 d-flex align-items-center justify-content-center`}
+        onClick={onClickPilihAlamat}
+        disabled={loadingPilihAlamat ? "disabled" : null}
+      >
+        <div style={{ fontSize: "0.875em", fontWeight: "500", color: "#fff" }}>
+          {loadingPilihAlamat ? (
+            <Spinner color="light" size="sm">
+              Loading...
+            </Spinner>
+          ) : (
+            "Pilih alamat"
+          )}
+        </div>
+      </button>
+    );
+  };
+
   // Render list address di modal checkout address
 
   const renderListAddress = () => {
     return listAddress.map((el, index) => {
       return (
-        <label htmlFor={el.id} style={{ cursor: "pointer" }} className="w-100">
+        <label htmlFor={el.id} className="w-100">
           <input
             type="radio"
             id={el.id}
             value={parseInt(el.id)}
             name="list-address"
-            style={{ display: "none", cursor: "pointer", zIndex: "999" }}
-            checked={parseInt(el.id) === pickAddress ? "checked" : null}
-            onChange={(e) => setPickAddress(e.target.value)}
+            style={{ display: "none", zIndex: "999" }}
+            checked={parseInt(el.id) === pickAddress?.id ? "checked" : null}
+            onChange={(e) => onChangePilihAlamat(e, el)}
           />
-          <div key={index} className="checkout-list-address mx-4 mb-3">
-            <div className="p-3">
+          <div
+            key={index}
+            className="checkout-list-address mx-4 mb-3"
+            style={{
+              border:
+                parseInt(el.id) === pickAddress?.id
+                  ? "1px solid #b24629"
+                  : "1px solid #cacaca",
+            }}
+          >
+            <div className="p-3" style={{ cursor: "pointer" }}>
               <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center mb-2">
                   <div className="fs12-500-black mr-2">
@@ -612,7 +734,7 @@ function Checkout(props) {
                     </div>
                   ) : null}
                 </div>
-                {parseInt(el.id) == pickAddress ? (
+                {parseInt(el.id) == pickAddress?.id ? (
                   <img src={images.checkon} alt="" />
                 ) : (
                   <img src={images.checkoff} alt="" />
@@ -632,7 +754,12 @@ function Checkout(props) {
                   <div className="checkout-addressaction-border mx-3 py-2"></div>
                   <button className="checkout-ubah-btn d-flex align-items-center p-0">
                     <img src={images.utama} alt="edit" className="mr-1" />
-                    <div className="fs14-600-red">Jadikan alamat utama</div>
+                    <div
+                      className="fs14-600-red"
+                      onClick={() => onClickChangeMainAddress(el.id)}
+                    >
+                      Jadikan alamat utama
+                    </div>
                   </button>
                 </>
               ) : null}
@@ -677,7 +804,7 @@ function Checkout(props) {
               <img
                 src={`${API_URL}/${el.images[0]}`}
                 alt="imgcart"
-                className="checkout-img"
+                className="checkout-img skeleton"
               />
             </div>
             <div className="d-flex flex-column justify-content-center w-100">
@@ -705,7 +832,9 @@ function Checkout(props) {
     return (
       <div className="mt-4">
         <div className="checkout-title mb-3">Pilih Pengiriman</div>
-        {renderListCourier()}
+        {loadingPage
+          ? [1, 2, 3].map((el, index) => renderSkeletonCourier())
+          : renderListCourier()}
       </div>
     );
   };
@@ -757,6 +886,52 @@ function Checkout(props) {
     });
   };
 
+  // RENDER SKELETON KURIR
+  const renderSkeletonCourier = () => {
+    return (
+      <div className="checkout-kurir d-flex justify-content-between p-2 mb-2">
+        <div className="d-flex align-items-start w-100">
+          <div className="checkout-pricekurir mr-3">
+            <Skeleton width="80%" />
+          </div>
+          <div>
+            <div className="checkout-jeniskurir">
+              <Skeleton width={100} />
+            </div>
+            <div className="checkout-desckurir">
+              <Skeleton width={120} />
+            </div>
+            <div className="checkout-desckurir">
+              <Skeleton width={140} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // RENDER SKELETON PRODUCT CART
+  const renderSkeletonProduct = () => {
+    return (
+      <>
+        <div className="cart-detail-prod d-flex ">
+          <div className="mr-3">
+            <Skeleton variant="rectangular" width={64} height={64} />
+          </div>
+          <div className="d-flex flex-column justify-content-center w-100">
+            <div className="checkout-priceprod">
+              <Skeleton width="40%" />
+            </div>
+            <div className="checkout-nameprod w-100">
+              <Skeleton width="50%" height="2rem" />
+            </div>
+          </div>
+        </div>
+        <div className="checkout-border my-3"></div>
+      </>
+    );
+  };
+
   // Render jenis pembayaran
 
   const renderPayment = () => {
@@ -780,12 +955,19 @@ function Checkout(props) {
               }`}
             >
               <div className="d-flex align-items-center">
-                <img
-                  src={bankimg[index]}
-                  alt="bank"
-                  className="checkout-bank-img mr-3"
-                />
-                <div>{el.name}</div>
+                {loadingPage ? (
+                  <div className="mr-3">
+                    <Skeleton variant="rectangular" width={35} height={35} />
+                  </div>
+                ) : (
+                  <img
+                    src={bankimg[index]}
+                    alt="bank"
+                    className="checkout-bank-img mr-3"
+                  />
+                )}
+
+                <div>{loadingPage ? <Skeleton width={200} /> : el.name}</div>
               </div>
               {el.id == pickBank ? (
                 <div>
@@ -833,10 +1015,20 @@ function Checkout(props) {
         <div className="checkout-col col-4 p-px-2">
           <div className="checkout-wrapper p-4">
             <div className="checkout-title mb-3">2. Rincian Pembelanjaan</div>
-            <div className="checkout-productcart">{renderProductCart()}</div>
+            <div className="checkout-productcart">
+              {loadingPage
+                ? [1, 2, 3].map((el, index) => renderSkeletonProduct())
+                : renderProductCart()}
+            </div>
             <div className="checkout-total d-flex align-items-center justify-content-between w-100">
               <div>Subtotal</div>
-              <div>{`Rp ${thousandSeparator(totalPrice())}`}</div>
+              <div>
+                {loadingPage ? (
+                  <Skeleton width={80} />
+                ) : (
+                  `Rp ${thousandSeparator(totalPrice())}`
+                )}
+              </div>
             </div>
             {renderShipping()}
           </div>
@@ -849,25 +1041,52 @@ function Checkout(props) {
           <div className="checkout-wrapper">
             <div className="px-4 pt-4 mb-2">
               <div className="checkout-title mb-3">Rincian Pembayaran</div>
-              <div>{renderProductInPaymentDetail()}</div>
+              <div>
+                {loadingPage
+                  ? [1, 2, 3].map((el) => (
+                      <div className="d-flex align-items-center justify-content-between">
+                        <Skeleton width={150} />
+                        <Skeleton width={50} />
+                      </div>
+                    ))
+                  : renderProductInPaymentDetail()}
+              </div>
               <div className="checkout-border mb-2"></div>
               <div className="checkout-payment-total">
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <div>Total harga</div>
-                  <div>{`Rp ${thousandSeparator(totalPrice())}`}</div>
+                  <div>
+                    {loadingPage ? (
+                      <Skeleton width={60} />
+                    ) : (
+                      `Rp ${thousandSeparator(totalPrice())}`
+                    )}
+                  </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-between">
                   <div>Total ongkos kirim</div>
-                  <div>{`Rp ${thousandSeparator(pickShipping)}`}</div>
+                  <div>
+                    {loadingPage ? (
+                      <Skeleton width={60} />
+                    ) : (
+                      `Rp ${thousandSeparator(pickShipping)}`
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
             <div className="checkout-grand-total py-3 px-4">
               <div className="d-flex align-items-center- justify-content-between">
                 <div>Total tagihan</div>
-                <div>{`Rp ${thousandSeparator(
-                  totalPrice() + parseInt(pickShipping)
-                )}`}</div>
+                <div>
+                  {loadingPage ? (
+                    <Skeleton width={100} height="2rem" />
+                  ) : (
+                    `Rp ${thousandSeparator(
+                      totalPrice() + parseInt(pickShipping)
+                    )}`
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -875,7 +1094,15 @@ function Checkout(props) {
             <ButtonPrimary
               width="w-100"
               onClick={onClickCheckout}
-              disabled={loadingCheckout ? true : false}
+              disabled={
+                loadingCheckout ||
+                loadingPage ||
+                !pickBank ||
+                !pickShipping ||
+                !dataCart.length
+                  ? true
+                  : false
+              }
             >
               {!loadingCheckout ? (
                 "Bayar Sekarang"
@@ -898,7 +1125,9 @@ function Checkout(props) {
             renderModalAddAddress()
           ) : (
             <>
-              {renderModalAddress()} {renderListAddress()}
+              {renderModalAddress()}{" "}
+              <div style={{ height: "auto" }}>{renderListAddress()}</div>
+              {renderBtnPilihAlamat()}
             </>
           )}
         </Modal>

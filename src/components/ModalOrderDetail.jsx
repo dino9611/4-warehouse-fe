@@ -7,11 +7,18 @@ import images from "./../assets";
 import ButtonPrimary from "./ButtonPrimary";
 import Modal from "./../components/Modal";
 import "./../pages/user/style/historyOrder.css";
+import { Spinner } from "reactstrap";
+import { useSelector, useDispatch } from "react-redux";
 
 function ModalOrderDetail({ id, open, close }) {
   const [dataOrderDetail, setDataOrderDetail] = useState([]);
   const [file, setFile] = useState(null);
   const [loadingUpload, setLoadingUpload] = useState(false);
+  const [loadingDelivered, setLoadingDelivered] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
 
   const months = [
     "Januari",
@@ -39,20 +46,26 @@ function ModalOrderDetail({ id, open, close }) {
   ];
 
   useEffect(() => {
-    if (id) {
+    if (id && open) {
       (async () => {
         try {
           let res = await axios.get(
             `${API_URL}/history/get/order-detail/${id}`
           );
-
+          console.log(dataOrderDetail);
           setDataOrderDetail(res.data);
         } catch (error) {
           console.log(error);
         }
       })();
     }
-  }, [id]);
+  }, [id, open]);
+
+  useEffect(() => {
+    if (!open) {
+      setFile(null);
+    }
+  }, [open]);
 
   const onClickUploadPaymentProof = async () => {
     try {
@@ -72,7 +85,44 @@ function ModalOrderDetail({ id, open, close }) {
       );
 
       setLoadingUpload(false);
-      alert("Berhasil upload");
+
+      close();
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message:
+            "Pembayaran berhasil! Tunggu barang pembelian sampai di rumahmu",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // ONCLICK PESANAN DITERIMA
+  const onClickPesananDiterima = async () => {
+    try {
+      setLoadingDelivered(true);
+
+      let res = await axios.patch(`${API_URL}/history/item-delivered/${id}`);
+
+      setLoadingDelivered(false);
+
+      close();
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: res.data.message,
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
       console.log(error);
     }
@@ -107,7 +157,7 @@ function ModalOrderDetail({ id, open, close }) {
             <div className="d-flex align-items-center mb-2">
               <div className="fs12-500-black w-50">Status</div>
               <div className="fs12-500-green w-50">
-                {arrayStatus[dataOrderDetail[0]?.status_orderId - 1]}
+                {arrayStatus[dataOrderDetail[0]?.status_id - 1]}
               </div>
             </div>
             <div className="d-flex align-items-center mb-2">
@@ -225,6 +275,7 @@ function ModalOrderDetail({ id, open, close }) {
             )}`}</div>
           </div>
           <div>{renderUploadPayment()}</div>
+          {dataOrderDetail[0]?.status_id === 4 ? renderBtnDelivered() : null}
         </div>
       </div>
     );
@@ -234,30 +285,71 @@ function ModalOrderDetail({ id, open, close }) {
     return (
       <div className="d-flex justify-content-center flex-column align-items-center">
         <label htmlFor="payment-proof" className="mb-3">
-          {file ? (
+          {dataOrderDetail[0]?.status_id !== 1 || file ? (
             <img
-              src={URL.createObjectURL(file)}
+              src={
+                dataOrderDetail[0]?.status_id !== 1
+                  ? `${API_URL}/${dataOrderDetail[0]?.payment_proof}`
+                  : URL.createObjectURL(file)
+              }
               alt="img"
               className="history-proof"
+              style={{
+                cursor: dataOrderDetail[0]?.status_id !== 1 ? null : "pointer",
+              }}
             />
           ) : (
             <div className="history-imgupload d-flex align-items-center justify-content-center">
               <img src={images.camera} alt="camera" style={{ width: "50px" }} />
             </div>
           )}
-          <input
-            type="file"
-            id="payment-proof"
-            style={{ display: "none" }}
-            accept="image/png, image/jpeg"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
+          {dataOrderDetail[0]?.status_id !== 1 ? null : (
+            <input
+              type="file"
+              id="payment-proof"
+              style={{ display: "none" }}
+              accept="image/png, image/jpeg"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+          )}
         </label>
+        {dataOrderDetail[0]?.status_id !== 1 ? null : (
+          <ButtonPrimary
+            onClick={() => {
+              onClickUploadPaymentProof();
+            }}
+            disabled={file || loadingUpload ? false : true}
+            width="w-50"
+          >
+            {loadingUpload ? (
+              <Spinner color="light" size="sm">
+                Loading...
+              </Spinner>
+            ) : (
+              " Upload pembayaran sekarang"
+            )}
+          </ButtonPrimary>
+        )}
+      </div>
+    );
+  };
+
+  // RENDER BTN PESANAN DITERIMA
+  const renderBtnDelivered = () => {
+    return (
+      <div className="d-flex justify-content-center mt-3">
         <ButtonPrimary
-          onClick={onClickUploadPaymentProof}
-          disabled={file ? false : true}
+          width="w-50"
+          onClick={onClickPesananDiterima}
+          disabled={loadingDelivered ? true : false}
         >
-          Upload pembayaran sekarang
+          {loadingDelivered ? (
+            <Spinner color="light" size="sm">
+              Loading...
+            </Spinner>
+          ) : (
+            "Pesanan diterima"
+          )}
         </ButtonPrimary>
       </div>
     );

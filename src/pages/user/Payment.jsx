@@ -13,14 +13,15 @@ import { useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../../constants/api";
 import ModalOrderDetail from "../../components/ModalOrderDetail";
+import thousandSeparator from "../../helpers/ThousandSeparator";
 
 function Payment() {
   const [expanded, setExpanded] = useState(false); // State untuk accordion
   const [handleModal, setHandleModal] = useState(false);
 
-  const [dataOrders, setDataOrders] = useState({});
-
+  const [dataOrders, setDataOrders] = useState([]);
   const location = useLocation();
+  console.log(dataOrders);
 
   useEffect(() => {
     (async () => {
@@ -29,7 +30,7 @@ function Payment() {
           `${API_URL}/transaction/get/orders/${location.state.ordersId}`
         );
 
-        setDataOrders(res.data[0]);
+        setDataOrders(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -61,7 +62,7 @@ function Payment() {
           :
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center mr-2">
-          6
+          5
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center">
           9
@@ -79,6 +80,14 @@ function Payment() {
     );
   };
 
+  const grandTotal = () => {
+    return dataOrders
+      .map((el, index) => {
+        return el.total_price;
+      })
+      .reduce((prev, curr) => prev + curr, 0);
+  };
+
   // Render keterangan orders
 
   const renderKeterangan = () => {
@@ -88,14 +97,16 @@ function Payment() {
           <div className="d-flex align-items-center justify-content-between mb-3">
             <div className="fs12-500-gray">Nomor virtual account</div>
             <div className="fs12-500-black d-flex align-items-center">
-              <div>889600819281729912</div>
+              <div>{`${dataOrders[0]?.account_number}${dataOrders[0]?.phone_number}`}</div>
               <img src={images.copycolor} alt="copy" className="ml-2" />
             </div>
           </div>
           <div className="d-flex align-items-center justify-content-between">
             <div className="fs12-500-gray">Total pembayaran</div>
             <div className="fs12-500-black d-flex align-items-center">
-              <div>Rp 204.046</div>
+              <div>{`Rp ${thousandSeparator(
+                grandTotal() + dataOrders[0]?.shipping_fee
+              )}`}</div>
               <img src={images.copycolor} alt="copy" className="ml-2" />
             </div>
           </div>
@@ -105,7 +116,7 @@ function Payment() {
           <div className="d-flex align-items-center justify-content-between">
             <div className="fs12-500-gray">Metode pembayaran</div>
             <div className="fs12-500-black d-flex align-items-center">
-              <div>Mandiri virtual account</div>
+              <div>{dataOrders[0]?.name}</div>
             </div>
           </div>
         </div>
@@ -252,6 +263,25 @@ function Payment() {
     );
   };
 
+  const renderExpiredDate = () => {
+    const dateOrder = new Date(dataOrders[0]?.create_on);
+
+    const getDate = dateOrder.getDate();
+
+    dateOrder.setDate(getDate + 1);
+
+    var options = {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    };
+
+    return dateOrder.toLocaleDateString("id", options);
+  };
+
   return (
     <div className="d-flex align-items-center justify-content-center my-5 w-100">
       <div className="payment-container d-flex flex-column align-items-center">
@@ -260,9 +290,7 @@ function Payment() {
         </div>
         {renderCountdown()}
         <div className="fs12-400-gray mb-1">Batas akhir pembayaran</div>
-        <div className="fs12-500-gray mb-3">
-          Jumat, 3 Desember 2021, 01.18 WIB
-        </div>
+        <div className="fs12-500-gray mb-3">{`${renderExpiredDate()} WIB`}</div>
         {renderKeterangan()}
         {renderButton()}
         <div className="mt-3 mb-2">
