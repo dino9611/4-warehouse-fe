@@ -128,7 +128,9 @@ function Profile() {
   const onClickSimpanData = async () => {
     const sendPersonalData = {
       ...personalData,
-      phone_number: `+62${personalData.phone_number}`,
+      phone_number: personalData.phone_number
+        ? `+62${personalData.phone_number}`
+        : "",
       date_of_birth: calenderData.chooseDate || personalData.date_of_birth,
     };
 

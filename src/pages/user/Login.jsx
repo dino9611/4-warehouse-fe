@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import gambar from "./../../assets/login.png";
 import SuccessSnack from "../../components/SuccessSnack";
 import ErrorSnack from "../../components/ErrorSnackbar";
+import ForgetPass from "./ForgetPass";
 
 class Login extends React.Component {
   state = {
@@ -19,6 +20,7 @@ class Login extends React.Component {
     successSnack: false,
     errorSnack: false,
     message: "",
+    modalForget: false,
   };
 
   onCheckShow = (e) => {
@@ -88,6 +90,7 @@ class Login extends React.Component {
     if (this.props.isLogin) {
       return <Redirect to="/" />;
     }
+
     return (
       <div className="login-main-wrap">
         <div className="login-sub-wrap">
@@ -111,10 +114,14 @@ class Login extends React.Component {
             <div className="label-text">
               <div className="form-kata-sandi row">
                 <h6>Kata sandi</h6>
-                <Link to="" className="link-lupa-password">
+                <div
+                  className="link-lupa-password"
+                  onClick={() => this.setState({ modalForget: true })}
+                >
                   Lupa Password?
-                </Link>
+                </div>
               </div>
+
               <input
                 type={showpassword}
                 className="form-control shadow-none text-input-password"
@@ -153,6 +160,10 @@ class Login extends React.Component {
           message={this.state.message}
           errorSnack={this.state.errorSnack}
           handleClose={this.handleClose}
+        />
+        <ForgetPass
+          open={this.state.modalForget}
+          close={() => this.setState({ modalForget: false })}
         />
       </div>
     );

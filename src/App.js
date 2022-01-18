@@ -24,6 +24,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
 import Payment from "./pages/user/Payment";
 import LoadingApp from "./components/LoadingApp";
+import ForgetPassInput from "./pages/user/ForgetPassInput";
 
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
@@ -133,6 +134,7 @@ function App() {
             />
             <Route path="/products/:category" exact component="" />
             <Route path="/admin" exact component={AdminLogin} />{" "}
+            <Route path="/forget-password" exact component={ForgetPassInput} />
             {/* Sengaja biar yg mau login ke admin bisa akses login admin nya */}
             <Route path="*" component={NotFound} />
           </Switch>

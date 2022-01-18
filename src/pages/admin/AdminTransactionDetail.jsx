@@ -110,7 +110,7 @@ function AdminTransactionDetail() {
   const [dataWarehouseOrigin, setDataWarehouseOrigin] = useState([]);
   const [loadingRequest, setLoadingrRequest] = useState(false);
   const [checkRequest, setCheckRequest] = useState(0);
-
+  console.log(transactionFromParent);
   const renderCurrentStatus = () => {
     //* Utk render tampilan current order status
     if (fetchedStatusId <= 2) {
@@ -335,6 +335,8 @@ function AdminTransactionDetail() {
 
       setLoadingrRequest(false);
       setHandleModal(false);
+      fetchTransactionStatuses();
+      fetchTransactionDetail();
       successToast("request successful!");
     } catch (error) {
       console.log(error);
@@ -440,7 +442,7 @@ function AdminTransactionDetail() {
         >
           <div>
             <div className="fs14-500-black mb-1">{el.name}</div>
-            <div className="fs14-500-black">Warehosue stock : {el.stocks}</div>
+            <div className="fs14-500-black">Warehouse stock : {el.stocks}</div>
           </div>
           <div className="d-flex flex-column justify-content-end w-25">
             <div className="fs14-500-black align-self-start mb-2 w-75">
@@ -807,9 +809,13 @@ function AdminTransactionDetail() {
                               >
                                 {val.stock_status}
                               </span>
+                            ) : val.status_request === "Requested" ? (
+                              <span className="transaction-detail-requested-label">
+                                {val.status_request}
+                              </span>
                             ) : (
                               <span className="transaction-detail-insufficient-label">
-                                {val.stock_status}
+                                {val.status_request}
                               </span>
                             )}
                           </StyledTableCell>
