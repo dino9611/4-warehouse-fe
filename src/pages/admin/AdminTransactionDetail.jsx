@@ -339,7 +339,7 @@ function AdminTransactionDetail() {
       fetchTransactionDetail();
       successToast("request successful!");
     } catch (error) {
-      console.log(error);
+      setLoadingrRequest(false);
       errorToast(error.response.data.message);
     }
   };
