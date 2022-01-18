@@ -3,19 +3,36 @@ import "./styles/profileSidebar.css";
 
 // Library
 
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
-import { useSelector } from "react-redux";
+import {
+  Link,
+  Redirect,
+  useLocation,
+  useRouteMatch,
+  useHistory,
+} from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 // Komponen
 
 import images from "./../assets";
 import { API_URL } from "./../constants/api";
+import { logoutAction } from "../redux/actions";
 
 function ProfileSidebar() {
   let { url } = useRouteMatch(); // Use route match untuk nesting route
 
   const dataUser = useSelector((state) => state.auth); // Selector redux untuk get data user dari redux
   const location = useLocation(); // Get lokasi params sedang berada di mana
+  let history = useHistory();
+
+  const dispatch = useDispatch();
+
+  // untuk logout
+  const onLogout = () => {
+    localStorage.removeItem("token");
+    dispatch(logoutAction());
+    history.push("/");
+  };
 
   // Render photo profile dan username
 
@@ -99,7 +116,10 @@ function ProfileSidebar() {
         <div className="profile-border mb-2"></div>
         {renderMenuProfile()}
         <div className="profile-border my-2"></div>
-        <button className="profile-btn-menu d-flex align-items-center w-100 p-2">
+        <button
+          onClick={onLogout}
+          className="profile-btn-menu d-flex align-items-center w-100 p-2"
+        >
           <img src={images.logout} alt="editprofile" className="mr-2" />
           <div>Logout</div>
         </button>

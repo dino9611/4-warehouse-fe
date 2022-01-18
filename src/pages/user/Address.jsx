@@ -18,6 +18,7 @@ const options = [
   { value: "strawberry", label: "Strawberry" },
   { value: "vanilla", label: "Vanilla" },
 ];
+// const addressEditValue = this.state.addressEdit;
 
 class Address extends React.Component {
   state = {
@@ -91,13 +92,9 @@ class Address extends React.Component {
       }
 
       // cek address
-      if (!dataAddress.data.length) {
-        this.setState({ resAddress: false });
-        return;
-      } else {
-        this.setState({ resAddress: dataAddress.data });
-        // console.log(this.state.resAddress);
-      }
+
+      this.setState({ resAddress: dataAddress.data });
+
       // if (!modalAddress) {
       //   // let res = await axios.get(`${API_URL}/user/address/province`);
       //   // this.setState({ dataProvince: res.data });
@@ -120,14 +117,8 @@ class Address extends React.Component {
       let dataAddress = await axios.get(`${API_URL}/user/address/${user_id}`);
       // console.log(dataAddress.data);
 
-      // cek address
-      if (!dataAddress.data.length) {
-        this.setState({ resAddress: false });
-        return;
-      } else {
-        this.setState({ resAddress: dataAddress.data });
-        // console.log(this.state.resAddress);
-      }
+      this.setState({ resAddress: dataAddress.data });
+      // console.log(this.state.resAddress);
     } catch (error) {
       console.log(error);
     }
@@ -233,7 +224,7 @@ class Address extends React.Component {
                   <h4>{val.recipient}</h4>
                   <h6>{val.phone_number}</h6>
 
-                  <h6>{`${val.address},${val.province},${val.city}`}</h6>
+                  <h6>{`${val.address}, ${val.province}, ${val.city}`}</h6>
                 </div>
                 <div>
                   {val.is_main_address ? (
@@ -282,11 +273,12 @@ class Address extends React.Component {
 
   cityChange = (pickCity) => {
     this.setState({ pickCity });
-    console.log(pickCity);
+    console.log();
   };
-  // onInputEditChange = () => {
-  //   this.setState({ ...dataAddress, [e.target.name]: e.target.value });
-  // };
+  onInputEditChange = (e) => {
+    this.setState({ [e.target.name]: e.target.defaultValue });
+    console.log("lewat defaulValue", e.target.defaultValue);
+  };
   onSaveAddressClick = () => {
     const {
       recipient,
@@ -331,6 +323,11 @@ class Address extends React.Component {
                 modalAddress: false,
                 successSnack: true,
                 message: "Berhasil menambah alamat",
+                pickProvince: "",
+                pickCity: "",
+                recipient: "",
+                phone_number: "",
+                address: "",
               });
 
               this.fetchData();
@@ -394,6 +391,7 @@ class Address extends React.Component {
       dataAddress,
       pickCity,
       pickProvince,
+      addressEdit,
     } = this.state;
 
     await axios
@@ -429,6 +427,11 @@ class Address extends React.Component {
               modalEdit: false,
               successSnack: true,
               message: "Berhasil mengubah alamat",
+              pickProvince: "",
+              pickCity: "",
+              recipient: "",
+              phone_number: "",
+              address: "",
             });
           });
 
@@ -440,7 +443,6 @@ class Address extends React.Component {
           errorSnack: true,
           message: err.response.data.message || "Server Error",
         });
-        alert("Lokasi tidak ditemukan");
       });
   };
   // render modal delete
@@ -492,7 +494,8 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="nama penerima"
               onChange={this.onInputChange}
-              value={addressEdit.recipient}
+              // defaultValue={addressEdit.recipient}
+              value={recipient}
             />
             <h6 className="mt-3">Nomor telepon</h6>
             <input
@@ -501,7 +504,8 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="nomor handphone"
               onChange={this.onInputChange}
-              value={addressEdit.phone_number}
+              // value={addressEdit.phone_number}
+              value={phone_number}
             />
             <h6 className="mt-3">Alamat Lengkap</h6>
             <input
@@ -510,7 +514,8 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="alamat"
               onChange={this.onInputChange}
-              value={addressEdit.address}
+              // value={addressEdit.address}
+              value={address}
             />
             <h6 className="mt-3">Provinsi</h6>
 
@@ -554,7 +559,7 @@ class Address extends React.Component {
               className="dropdown-form"
               placeholder="Masukkan Provinsi"
               onChange={this.provinceChange}
-              defaultValue={pickProvince}
+              defaultValue={addressEdit}
               // {(e) => this.setState({ pickProvince: e.target.value })}
               options={dataProvince}
             />
@@ -600,9 +605,7 @@ class Address extends React.Component {
               <button
                 className="btn-simpan-alamat"
                 onClick={this.onEditAddressClick}
-                disabled={
-                  !recipient || !phone_number || !pickCity || !pickProvince
-                }
+                disabled={!pickCity || !pickProvince}
               >
                 Ubah
               </button>
@@ -745,9 +748,7 @@ class Address extends React.Component {
             <button
               className="btn-simpan-alamat"
               onClick={this.onSaveAddressClick}
-              disabled={
-                !recipient || !phone_number || !pickCity || !pickProvince
-              }
+              disabled={!pickCity || !pickProvince}
             >
               Simpan
             </button>
@@ -762,7 +763,7 @@ class Address extends React.Component {
   };
 
   render() {
-    console.log("testes", this.state.pickProvince);
+    console.log("testes", this.state.resAddress);
     return (
       <div>
         <div className="row">

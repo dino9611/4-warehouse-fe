@@ -143,7 +143,7 @@
   /* justify-content: space-between; */
 }
 .test-kanan {
-  width: fit-content;
+  width: 50% !important;
   display: flex;
   flex-direction: row;
 }
@@ -151,7 +151,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   /* margin-left: 2%; */
   /* display: flex;
   flex-direction: row; */

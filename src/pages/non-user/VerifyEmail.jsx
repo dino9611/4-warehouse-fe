@@ -73,7 +73,7 @@ class VerifyEmail extends React.Component {
     const { verifyCondition } = this.state;
     if (verifyCondition === 1) {
       return (
-        <div>
+        <div className="verif-ongoing">
           <img className="mt-4" src={loading} height="10%" width="20%" />
           <h2 className="mt-5">Sedang menunggu Verifikasi</h2>
         </div>
@@ -81,7 +81,7 @@ class VerifyEmail extends React.Component {
     }
     if (verifyCondition === 2) {
       return (
-        <div>
+        <div className="verif-berhasil">
           <img className="mt-4" src={verified} height="10%" width="20%" />
           <h2 className="mt-5">Verifikasi Berhasil</h2>
         </div>
@@ -89,7 +89,7 @@ class VerifyEmail extends React.Component {
     }
 
     return (
-      <div>
+      <div className="verif-failed">
         <img src={failed} height="15%" width="25%" />
         <h3>Verifikasi Gagal</h3>
 

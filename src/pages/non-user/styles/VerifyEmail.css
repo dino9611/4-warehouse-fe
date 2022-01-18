@@ -40,3 +40,12 @@
 .VerifyEmail {
   text-align: center;
 }
+.verif-berhasil {
+  text-align: center;
+}
+.verif-failed {
+  text-align: center;
+}
+.verif-ongoing {
+  text-align: center;
+}

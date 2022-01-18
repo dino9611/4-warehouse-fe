@@ -97,7 +97,7 @@ class Login extends React.Component {
           <div className="login-right-form-wrap">
             <h2 className="regis-text">Masuk</h2>
             <div className="label-text">
-              <h6>Username</h6>
+              <h6>Username/Email</h6>
               <input
                 type="text"
                 className="form-control shadow-none text-input"
