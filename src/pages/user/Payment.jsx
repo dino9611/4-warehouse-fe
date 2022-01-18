@@ -133,7 +133,7 @@ function Payment() {
           className="payment-btn-detail w-50 mr-3"
           onClick={() => setHandleModal(true)}
         >
-          Lihat detail pesanan
+          Unggah pembayaran
         </button>
         <Link to="/products" className="w-50">
           <ButtonPrimary width="w-100">Belanja lagi</ButtonPrimary>

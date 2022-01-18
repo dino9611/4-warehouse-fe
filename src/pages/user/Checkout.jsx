@@ -37,7 +37,7 @@ function Checkout(props) {
 
   // State biasa
 
-  const [shipping, setShipping] = useState({}); // Get data ongkir
+  const [shipping, setShipping] = useState([]); // Get data ongkir
   const [pickShipping, setPickShipping] = useState(0); // Pilih jenis pengiriman
   const [pickBank, setPickBank] = useState({}); // State untuk menyimpan value dari bank yang dipilih
   const [mainAddress, setMainAddress] = useState(false); // State untuk menyimpan data dari alamat utama user
@@ -97,7 +97,6 @@ function Checkout(props) {
           let resAddress = await axios.get(
             `${API_URL}/location/get/main-address/${dataUser.id}`
           );
-
           // Cek apakah address ada atau tidak
 
           if (!resAddress.data.length) {
@@ -109,10 +108,13 @@ function Checkout(props) {
 
             setDataProvince(resProvince.data);
 
+            setShipping([]);
+            setPickAddress(resAddress.data[0]);
+            setDataAddress(resAddress.data[0]);
+
+            setLoadingPage(false);
             return;
           }
-
-          // Get data provinsi
 
           // Get shipping fee
 
@@ -832,9 +834,21 @@ function Checkout(props) {
     return (
       <div className="mt-4">
         <div className="checkout-title mb-3">Pilih Pengiriman</div>
-        {loadingPage
-          ? [1, 2, 3].map((el, index) => renderSkeletonCourier())
-          : renderListCourier()}
+        {loadingPage ? (
+          [1, 2, 3].map((el, index) => renderSkeletonCourier())
+        ) : shipping.length ? (
+          <div
+            style={{
+              fontSize: "0.875em",
+              fontWeight: "500",
+              color: "#b24629",
+            }}
+          >
+            Masukkan alamat pengiriman kamu terlebih dahulu.
+          </div>
+        ) : (
+          renderListCourier()
+        )}
       </div>
     );
   };
@@ -1097,7 +1111,7 @@ function Checkout(props) {
               disabled={
                 loadingCheckout ||
                 loadingPage ||
-                !pickBank ||
+                !parseInt(pickBank) ||
                 !pickShipping ||
                 !dataCart.length
                   ? true

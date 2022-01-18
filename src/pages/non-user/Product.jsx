@@ -268,7 +268,7 @@ function Product() {
   };
 
   // RENDER LIST PRODUK
-  console.log(dataProduct);
+
   const renderProduct = () => {
     return dataProduct.map((el, index) => {
       return (
@@ -278,9 +278,7 @@ function Product() {
             category={
               el.category.charAt(0).toUpperCase() + el.category.slice(1)
             }
-            title={`${el.name.charAt(0).toUpperCase() + el.name.slice(1)} ${
-              el.weight
-            }`}
+            title={`${el.name.charAt(0).toUpperCase() + el.name.slice(1)}`}
             price={el.price}
             total_stock={parseInt(el.total_stock)}
             data={el}
