@@ -1,0 +1,51 @@
+.fs14-500-black {
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.stock-req-wrapper-table {
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.stock-req-status-rejected {
+  background-color: #f0dad4;
+  border-radius: var(--b-rad-table);
+  color: var(--semantic-error);
+  font-size: 0.625rem;
+  padding: 0.25rem 0.1rem;
+}
+
+.stock-req-status-accepted {
+  background-color: #d0e4da;
+  border-radius: var(--b-rad-table);
+  color: var(--semantic-success);
+  font-size: 0.625rem;
+  padding: 0.25rem 0.1rem;
+}
+
+.stock-req-status-ongoing {
+  background-color: #fef0d7;
+  border-radius: var(--b-rad-table);
+  color: #ef8943;
+  font-size: 0.625rem;
+  padding: 0.25rem 0.1rem;
+}
+
+.stock-req-btn {
+  border: 1px solid #cacaca;
+  border-radius: 100%;
+  width: 40px;
+  aspect-ratio: 1;
+  background-color: transparent;
+  transition: all 0.3s;
+}
+
+.stock-req-btn-reject:hover {
+  background-color: #f0dad4;
+}
+
+.stock-req-btn-accept:hover {
+  background-color: #d0e4da;
+}
