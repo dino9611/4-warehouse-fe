@@ -12,7 +12,7 @@ import ButtonPrimary from "../../components/ButtonPrimary";
 import { API_URL } from "./../../constants/api.js";
 import { Spinner } from "reactstrap";
 import images from "./../../assets";
-
+import { useSelector, useDispatch } from "react-redux";
 // Material UI
 
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -34,6 +34,8 @@ function DetailedProduct(props) {
 
   const location = useLocation(); // Location untuk params product Id
   const { productId } = useParams();
+
+  const roleId = useSelector((state) => state.auth.role_id);
 
   // Set state untuk data produk
 
@@ -350,6 +352,11 @@ function DetailedProduct(props) {
     };
 
     try {
+      //proteksi user belom terdaftar tidak bisa transaksi
+      if (!roleId) {
+        alert("Mohon untuk Login terlebih dahulu");
+        return <Redirect to="/login" />;
+      }
       setLoading(true);
 
       await axios.post(`${API_URL}/transaction/addtocart`, dataInsert);

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { Login } from "./pages/user";
 import { Register, VerifyEmail } from "./pages/non-user";
 
@@ -23,6 +23,7 @@ import Cart from "./pages/user/Cart";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotFound from "./pages/non-user/NotFoundV1";
 import Payment from "./pages/user/Payment";
+import LoadingApp from "./components/LoadingApp";
 
 import { LoginAction } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
@@ -32,10 +33,13 @@ import SnackbarMessage from "./components/SnackbarMessage";
 function App() {
   const dispatch = useDispatch();
 
-  const dataUser = useSelector((state) => state.auth);
-  const dataCart = useSelector((state) => state.cartReducer);
   const dataSnackbar = useSelector((state) => state.snackbarMessageReducer);
   const [loading, setLoading] = useState(true);
+  const DetectPath = () => {
+    return useLocation().pathname;
+  };
+
+  let currentPath = DetectPath();
 
   const snackbarMessageRef = useRef();
 
@@ -96,7 +100,7 @@ function App() {
           <Route path="/checkout" exact component={Checkout} />
           <Route path="/checkout/payment" exact component={Payment} />
           <Route path="/cart" exact component={Cart} />
-          <Route path="*" exact component="" />
+          <Route path="*" component={NotFound} />
         </Switch>
       );
     } else if (getRoleId === 1 || getRoleId === 2) {
@@ -149,9 +153,20 @@ function App() {
           message={dataSnackbar.message}
         />
       ) : null}
-      {getRoleId === 1 || getRoleId === 2 ? null : <Header />}
-      {loading ? <div>Loading</div> : renderRouting()}
-      <div>{getRoleId === 1 || getRoleId === 2 ? null : <Footer />}</div>
+      {getRoleId === 1 ||
+      getRoleId === 2 ||
+      loading ||
+      currentPath.includes("/admin") ? null : (
+        <Header />
+      )}
+      {loading ? <LoadingApp /> : renderRouting()}
+      <div>
+        {getRoleId === 1 ||
+        getRoleId === 2 ||
+        loading | currentPath.includes("/admin") ? null : (
+          <Footer />
+        )}
+      </div>
     </div>
   );
 }

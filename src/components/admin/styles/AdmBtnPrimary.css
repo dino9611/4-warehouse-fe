@@ -1,0 +1,47 @@
+:root {
+  --primary-1st-color: #0A4D3C;
+  --primary-2nd-color: #FCB537;
+  --primary-3rd-color: #8D280C;
+  --primary-4th-color: #B24629;
+  --primary-5th-color: #F1EDE7;
+
+  --neutral-1st-color: #070707;
+  --neutral-2nd-color: #5A5A5A;
+  --neutral-3rd-color: #CACACA;
+  --neutral-4th-color: #F4F4F4;
+  --neutral-5th-color: #FFFFFF;
+
+  --semantic-error: #CB3A31;
+  --semantic-warning: #EF8943;
+  --semantic-success: #43936C;
+  --semantic-info: #27A0E3;
+
+  --b-rad-root: 12px;
+  --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+.adm-btn-primary {
+  align-items: center;
+  background-color: var(--primary-4th-color);
+  border: none;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: var(--neutral-5th-color);
+  display: flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  height: calc(2.5rem + 2px);
+  justify-content: center;
+  padding: 0.625rem 0.75rem;
+}
+
+.adm-btn-primary:hover {
+  background-color: #8d280c;
+  transition: 300ms;
+}
+
+.adm-btn-primary:disabled {
+  background-color: var(--neutral-3rd-color);
+  color: var(--neutral-5th-color);
+  cursor: default;
+}

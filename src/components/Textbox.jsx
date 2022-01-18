@@ -17,10 +17,12 @@ function Textbox({
   onClick,
   cursor,
   backgroundColor,
+  borderRadius,
   type = "text",
   onBlur,
   changeMessage,
   color,
+  maxLength,
 }) {
   return (
     <div className="d-flex flex-column">
@@ -51,6 +53,7 @@ function Textbox({
             cursor,
             backgroundColor,
             color,
+            borderRadius,
           }}
           value={value}
           onChange={onChange}
@@ -58,6 +61,7 @@ function Textbox({
           name={name}
           disabled={disabled}
           onBlur={onBlur}
+          maxLength={maxLength}
         />
         {changeMessage ? (
           <button className="textbox-btn-styling">{changeMessage}</button>
