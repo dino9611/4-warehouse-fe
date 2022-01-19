@@ -30,6 +30,7 @@ import { successToast, errorToast } from "../../redux/actions/ToastAction";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -65,6 +66,8 @@ function ManageProduct() {
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
 
     const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat loading table stlh select page pagination
+
+    const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
     const [products, setProducts] = useState([]);
     
@@ -269,8 +272,13 @@ function ManageProduct() {
                     />
                 </div>
                 <div className="del-modal-foot-wrap">
-                    <button onClick={() => onCloseModal(index)}>Cancel</button>
-                    <button onClick={() => onConfirmDelProd(prodId, index)} disabled={!passForDel}>Confirm</button>
+                    <button onClick={() => onCloseModal(index)} disabled={submitLoad}>Cancel</button>
+                    <button 
+                        onClick={() => onConfirmDelProd(prodId, index)} 
+                        disabled={!passForDel || submitLoad}
+                    >
+                        {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Confirm"}
+                    </button>
                 </div>
             </>
         )
@@ -278,7 +286,8 @@ function ManageProduct() {
 
     const onConfirmDelProd = async (prodId, index) => {
         let inputtedPass = passForDel;
-        document.querySelector("div.del-modal-foot-wrap > button").disabled = true;
+        setSubmitLoad(true);
+        // document.querySelector("div.del-modal-foot-wrap > button").disabled = true;
 
         try {
             const res = await axios.delete(`${API_URL}/product/delete/${prodId}`, {headers: {username: getUsername, pass: inputtedPass}});
@@ -292,14 +301,21 @@ function ManageProduct() {
                 setShowPass("password");
                 successToast(res.data.message);
                 fetchProdData();
+                if (products.length === 1) { //* Klo list produk hanya 1 pada tabel kemudian delete, akan redirect ke page pagination terakhir
+                    setPage(pageCountRange.length - 1);
+                };
             } else if (res.data.validationMessage) { //* Case salah input password
+                setSubmitLoad(false);
                 errorToast(res.data.validationMessage);
-                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
+                // document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             } else {
+                setSubmitLoad(false);
                 errorToast(res.data.failMessage); //* Case product id tidak ditemukan
-                document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
+                // document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             };
         } catch (error) {
+            setSubmitLoad(false);
+            // document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             errorToast("Server Error, from ManageProduct");
             console.log(error);
         }
