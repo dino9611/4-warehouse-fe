@@ -177,6 +177,7 @@ function ForgetPassInput(props) {
                 onChange={(e) => setNewPass(e.target.value)}
                 error={errorInput}
                 errormsg={errorInput}
+                type="password"
               />
             </div>
             <div className="mb-5">
@@ -187,6 +188,7 @@ function ForgetPassInput(props) {
                 onChange={(e) => setConfirmPass(e.target.value)}
                 error={errorConfirm}
                 errormsg={errorConfirm}
+                type="password"
               />
             </div>
             <ButtonPrimary

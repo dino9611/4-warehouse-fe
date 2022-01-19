@@ -72,6 +72,21 @@ function Checkout(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [testing, setTesting] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        for (let i = 0; i < 100; i++) {
+          let resAddress = await axios.get(
+            `${API_URL}/location/get/main-address/32`
+          );
+          console.log("tes");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (!loadingNewAddress) {
