@@ -205,6 +205,7 @@ function ManageStock() {
                         name="newStock"
                         value={newStock}
                         onChange={editStockHandler}
+                        onKeyUp={noMinusHandler}
                         placeholder="Input new stock"
                         borderRadius={"8px"}
                     />
@@ -317,6 +318,13 @@ function ManageStock() {
     // HANDLER FUNCTIONS SECTION
     const editStockHandler = (event) => { //* Utk setState edit stock
         setNewStock(parseInt(event.target.value));
+    };
+
+    const noMinusHandler = (event) => { //* Biar input number tidak negatif (-)
+        let input = parseInt(event.target.value);
+        if (input < 0) {
+            setNewStock(input * -1);
+        };
     };
 
     // CLICK/SUBMIT FUNCTION SECTION

@@ -23,6 +23,7 @@ function Textbox({
   changeMessage,
   color,
   maxLength,
+  onKeyUp
 }) {
   return (
     <div className="d-flex flex-column">
@@ -62,6 +63,7 @@ function Textbox({
           disabled={disabled}
           onBlur={onBlur}
           maxLength={maxLength}
+          onKeyUp={onKeyUp}
         />
         {changeMessage ? (
           <button className="textbox-btn-styling">{changeMessage}</button>
