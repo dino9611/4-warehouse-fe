@@ -143,8 +143,6 @@ function StockRequest() {
         `${API_URL}/stock/reject/stock-request?ordersId=${ordersId}&productId=${productId}&warehouseId=${warehouseId}`
       );
 
-      alert("request rejected");
-
       setLoadingReject(false);
 
       successToast("Request rejected succesfully!");
