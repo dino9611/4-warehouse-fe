@@ -146,8 +146,10 @@
     margin-top: 2.5rem;
 }
 
+.add-adm-modal-foot > button:first-of-type:disabled,
 .add-adm-modal-foot > button:disabled {
     background-color: var(--neutral-3rd-color);
+    border-color: var(--neutral-3rd-color);
     color: var(--neutral-5th-color);
     cursor: default;
 }
@@ -178,6 +180,7 @@
     color: var(--neutral-3rd-color);
     cursor: pointer;
     display: flex;
+    height: 46px;
     justify-content: space-between;
     padding: 0.75rem;
     width: 100%;
