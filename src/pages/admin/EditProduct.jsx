@@ -244,7 +244,7 @@ function EditProduct() {
                                 type="file" 
                                 id="img_carrier"
                                 name="img_carrier"
-                                accept=".jpg,.jpeg,.png"
+                                accept=".jpg,.jpeg,.png,.JPG,.JPEG,.PNG"
                                 onChange={(event) => editImgHandler(event, index, imgSrc)}
                             />
                             {imgCarrier[0] ?
