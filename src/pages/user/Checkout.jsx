@@ -72,6 +72,21 @@ function Checkout(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [testing, setTesting] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        for (let i = 0; i < 100; i++) {
+          let resAddress = await axios.get(
+            `${API_URL}/location/get/main-address/32`
+          );
+          console.log("tes");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (!loadingNewAddress) {
@@ -662,14 +677,14 @@ function Checkout(props) {
             <img src={images.close} alt="close" />
           </button>
         </h5>
-        <div className="mt-3">
+        {/* <div className="mt-3">
           <button
             className="checkout-address-btn w-100 py-2"
             onClick={() => setBtnAdd(true)}
           >
             Tambah alamat baru
           </button>
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -746,12 +761,12 @@ function Checkout(props) {
               <div className="fs10-400-gray mb-1">{el.address}</div>
               <div className="fs10-400-gray">{`${el.city}, ${el.province}`}</div>
             </div>
-            <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
-              <button className="checkout-ubah-btn d-flex align-items-center p-0">
+            {!el.is_main_address ? (
+              <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
+                {/* <button className="checkout-ubah-btn d-flex align-items-center p-0">
                 <img src={images.edit} alt="edit" className="mr-1" />
                 <div className="fs14-600-red">Ubah alamat</div>
-              </button>
-              {!el.is_main_address ? (
+              </button> */}
                 <>
                   <div className="checkout-addressaction-border mx-3 py-2"></div>
                   <button className="checkout-ubah-btn d-flex align-items-center p-0">
@@ -764,8 +779,8 @@ function Checkout(props) {
                     </div>
                   </button>
                 </>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
           </div>
         </label>
       );
@@ -1140,7 +1155,7 @@ function Checkout(props) {
           ) : (
             <>
               {renderModalAddress()}{" "}
-              <div style={{ height: "auto" }}>{renderListAddress()}</div>
+              <div style={{ height: "100%" }}>{renderListAddress()}</div>
               {renderBtnPilihAlamat()}
             </>
           )}
