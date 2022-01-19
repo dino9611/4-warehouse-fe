@@ -29,6 +29,7 @@ import Modal from "../../components/Modal";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import { Spinner } from "reactstrap";
 import assets from "./../../assets";
+import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -77,6 +78,10 @@ function AdminTransactionDetail() {
   };
 
   const getRoleId = useSelector((state) => state.auth.role_id);
+
+  const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
+
+  const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
   const [transactionDetail, setTransactionDetail] = useState([]);
 
@@ -169,9 +174,13 @@ function AdminTransactionDetail() {
   };
 
   useEffect(() => {
-    fetchTransactionDetail();
-    fetchShippingInfo();
-    fetchTransactionStatuses();
+    const fetchData = async () => {
+      await fetchTransactionDetail();
+      await fetchShippingInfo();
+      await fetchTransactionStatuses();
+      await setLoadData(false);
+    };
+    fetchData();
   }, []);
 
   const breadcrumbs = [
@@ -568,387 +577,395 @@ function AdminTransactionDetail() {
 
   return (
     <>
-      {transactionFromParent.state ? (
-        <div className="adm-transaction-detail-main-wrap">
-          <div className="adm-transaction-detail-breadcrumb-wrap">
-            <Stack spacing={2}>
-              <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
-                aria-label="transaction detail breadcrumb"
-              >
-                {breadcrumbs}
-              </Breadcrumbs>
-            </Stack>
-          </div>
-          <div className="adm-transaction-detail-header-wrap">
-            <div className="adm-transaction-detail-header-left">
-              <h4>Order Details</h4>
-              {getRoleId === 1 &&
-              (fetchedStatusId === 2 || fetchedStatusId === 3) ? (
-                <div className="detailTrx-header-left-notice">
-                  <img src={infoIcon} alt="Info-Icon" />
-                  <h6>
-                    Only warehouse admin eligible to accept/reject order &
-                    request stock
-                  </h6>
-                </div>
-              ) : getRoleId === 2 && fetchedStatusId === 2 ? (
-                <div className="detailTrx-header-left-notice">
-                  <img src={infoIcon} alt="Info-Icon" />
-                  <h6>
-                    Please double check customer payment proof on billing
-                    information
-                  </h6>
-                </div>
-              ) : getRoleId === 2 && fetchedStatusId === 3 ? (
-                <div className="detailTrx-header-left-notice">
-                  <img src={infoIcon} alt="Info-Icon" />
-                  <h6>
-                    You only able to send order when all stock status{" "}
-                    <span style={{ color: "#43936C" }}>"Sufficient"</span>
-                  </h6>
-                </div>
-              ) : null}
-            </div>
-            <div className="adm-transaction-detail-status">
-              <div
-                className={
-                  fetchedStatusId === 2 || fetchedStatusId === 3
-                    ? "transaction-detail-status-top status-top-actionable-modifier"
-                    : "transaction-detail-status-top"
-                }
-              >
-                {renderCurrentStatus().map((val, index) =>
-                  val.id === fetchedStatusId ? (
-                    <>
-                      <h6 className="status-active" key={`status-0${val.id}`}>
-                        {val.status}
-                      </h6>
-                      {val.id <= fetchedStatusId && fetchedStatusId < 5 ? (
-                        <img src={inactiveNextArrow} alt="Next-Process-Arrow" />
-                      ) : null}
-                    </>
-                  ) : fetchedStatusId >= 6 ? (
-                    <h6 className="status-fail" key={`status-0${val.id}`}>
-                      {val}
-                    </h6>
-                  ) : (
-                    <>
-                      <h6 className="status-inactive" key={`status-0${val.id}`}>
-                        {val.status}
-                      </h6>
-                      {index < 2 ? (
-                        <img src={inactiveNextArrow} alt="Next-Process-Arrow" />
-                      ) : null}
-                    </>
-                  )
-                )}
+      {!loadData ?
+        <>
+          {transactionFromParent.state ? (
+            <div className="adm-transaction-detail-main-wrap">
+              <div className="adm-transaction-detail-breadcrumb-wrap">
+                <Stack spacing={2}>
+                  <Breadcrumbs
+                    separator={<NavigateNextIcon fontSize="small" />}
+                    aria-label="transaction detail breadcrumb"
+                  >
+                    {breadcrumbs}
+                  </Breadcrumbs>
+                </Stack>
               </div>
-              {fetchedStatusId === 2 ? (
-                <>
-                  <div className="transaction-detail-status-bottom">
-                    <h6>Confirm Order #{parentId}</h6>
-                    <div>
-                      <AdmBtnSecondary
-                        fontSize="0.75rem"
-                        height="32px"
-                        width="72px"
-                        onClick={(event) =>
-                          confirmTransactionPay(event, parentId)
-                        }
-                        disabled={getRoleId === 1}
-                      >
-                        Reject
-                      </AdmBtnSecondary>
-                      <AdmBtnPrimary
-                        fontSize="0.75rem"
-                        height="32px"
-                        width="72px"
-                        onClick={(event) =>
-                          confirmTransactionPay(event, parentId)
-                        }
-                        disabled={getRoleId === 1}
-                      >
-                        Accept
-                      </AdmBtnPrimary>
+              <div className="adm-transaction-detail-header-wrap">
+                <div className="adm-transaction-detail-header-left">
+                  <h4>Order Details</h4>
+                  {getRoleId === 1 &&
+                  (fetchedStatusId === 2 || fetchedStatusId === 3) ? (
+                    <div className="detailTrx-header-left-notice">
+                      <img src={infoIcon} alt="Info-Icon" />
+                      <h6>
+                        Only warehouse admin eligible to accept/reject order &
+                        request stock
+                      </h6>
                     </div>
-                  </div>
-                </>
-              ) : fetchedStatusId === 3 ? (
-                <>
-                  <div className="transaction-detail-status-bottom">
-                    <h6>Delivery Action</h6>
-                    <div>
-                      <AdmBtnSecondary
-                        fontSize="0.75rem"
-                        height="32px"
-                        width="72px"
-                        onClick={(event) =>
-                          confirmTransactionDelivery(event, parentId)
-                        }
-                        disabled={getRoleId === 1}
-                      >
-                        Reject
-                      </AdmBtnSecondary>
-                      <AdmBtnPrimary
-                        fontSize="0.75rem"
-                        height="32px"
-                        width="72px"
-                        onClick={(event) =>
-                          confirmTransactionDelivery(event, parentId)
-                        }
-                        disabled={
-                          getRoleId === 1 ||
-                          !transactionDetail.every(isAllSufficient)
-                        }
-                      >
-                        Send
-                      </AdmBtnPrimary>
+                  ) : getRoleId === 2 && fetchedStatusId === 2 ? (
+                    <div className="detailTrx-header-left-notice">
+                      <img src={infoIcon} alt="Info-Icon" />
+                      <h6>
+                        Please double check customer payment proof on billing
+                        information
+                      </h6>
                     </div>
-                  </div>
-                </>
-              ) : null}
-            </div>
-          </div>
-          <div className="adm-transaction-detail-contents-wrap">
-            <div className="adm-transaction-detail-1stRow">
-              <div className="transaction-detail-1stRow-left">
-                <div>
-                  <h5>Items From Order #{parentId}</h5>
-                  {fetchedStatusId === 2 || fetchedStatusId === 3 ? (
-                    getRoleId === 1 ? (
-                      <button disabled>
-                        <img
-                          src={stockRequestInactiveIcon}
-                          alt="stock-request-icon"
-                        />
-                        Request Stock
-                      </button>
-                    ) : (
-                      <Link
-                        to="/admin/stock-request"
-                        className="link-no-decoration"
-                      >
-                        <button>
-                          <img
-                            src={stockRequestIcon}
-                            alt="stock-request-icon"
-                          />
-                          Request Stock
-                        </button>
-                      </Link>
-                    )
+                  ) : getRoleId === 2 && fetchedStatusId === 3 ? (
+                    <div className="detailTrx-header-left-notice">
+                      <img src={infoIcon} alt="Info-Icon" />
+                      <h6>
+                        You only able to send order when all stock status{" "}
+                        <span style={{ color: "#43936C" }}>"Sufficient"</span>
+                      </h6>
+                    </div>
                   ) : null}
                 </div>
-                <TableContainer
-                  component={Paper}
-                  style={{ borderRadius: 0, boxShadow: "none" }}
-                >
-                  <Table
-                    sx={{ minWidth: "100%" }}
-                    aria-label="transaction items detail"
+                <div className="adm-transaction-detail-status">
+                  <div
+                    className={
+                      fetchedStatusId === 2 || fetchedStatusId === 3
+                        ? "transaction-detail-status-top status-top-actionable-modifier"
+                        : "transaction-detail-status-top"
+                    }
                   >
-                    <TableHead>
-                      <TableRow
-                        style={{ backgroundColor: "#FCB537", height: "64px" }}
-                      >
-                        <StyledTableCell align="left">Item</StyledTableCell>
-                        <StyledTableCell align="left">
-                          Purchase Qty
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          Warehouse Stock
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          Stock Status
-                        </StyledTableCell>
-                        <StyledTableCell align="left">Price @</StyledTableCell>
-                        <StyledTableCell align="left">Total</StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {transactionDetail.map((val) => (
-                        <StyledTableRow key={`items-detail-0${val.product_id}`}>
-                          <StyledTableCell
-                            align="left"
-                            component="th"
-                            scope="row"
-                            className="txt-capitalize"
+                    {renderCurrentStatus().map((val, index) =>
+                      val.id === fetchedStatusId ? (
+                        <>
+                          <h6 className="status-active" key={`status-0${val.id}`}>
+                            {val.status}
+                          </h6>
+                          {val.id <= fetchedStatusId && fetchedStatusId < 5 ? (
+                            <img src={inactiveNextArrow} alt="Next-Process-Arrow" />
+                          ) : null}
+                        </>
+                      ) : fetchedStatusId >= 6 ? (
+                        <h6 className="status-fail" key={`status-0${val.id}`}>
+                          {val}
+                        </h6>
+                      ) : (
+                        <>
+                          <h6 className="status-inactive" key={`status-0${val.id}`}>
+                            {val.status}
+                          </h6>
+                          {index < 2 ? (
+                            <img src={inactiveNextArrow} alt="Next-Process-Arrow" />
+                          ) : null}
+                        </>
+                      )
+                    )}
+                  </div>
+                  {fetchedStatusId === 2 ? (
+                    <>
+                      <div className="transaction-detail-status-bottom">
+                        <h6>Confirm Order #{parentId}</h6>
+                        <div>
+                          <AdmBtnSecondary
+                            fontSize="0.75rem"
+                            height="32px"
+                            width="72px"
+                            onClick={(event) =>
+                              confirmTransactionPay(event, parentId)
+                            }
+                            disabled={getRoleId === 1}
                           >
-                            {val.product_name}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {val.qty}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {val.total_stock}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {val.stock_status === "Sufficient" &&
-                            fetchedStatusId < 4 ? (
-                              <span className="transaction-detail-sufficient-label">
-                                {val.stock_status}
-                              </span>
-                            ) : fetchedStatusId === 4 ? (
-                              <span className="transaction-detail-done-label">
-                                On Delivery
-                              </span>
-                            ) : fetchedStatusId === 5 ? (
-                              <span className="transaction-detail-done-label">
-                                Delivered
-                              </span>
-                            ) : fetchedStatusId > 5 ? (
-                              <span className="transaction-detail-insufficient-label">
-                                Cancelled
-                              </span>
-                            ) : val.status_request === "Request required" ? (
-                              <span
-                                className="transaction-detail-insufficient-label"
-                                onClick={() => onClickModalRequest(val)}
-                                style={{ cursor: "pointer" }}
+                            Reject
+                          </AdmBtnSecondary>
+                          <AdmBtnPrimary
+                            fontSize="0.75rem"
+                            height="32px"
+                            width="72px"
+                            onClick={(event) =>
+                              confirmTransactionPay(event, parentId)
+                            }
+                            disabled={getRoleId === 1}
+                          >
+                            Accept
+                          </AdmBtnPrimary>
+                        </div>
+                      </div>
+                    </>
+                  ) : fetchedStatusId === 3 ? (
+                    <>
+                      <div className="transaction-detail-status-bottom">
+                        <h6>Delivery Action</h6>
+                        <div>
+                          <AdmBtnSecondary
+                            fontSize="0.75rem"
+                            height="32px"
+                            width="72px"
+                            onClick={(event) =>
+                              confirmTransactionDelivery(event, parentId)
+                            }
+                            disabled={getRoleId === 1}
+                          >
+                            Reject
+                          </AdmBtnSecondary>
+                          <AdmBtnPrimary
+                            fontSize="0.75rem"
+                            height="32px"
+                            width="72px"
+                            onClick={(event) =>
+                              confirmTransactionDelivery(event, parentId)
+                            }
+                            disabled={
+                              getRoleId === 1 ||
+                              !transactionDetail.every(isAllSufficient)
+                            }
+                          >
+                            Send
+                          </AdmBtnPrimary>
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+              <div className="adm-transaction-detail-contents-wrap">
+                <div className="adm-transaction-detail-1stRow">
+                  <div className="transaction-detail-1stRow-left">
+                    <div>
+                      <h5>Items From Order #{parentId}</h5>
+                      {/* {fetchedStatusId === 2 || fetchedStatusId === 3 ? (
+                        getRoleId === 1 ? (
+                          <button disabled>
+                            <img
+                              src={stockRequestInactiveIcon}
+                              alt="stock-request-icon"
+                            />
+                            Request Stock
+                          </button>
+                        ) : (
+                          <Link
+                            to="/admin/stock-request"
+                            className="link-no-decoration"
+                          >
+                            <button>
+                              <img
+                                src={stockRequestIcon}
+                                alt="stock-request-icon"
+                              />
+                              Request Stock
+                            </button>
+                          </Link>
+                        )
+                      ) : null} */} {/* Sengaja comment dlu karena pake modal dari stock status utk request stock */}
+                    </div>
+                    <TableContainer
+                      component={Paper}
+                      style={{ borderRadius: 0, boxShadow: "none" }}
+                    >
+                      <Table
+                        sx={{ minWidth: "100%" }}
+                        aria-label="transaction items detail"
+                      >
+                        <TableHead>
+                          <TableRow
+                            style={{ backgroundColor: "#FCB537", height: "64px" }}
+                          >
+                            <StyledTableCell align="left">Item</StyledTableCell>
+                            <StyledTableCell align="left">
+                              Purchase Qty
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              Warehouse Stock
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              Stock Status
+                            </StyledTableCell>
+                            <StyledTableCell align="left">Price @</StyledTableCell>
+                            <StyledTableCell align="left">Total</StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {transactionDetail.map((val) => (
+                            <StyledTableRow key={`items-detail-0${val.product_id}`}>
+                              <StyledTableCell
+                                align="left"
+                                component="th"
+                                scope="row"
+                                className="txt-capitalize"
                               >
-                                {val.stock_status}
-                              </span>
-                            ) : val.status_request === "Requested" ? (
-                              <span className="transaction-detail-requested-label">
-                                {val.status_request}
-                              </span>
-                            ) : (
-                              <span className="transaction-detail-insufficient-label">
-                                {val.status_request}
-                              </span>
-                            )}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            Rp {thousandSeparator(val.product_price)}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            Rp {thousandSeparator(val.total_price)}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-              <div className="transaction-detail-1stRow-right">
-                <h5>Order Summary</h5>
-                <TableContainer
-                  component={Paper}
-                  style={{ borderRadius: 0, boxShadow: "none" }}
-                >
-                  <Table
-                    sx={{ minWidth: "100%" }}
-                    aria-label="transaction bill summary"
-                  >
-                    <TableHead>
-                      <TableRow
-                        style={{ backgroundColor: "#FCB537", height: "64px" }}
+                                {val.product_name}
+                              </StyledTableCell>
+                              <StyledTableCell align="left">
+                                {val.qty}
+                              </StyledTableCell>
+                              <StyledTableCell align="left">
+                                {val.total_stock}
+                              </StyledTableCell>
+                              <StyledTableCell align="left">
+                                {val.stock_status === "Sufficient" &&
+                                fetchedStatusId < 4 ? (
+                                  <span className="transaction-detail-sufficient-label">
+                                    {val.stock_status}
+                                  </span>
+                                ) : fetchedStatusId === 4 ? (
+                                  <span className="transaction-detail-done-label">
+                                    On Delivery
+                                  </span>
+                                ) : fetchedStatusId === 5 ? (
+                                  <span className="transaction-detail-done-label">
+                                    Delivered
+                                  </span>
+                                ) : fetchedStatusId > 5 ? (
+                                  <span className="transaction-detail-insufficient-label">
+                                    Cancelled
+                                  </span>
+                                ) : val.status_request === "Request required" ? (
+                                  <span
+                                    className="transaction-detail-insufficient-label"
+                                    onClick={() => onClickModalRequest(val)}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {val.stock_status}
+                                  </span>
+                                ) : val.status_request === "Requested" ? (
+                                  <span className="transaction-detail-requested-label">
+                                    {val.status_request}
+                                  </span>
+                                ) : (
+                                  <span className="transaction-detail-insufficient-label">
+                                    {val.status_request}
+                                  </span>
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="left">
+                                Rp {thousandSeparator(val.product_price)}
+                              </StyledTableCell>
+                              <StyledTableCell align="left">
+                                Rp {thousandSeparator(val.total_price)}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
+                  <div className="transaction-detail-1stRow-right">
+                    <h5>Order Summary</h5>
+                    <TableContainer
+                      component={Paper}
+                      style={{ borderRadius: 0, boxShadow: "none" }}
+                    >
+                      <Table
+                        sx={{ minWidth: "100%" }}
+                        aria-label="transaction bill summary"
                       >
-                        <StyledTableCell
-                          align="left"
-                          style={{ fontWeight: 600 }}
-                        >
-                          Description
-                        </StyledTableCell>
-                        <StyledTableCell
-                          align="left"
-                          style={{ fontWeight: 600 }}
-                        >
-                          Price
-                        </StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {transactionSummDesc.map((val, index) => (
-                        <StyledTableRow key={`transaction-summary-0${index}`}>
-                          <StyledTableCell
-                            align="left"
-                            component="th"
-                            scope="row"
+                        <TableHead>
+                          <TableRow
+                            style={{ backgroundColor: "#FCB537", height: "64px" }}
                           >
-                            {val}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="left"
-                            component="th"
-                            scope="row"
-                          >
-                            {index === 0
-                              ? `Rp ${thousandSeparator(
-                                  parentTransactionAmount
-                                )}`
-                              : index === 1
-                              ? `Rp ${thousandSeparator(parentShipFee)}`
-                              : `Rp ${thousandSeparator(
-                                  parentTransactionAmount + parentShipFee
-                                )}`}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                            <StyledTableCell
+                              align="left"
+                              style={{ fontWeight: 600 }}
+                            >
+                              Description
+                            </StyledTableCell>
+                            <StyledTableCell
+                              align="left"
+                              style={{ fontWeight: 600 }}
+                            >
+                              Price
+                            </StyledTableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {transactionSummDesc.map((val, index) => (
+                            <StyledTableRow key={`transaction-summary-0${index}`}>
+                              <StyledTableCell
+                                align="left"
+                                component="th"
+                                scope="row"
+                              >
+                                {val}
+                              </StyledTableCell>
+                              <StyledTableCell
+                                align="left"
+                                component="th"
+                                scope="row"
+                              >
+                                {index === 0
+                                  ? `Rp ${thousandSeparator(
+                                      parentTransactionAmount
+                                    )}`
+                                  : index === 1
+                                  ? `Rp ${thousandSeparator(parentShipFee)}`
+                                  : `Rp ${thousandSeparator(
+                                      parentTransactionAmount + parentShipFee
+                                    )}`}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
+                </div>
+                <div className="adm-transaction-detail-2ndRow">
+                  <div className="transaction-detail-2ndRow-left">
+                    <h5>Shipping Information</h5>
+                    <div>
+                      <p>{recipient}</p>
+                      <p className="txt-capitalize">{address}</p>
+                      <p>{phone_number}</p>
+                      <p>{email}</p>
+                    </div>
+                  </div>
+                  <div className="transaction-detail-2ndRow-mid">
+                    <h5>Billing Information</h5>
+                    <div>
+                      <p>Payment method</p>
+                      <p className="txt-uppercase">{bank_name}</p>
+                    </div>
+                    <div>
+                      <p>Account number</p>
+                      <p>{account_number}</p>
+                    </div>
+                    <div>
+                      <p>Payment proof</p>
+                      <span onClick={modalClick}>Check Receipt</span>
+                    </div>
+                  </div>
+                  <div className="transaction-detail-2ndRow-right">
+                    <h5>Delivery Information</h5>
+                    <div>
+                      <p>Courier</p>
+                      <p>{courier?.split(" ")[0]}</p>{" "}
+                      {/* Kasih symbol "?" biar klo data kosong, ga error undefined */}
+                    </div>
+                    <div>
+                      <p>Delivery type</p>
+                      <p>{courier?.split(" ")[1]}</p>{" "}
+                      {/* Kasih symbol "?" biar klo data kosong, ga error undefined */}
+                    </div>
+                    <div>
+                      <p>Warehouse origin</p>
+                      <p>{parentWhName}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
+              <Modal open={modalToggle} close={onCloseModal}>
+                {payProofModal(parentId, customerPayProof)}
+              </Modal>
+              <Modal
+                open={handleModal}
+                close={() => setHandleModal(false)}
+                classModal="modal-stock-request p-0"
+              >
+                {renderModalRequestStock()}
+              </Modal>
             </div>
-            <div className="adm-transaction-detail-2ndRow">
-              <div className="transaction-detail-2ndRow-left">
-                <h5>Shipping Information</h5>
-                <div>
-                  <p>{recipient}</p>
-                  <p className="txt-capitalize">{address}</p>
-                  <p>{phone_number}</p>
-                  <p>{email}</p>
-                </div>
-              </div>
-              <div className="transaction-detail-2ndRow-mid">
-                <h5>Billing Information</h5>
-                <div>
-                  <p>Payment method</p>
-                  <p className="txt-uppercase">{bank_name}</p>
-                </div>
-                <div>
-                  <p>Account number</p>
-                  <p>{account_number}</p>
-                </div>
-                <div>
-                  <p>Payment proof</p>
-                  <span onClick={modalClick}>Check Receipt</span>
-                </div>
-              </div>
-              <div className="transaction-detail-2ndRow-right">
-                <h5>Delivery Information</h5>
-                <div>
-                  <p>Courier</p>
-                  <p>{courier?.split(" ")[0]}</p>{" "}
-                  {/* Kasih symbol "?" biar klo data kosong, ga error undefined */}
-                </div>
-                <div>
-                  <p>Delivery type</p>
-                  <p>{courier?.split(" ")[1]}</p>{" "}
-                  {/* Kasih symbol "?" biar klo data kosong, ga error undefined */}
-                </div>
-                <div>
-                  <p>Warehouse origin</p>
-                  <p>{parentWhName}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Modal open={modalToggle} close={onCloseModal}>
-            {payProofModal(parentId, customerPayProof)}
-          </Modal>
-          <Modal
-            open={handleModal}
-            close={() => setHandleModal(false)}
-            classModal="modal-stock-request p-0"
-          >
-            {renderModalRequestStock()}
-          </Modal>
+          ) : (
+            <AdminFetchFailed />
+          )}
+        </>
+        :
+        <div style={{height: "100%", padding: "1.5rem", width: "100%"}}>
+          <AdminSkeletonSimple />
         </div>
-      ) : (
-        <AdminFetchFailed />
-      )}
+      }
     </>
   );
 }
