@@ -86,7 +86,7 @@ function ManageProduct() {
 
     const [toggleDropdown, setToggleDropdown] = useState(false); //* Atur toggle dropdown filter product per page
 
-    const [itemPerPage, setItemPerPage] = useState(5);
+    const [itemPerPage, setItemPerPage] = useState(10);
 
     const [prodLength, setProdLength] = useState(0);
 
@@ -105,7 +105,7 @@ function ManageProduct() {
     //! let lastCount = pageCountRange[pageCountRange.length - 1]; //! Tentuin last page yg mana, utk most last button (blm dipake)
 
     // FILTER ITEM PER PAGE SECTION
-    const rowsPerPageOptions = [5, 10, 50];
+    const rowsPerPageOptions = [10, 50];
 
     // FETCH & useEFFECT SECTION
     const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
