@@ -58,7 +58,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const customStyles = {
     control: (provided, state) => ({
         ...provided,
-        height: "50px",
+        height: "46px",
         boxShadow: state.isFocused ? "none" : "none",
     }),
     placeholder: (provided, state) => ({
