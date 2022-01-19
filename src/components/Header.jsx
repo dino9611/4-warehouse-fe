@@ -86,6 +86,7 @@ function Header() {
   const onLogout = () => {
     localStorage.removeItem("token");
     dispatch(logoutAction());
+    dispatch({ type: "TOTALNULL" });
   };
 
   // RENDERING
