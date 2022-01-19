@@ -292,6 +292,9 @@ function ManageProduct() {
                 setShowPass("password");
                 successToast(res.data.message);
                 fetchProdData();
+                if (products.length === 1) { //* Klo list produk hanya 1 pada tabel kemudian delete, akan redirect ke page pagination terakhir
+                    setPage(pageCountRange.length - 1);
+                };
             } else if (res.data.validationMessage) { //* Case salah input password
                 errorToast(res.data.validationMessage);
                 document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
@@ -300,6 +303,7 @@ function ManageProduct() {
                 document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             };
         } catch (error) {
+            document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             errorToast("Server Error, from ManageProduct");
             console.log(error);
         }
