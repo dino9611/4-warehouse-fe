@@ -152,7 +152,7 @@ class Address extends React.Component {
 
     try {
       axios.delete(`${API_URL}/user/address/delete/${idAddress} `);
-      // alert(`berhasil menghapus alamat`);
+
       this.setState({
         modalDelete: false,
         successSnack: true,
@@ -166,7 +166,6 @@ class Address extends React.Component {
         errorSnack: true,
         message: error.response.data.message || "Server Error",
       });
-      alert(`gagal menghapus alamat`);
     }
   };
 
@@ -203,7 +202,7 @@ class Address extends React.Component {
         successSnack: true,
         message: "Berhasil mengganti alamat",
       });
-      // alert(`berhasil mengganti alamat`);
+
       this.fetchData();
     } catch (error) {
       console.log(error);
@@ -318,7 +317,7 @@ class Address extends React.Component {
             })
             .then((res) => {
               console.log(addAddress);
-              // alert(`berhasil menambah alamat`);
+
               this.setState({
                 modalAddress: false,
                 successSnack: true,
@@ -338,7 +337,6 @@ class Address extends React.Component {
                 errorSnack: true,
                 message: err.response.data.message || "Server Error",
               });
-              // alert("gagal memasukkan alamat");
             });
           // console.log(addAddress);
         })
@@ -348,7 +346,6 @@ class Address extends React.Component {
             errorSnack: true,
             message: err.response.data.message || "Server Error",
           });
-          // alert("Lokasi tidak ditemukan");
         });
     } else {
       this.setState({ errorSnack: "true", message: "Tolong isi Semua Input" });
@@ -422,7 +419,7 @@ class Address extends React.Component {
           })
           .then((res) => {
             console.log(res.data);
-            // alert(`berhasil mengubah alamat`);
+
             this.setState({
               modalEdit: false,
               successSnack: true,
