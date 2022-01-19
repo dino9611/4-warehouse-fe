@@ -26,6 +26,7 @@ import NotFoundPage from "../non-user/NotFoundV1";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import chevronDown from "../../assets/components/Chevron-Down.svg";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -59,6 +60,8 @@ function ManageAdmin() {
     const [loadData, setLoadData] = useState(true); //* State kondisi utk masking tampilan client saat state sdg fetch data
 
     const [errorFetch, setErrorFetch] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error
+
+    const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
     const [adminList, setAdminList] = useState([]);
 
@@ -240,8 +243,13 @@ function ManageAdmin() {
                     </div>
                 </div>
                 <div className="add-adm-modal-foot">
-                    <button onClick={onCloseModal}>Cancel</button>
-                    <button onClick={onSubmitAddAdm} disabled={!new_username || !new_password || !assign_warehouse}>Confirm</button>
+                    <button onClick={onCloseModal} disabled={submitLoad}>Cancel</button>
+                    <button 
+                        onClick={onSubmitAddAdm} 
+                        disabled={!new_username || !new_password || !assign_warehouse || submitLoad}
+                    >
+                        {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Confirm"}
+                    </button>
                 </div>
             </>
         )
@@ -273,7 +281,8 @@ function ManageAdmin() {
     // CLICK/SUBMIT FUNCTION SECTION
     const onSubmitAddAdm = async (event) => { //* Untuk trigger submit button
         event.preventDefault();
-        document.querySelector("div.add-adm-modal-foot > button").disabled = true;
+
+        setSubmitLoad(true);
         
         let inputtedAdm = {
             new_username: new_username,
@@ -288,8 +297,8 @@ function ManageAdmin() {
                     return {...prevState, new_username: "", new_password: "", assign_warehouse: 0}
                 });
                 setSelectedWhDropdown("Select Warehouse To Assign");
-                document.querySelector("div.add-adm-modal-foot > button").disabled = false;
                 setDropdownActiveDetector(0);
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'success',
                     title: 'Add new admin/warehouse admin success!',
@@ -305,7 +314,7 @@ function ManageAdmin() {
                 fetchWarehouse();
             } catch (error) {
                 console.log(error);
-                document.querySelector("div.add-adm-modal-foot > button").disabled = false;
+                setSubmitLoad(false);
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...something went wrong, reload/try again',
@@ -318,7 +327,7 @@ function ManageAdmin() {
                 });
             };
         } else {
-            document.querySelector("div.add-adm-modal-foot > button").disabled = false;
+            setSubmitLoad(false);
             errorToast("Please input all form, username (max 45 char), & pass (max 75 char)");
         };
     };

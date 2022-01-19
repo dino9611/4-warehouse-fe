@@ -366,7 +366,7 @@ function AdminAddProduct() {
                                                                     type="file" 
                                                                     id={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
                                                                     name={(index === 0) ? "main_img" : (index === 1) ? "secondary_img" : "third_img"}
-                                                                    accept=".jpg,.jpeg,.png"
+                                                                    accept=".jpg,.jpeg,.png,.JPG,.JPEG,.PNG"
                                                                     onChange={(event) => addImageHandler(event, index)} 
                                                                     disabled={addImage[index]}
                                                                 />
