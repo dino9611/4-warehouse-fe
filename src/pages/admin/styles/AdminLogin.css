@@ -240,6 +240,7 @@
 /* ? TABLET SIZE MD */
 @media (max-width: 991px) {
   .adm-login-main-wrap {
+    height: 100vh;
     padding: 0;
   }
 
