@@ -388,7 +388,7 @@ function DetailedProduct(props) {
       snackbarRef.current.showSnackbar();
     } catch (error) {
       setLoading(false);
-      alert(error.response.data.message); // Sementara pake alert
+      // alert(error.response.data.message); // Sementara pake alert
       console.log(error.response.data.message);
     }
   };
