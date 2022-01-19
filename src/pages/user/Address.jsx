@@ -166,7 +166,6 @@ class Address extends React.Component {
         errorSnack: true,
         message: error.response.data.message || "Server Error",
       });
-      alert(`gagal menghapus alamat`);
     }
   };
 
