@@ -332,7 +332,7 @@ function ManageStock() {
         try {
             await axios.post(`${API_URL}/product/edit/stock`, inputtedStock);
             setNewStock("");
-            setSubmitLoad(true);
+            setSubmitLoad(false);
             Swal.fire({
                 icon: 'success',
                 title: 'Edit product stock success!',
@@ -347,7 +347,7 @@ function ManageStock() {
             fetchProdData();
         } catch (err) {
             console.log(err);
-            setSubmitLoad(true);
+            setSubmitLoad(false);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...something went wrong, reload/try again',
