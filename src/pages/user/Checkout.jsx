@@ -7,6 +7,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import { debounce } from "throttle-debounce";
 import { Spinner } from "reactstrap";
+import Select from "react-select";
 import axios from "axios";
 
 // Import komponen
@@ -20,7 +21,56 @@ import assets from "../../assets";
 import "./style/cartDetail.css";
 import "./style/checkout.css";
 
-function Checkout(props) {
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    color: "#070707",
+    fontSize: "0.875rem",
+    backgroundColor: "#fff",
+    "&:hover": {
+      color: "#b24629",
+      transition: "all 0.3s",
+    },
+    "&:active": {
+      backgroundColor: "#fff",
+      transition: "all 0.3s",
+    },
+  }),
+  placeholder: (provided, state) => ({
+    ...provided,
+    fontSize: "0.875rem",
+    padding: "12px",
+  }),
+  valueContainer: (provided, state) => ({
+    ...provided,
+    padding: "0",
+  }),
+  control: (provided, state) => ({
+    ...provided,
+    borderRadius: "8px",
+    border: "solid 1px #cacaca",
+    boxShadow: "solid 1px #b24629 !important",
+    "&:hover": {
+      border: "solid 1px #b24629 !important",
+    },
+  }),
+  input: (provided, state) => ({
+    ...provided,
+    fontSize: "0.875rem",
+    padding: "12px",
+  }),
+  singleValue: (provided, state) => ({
+    ...provided,
+    fontSize: "0.875rem",
+    padding: "12px",
+  }),
+  menu: (provided, state) => ({
+    ...provided,
+    color: "#b24629",
+  }),
+};
+
+function Checkout() {
   // State data
 
   const [dataCart, setDataCart] = useState([]); // Data list produk dari tabel cart_detail
@@ -42,7 +92,9 @@ function Checkout(props) {
   const [pickBank, setPickBank] = useState({}); // State untuk menyimpan value dari bank yang dipilih
   const [mainAddress, setMainAddress] = useState(false); // State untuk menyimpan data dari alamat utama user
   const [pickProvince, setPickProvince] = useState(""); // State untuk menyimpan data provinsi yang dipilih
+  const [pickCity, setPickCity] = useState(""); // State untuk menyimpan data city yang dipilih
   const [errorFillAddress, setErrorFillAddress] = useState(false); // Jika kolom tambah alamat bellum diisi akan error true
+  const [errorRequest, setErrorRequest] = useState(false);
   const [btnAdd, setBtnAdd] = useState(false);
 
   // State loading request data
@@ -58,7 +110,6 @@ function Checkout(props) {
   const [dataNewAddress, setDataNewAddress] = useState({
     recipient: "",
     phone_number: null,
-    city: "",
     address: "",
     is_main_address: 0,
   });
@@ -106,11 +157,13 @@ function Checkout(props) {
           if (!resAddress.data.length) {
             setDataAddress(false);
 
-            let resProvince = await axios.get(
-              `${API_URL}/location/get/province`
-            );
+            if (!dataProvince.length) {
+              let resProvince = await axios.get(
+                `${API_URL}/location/get/province`
+              );
 
-            setDataProvince(resProvince.data);
+              setDataProvince(resProvince.data);
+            }
 
             setShipping(false);
 
@@ -132,6 +185,14 @@ function Checkout(props) {
             let resAddress = await axios.get(
               `${API_URL}/location/get/main-address/${dataUser.id}`
             );
+
+            if (!resAddress.data.length) {
+              setErrorRequest(true);
+
+              setLoadingPage(false);
+
+              return;
+            }
 
             let resShipping = await axios.get(
               `${API_URL}/location/get-distance/${resAddress.data[0].id}?cartId=${location.state[0].cart_id}`
@@ -162,25 +223,49 @@ function Checkout(props) {
 
   useEffect(() => {
     (async () => {
-      if (pickProvince) {
-        let res = await axios.get(
-          `${API_URL}/location/get/city/${pickProvince}`
-        );
+      try {
+        if (pickProvince) {
+          let res = await axios.get(
+            `${API_URL}/location/get/city/${pickProvince.province}`
+          );
 
-        setDataCity(res.data);
+          setDataCity(res.data);
+        }
+      } catch (error) {
+        console.log(error);
       }
     })();
   }, [pickProvince]);
 
   useEffect(() => {
     (async () => {
-      let res = await axios.get(
-        `${API_URL}/location/get/data-address/${dataUser.id}`
-      );
+      try {
+        let res = await axios.get(
+          `${API_URL}/location/get/data-address/${dataUser.id}`
+        );
 
-      setListAddress(res.data);
+        setListAddress(res.data);
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [handleAddress]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (btnAdd && !dataProvince.length) {
+          let resProvince = await axios.get(`${API_URL}/location/get/province`);
+
+          setDataProvince(resProvince.data);
+        }
+      } catch (error) {
+        if (error.response?.data.message === "Kuota habis") {
+          setErrorRequest(true);
+        }
+      }
+    })();
+  }, [btnAdd]);
 
   // EVENT
 
@@ -290,6 +375,11 @@ function Checkout(props) {
           `${API_URL}/location/get-distance/${pickAddress.id}?cartId=${location.state[0].cart_id}`
         );
 
+        setHandleAddress(false);
+        setDataAddress(pickAddress);
+        setPickShipping(0);
+        setShipping(resShipping.data);
+
         dispatch({
           type: "SHOWSNACKBAR",
           payload: {
@@ -299,8 +389,6 @@ function Checkout(props) {
         });
 
         dataSnackbar.ref.current.showSnackbarMessage();
-
-        setShipping(resShipping.data);
 
         setLoadingPilihAlamat(false);
       }
@@ -315,19 +403,25 @@ function Checkout(props) {
     const newAddress = {
       ...dataNewAddress,
       user_id: dataUser.id,
-      province: pickProvince,
+      ...pickCity,
     };
 
     try {
       setLoadingNewAddress(true);
 
-      if (!recipient || !phone_number || !address || !city || !pickProvince) {
+      if (
+        !recipient ||
+        !phone_number ||
+        !address ||
+        !pickCity ||
+        !pickProvince
+      ) {
         setLoadingNewAddress(false);
         setErrorFillAddress(true);
         return;
       }
 
-      let alamat = `${newAddress.address}, ${newAddress.city}, ${newAddress.province}`;
+      let alamat = `${newAddress.address}, ${newAddress.label}, ${newAddress.province}`;
 
       let res = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${alamat}&key=AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w`
@@ -412,6 +506,14 @@ function Checkout(props) {
     setPickAddress(dataAddress);
     setHandleAddress(false);
     setBtnAdd(false);
+    setDataNewAddress({
+      recipient: "",
+      phone_number: null,
+      address: "",
+      is_main_address: 0,
+    });
+    setPickCity(null);
+    setPickProvince(null);
   };
 
   // onChange is main address
@@ -424,12 +526,23 @@ function Checkout(props) {
     }
   };
 
+  const onChangeProvince = (pickProvince) => {
+    setPickProvince(pickProvince);
+  };
+
+  const onChangeCity = (pickCity) => {
+    setPickCity(pickCity);
+  };
+
   // RENDERING
 
   // Render jika user belum mempunyai alamat
 
   const renderNewAddress = () => {
     const { recipient, phone_number, address, pickProvince } = dataNewAddress;
+
+    const listProvince = dataProvince;
+    const listCity = dataCity;
 
     return (
       <div>
@@ -458,7 +571,7 @@ function Checkout(props) {
             Nomor Handphone
           </label>
           <input
-            type="text"
+            type="number"
             id="nomor-hp"
             className={`checkout-input-address w-100 ${
               !dataNewAddress.phone_number && errorFillAddress
@@ -474,50 +587,34 @@ function Checkout(props) {
             : null}
         </div>
         <div className="mb-3">
-          <label htmlFor="province" className="checkout-label-input">
-            Provinsi
-          </label>
-          <input
-            type="text"
-            list="provinces"
-            id="province"
-            name="province"
-            className={`checkout-input-address w-100 ${
-              !pickProvince && errorFillAddress ? "textbox-error" : null
-            }`}
-            placeholder="Masukkan Provinsi"
-            onChange={debounce(1000, (e) => setPickProvince(e.target.value))}
-          />
-          {!pickProvince && errorFillAddress ? errorMessage() : null}
-          <datalist id="provinces">
-            {dataProvince?.map((el, index) => (
-              <option key={el.province_id} value={el.province} />
-            ))}
-          </datalist>
+          <div>
+            <div className="profile-fs14-500-black mb-2">Provinsi</div>
+            <Select
+              options={listProvince}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              onChange={onChangeProvince}
+              placeholder={<div>Masukkan provinsi</div>}
+            />
+          </div>
         </div>
         <div className="mb-3">
-          <label htmlFor="city" className="checkout-label-input">
-            Kota/Kabupaten
-          </label>
-          <input
-            type="text"
-            id="city"
-            list="cities"
-            className={`checkout-input-address w-100 ${
-              !dataNewAddress.city && errorFillAddress ? "textbox-error" : null
-            }`}
-            placeholder="Masukkan Kota/Kabupaten"
-            name="city"
-            onChange={onChangeNewAddress}
-          />
-          {!dataNewAddress.city && errorFillAddress ? errorMessage() : null}
-          <datalist id="cities">
-            {dataCity?.map((el) => (
-              <option key={el.city_id} value={`${el.city_name}`}>
-                {el.type}
-              </option>
-            ))}
-          </datalist>
+          <div>
+            <div className="profile-fs14-500-black mb-2">Kota/Kabupaten</div>
+            <Select
+              options={listCity}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              onChange={onChangeCity}
+              placeholder={<div>Masukkan Kota/Kabupaten</div>}
+            />
+          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="detail-address" className="checkout-label-input">
@@ -583,7 +680,16 @@ function Checkout(props) {
             <ButtonPrimary
               onClick={onClickNewAddress}
               width="w-25"
-              disabled={loadingNewAddress ? true : false}
+              disabled={
+                loadingNewAddress ||
+                !recipient ||
+                !phone_number ||
+                !address ||
+                !pickCity ||
+                !pickProvince
+                  ? false
+                  : true
+              }
             >
               {!loadingNewAddress ? (
                 "Simpan"
@@ -1054,6 +1160,34 @@ function Checkout(props) {
     });
   };
 
+  // RENDER ERROR NEW ADDRESS
+  const renderErrorNewAddress = () => {
+    return (
+      <div>
+        <div
+          style={{
+            fontSize: "0.875em",
+            fontWeight: "600",
+            color: "#b24629",
+          }}
+        >
+          Kamu belum punya alamat
+        </div>
+        <div
+          className="mt-3"
+          style={{
+            fontSize: "0.75em",
+            fontWeight: "500",
+            color: "#070707",
+          }}
+        >
+          Akan tetapi, Untuk sementara kamu tidak dapat menambah alamat disini,
+          silahkan coba untuk menambah alamat di halaman profil kamu
+        </div>
+      </div>
+    );
+  };
+
   // RETURN
 
   return (
@@ -1062,7 +1196,11 @@ function Checkout(props) {
         <div className="checkout-col col-4 pr-3">
           <div className="checkout-wrapper p-4">
             <div className="checkout-title mb-3">1. Alamat Pengiriman</div>
-            {dataAddress ? renderUserAddress() : renderNewAddress()}
+            {dataAddress
+              ? renderUserAddress()
+              : errorRequest
+              ? renderErrorNewAddress()
+              : renderNewAddress()}
           </div>
         </div>
         <div className="checkout-col col-4 p-px-2">
@@ -1175,7 +1313,24 @@ function Checkout(props) {
           classModal="checkout-modal p-0"
         >
           {btnAdd ? (
-            renderModalAddAddress()
+            errorRequest ? (
+              <div
+                className="d-flex flex-column align-items-center justify-content-center h-100"
+                style={{ fontWeight: "600", color: "#b24629" }}
+              >
+                Maaf, Kamu tidak bisa menambah alamat sementara
+                <div
+                  className="d-flex align-items-center mt-4"
+                  style={{ cursor: "pointer" }}
+                  onClick={onClickCloseModal}
+                >
+                  <img src={images.btnleft} alt="" />
+                  <div style={{ color: "#5a5a5a" }}>Kembali</div>
+                </div>
+              </div>
+            ) : (
+              renderModalAddAddress()
+            )
           ) : (
             <div className="d-flex flex-column justify-content-between h-100">
               <div style={{ overflow: "auto" }}>

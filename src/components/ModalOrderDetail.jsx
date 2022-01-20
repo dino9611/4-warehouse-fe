@@ -137,7 +137,7 @@ function ModalOrderDetail({ id, open, close }) {
   };
 
   // Render modal detail order
-  console.log(dataOrderDetail);
+
   const renderModalOrderDetail = () => {
     let date = new Date(dataOrderDetail[0]?.create_on);
 
