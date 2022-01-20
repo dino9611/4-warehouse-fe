@@ -371,6 +371,8 @@
     cursor: default;
 }
 
+.adm-products-firstPage-btn,
+.adm-products-lastPage-btn,
 .adm-products-prev-btn,
 .adm-products-next-btn {
     background-color: var(--neutral-5th-color);
@@ -381,12 +383,29 @@
     width: 88px;
 }
 
+.adm-products-firstPage-btn,
+.adm-products-lastPage-btn {
+    width: 48px;
+}
+
+.adm-products-firstPage-btn:hover > img,
 .adm-products-prev-btn:hover > img,
 .adm-products-next-btn:hover > img {
     transform: translateY(-2px);
     transition: 300ms;
 }
 
+.adm-products-lastPage-btn:hover > img {
+    transform: translateY(-2px) rotate(180deg) !important; /* Klo ga important, ga fungsi */
+    transition: 300ms;
+}
+
+/* .adm-products-lastPage-btn > img {
+    transform: rotate(180deg);
+} */
+
+.adm-products-firstPage-btn:disabled,
+.adm-products-lastPage-btn:disabled,
 .adm-products-prev-btn:disabled,
 .adm-products-next-btn:disabled {
     background-color: var(--neutral-3rd-color);
@@ -394,6 +413,8 @@
     opacity: 50%;
 }
 
+.adm-products-firstPage-btn:disabled:hover > img,
+.adm-products-lastPage-btn:disabled:hover > img,
 .adm-products-prev-btn:disabled:hover > img,
 .adm-products-next-btn:disabled:hover > img {
     transform: translateY(0);
