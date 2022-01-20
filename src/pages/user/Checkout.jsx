@@ -72,21 +72,6 @@ function Checkout(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [testing, setTesting] = useState(false);
-  useEffect(() => {
-    (async () => {
-      try {
-        for (let i = 0; i < 100; i++) {
-          let resAddress = await axios.get(
-            `${API_URL}/location/get/main-address/32`
-          );
-          console.log("tes");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
 
   useEffect(() => {
     if (!loadingNewAddress) {
@@ -112,6 +97,10 @@ function Checkout(props) {
           let resAddress = await axios.get(
             `${API_URL}/location/get/main-address/${dataUser.id}`
           );
+
+          setPickAddress(resAddress.data[0]);
+          setDataAddress(resAddress.data[0]);
+
           // Cek apakah address ada atau tidak
 
           if (!resAddress.data.length) {
@@ -123,9 +112,7 @@ function Checkout(props) {
 
             setDataProvince(resProvince.data);
 
-            setShipping([]);
-            setPickAddress(resAddress.data[0]);
-            setDataAddress(resAddress.data[0]);
+            setShipping(false);
 
             setLoadingPage(false);
             return;
@@ -137,14 +124,35 @@ function Checkout(props) {
             `${API_URL}/location/shipping-fee/${resAddress.data[0]?.id}?cartId=${location.state[0].cart_id}`
           );
 
-          setPickAddress(resAddress.data[0]);
-          setDataAddress(resAddress.data[0]);
           setShipping(resShipping.data);
 
           setLoadingPage(false);
         } catch (error) {
-          console.log(error);
-          console.log(error.response.data.message);
+          if (error.response?.data.message === "Kuota habis") {
+            let resAddress = await axios.get(
+              `${API_URL}/location/get/main-address/${dataUser.id}`
+            );
+
+            let resShipping = await axios.get(
+              `${API_URL}/location/get-distance/${resAddress.data[0].id}?cartId=${location.state[0].cart_id}`
+            );
+
+            setShipping(resShipping.data);
+
+            setLoadingPage(false);
+
+            return;
+          }
+
+          dispatch({
+            type: "SHOWSNACKBAR",
+            payload: {
+              status: "error",
+              message: error.response.data.message || "Server error",
+            },
+          });
+
+          dataSnackbar.ref.current.showSnackbarMessage();
         }
       })();
     }
@@ -278,7 +286,25 @@ function Checkout(props) {
 
       setLoadingPilihAlamat(false);
     } catch (error) {
-      console.log(error);
+      if (error.response?.data.message === "Kuota habis") {
+        let resShipping = await axios.get(
+          `${API_URL}/location/get-distance/${pickAddress.id}?cartId=${location.state[0].cart_id}`
+        );
+
+        dispatch({
+          type: "SHOWSNACKBAR",
+          payload: {
+            status: "success",
+            message: "Berhasil pilih alamat",
+          },
+        });
+
+        dataSnackbar.ref.current.showSnackbarMessage();
+
+        setShipping(resShipping.data);
+
+        setLoadingPilihAlamat(false);
+      }
     }
   };
 
@@ -677,14 +703,14 @@ function Checkout(props) {
             <img src={images.close} alt="close" />
           </button>
         </h5>
-        {/* <div className="mt-3">
+        <div className="mt-3">
           <button
             className="checkout-address-btn w-100 py-2"
             onClick={() => setBtnAdd(true)}
           >
             Tambah alamat baru
           </button>
-        </div> */}
+        </div>
       </div>
     );
   };
@@ -714,14 +740,14 @@ function Checkout(props) {
   };
 
   // Render list address di modal checkout address
-
+  console.log(listAddress);
   const renderListAddress = () => {
     return listAddress.map((el, index) => {
       return (
-        <label htmlFor={el.id} className="w-100">
+        <label htmlFor={el.latitude} className="w-100">
           <input
             type="radio"
-            id={el.id}
+            id={el.latitude}
             value={parseInt(el.id)}
             name="list-address"
             style={{ display: "none", zIndex: "999" }}
@@ -761,12 +787,12 @@ function Checkout(props) {
               <div className="fs10-400-gray mb-1">{el.address}</div>
               <div className="fs10-400-gray">{`${el.city}, ${el.province}`}</div>
             </div>
-            {!el.is_main_address ? (
-              <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
-                {/* <button className="checkout-ubah-btn d-flex align-items-center p-0">
+            <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
+              <button className="checkout-ubah-btn d-flex align-items-center p-0">
                 <img src={images.edit} alt="edit" className="mr-1" />
                 <div className="fs14-600-red">Ubah alamat</div>
-              </button> */}
+              </button>
+              {!el.is_main_address ? (
                 <>
                   <div className="checkout-addressaction-border mx-3 py-2"></div>
                   <button className="checkout-ubah-btn d-flex align-items-center p-0">
@@ -779,8 +805,8 @@ function Checkout(props) {
                     </div>
                   </button>
                 </>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         </label>
       );
@@ -849,21 +875,11 @@ function Checkout(props) {
     return (
       <div className="mt-4">
         <div className="checkout-title mb-3">Pilih Pengiriman</div>
-        {loadingPage ? (
-          [1, 2, 3].map((el, index) => renderSkeletonCourier())
-        ) : shipping.length ? (
-          <div
-            style={{
-              fontSize: "0.875em",
-              fontWeight: "500",
-              color: "#b24629",
-            }}
-          >
-            Masukkan alamat pengiriman kamu terlebih dahulu.
-          </div>
-        ) : (
-          renderListCourier()
-        )}
+        {loadingPage
+          ? [1, 2, 3].map((el, index) => renderSkeletonCourier())
+          : shipping
+          ? renderListCourier()
+          : "Kamu belum punya alamat! Isi alamat terlebih dahulu"}
       </div>
     );
   };
@@ -871,7 +887,7 @@ function Checkout(props) {
   // Render list kurir
 
   const renderListCourier = () => {
-    return shipping[0]?.costs.map((el, index) => {
+    return shipping.costs?.map((el, index) => {
       return (
         <label className="w-100" for={el.service} style={{ cursor: "pointer" }}>
           <input
@@ -892,7 +908,7 @@ function Checkout(props) {
                 el.cost[0].value
               )}`}</div>
               <div>
-                <div className="checkout-jeniskurir">{`${shipping[0].code.toUpperCase()} ${
+                <div className="checkout-jeniskurir">{`${shipping.code.toUpperCase()} ${
                   el.service
                 }`}</div>
                 <div className="checkout-desckurir">{el.description}</div>
@@ -962,14 +978,18 @@ function Checkout(props) {
   };
 
   // Render jenis pembayaran
-
+  console.log(shipping);
   const renderPayment = () => {
     return dataBank.map((el, index) => {
       const bankimg = [images.mandiri, images.bca, images.bni, images.cimb];
 
       return (
         <>
-          <label className="w-100" for={el.id} style={{ cursor: "pointer" }}>
+          <label
+            className="w-100"
+            htmlFor={el.id}
+            style={{ cursor: "pointer" }}
+          >
             <input
               type="radio"
               id={el.id}
@@ -1153,11 +1173,12 @@ function Checkout(props) {
           {btnAdd ? (
             renderModalAddAddress()
           ) : (
-            <>
-              {renderModalAddress()}{" "}
-              <div style={{ height: "100%" }}>{renderListAddress()}</div>
+            <div className="d-flex flex-column justify-content-between h-100">
+              <div style={{ overflow: "auto" }}>
+                {renderModalAddress()} {renderListAddress()}
+              </div>
               {renderBtnPilihAlamat()}
-            </>
+            </div>
           )}
         </Modal>
       </div>
