@@ -194,7 +194,7 @@ function Checkout(props) {
       address_id: dataAddress.id,
       bank_id: parseInt(pickBank),
       warehouse_id: shipping.id,
-      courier: `JNE ${dataKurir.service}`,
+      courier: `${shipping.code.toUpperCase()} ${dataKurir.service}`,
     };
 
     try {
@@ -243,7 +243,6 @@ function Checkout(props) {
       });
     } catch (error) {
       console.log(error);
-      console.log(error.response.data.message);
     }
   };
 
@@ -333,7 +332,7 @@ function Checkout(props) {
       let res = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${alamat}&key=AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w`
       );
-      console.log(res.data);
+
       let latitude = res.data.results[0]?.geometry.location.lat;
       let longitude = res.data.results[0]?.geometry.location.lng;
 
@@ -357,7 +356,6 @@ function Checkout(props) {
       dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
       console.log(error);
-      console.log(error.response.data.message);
     }
   };
 
@@ -740,7 +738,7 @@ function Checkout(props) {
   };
 
   // Render list address di modal checkout address
-  console.log(listAddress);
+
   const renderListAddress = () => {
     return listAddress.map((el, index) => {
       return (
@@ -875,11 +873,17 @@ function Checkout(props) {
     return (
       <div className="mt-4">
         <div className="checkout-title mb-3">Pilih Pengiriman</div>
-        {loadingPage
-          ? [1, 2, 3].map((el, index) => renderSkeletonCourier())
-          : shipping
-          ? renderListCourier()
-          : "Kamu belum punya alamat! Isi alamat terlebih dahulu"}
+        {loadingPage ? (
+          [1, 2, 3].map((el, index) => renderSkeletonCourier())
+        ) : shipping ? (
+          renderListCourier()
+        ) : (
+          <div
+            style={{ fontSize: "0.875em", fontWeight: "600", color: "#b24629" }}
+          >
+            Kamu belum punya alamat! Isi alamat terlebih dahulu
+          </div>
+        )}
       </div>
     );
   };
@@ -978,7 +982,7 @@ function Checkout(props) {
   };
 
   // Render jenis pembayaran
-  console.log(shipping);
+
   const renderPayment = () => {
     return dataBank.map((el, index) => {
       const bankimg = [images.mandiri, images.bca, images.bni, images.cimb];

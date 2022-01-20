@@ -137,7 +137,7 @@ function ModalOrderDetail({ id, open, close }) {
   };
 
   // Render modal detail order
-
+  console.log(dataOrderDetail);
   const renderModalOrderDetail = () => {
     let date = new Date(dataOrderDetail[0]?.create_on);
 
@@ -186,7 +186,7 @@ function ModalOrderDetail({ id, open, close }) {
             <div className="d-flex align-items-center mb-2">
               <div className="fs12-500-gray w-50">No resi</div>
               <div className="fs12-500-green w-50">
-                JNE123456778
+                21343242TL92131
                 <img src={images.copy} alt="copy" className="ml-2" />
               </div>
             </div>
