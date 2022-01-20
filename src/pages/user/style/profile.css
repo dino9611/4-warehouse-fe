@@ -1,0 +1,163 @@
+.profile-dropdown-gender {
+  position: absolute;
+  height: auto;
+  border-radius: 12px;
+  padding: 3.3%;
+  background-color: #fff;
+  border: 1px solid #cacaca;
+  font-size: 0.875em;
+  margin-top: 2%;
+}
+
+.profile-dropdown-border {
+  border-bottom: 1px solid rgb(216, 214, 214);
+}
+
+.profile-gender:hover {
+  color: #b24629;
+  cursor: pointer;
+}
+
+.profile-dropdown-calender {
+  position: absolute;
+  height: auto;
+  border-radius: 12px;
+  background-color: #fff;
+  border: 1px solid #cacaca;
+  font-size: 0.875em;
+  margin-top: 2%;
+}
+
+.container-modal {
+  position: relative;
+  z-index: 1;
+}
+
+/* Update */
+
+.profile-tab {
+  position: relative;
+}
+
+.profile-tab-border {
+  border-bottom: 2px solid #cacaca;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.profile-list-tab {
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #5a5a5a;
+  border: none;
+  background-color: transparent;
+  border-bottom: 2px solid #cacaca;
+  position: relative;
+}
+
+.profile-tab-active {
+  border-bottom: 2px solid #0a4d3c !important;
+  color: #0a4d3c !important;
+  z-index: 99;
+}
+
+.profile-pp {
+  width: 264px;
+  height: 264px;
+  border-radius: 100%;
+  background-color: #fcb537;
+  border: 1.5px dashed #5a5a5a;
+  box-sizing: border-box;
+}
+
+.profile-userpp {
+  width: 264px;
+  height: 264px;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.profile-btn-editpp {
+  margin: 0;
+  padding: 10px 8px;
+  background: #ffffff;
+  border: 1px solid #cacaca;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: 0.875em;
+  font-weight: 400;
+}
+
+.profile-btn-edit-active {
+  cursor: pointer;
+}
+
+.profile-btn-editpp-disabled {
+  margin: 0;
+  padding: 10px 8px;
+  border: 1px solid #cacaca;
+  box-sizing: border-box;
+  border-radius: 8px;
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #cacaca;
+}
+
+.profile-phonenumber {
+  padding: 10px 12px;
+  background-color: #ffffff;
+  border: 1px solid #cacaca;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.profile-phonenumber-input {
+  border: none;
+  font-size: 0.875em;
+  color: #5a5a5a;
+  background-color: #ffffff;
+}
+
+.profile-phonenumber-input:enabled {
+  outline-color: transparent;
+}
+
+.profile-btn-cancel {
+  padding: 9px 12px;
+  border-radius: 100px;
+  border: solid 1px #b24629;
+  background-color: #fff;
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #b24629;
+  box-sizing: border-box;
+}
+
+.profile-btn-width {
+  width: 35%;
+}
+
+.profile-fs14-600-black {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: #070707;
+}
+
+.profile-fs14-400-black {
+  font-size: 0.875em;
+  font-weight: 400;
+  color: #070707;
+}
+
+.profile-fs14-500-black {
+  font-size: 0.875em;
+  font-weight: 500;
+  color: #070707;
+}
+
+.profile-fs12-600-black {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #070707;
+}

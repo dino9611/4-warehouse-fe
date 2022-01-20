@@ -1,0 +1,104 @@
+* {
+    box-sizing: border-box;
+    font-family: "Poppins", "Open Sans", sans-serif !important;
+}
+
+:root {
+    --primary-1st-color: #0A4D3C;
+    --primary-2nd-color: #FCB537;
+    --primary-3rd-color: #8D280C;
+    --primary-4th-color: #B24629;
+    --primary-5th-color: #F1EDE7;
+
+    --neutral-1st-color: #070707;
+    --neutral-2nd-color: #5A5A5A;
+    --neutral-3rd-color: #CACACA;
+    --neutral-4th-color: #F4F4F4;
+    --neutral-5th-color: #FFFFFF;
+
+    --semantic-error: #CB3A31;
+    --semantic-warning: #EF8943;
+    --semantic-success: #43936C;
+    --semantic-info: #27A0E3;
+
+    --b-rad-root: 12px;
+    --b-rad-table: 8px;
+    --b-shadow-root: 0px 1px 6px #D7D7D8;
+}
+
+/* ? UTILITY CLASS & USED IN CHILD COMPONENTS */
+.adm-main-parent-wrap h1,
+.adm-main-parent-wrap h2,
+.adm-main-parent-wrap h3,
+.adm-main-parent-wrap h4,
+.adm-main-parent-wrap h5,
+.adm-main-parent-wrap h6
+.adm-main-parent-wrap p {
+    margin: 0;
+}
+
+.txt-capitalize {
+    text-transform: capitalize;
+}
+
+.txt-uppercase {
+    text-transform: uppercase;
+}
+
+.link-no-decoration {
+    color: inherit;
+}
+
+.link-no-decoration:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.adm-main-parent-wrap .adm-breadcrumb-modifier {
+    font-size: 0.75rem;
+}
+
+.adm-main-parent-wrap .adm-breadcrumb-modifier:hover {
+    color: var(--primary-4th-color);
+    transition: 300ms;
+}
+
+.control-zIndex {
+    z-index: 1;
+}
+
+/* ? SWEETALERT2 CUSTOM STYLING FOR ADMIN CHILD COMPONENTS */
+.adm-swal-popup-override {
+    border-radius: var(--b-rad-table) !important;
+}
+
+.adm-swal-btn-override {
+    background-color: var(--primary-4th-color) !important;
+    border: none !important;
+    border-radius: 100px !important;
+    box-shadow: none !important;
+    height: 42px !important;
+    outline: none !important;
+}
+
+.adm-swal-btn-override:hover {
+    background-color: var(--primary-3rd-color) !important;
+    transition: 300ms;
+}
+
+/* ? MAIN WRAPPER & CONTENTS SECTION */
+.adm-main-parent-wrap {
+    display: flex;
+    height: 100%;
+    position: relative;
+    width: 100vw;
+}
+
+.adm-main-content-wrap {
+    background-color: var(--primary-5th-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    /* width: calc(100% - 15%); */
+    width: max(100% - 15%, 100% - 248px);
+}

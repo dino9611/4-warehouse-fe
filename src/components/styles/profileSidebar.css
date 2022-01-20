@@ -1,0 +1,39 @@
+.profile-sidebar-container {
+  height: auto;
+  background: #ffffff;
+  box-shadow: 0px 1px 12px rgba(162, 132, 87, 0.16);
+  border-radius: 12px;
+}
+
+.profile-sidebar-profpic {
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  background-color: #fcb537;
+}
+
+.profile-1em-500 {
+  font-size: 1em;
+  font-weight: 500;
+  color: #000000;
+}
+
+.profile-border {
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.profile-btn-menu {
+  border: none;
+  background-color: transparent;
+  font-size: 0.75em;
+  color: #5a5a5a;
+  transition: all 0.3s;
+}
+
+.profile-btn-menu:hover {
+  color: #b24629;
+}
+
+.profile-btn-active {
+  color: #b24629;
+}

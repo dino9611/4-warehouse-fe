@@ -1,0 +1,51 @@
+:root {
+  --primary-1st-color: #0a4d3c;
+  --primary-2nd-color: #fcb537;
+  --primary-3rd-color: #8d280c;
+  --primary-4th-color: #b24629;
+  --primary-5th-color: #f1ede7;
+
+  --neutral-1st-color: #070707;
+  --neutral-2nd-color: #5a5a5a;
+  --neutral-3rd-color: #cacaca;
+  --neutral-4th-color: #f4f4f4;
+  --neutral-5th-color: #ffffff;
+
+  --semantic-error: #cb3a31;
+  --semantic-warning: #ef8943;
+  --semantic-success: #43936c;
+  --semantic-info: #27a0e3;
+}
+
+.btn-send-email {
+  border-radius: 100px;
+  background-color: #b24629;
+  font-size: 1em;
+  font-family: Poppins;
+  color: white;
+  border: none;
+  font-weight: 600;
+  align-items: center;
+  /* width: ; */
+  margin: 15px 22px 0 0;
+  padding-left: 3%;
+  padding-right: 3%;
+  padding-bottom: 1%;
+  padding-top: 1%;
+}
+
+.btn-send-email:hover {
+  background-color: var(--primary-3rd-color);
+}
+.VerifyEmail {
+  text-align: center;
+}
+.verif-berhasil {
+  text-align: center;
+}
+.verif-failed {
+  text-align: center;
+}
+.verif-ongoing {
+  text-align: center;
+}
