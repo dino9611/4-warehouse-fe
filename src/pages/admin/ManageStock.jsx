@@ -14,6 +14,8 @@ import paginationPrevArrow from "../../assets/components/Pagination-Prev-Bg-Whit
 import paginationNextArrow from "../../assets/components/Pagination-Next-Bg-White.svg";
 import paginationPrevArrowInactive from "../../assets/components/Pagination-Prev-Bg-Gray.svg";
 import paginationNextArrowInactive from "../../assets/components/Pagination-Next-Bg-Gray.svg";
+import firstPageArrowActive from "../../assets/components/First-Page.svg";
+import firstPageArrowInactive from "../../assets/components/First-Page-Gray.svg";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -94,10 +96,6 @@ function ManageStock() {
     let pageCountRange = Array(pageCountTotal).fill(null).map((val, index) => index + 1); // Itung range page yang bisa di-klik
     
     let showMaxRange = 5; //* Tentuin default max range yg tampil/di-render berapa buah
-
-    //! let firstCount = pageCountRange[0]; //! Tentuin first page yg mana, utk most first button (blm dipake)
-
-    //! let lastCount = pageCountRange[pageCountRange.length - 1]; //! Tentuin last page yg mana, utk most last button (blm dipake)
 
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [10, 50];
@@ -315,6 +313,16 @@ function ManageStock() {
         }
     };
 
+    const toFirstPage = () => { //* Pilih page paling pertama
+        setPage(1);
+        setLoadTable(true);
+    };
+
+    const toLastPage = () => { //* Pilih page paling terakhir
+        setPage(pageCountRange.length);
+        setLoadTable(true);
+    };
+
     // HANDLER FUNCTIONS SECTION
     const editStockHandler = (event) => { //* Utk setState edit stock
         setNewStock(parseInt(event.target.value));
@@ -493,6 +501,13 @@ function ManageStock() {
                                         <div className="admWh-stock-pagination">
                                             <div className="admWh-stock-pagination-item">
                                                 <button 
+                                                    className="admWh-stock-firstPage-btn" 
+                                                    disabled={page === 1} 
+                                                    onClick={toFirstPage}
+                                                >
+                                                    {page === 1 ? <img src={firstPageArrowInactive} alt="Go-To-First-Page-Arrow" /> : <img src={firstPageArrowActive} alt="Go-To-First-Page-Arrow" />}
+                                                </button>
+                                                <button 
                                                     className="admWh-stock-prev-btn" 
                                                     disabled={page === 1} 
                                                     onClick={prevPage}
@@ -506,6 +521,13 @@ function ManageStock() {
                                                     onClick={nextPage}
                                                 >
                                                     {(page === pageCountRange.length || !products.length) ? <img src={paginationNextArrowInactive} alt="Pagination-Next-Arrow" /> : <img src={paginationNextArrow} alt="Pagination-Next-Arrow" />}
+                                                </button>
+                                                <button 
+                                                    className="admWh-stock-lastPage-btn" 
+                                                    disabled={page === pageCountRange.length} 
+                                                    onClick={toLastPage}
+                                                >
+                                                    {page === pageCountRange.length ? <img src={firstPageArrowInactive} alt="Go-To-Last-Page-Arrow" style={{transform: "rotate(180deg)"}}/> : <img src={firstPageArrowActive} alt="Go-To-Last-Page-Arrow" style={{transform: "rotate(180deg)"}}/>}
                                                 </button>
                                             </div>
                                         </div>
