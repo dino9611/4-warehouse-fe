@@ -102,10 +102,6 @@ function ManageProduct() {
     
     let showMaxRange = 5; //* Tentuin default max range yg tampil/di-render berapa buah
 
-    //! let firstCount = pageCountRange[0]; //! Tentuin first page yg mana, utk most first button (blm dipake)
-
-    //! let lastCount = pageCountRange[pageCountRange.length - 1]; //! Tentuin last page yg mana, utk most last button (blm dipake)
-
     // FILTER ITEM PER PAGE SECTION
     const rowsPerPageOptions = [10, 50];
 
@@ -408,12 +404,12 @@ function ManageProduct() {
         }
     };
 
-    const toFirstPage = () => {
+    const toFirstPage = () => { //* Pilih page paling pertama
         setPage(1);
         setLoadTable(true);
     };
 
-    const toLastPage = () => {
+    const toLastPage = () => { //* Pilih page paling terakhir
         setPage(pageCountRange.length);
         setLoadTable(true);
     };

@@ -400,10 +400,6 @@
     transition: 300ms;
 }
 
-/* .adm-products-lastPage-btn > img {
-    transform: rotate(180deg);
-} */
-
 .adm-products-firstPage-btn:disabled,
 .adm-products-lastPage-btn:disabled,
 .adm-products-prev-btn:disabled,

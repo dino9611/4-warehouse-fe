@@ -293,6 +293,8 @@
     cursor: default;
 }
 
+.adm-transaction-firstPage-btn,
+.adm-transaction-lastPage-btn,
 .adm-transaction-prev-btn,
 .adm-transaction-next-btn {
     background-color: var(--neutral-5th-color);
@@ -303,12 +305,25 @@
     width: 88px;
 }
 
+.adm-transaction-firstPage-btn,
+.adm-transaction-lastPage-btn {
+    width: 48px;
+}
+
+.adm-transaction-firstPage-btn:hover > img,
 .adm-transaction-prev-btn:hover > img,
 .adm-transaction-next-btn:hover > img {
     transform: translateY(-2px);
     transition: 300ms;
 }
 
+.adm-transaction-lastPage-btn:hover > img {
+    transform: translateY(-2px) rotate(180deg) !important; /* Klo ga important, ga fungsi */
+    transition: 300ms;
+}
+
+.adm-transaction-firstPage-btn:disabled,
+.adm-transaction-lastPage-btn:disabled,
 .adm-transaction-prev-btn:disabled,
 .adm-transaction-next-btn:disabled {
     background-color: var(--neutral-3rd-color);
@@ -316,6 +331,9 @@
     opacity: 50%;
 }
 
+
+.adm-transaction-firstPage-btn:disabled:hover > img,
+.adm-transaction-lastPage-btn:disabled:hover > img,
 .adm-transaction-prev-btn:disabled:hover > img,
 .adm-transaction-next-btn:disabled:hover > img {
     transform: translateY(0);
