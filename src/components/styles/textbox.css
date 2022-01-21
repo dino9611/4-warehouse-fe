@@ -59,3 +59,14 @@
   font-size: 0.75em;
   color: #43936c;
 }
+
+.textbox-input-withbtn {
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  padding: 10px 12px;
+  font-size: 0.875em;
+}
+
+.textbox-input-withbtn:enabled {
+  outline-color: #b24629;
+}
