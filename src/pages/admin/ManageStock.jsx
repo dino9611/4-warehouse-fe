@@ -28,7 +28,7 @@ import NotFoundPage from "../non-user/NotFoundV1";
 import AdmBtnPrimary from '../../components/admin/AdmBtnPrimary';
 import Swal from 'sweetalert2';
 import Modal from '../../components/Modal';
-import Textbox from "../../components/Textbox";
+import Textbox from "../../components/admin/AdmTextbox";
 import AdmBtnSecondary from '../../components/admin/AdmBtnSecondary';
 import CircularProgress from '@mui/material/CircularProgress';
 import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';

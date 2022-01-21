@@ -24,7 +24,7 @@ import {Link} from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import chevronDown from "../../assets/components/Chevron-Down.svg";
 import Modal from '../../components/Modal';
-import Textbox from "../../components/Textbox";
+import Textbox from "../../components/admin/AdmTextbox";
 import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";
 import ShowPassTrue from "../../assets/components/Show-Pass-True.svg";
 import { useSelector } from "react-redux";
