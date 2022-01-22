@@ -254,7 +254,7 @@ function Homepage() {
             index={carouselData.indexBumbu}
             refCat={carouselData.refBumbu}
           >
-            Buah segar untuk anda yang ingin hidup sehat!
+            Masak dengan bumbu dan rempah pilihan!
           </TitleCategory>
         </div>
       </div>
@@ -298,7 +298,7 @@ function Homepage() {
             index={carouselData.indexCoklat}
             refCat={carouselData.refCoklat}
           >
-            Buah segar untuk anda yang ingin hidup sehat!
+            Nyemil coklat lezat dan sehat!
           </TitleCategory>
         </div>
       </div>
@@ -315,7 +315,7 @@ function Homepage() {
       <div className="container mt-4">
         <div className="row">
           <h4 className="homepage-text-category">
-            Temukan produk dari kategori!
+            Temukan Produk dari Kategori
           </h4>
         </div>
         <div className="row d-flex justify-content-between mt-3">
@@ -329,7 +329,7 @@ function Homepage() {
               <h5
                 style={{ fontSize: "20px", fontWeight: "600", color: "#fff" }}
               >
-                5 produk terlaris kami!
+                Produk Terlaris Kami
               </h5>
             </div>
           </div>
@@ -342,7 +342,7 @@ function Homepage() {
             className="mb-3"
             style={{ fontSize: "20px", fontWeight: "600", color: "#070707" }}
           >
-            Jelajahi produk kami!
+            Jelajahi Produk Kami
           </h5>
         </div>
         {renderCarouselProductSusu()}
