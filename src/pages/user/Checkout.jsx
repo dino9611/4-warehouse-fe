@@ -80,6 +80,7 @@ function Checkout() {
   const [dataProvince, setDataProvince] = useState([]); // List data provinsi
   const [dataCity, setDataCity] = useState([]); // List data kota
   const [dataKurir, setDataKurir] = useState({}); // Data dari pilih kurir oleh user
+  const [dataEditAddress, setDataEditAddress] = useState({});
 
   // State Handle
 
@@ -90,12 +91,14 @@ function Checkout() {
   const [shipping, setShipping] = useState([]); // Get data ongkir
   const [pickShipping, setPickShipping] = useState(0); // Pilih jenis pengiriman
   const [pickBank, setPickBank] = useState({}); // State untuk menyimpan value dari bank yang dipilih
-  const [mainAddress, setMainAddress] = useState(false); // State untuk menyimpan data dari alamat utama user
   const [pickProvince, setPickProvince] = useState(""); // State untuk menyimpan data provinsi yang dipilih
   const [pickCity, setPickCity] = useState(""); // State untuk menyimpan data city yang dipilih
+  const [pickEditProvince, setPickEditProvince] = useState(null); // menyimpan pilih provinsi dari edit modal
+  const [pickEditCity, setPickEditCity] = useState(null); // menyimpan pilih provinsi dari edit modal
   const [errorFillAddress, setErrorFillAddress] = useState(false); // Jika kolom tambah alamat bellum diisi akan error true
   const [errorRequest, setErrorRequest] = useState(false);
   const [btnAdd, setBtnAdd] = useState(false);
+  const [btnEdit, setBtnEdit] = useState(false);
 
   // State loading request data
 
@@ -224,11 +227,11 @@ function Checkout() {
   useEffect(() => {
     (async () => {
       try {
+        setPickCity(null);
         if (pickProvince) {
           let res = await axios.get(
             `${API_URL}/location/get/city/${pickProvince.province}`
           );
-
           setDataCity(res.data);
         }
       } catch (error) {
@@ -236,6 +239,22 @@ function Checkout() {
       }
     })();
   }, [pickProvince]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setPickEditCity(null);
+        if (pickEditProvince) {
+          let res = await axios.get(
+            `${API_URL}/location/get/city/${pickEditProvince.province}`
+          );
+          setDataCity(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [pickEditProvince]);
 
   useEffect(() => {
     (async () => {
@@ -254,7 +273,7 @@ function Checkout() {
   useEffect(() => {
     (async () => {
       try {
-        if (btnAdd && !dataProvince.length) {
+        if (btnAdd || (btnEdit && !dataProvince.length)) {
           let resProvince = await axios.get(`${API_URL}/location/get/province`);
 
           setDataProvince(resProvince.data);
@@ -265,7 +284,7 @@ function Checkout() {
         }
       }
     })();
-  }, [btnAdd]);
+  }, [btnAdd, btnEdit]);
 
   // EVENT
 
@@ -514,6 +533,7 @@ function Checkout() {
     });
     setPickCity(null);
     setPickProvince(null);
+    setBtnEdit(false);
   };
 
   // onChange is main address
@@ -532,6 +552,80 @@ function Checkout() {
 
   const onChangeCity = (pickCity) => {
     setPickCity(pickCity);
+  };
+
+  // ONCLICK UBAH ALAMAT
+  const onClickUbahData = (data) => {
+    setPickEditCity(true);
+    setPickEditProvince(true);
+    setDataEditAddress(data);
+    setBtnEdit(true);
+  };
+
+  // ONCHANGE DATA EDIT ALAMAT
+  const onChangeEditAddress = (e) => {
+    setDataEditAddress({ ...dataEditAddress, [e.target.name]: e.target.value });
+  };
+
+  // ONCLICK SIMPAN EDIT DATA
+  const onClickSimpanEdit = async () => {
+    const { province, province_id, label, city_id } = pickEditCity;
+
+    try {
+      let alamat = `${dataEditAddress.address}, ${label}, ${province}`;
+
+      let res = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${alamat}&key=AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w`
+      );
+
+      let latitude = res.data.results[0]?.geometry.location.lat;
+      let longitude = res.data.results[0]?.geometry.location.lng;
+
+      let editData;
+
+      if (!label) {
+        editData = {
+          ...dataEditAddress,
+          user_id: dataUser.id,
+        };
+      } else {
+        editData = {
+          ...dataEditAddress,
+          province,
+          province_id,
+          city: label,
+          city_id,
+          latitude,
+          longitude,
+          user_id: dataUser.id,
+        };
+      }
+
+      await axios.patch(
+        `${API_URL}/location/edit/address/${dataEditAddress.id}`,
+        editData
+      );
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil update alamat",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+    } catch (error) {
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: error.response?.data.message || "Server error",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+    }
   };
 
   // RENDERING
@@ -721,6 +815,133 @@ function Checkout() {
     );
   };
 
+  // RENDER MODAL EDIT ADDRESS
+  const renderEditAddress = () => {
+    const { recipient, phone_number, address, city, province } =
+      dataEditAddress;
+
+    const listProvince = dataProvince;
+    const listCity = dataCity;
+
+    return (
+      <div className="p-4">
+        <div className="mb-3">
+          <label htmlFor="nama-penerima" className="checkout-label-input">
+            Nama Penerima
+          </label>
+          <input
+            type="text"
+            id="nama-penerima"
+            className={`checkout-input-address w-100 ${
+              !recipient && errorFillAddress ? "textbox-error" : null
+            }`}
+            placeholder="Masukkan nama lengkap Anda"
+            name="recipient"
+            onChange={onChangeEditAddress}
+            value={recipient}
+          />
+          {!recipient && errorFillAddress ? errorMessage() : null}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="nomor-hp" className="checkout-label-input">
+            Nomor Handphone
+          </label>
+          <input
+            type="number"
+            id="nomor-hp"
+            className={`checkout-input-address w-100 ${
+              !phone_number && errorFillAddress ? "textbox-error" : null
+            }`}
+            placeholder="Masukkan nomor handphone Anda"
+            name="phone_number"
+            value={phone_number}
+            onChange={onChangeEditAddress}
+          />
+          {!phone_number && errorFillAddress ? errorMessage() : null}
+        </div>
+        <div className="mb-3">
+          <div>
+            <div className="profile-fs14-500-black mb-2">Provinsi</div>
+            <Select
+              options={listProvince}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              defaultValue={{ label: province, value: province }}
+              onChange={(pickProvince) => setPickEditProvince(pickProvince)}
+              placeholder={<div>Masukkan provinsi</div>}
+            />
+          </div>
+        </div>
+        <div className="mb-3">
+          <div>
+            <div className="profile-fs14-500-black mb-2">Kota/Kabupaten</div>
+            <Select
+              options={listCity}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              defaultValue={{ label: city, value: city }}
+              onChange={(pickCity) => setPickEditCity(pickCity)}
+              placeholder={<div>Masukkan Kota/Kabupaten</div>}
+            />
+          </div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="detail-address" className="checkout-label-input">
+            Detail alamat
+          </label>
+          <textarea
+            name="address"
+            id="detail-address"
+            className={`checkout-input-address w-100 ${
+              !address && errorFillAddress ? "textbox-error" : null
+            }`}
+            placeholder="Masukkan alamat lengkap"
+            cols="30"
+            rows="5"
+            value={address}
+            onChange={onChangeEditAddress}
+          ></textarea>
+          {!address && errorFillAddress ? errorMessage() : null}
+        </div>
+        <div className="d-flex align-items-center justify-content-end w-100">
+          <button
+            className="checkout-btn-batal mr-4 w-25"
+            onClick={onClickCloseModal}
+          >
+            Batal
+          </button>
+          <ButtonPrimary
+            onClick={onClickSimpanEdit}
+            width="w-25"
+            disabled={
+              !recipient ||
+              !phone_number ||
+              !address ||
+              !pickEditCity ||
+              !pickEditProvince
+                ? true
+                : false
+            }
+          >
+            {!loadingNewAddress ? (
+              "Simpan"
+            ) : (
+              <Spinner color="light" size="sm">
+                Loading...
+              </Spinner>
+            )}
+          </ButtonPrimary>
+        </div>
+      </div>
+    );
+  };
+
   // Kondisi error message pada saat user mengisi alamat
 
   const errorMessage = () => {
@@ -892,7 +1113,10 @@ function Checkout() {
               <div className="fs10-400-gray">{`${el.city}, ${el.province}`}</div>
             </div>
             <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
-              <button className="checkout-ubah-btn d-flex align-items-center p-0">
+              <button
+                className="checkout-ubah-btn d-flex align-items-center p-0"
+                onClick={() => onClickUbahData(el)}
+              >
                 <img src={images.edit} alt="edit" className="mr-1" />
                 <div className="fs14-600-red">Ubah alamat</div>
               </button>
@@ -1331,6 +1555,8 @@ function Checkout() {
             ) : (
               renderModalAddAddress()
             )
+          ) : btnEdit ? (
+            renderEditAddress()
           ) : (
             <div className="d-flex flex-column justify-content-between h-100">
               <div style={{ overflow: "auto" }}>
