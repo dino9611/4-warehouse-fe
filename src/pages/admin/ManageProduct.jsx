@@ -74,6 +74,8 @@ function ManageProduct() {
 
     const [stockModalLoad, setStockModalLoad] = useState(true); //* State kondisi loading ketika modal stock breakdown terbuka & fetch data, hingga proses selesai
 
+    const [stockModalError, setStockModalError] = useState(false); //* State kondisi utk masking tampilan client ketika fetch data error pada modal stock
+
     const [products, setProducts] = useState([]);
     
     const [dropdownLength, setDropdownLength] = useState([]); //* Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
@@ -127,7 +129,7 @@ function ManageProduct() {
             setProducts(res.data);
             setProdLength(parseInt(res.headers["x-total-count"]));
         } catch (error) {
-            errorToast("Server Error, from ManageProduct");
+            errorToast("Server Error, from ManageProduct - Prod");
             console.log(error);
             setErrorFetch(true);
         };
@@ -139,8 +141,9 @@ function ManageProduct() {
             setStockBreakdown(res.data);
             setStockModalLoad(false);
         } catch(error) {
-            errorToast("Gagal")
-            console.log(error)
+            errorToast("Server Error, from ManageProduct - Stock");
+            console.log(error);
+            setStockModalError(true);
         };
     };
 
@@ -245,46 +248,59 @@ function ManageProduct() {
         setStockModalProdId(""); //* Untuk clear product id yg telah di-get ke BE
         setStockModalActive(false); //* Untuk dependency useEffect fetchStockBreakdown
         setStockModalLoad(true); //* Untuk make sure buka modal lain, load spinner nya ulang lg
+        setStockModalError(false);
     };
 
     const stockModalContent = (prodName, total_stock, index) => {
         return (
             <>
-                <div className="stockBreakdown-modal-heading-wrap">
-                    <h4>{`${prodName} - Stock Breakdown`}</h4>
-                </div>
-                {!stockModalLoad ?
+                {stockModalError ?
                     <>
-                        <div className="stockBreakdown-modal-body-wrap">
-                            <TableContainer>
-                                <Table aria-label="stock breakdown table">
-                                    <TableHead>
-                                        <TableRow style={{backgroundColor: "#FCB537"}}>
-                                            <StyledTableCell align="left">Warehouse</StyledTableCell>
-                                            <StyledTableCell align="left">Stock</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {stockBreakdown.map((val) => (
-                                            <StyledTableRow key={val.id}>
-                                                <StyledTableCell align="left" component="th" scope="row">{val.name}</StyledTableCell>
-                                                <StyledTableCell align="left">{val.total_stock}</StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
-                                        <StyledTableRow>
-                                            <StyledTableCell align="left" style={{fontWeight: 600}}>Grand Total</StyledTableCell>
-                                            <StyledTableCell align="left" style={{fontWeight: 600}}>{total_stock}</StyledTableCell>
-                                        </StyledTableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </div>
+                        <AdminFetchFailed />
                         <div className="stockBreakdown-modal-foot-wrap">
                             <AdmBtnSecondary onClick={() => onCloseStockModal(index)} width={"80px"}>Back</AdmBtnSecondary>
                         </div>
                     </>
                     :
-                    <AdminLoadSpinner />
+                    <>
+                        <div className="stockBreakdown-modal-heading-wrap">
+                            <h4>{`${prodName} - Stock Breakdown`}</h4>
+                        </div>
+                        {!stockModalLoad ?
+                            <>
+                                <div className="stockBreakdown-modal-body-wrap">
+                                    <TableContainer>
+                                        <Table aria-label="stock breakdown table">
+                                            <TableHead>
+                                                <TableRow style={{backgroundColor: "#FCB537"}}>
+                                                    <StyledTableCell align="left">Warehouse</StyledTableCell>
+                                                    <StyledTableCell align="left">Stock</StyledTableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {stockBreakdown.map((val) => (
+                                                    <StyledTableRow key={val.id}>
+                                                        <StyledTableCell align="left" component="th" scope="row">{val.name}</StyledTableCell>
+                                                        <StyledTableCell align="left">{val.total_stock}</StyledTableCell>
+                                                    </StyledTableRow>
+                                                ))}
+                                                <StyledTableRow>
+                                                    <StyledTableCell align="left" style={{fontWeight: 600}}>Grand Total</StyledTableCell>
+                                                    <StyledTableCell align="left" style={{fontWeight: 600}}>{total_stock}</StyledTableCell>
+                                                </StyledTableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                                <div className="stockBreakdown-modal-foot-wrap">
+                                    <AdmBtnSecondary onClick={() => onCloseStockModal(index)} width={"80px"}>Back</AdmBtnSecondary>
+                                </div>
+                            </>
+                            :
+                            <AdminLoadSpinner />
+                        }
+                    </>
+                
                 }
             </>
         )
