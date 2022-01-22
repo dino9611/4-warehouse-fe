@@ -300,7 +300,7 @@
 .edit-images-icon {
     background-color: var(--neutral-5th-color);
     border-radius: var(--b-rad-table);
-    margin-left: 152px;
+    margin-left: min(152px, 20%);
     margin-top: 8px;
     padding: 8px;
     position: absolute;
