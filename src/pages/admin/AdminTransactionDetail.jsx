@@ -30,6 +30,7 @@ import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import { Spinner } from "reactstrap";
 import assets from "./../../assets";
 import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -83,6 +84,12 @@ function AdminTransactionDetail() {
 
   const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
+  const [submitDisabled, setSubmitDisabled] = useState(false); //* State kondisi disabled ketika submit button ter-trigger, hingga proses selesai
+
+  const [rejectLoad, setRejectLoad] = useState(false); //* State kondisi loading ketika reject button ter-trigger, hingga proses selesai
+
+  const [rejectDisabled, setRejectDisabled] = useState(false); //* State kondisi disabled ketika submit button ter-trigger, hingga proses selesai
+
   const [transactionDetail, setTransactionDetail] = useState([]);
 
   const [statusIdData, setStatusIdData] = useState({}); //* Buat render ulang klo status berubah (ex: stlh accept/send/reject)
@@ -115,7 +122,7 @@ function AdminTransactionDetail() {
   const [dataWarehouseOrigin, setDataWarehouseOrigin] = useState([]);
   const [loadingRequest, setLoadingrRequest] = useState(false);
   const [checkRequest, setCheckRequest] = useState(0);
-  console.log(transactionFromParent);
+  
   const renderCurrentStatus = () => {
     //* Utk render tampilan current order status
     if (fetchedStatusId <= 2) {
@@ -280,7 +287,7 @@ function AdminTransactionDetail() {
   const onClickCloseModal = () => {
     setHandleModal(false);
   };
-  console.log(dataStockRequest);
+  
   const onClickMinusRequest = (index) => {
     if (dataWarehouseOrigin[index].request_qty <= 0) {
       return;
@@ -486,24 +493,11 @@ function AdminTransactionDetail() {
   //? END STOK REQUEST
 
   // CLICK FUNCTION SECTION
-  const disableButton = () => {
-    //* Disable button saat proses async berjalan, mencegah klik submit berkali2 oleh user
-    document.querySelector(
-      "div.transaction-detail-status-bottom button:first-of-type"
-    ).disabled = true;
-    document.querySelector(
-      "div.transaction-detail-status-bottom button:last-of-type"
-    ).disabled = true;
-  };
-
   const activateButton = () => {
-    //* Aktivasi button saat proses async selesai, agar bisa di-klik lagi
-    document.querySelector(
-      "div.transaction-detail-status-bottom button:first-of-type"
-    ).disabled = false;
-    document.querySelector(
-      "div.transaction-detail-status-bottom button:last-of-type"
-    ).disabled = false;
+    setSubmitLoad(false);
+    setSubmitDisabled(false);
+    setRejectLoad(false);
+    setRejectDisabled(false);
   };
 
   const isAllSufficient = (currentValue) =>
@@ -511,12 +505,18 @@ function AdminTransactionDetail() {
 
   const confirmTransactionPay = async (event, transactionId) => {
     //* Function submit saat order status = Wait Confirm
-    disableButton();
-
+    
     let actionIdentifier;
-    event.target.innerText === "Accept"
-      ? (actionIdentifier = 1)
-      : (actionIdentifier = 0);
+
+    if (event.target.innerText === "Accept") {
+      actionIdentifier = 1;
+      setSubmitLoad(true);
+      setSubmitDisabled(true);
+    } else {
+      actionIdentifier = 0;
+      setRejectLoad(true);
+      setRejectDisabled(true);
+    };
 
     if (customerPayProof || !actionIdentifier) {
       try {
@@ -541,12 +541,18 @@ function AdminTransactionDetail() {
 
   const confirmTransactionDelivery = async (event, transactionId) => {
     //* Function submit saat order status = On Process
-    disableButton();
-
+    
     let actionIdentifier;
-    event.target.innerText === "Send"
-      ? (actionIdentifier = 1)
-      : (actionIdentifier = 0);
+
+    if (event.target.innerText === "Send") {
+      actionIdentifier = 1;
+      setSubmitLoad(true);
+      setSubmitDisabled(true);
+    } else {
+      actionIdentifier = 0;
+      setRejectLoad(true);
+      setRejectDisabled(true);
+    };
 
     let dataValidation = {
       actionIdentifier: actionIdentifier,
@@ -667,9 +673,9 @@ function AdminTransactionDetail() {
                             onClick={(event) =>
                               confirmTransactionPay(event, parentId)
                             }
-                            disabled={getRoleId === 1}
+                            disabled={getRoleId === 1 || rejectDisabled || submitDisabled}
                           >
-                            Reject
+                            {rejectLoad ? <CircularProgress style={{padding: ".5rem"}}/> : "Reject"}
                           </AdmBtnSecondary>
                           <AdmBtnPrimary
                             fontSize="0.75rem"
@@ -678,9 +684,9 @@ function AdminTransactionDetail() {
                             onClick={(event) =>
                               confirmTransactionPay(event, parentId)
                             }
-                            disabled={getRoleId === 1}
+                            disabled={getRoleId === 1 || submitDisabled || rejectDisabled}
                           >
-                            Accept
+                            {submitLoad ? <CircularProgress style={{padding: ".5rem"}}/> : "Accept"}
                           </AdmBtnPrimary>
                         </div>
                       </div>
@@ -697,9 +703,9 @@ function AdminTransactionDetail() {
                             onClick={(event) =>
                               confirmTransactionDelivery(event, parentId)
                             }
-                            disabled={getRoleId === 1}
+                            disabled={getRoleId === 1 || rejectDisabled || submitDisabled}
                           >
-                            Reject
+                            {rejectLoad ? <CircularProgress style={{padding: ".5rem"}}/> : "Reject"}
                           </AdmBtnSecondary>
                           <AdmBtnPrimary
                             fontSize="0.75rem"
@@ -710,10 +716,12 @@ function AdminTransactionDetail() {
                             }
                             disabled={
                               getRoleId === 1 ||
-                              !transactionDetail.every(isAllSufficient)
+                              !transactionDetail.every(isAllSufficient) ||
+                              submitDisabled ||
+                              rejectDisabled
                             }
                           >
-                            Send
+                            {submitLoad ? <CircularProgress style={{padding: ".5rem"}}/> : "Send"}
                           </AdmBtnPrimary>
                         </div>
                       </div>
