@@ -89,6 +89,7 @@
 .adm-transaction-detail-action {
     color: var(--primary-4th-color) !important;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .adm-transaction-payproof-action:hover,
