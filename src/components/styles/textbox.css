@@ -38,11 +38,12 @@
 .textbox-error {
   border: solid 1px #c83532 !important;
   background-color: #fbefef !important;
+  border-radius: 8px !important;
 }
 
 .textbox-error-input {
   background-color: #fbefef !important;
-  border: none;
+  border: none !important;
 }
 
 .textbox-error-input:enabled {
@@ -60,13 +61,13 @@
   color: #43936c;
 }
 
-.textbox-input-withbtn {
+.textbox-input-nobtn {
   border-radius: 8px;
   border: solid 1px #cacaca;
   padding: 10px 12px;
   font-size: 0.875em;
 }
 
-.textbox-input-withbtn:enabled {
+.textbox-input-nobtn:enabled {
   outline-color: #b24629;
 }

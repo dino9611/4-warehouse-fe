@@ -46,7 +46,7 @@ function Textbox({
           type={type}
           placeholder={placeholder}
           className={`textbox-input-styling ${
-            changeMessage ? null : "textbox-input-withbtn"
+            changeMessage ? null : "textbox-input-nobtn"
           } ${error ? "textbox-error-input" : null}`}
           style={{
             width,
