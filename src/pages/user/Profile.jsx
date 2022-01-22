@@ -226,7 +226,7 @@ function Profile() {
         setIsPassMatch(true);
 
         let strongRegex = new RegExp(
-          "^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})"
+          "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
         );
 
         if (!strongRegex.test(dataPassword.newPass)) {
@@ -237,7 +237,7 @@ function Profile() {
             payload: {
               status: "error",
               message:
-                "Password harus lebih dari 8 karakter dan terdapat huruf kapital",
+                "Password harus lebih dari 8 karakter, terdapat kapital dan simbol",
             },
           });
 
@@ -272,6 +272,16 @@ function Profile() {
           return;
         }
 
+        dispatch({
+          type: "SHOWSNACKBAR",
+          payload: {
+            status: "success",
+            message: "Berhasil ganti password",
+          },
+        });
+
+        dataSnackbar.ref.current.showSnackbarMessage();
+
         setDataPassword({
           currentPass: "",
           newPass: "",
@@ -284,18 +294,18 @@ function Profile() {
         setIsPassFilled(false);
         setIsPassTrue(true);
       }
-
+    } catch (error) {
       dispatch({
         type: "SHOWSNACKBAR",
         payload: {
-          status: "success",
-          message: "Berhasil ganti password",
+          status: "error",
+          message: error.response?.data.message || "Server error",
         },
       });
 
       dataSnackbar.ref.current.showSnackbarMessage();
-    } catch (error) {
-      console.log(error);
+
+      setLoadingPass(false);
     }
   };
 
@@ -694,7 +704,7 @@ function Profile() {
             }
             errormsg={
               !isPassTrue
-                ? "Password harus lebih dari 8 karakter"
+                ? "Password belum memenuhi syarat"
                 : "Password harus diisi"
             }
           />
@@ -709,34 +719,34 @@ function Profile() {
             value={confirmNewPass}
             error={(confirmNewPass || isPassFilled) && isPassMatch ? null : 1}
             errormsg={
-              !isPassMatch ? "Password belum sesuai" : "Password harus diisi"
+              !isPassMatch
+                ? "Konfirmasi password tidak sesuai"
+                : "Password harus diisi"
             }
           />
         </div>
-        <div className="d-flex justify-content-end">
-          <div>
-            <ButtonPrimary
-              onClick={onClickChangePassword}
-              width="px-5"
-              disabled={
-                (dataPassword.currentPass &&
-                  dataPassword.newPass &&
-                  confirmNewPass &&
-                  isPassFilled) ||
-                !loadingPass
-                  ? false
-                  : true
-              }
-            >
-              {loadingPass ? (
-                <Spinner color="light" size="sm">
-                  Loading...
-                </Spinner>
-              ) : (
-                "Simpan"
-              )}
-            </ButtonPrimary>
-          </div>
+        <div className="d-flex justify-content-end w-100">
+          <ButtonPrimary
+            onClick={onClickChangePassword}
+            width="w-50"
+            disabled={
+              (dataPassword.currentPass &&
+                dataPassword.newPass &&
+                confirmNewPass &&
+                isPassFilled) ||
+              !loadingPass
+                ? false
+                : true
+            }
+          >
+            {loadingPass ? (
+              <Spinner color="light" size="sm">
+                Loading...
+              </Spinner>
+            ) : (
+              "Simpan"
+            )}
+          </ButtonPrimary>
         </div>
       </div>
     );
