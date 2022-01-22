@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import {API_URL} from "../../constants/api";
 import Modal from '../../components/Modal';
-import Textbox from "../../components/Textbox";
+import Textbox from "../../components/admin/AdmTextbox";
 import Swal from 'sweetalert2';
 import { errorToast } from "../../redux/actions/ToastAction";
 import ShowPassFalse from "../../assets/components/Show-Pass-False.svg";

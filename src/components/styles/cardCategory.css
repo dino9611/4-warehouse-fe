@@ -10,3 +10,17 @@
   border-radius: 100%;
   background-color: #f4f4f4;
 }
+
+.card-category-rectangle:hover {
+  background-color: #b24629;
+  transition: 200ms;
+}
+
+.card-category-rectangle:hover .card-category-inner-circle {
+  background-color: white;
+  transition: 200ms;
+}
+
+.card-category-rectangle:hover .card-category-rectangle-txt {
+  color: white;
+}

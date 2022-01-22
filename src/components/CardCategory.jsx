@@ -17,7 +17,7 @@ function CardCategory({ img, name }) {
               fontWeight: "500",
               textAlign: "center",
             }}
-            className="d-flex align-items-center justify-content-center w-100"
+            className="d-flex align-items-center justify-content-center w-100 card-category-rectangle-txt"
           >
             {name}
           </div>

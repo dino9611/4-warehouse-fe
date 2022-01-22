@@ -32,6 +32,7 @@ import assets from "./../../assets";
 import "./styles/ManageTransaction.css";
 import { API_URL } from "../../constants/api";
 import { successToast, errorToast } from "../../redux/actions/ToastAction";
+import NotFoundPage from "../non-user/NotFoundV1";
 
 // Styling for table cell
 
@@ -84,6 +85,10 @@ function StockRequest() {
   const [page, setPage] = useState(1); // State halaman
   const [limit, setLimit] = useState(5); // State Untuk mengatur limit data
   const [totalData, setTotalData] = useState(null); // State untuk menyimpan jumlah total semua item
+
+  // Get data from redux
+
+  const getRoleId = useSelector((state) => state.auth.role_id);
 
   useEffect(() => {
     (async () => {
@@ -426,7 +431,7 @@ function StockRequest() {
     return (
       <>
         <div className="d-flex align-items-center justify-content-center w-100 p-5">
-          <Spinner color="success">Loading...</Spinner>;
+          <Spinner color="success">Loading...</Spinner>
         </div>
       </>
     );
@@ -489,21 +494,25 @@ function StockRequest() {
 
   return (
     <div className="container-fluid vh-100" style={{ overflow: "auto" }}>
-      <div className="my-2">
-        {renderTab()}
-        <div className="stock-req-wrapper-table px-4 py-3">
-          <div className="d-flex justify-content-between">
-            {renderInfoPage()}
-            {renderChangeRowsPerPage()}
+      {getRoleId === 2 ?
+        <div className="my-2">
+          {renderTab()}
+          <div className="stock-req-wrapper-table px-4 py-3">
+            <div className="d-flex justify-content-between">
+              {renderInfoPage()}
+              {renderChangeRowsPerPage()}
+            </div>
+            {renderTable()}
+            {loadingPage ? renderSpinner() : null}
+            {dataStockRequest.length ? null : renderEmptyData()}
           </div>
-          {renderTable()}
-          {loadingPage ? renderSpinner() : null}
-          {dataStockRequest.length ? null : renderEmptyData()}
+          <div className="d-flex align-items-center justify-content-end mt-3">
+            {renderPagination()}
+          </div>
         </div>
-        <div className="d-flex align-items-center justify-content-end mt-3">
-          {renderPagination()}
-        </div>
-      </div>
+        :
+        <NotFoundPage />
+      }
     </div>
   );
 }
