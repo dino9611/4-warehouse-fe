@@ -87,7 +87,7 @@ function Profile() {
 
         setPersonalData({
           ...res.data[0],
-          phone_number: res.data[0].phone_number.slice(3),
+          phone_number: res.data[0].phone_number?.slice(3),
           date_of_birth: formatDateUser,
         });
         setInitialData({ ...res.data[0], date_of_birth: formatDateUser });
@@ -373,7 +373,8 @@ function Profile() {
           src={
             file
               ? URL.createObjectURL(file)
-              : `${API_URL}${personalData.profile_picture}`
+              : `${API_URL}${dataUser.profile_picture}` ||
+                `${API_URL}${personalData.profile_picture}`
           }
           alt="profpic"
           className="profile-userpp"
@@ -633,6 +634,7 @@ function Profile() {
           onClick={() => {
             setHandleUbahData(false);
             setPersonalData(initialData);
+            setFile(null);
           }}
         >
           Batal

@@ -30,6 +30,14 @@
   color: #cacaca;
 }
 
+.textbox-input-styling::placeholder {
+  color: #cacaca;
+}
+
+.profile-phonenumber-input::placeholder {
+  color: #cacaca;
+}
+
 .textbox-styling:focus {
   border-color: #b24629;
   outline: none;
