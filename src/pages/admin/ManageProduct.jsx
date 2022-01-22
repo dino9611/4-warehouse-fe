@@ -33,6 +33,7 @@ import AdminSkeletonSimple from "../../components/admin/AdminSkeletonSimple";
 import AdminFetchFailed from "../../components/admin/AdminFetchFailed";
 import AdminLoadSpinner from '../../components/admin/AdminLoadSpinner';
 import CircularProgress from '@mui/material/CircularProgress';
+import AdmBtnSecondary from "../../components/admin/AdmBtnSecondary"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -71,11 +72,21 @@ function ManageProduct() {
 
     const [submitLoad, setSubmitLoad] = useState(false); //* State kondisi loading ketika submit button ter-trigger, hingga proses selesai
 
+    const [stockModalLoad, setStockModalLoad] = useState(true); //* State kondisi loading ketika modal stock breakdown terbuka & fetch data, hingga proses selesai
+
     const [products, setProducts] = useState([]);
     
     const [dropdownLength, setDropdownLength] = useState([]); //* Utk atur relation dropdown per produk, sehingga action edit & delete unique identik dgn msg2 produk
 
     const [modalLength, setModalLength] = useState([]); //* Utk atur relation delete modal per produk, sehingga delete unique identik dgn msg2 produk
+
+    const [stockModalLen, setStockModalLen] = useState([]); //* Utk atur relation stock modal per produk, sehingga unique identik dgn msg2 produk
+
+    const [stockModalActive, setStockModalActive] = useState(false); //* Utk jadi depedency useEffect stock modal
+
+    const [stockModalProdId, setStockModalProdId] = useState(""); //* Utk simpen product id mana yg di-get ketika stock modal terbuka
+
+    const [stockBreakdown, setStockBreakdown] = useState([]); //* Utk simpan data stock modal per warehouse
     
     const [passToggle, setPassToggle] = useState(false); //* Utk atur showPass pada confirm delete produk
     
@@ -106,7 +117,7 @@ function ManageProduct() {
     const rowsPerPageOptions = [10, 50];
 
     // FETCH & useEFFECT SECTION
-    const getUsername = useSelector(state => state.auth.username); // Utk kirim username ke BE klo delete produk
+    const getUsername = useSelector(state => state.auth.username); //* Utk kirim username ke BE klo delete produk
 
     const getRoleId = useSelector((state) => state.auth.role_id);
 
@@ -119,6 +130,17 @@ function ManageProduct() {
             errorToast("Server Error, from ManageProduct");
             console.log(error);
             setErrorFetch(true);
+        };
+    };
+
+    const fetchStockBreakdown = async () => { //* Utk get data stock per warehouse saat modal stock terbuka
+        try {
+            const res = await axios.get(`${API_URL}/admin/stock-breakdown/${stockModalProdId}`);
+            setStockBreakdown(res.data);
+            setStockModalLoad(false);
+        } catch(error) {
+            errorToast("Gagal")
+            console.log(error)
         };
     };
 
@@ -154,7 +176,19 @@ function ManageProduct() {
             modalArr[i] = false;
         };
         setModalLength([...modalArr]);
-    }, [products])
+
+        let stockArr = []; //* Khusus utk modal national stock breakdown by warehouse
+        for (let i = 0; i < products.length; i++) {
+            stockArr[i] = false;
+        };
+        setStockModalLen([...stockArr]);
+    }, [products]);
+
+    useEffect(() => {
+        if (stockModalActive) {
+            fetchStockBreakdown();
+        }
+    }, [stockModalActive]);
 
     const breadcrumbs = [
         <Link to="/admin/" key="1" className="link-no-decoration adm-breadcrumb-modifier">
@@ -180,6 +214,80 @@ function ManageProduct() {
         setToggleDropdown(false);
         setLoadTable(true);
         setLoadData(true);
+    };
+
+    // RENDER MODAL NATIONAL STOCK BREAKDOWN BY WAREHOUSE
+    const stockModalClick = (index, prodId) => { //* Buka stock modal
+        if (!modalLength[index]) {
+            setStockModalLen((prevState) => {
+                let newArray = prevState;
+                newArray[index] = true;
+                return [...newArray];
+            });
+        } else {
+            setStockModalLen((prevState) => {
+                let newArray = prevState;
+                newArray[index] = false;
+                return [...newArray];
+            });
+        };
+        setStockModalProdId(prodId); //* Untuk nentuin product id mana yg di-get ke BE
+        setStockModalActive(true); //* Untuk dependency useEffect fetchStockBreakdown
+    };
+
+    const onCloseStockModal = (index) => { //* Tutup stock modal
+        setStockModalLen((prevState) => {
+            let newArray = prevState;
+            newArray[index] = false;
+            return [...newArray];
+        });
+        setStockBreakdown([]);
+        setStockModalProdId(""); //* Untuk clear product id yg telah di-get ke BE
+        setStockModalActive(false); //* Untuk dependency useEffect fetchStockBreakdown
+        setStockModalLoad(true); //* Untuk make sure buka modal lain, load spinner nya ulang lg
+    };
+
+    const stockModalContent = (prodName, total_stock, index) => {
+        return (
+            <>
+                <div className="stockBreakdown-modal-heading-wrap">
+                    <h4>{`${prodName} - Stock Breakdown`}</h4>
+                </div>
+                {!stockModalLoad ?
+                    <>
+                        <div className="stockBreakdown-modal-body-wrap">
+                            <TableContainer>
+                                <Table aria-label="stock breakdown table">
+                                    <TableHead>
+                                        <TableRow style={{backgroundColor: "#FCB537"}}>
+                                            <StyledTableCell align="left">Warehouse</StyledTableCell>
+                                            <StyledTableCell align="left">Stock</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {stockBreakdown.map((val) => (
+                                            <StyledTableRow key={val.id}>
+                                                <StyledTableCell align="left" component="th" scope="row">{val.name}</StyledTableCell>
+                                                <StyledTableCell align="left">{val.total_stock}</StyledTableCell>
+                                            </StyledTableRow>
+                                        ))}
+                                        <StyledTableRow>
+                                            <StyledTableCell align="left" style={{fontWeight: 600}}>Grand Total</StyledTableCell>
+                                            <StyledTableCell align="left" style={{fontWeight: 600}}>{total_stock}</StyledTableCell>
+                                        </StyledTableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <div className="stockBreakdown-modal-foot-wrap">
+                            <AdmBtnSecondary onClick={() => onCloseStockModal(index)} width={"80px"}>Back</AdmBtnSecondary>
+                        </div>
+                    </>
+                    :
+                    <AdminLoadSpinner />
+                }
+            </>
+        )
     };
 
     // RENDER DROPDOWN ACTION MENU
@@ -285,7 +393,6 @@ function ManageProduct() {
     const onConfirmDelProd = async (prodId, index) => {
         let inputtedPass = passForDel;
         setSubmitLoad(true);
-        // document.querySelector("div.del-modal-foot-wrap > button").disabled = true;
 
         try {
             const res = await axios.delete(`${API_URL}/product/delete/${prodId}`, {headers: {username: getUsername, pass: inputtedPass}});
@@ -305,15 +412,14 @@ function ManageProduct() {
             } else if (res.data.validationMessage) { //* Case salah input password
                 setSubmitLoad(false);
                 errorToast(res.data.validationMessage);
-                // document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
+
             } else {
                 setSubmitLoad(false);
                 errorToast(res.data.failMessage); //* Case product id tidak ditemukan
-                // document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
+
             };
         } catch (error) {
             setSubmitLoad(false);
-            // document.querySelector("div.del-modal-foot-wrap > button").disabled = false;
             errorToast("Server Error, from ManageProduct");
             console.log(error);
         }
@@ -413,19 +519,6 @@ function ManageProduct() {
         setPage(pageCountRange.length);
         setLoadTable(true);
     };
-
-    //! PER WAREHOUSE MODAL SECTION (Belum dipake)
-    // const [addProdModal, setAddProdModal] = useState(false);
-
-    // const addProdToggle = () => setAddProdModal(!addProdModal);
-    
-    // const showWhModal = AdminWhStockModal();
-
-    // const showWhStock = () => {
-    //     ("Click detected");
-    //     return <AdminWhStockModal addProdModal={addProdModal} addProdToggle={addProdToggle} />
-    // }
-    //! -----------------------------------------
 
     return (
         <div className="adm-products-main-wrap">
@@ -539,7 +632,14 @@ function ManageProduct() {
                                                         <StyledTableCell align="left" className="txt-capitalize">{val.category}</StyledTableCell>
                                                         <StyledTableCell align="left">{`Rp ${thousandSeparator(val.price)}`}</StyledTableCell>
                                                         <StyledTableCell align="left">
-                                                            <span style={{cursor: "pointer"}}>
+                                                            <span 
+                                                                style={{
+                                                                    cursor: "pointer",
+                                                                    color: "#B24629",
+                                                                    fontWeight: 600
+                                                                }} 
+                                                                onClick={() => stockModalClick(index, val.id)}
+                                                            >
                                                                 {val.total_stock}
                                                             </span>
                                                         </StyledTableCell>
@@ -634,13 +734,22 @@ function ManageProduct() {
                                     </div>
                                 </div>
                                 {products.map((val, index) => (
-                                    <Modal 
-                                        open={modalLength[index]} 
-                                        close={() => onCloseModal(index)}
-                                        key={`del-prod-#${val.id}-modal`}
-                                    >
-                                        {delModalContent(val.id, val.SKU, val.name, index)}
-                                    </Modal>
+                                    <>
+                                        <Modal 
+                                            open={modalLength[index]} 
+                                            close={() => onCloseModal(index)}
+                                            key={`del-prod-#${val.id}-modal`}
+                                        >
+                                            {delModalContent(val.id, val.SKU, val.name, index)}
+                                        </Modal>
+                                        <Modal 
+                                            open={stockModalLen[index]} 
+                                            close={() => onCloseStockModal(index)}
+                                            key={`stock-prod-#${val.id}-modal`}
+                                        >
+                                            {stockModalContent(val.name, val.total_stock, index)}
+                                        </Modal>
+                                    </>
                                 ))}
                             </div>
                         </>

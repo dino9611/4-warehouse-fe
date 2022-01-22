@@ -71,6 +71,14 @@
     transition: 300ms;
 }
 
+.stockBreakdown-modal-foot-wrap,
+.del-modal-foot-wrap {
+    column-gap: 1rem;
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+
 /* ? MAIN WRAPPER SECTION */
 .adm-products-main-wrap {
     display: flex;
@@ -303,13 +311,6 @@
 }
 
 /* * DEL MODAL FOOT WRAP & CONTENTS ON MANAGE PRODUCT MODAL SECTION */
-.del-modal-foot-wrap {
-    column-gap: 1rem;
-    display: flex;
-    justify-content: center;
-    margin-top: 2.5rem;
-}
-
 .del-modal-foot-wrap > button:first-of-type:disabled,
 .del-modal-foot-wrap > button:disabled {
     background-color: var(--neutral-3rd-color);
@@ -328,6 +329,24 @@
     border-color: var(--primary-3rd-color);
     color: var(--primary-3rd-color);
     transition: 400ms;
+}
+
+/* ? STOCK BREAKDOWN MODAL CONTENT */
+
+/* * STOCK BREAKDOWN HEAD WRAP & CONTENTS ON MANAGE PRODUCT MODAL SECTION */
+.stockBreakdown-modal-heading-wrap {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    row-gap: 1rem;
+}
+
+.stockBreakdown-modal-heading-wrap > h4 {
+    margin: 0;
+    text-align: center;
+    text-transform: capitalize;
 }
 
 /* ? PAGINATION SECTION */
