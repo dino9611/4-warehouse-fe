@@ -129,8 +129,10 @@ function Profile() {
     const sendPersonalData = {
       ...personalData,
       phone_number: personalData.phone_number
-        ? `+62${personalData.phone_number}`
-        : "",
+        ? personalData.phone_number[0] === "0"
+          ? `+62${personalData.phone_number.slice(1)}`
+          : `+62${personalData.phone_number}`
+        : null,
       date_of_birth: calenderData.chooseDate || personalData.date_of_birth,
     };
 
