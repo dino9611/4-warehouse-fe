@@ -534,8 +534,8 @@ function Profile() {
             >
               <CalenderComp
                 bornDate={`${
-                  personalData.date_of_birth ||
                   calenderData.chooseDate ||
+                  personalData.date_of_birth ||
                   `${new Date().getFullYear()}-${
                     new Date().getMonth() + 1
                   }-${new Date().getDate()}`
@@ -635,6 +635,7 @@ function Profile() {
             setHandleUbahData(false);
             setPersonalData(initialData);
             setFile(null);
+            dispatch({ type: "PICKDATE", payload: personalData.date_of_birth });
           }}
         >
           Batal
