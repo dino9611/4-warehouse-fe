@@ -142,7 +142,7 @@
     background-color: var(--neutral-5th-color);
     border: 1px solid var(--neutral-3rd-color);
     border-radius: var(--b-rad-table);
-    color: var(--neutral-3rd-color);
+    color: var(--neutral-2nd-color);
     cursor: pointer;
     display: flex;
     height: 32px;
