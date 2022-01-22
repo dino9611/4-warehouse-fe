@@ -32,6 +32,7 @@ function ProfileSidebar() {
     localStorage.removeItem("token");
     dispatch(logoutAction());
     history.push("/");
+    dispatch({ type: "TOTALNULL" });
   };
 
   // Render photo profile dan username
