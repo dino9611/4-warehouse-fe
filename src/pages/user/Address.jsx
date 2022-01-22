@@ -44,6 +44,8 @@ class Address extends React.Component {
     successSnack: false,
     errorSnack: false,
     addressEdit: {},
+    pickEditProvince: "",
+    pickEditCity: "",
   };
 
   handleClose = (event, reason) => {
@@ -126,12 +128,13 @@ class Address extends React.Component {
 
   // get data kota
   async componentDidUpdate(prevProps, prevState) {
-    const { pickProvince, modalEdit, modalAddress } = this.state;
+    const { pickProvince, modalEdit, modalAddress, pickEditProvince } =
+      this.state;
     try {
-      console.log(prevState.pickProvince);
+      // console.log(prevState.pickProvince);
       if (prevState.pickProvince !== pickProvince) {
         this.fetchCity();
-        console.log("lewat fetchCIty");
+        // console.log("lewat fetchCIty");
       }
     } catch (error) {
       console.log(error);
@@ -269,14 +272,25 @@ class Address extends React.Component {
     this.setState({ pickProvince, pickCity: "" });
     console.log(pickProvince);
   };
+  provinceEditChange = (pickEditProvince) => {
+    this.setState({ pickEditProvince, pickEditCity: "" });
+  };
 
   cityChange = (pickCity) => {
     this.setState({ pickCity });
     console.log();
   };
+  cityEditChange = (pickEditCity) => {
+    this.setState({ pickEditCity });
+    console.log();
+  };
   onInputEditChange = (e) => {
-    this.setState({ [e.target.name]: e.target.defaultValue });
-    console.log("lewat defaulValue", e.target.defaultValue);
+    const { addressEdit } = this.state;
+    this.setState({
+      addressEdit: { ...addressEdit, [e.target.name]: e.target.value },
+    });
+
+    console.log("lewat defaulValue", this.state.addressEdit);
   };
   onSaveAddressClick = () => {
     const {
@@ -386,37 +400,45 @@ class Address extends React.Component {
       resAddress,
       idAddress,
       dataAddress,
-      pickCity,
+      pickEditCity,
+      pickEditProvince,
       pickProvince,
       addressEdit,
     } = this.state;
-
+    const addAddress = `${addressEdit.address},${pickProvince.province},${pickEditCity.city_name}`;
     await axios
       //dapetin data dari google geocode api
       .get(`https://maps.googleapis.com/maps/api/geocode/json`, {
         params: {
-          address: address,
+          address: addAddress,
           key: "AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w",
         },
       })
       .then((res) => {
         console.log(res.data);
+        console.log(addAddress);
         // ambil data lat & lang
-        console.log(res.data.results[0].geometry.location.lat);
-
+        // console.log(res.data.results[0].geometry.location.lat);
+        let editInput = {
+          recipient: addressEdit.recipient,
+          phone_number: addressEdit.phone_number,
+          address: addressEdit.address,
+          city: pickEditCity.city_name,
+          city_id: pickEditCity.city_id,
+          province_id: pickProvince.province_id,
+          province: pickProvince.province,
+          latitude: res.data.results[0].geometry.location.lat,
+          longitude: res.data.results[0].geometry.location.lng,
+        };
+        if (!pickProvince) {
+          editInput.longitude = addressEdit.longitude;
+          editInput.latitude = addressEdit.latitude;
+          editInput.province = addressEdit.province;
+          editInput.city = addressEdit.city;
+          console.log("lewat kondisi", editInput.province, editInput.city);
+        }
         axios
-          .patch(`${API_URL}/user/address/edit/${idAddress}`, {
-            recipient,
-            phone_number,
-            address,
-            city: pickCity.city_name,
-            city_id: pickCity.city_id,
-            province_id: pickProvince.province_id,
-            province: pickProvince.province,
-            latitude: res.data.results[0].geometry.location.lat,
-            longitude: res.data.results[0].geometry.location.lng,
-            // dataAddress,
-          })
+          .patch(`${API_URL}/user/address/edit/${idAddress}`, editInput)
           .then((res) => {
             console.log(res.data);
             this.fetchData();
@@ -490,9 +512,9 @@ class Address extends React.Component {
               name="recipient"
               className="form-control input-form"
               placeholder="nama penerima"
-              onChange={this.onInputChange}
+              onChange={this.onInputEditChange}
               // defaultValue={addressEdit.recipient}
-              value={recipient}
+              value={addressEdit.recipient}
             />
             <h6 className="mt-3">Nomor telepon</h6>
             <input
@@ -500,9 +522,9 @@ class Address extends React.Component {
               name="phone_number"
               className="form-control input-form"
               placeholder="nomor handphone"
-              onChange={this.onInputChange}
+              onChange={this.onInputEditChange}
               // value={addressEdit.phone_number}
-              value={phone_number}
+              value={addressEdit.phone_number}
             />
             <h6 className="mt-3">Alamat Lengkap</h6>
             <input
@@ -510,53 +532,20 @@ class Address extends React.Component {
               name="address"
               className="form-control input-form"
               placeholder="alamat"
-              onChange={this.onInputChange}
+              onChange={this.onInputEditChange}
               // value={addressEdit.address}
-              value={address}
+              value={addressEdit.address}
             />
             <h6 className="mt-3">Provinsi</h6>
 
-            {/* <input
-              type="text"
-              list="provinces"
-              id="province"
-              name="province"
-              className="dropdown-form "
-              placeholder="Masukkan Provinsi"
-              onChange={(e) => {
-                console.log(e.target.name);
-                this.setState({ pickProvince: e.target.value });
-              }}
-              // debounce(1000, (e) => setPickProvince(e.target.value))
-            />
-            <datalist id="provinces">
-              {options?.map((val, index) => (
-                <option name={val.value} key={val.value} value={val.label} />
-              ))}
-            </datalist> */}
-
-            {/* <select
-              className="dropdown-form"
-              onChange={(e) => this.setState({ pickProvince: e.target.value })}
-              // classNamePrefix="select"
-            /> */}
-
-            {/* <select
-              className="dropdown-form"
-              onChange={(e) => this.setState({ pickProvince: e.target.value })}
-            >
-              {options?.map((val, index) => (
-                // <option  key={val.value} value={index} />
-                <option key={val.value} value={index}>
-                  {val.value}
-                </option>
-              ))}
-            </select> */}
             <Select
               className="dropdown-form"
               placeholder="Masukkan Provinsi"
               onChange={this.provinceChange}
-              defaultValue={addressEdit}
+              defaultValue={{
+                label: addressEdit.province,
+                value: addressEdit.province,
+              }}
               // {(e) => this.setState({ pickProvince: e.target.value })}
               options={dataProvince}
             />
@@ -566,43 +555,19 @@ class Address extends React.Component {
             <Select
               className="dropdown-form"
               placeholder="Masukkan Kota"
-              onChange={this.cityChange}
-              defaultValue={pickCity}
+              onChange={this.cityEditChange}
+              defaultValue={{
+                label: addressEdit.city,
+                value: addressEdit.city,
+              }}
               options={dataCity}
             />
-
-            {/* <input
-              type="text"
-              id="city"
-              list="cities"
-              className="dropdown-form"
-              placeholder="Masukkan Kota/Kabupaten"
-              name="city"
-              onChange={this.onInputChange}
-            />
-
-            <datalist id="cities">
-              {dataCity?.map((val, index) => (
-                <option key={val.city_id} value={`${val.city_name}`}>
-                  {val.type}
-                </option>
-              ))}
-            </datalist> */}
-
-            {/* <select
-            name="kota"
-            className="dropdown-form"
-            placeholder="kota"
-            onChange={this.onInputChange}
-            // classNamePrefix="select"
-            options={options}
-          /> */}
 
             <div className="row">
               <button
                 className="btn-simpan-alamat"
                 onClick={this.onEditAddressClick}
-                disabled={!pickCity || !pickProvince}
+                // disabled={!pickCity || !pickProvince}
               >
                 Ubah
               </button>
@@ -760,7 +725,7 @@ class Address extends React.Component {
   };
 
   render() {
-    console.log("testes", this.state.resAddress);
+    console.log("testes", this.state.addressEdit);
     return (
       <div>
         <div className="row">
