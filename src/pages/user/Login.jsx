@@ -152,11 +152,13 @@ class Login extends React.Component {
           </div>
         </div>
         <SuccessSnack
+          // autoHideDuration={3000}
           message={this.state.message}
           successSnack={this.state.successSnack}
           handleClose={this.handleClose}
         />
         <ErrorSnack
+          // autoHideDuration={3000}
           message={this.state.message}
           errorSnack={this.state.errorSnack}
           handleClose={this.handleClose}

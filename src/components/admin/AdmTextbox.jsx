@@ -1,8 +1,8 @@
 import React from "react";
-import images from "./../assets";
-import "./styles/textbox.css";
+import images from "../../assets";
+import "./styles/AdmTextbox.css";
 
-function Textbox({
+function AdmTextbox({
   placeholder,
   width,
   height,
@@ -20,10 +20,8 @@ function Textbox({
   borderRadius,
   type = "text",
   onBlur,
-  changeMessage,
-  color,
   maxLength,
-  onKeyUp,
+  onKeyUp
 }) {
   return (
     <div className="d-flex flex-column">
@@ -35,25 +33,16 @@ function Textbox({
           {label}
         </label>
       ) : null}
-      <div
-        className={`${
-          changeMessage ? "textbox-styling" : null
-        } d-flex align-items-center ${error ? "textbox-error" : null}`}
-        onClick={onClick}
-        style={{ cursor }}
-      >
+      <div className="d-flex flex-column" onClick={onClick}>
         <input
           type={type}
           placeholder={placeholder}
-          className={`textbox-input-styling ${
-            changeMessage ? null : "textbox-input-nobtn"
-          } ${error ? "textbox-error-input" : null}`}
+          className={`adm-textbox-styling ${error ? "adm-textbox-error" : null}`}
           style={{
             width,
             height,
             cursor,
             backgroundColor,
-            color,
             borderRadius,
           }}
           value={value}
@@ -65,21 +54,18 @@ function Textbox({
           maxLength={maxLength}
           onKeyUp={onKeyUp}
         />
-        {changeMessage ? (
-          <button className="textbox-btn-styling">{changeMessage}</button>
-        ) : null}
       </div>
       {error ? (
         <div className="d-flex align-items-center mt-1">
           {error ? (
             <>
               <img src={images.error} alt="error" className=" mr-1" />
-              <div className="textbox-error-msg">{errormsg}</div>
+              <div className="adm-textbox-error-msg">{errormsg}</div>
             </>
           ) : (
             <>
               <img src={images.success} alt="success" className=" mr-1" />
-              <div className="textbox-success-msg">{successmsg}</div>
+              <div className="adm-textbox-success-msg">{successmsg}</div>
             </>
           )}
         </div>
@@ -88,4 +74,4 @@ function Textbox({
   );
 }
 
-export default Textbox;
+export default AdmTextbox;
