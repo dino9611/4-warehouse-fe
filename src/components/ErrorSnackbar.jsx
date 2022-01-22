@@ -29,6 +29,8 @@ class ErrorSnack extends React.Component {
         }}
         open={this.props.errorSnack}
         message={this.props.message}
+        autoHideDuration={3000}
+        onClose={this.props.handleClose}
       >
         <SnackbarContent
           style={{
@@ -36,8 +38,6 @@ class ErrorSnack extends React.Component {
           }}
           message={this.props.message}
           action={this.action}
-          autoHideDuration={3000}
-          onClose={this.props.handleClose}
         />
       </Snackbar>
     );

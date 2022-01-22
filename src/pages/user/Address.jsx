@@ -419,7 +419,7 @@ class Address extends React.Component {
           })
           .then((res) => {
             console.log(res.data);
-
+            this.fetchData();
             this.setState({
               modalEdit: false,
               successSnack: true,
@@ -809,11 +809,13 @@ class Address extends React.Component {
           message={this.state.message}
           successSnack={this.state.successSnack}
           handleClose={this.handleClose}
+          // autoHideDuration={3000}
         />
         <ErrorSnack
           message={this.state.message}
           errorSnack={this.state.errorSnack}
           handleClose={this.handleClose}
+          // autoHideDuration={3000}
         />
       </div>
     );
