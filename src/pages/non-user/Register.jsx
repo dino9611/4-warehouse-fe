@@ -93,6 +93,7 @@ class Register extends Component {
                 name="username"
                 onChange={this.onInputChange}
                 value={username}
+                maxLength="45"
               />
             </div>
             <div className="label-text">
@@ -148,11 +149,13 @@ class Register extends Component {
           </div>
         </div>
         <SuccessSnack
+          // autoHideDuration={3000}
           message={this.state.message}
           successSnack={this.state.successSnack}
           handleClose={this.handleClose}
         />
         <ErrorSnack
+          // autoHideDuration={3000}
           message={this.state.message}
           errorSnack={this.state.errorSnack}
           handleClose={this.handleClose}

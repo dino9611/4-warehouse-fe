@@ -26,6 +26,7 @@ class SuccessSnack extends React.Component {
           vertical: "top",
           horizontal: "right",
         }}
+        autoHideDuration={3000}
         open={this.props.successSnack}
         onClose={this.props.handleClose}
       >
@@ -34,7 +35,6 @@ class SuccessSnack extends React.Component {
             backgroundColor: "#43936c",
           }}
           message={this.props.message}
-          autoHideDuration={3000}
           action={this.action}
         />
       </Snackbar>
