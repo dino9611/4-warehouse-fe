@@ -30,6 +30,14 @@
   color: #cacaca;
 }
 
+.textbox-input-styling::placeholder {
+  color: #cacaca;
+}
+
+.profile-phonenumber-input::placeholder {
+  color: #cacaca;
+}
+
 .textbox-styling:focus {
   border-color: #b24629;
   outline: none;
@@ -38,11 +46,12 @@
 .textbox-error {
   border: solid 1px #c83532 !important;
   background-color: #fbefef !important;
+  border-radius: 8px !important;
 }
 
 .textbox-error-input {
   background-color: #fbefef !important;
-  border: none;
+  border: none !important;
 }
 
 .textbox-error-input:enabled {
@@ -58,4 +67,15 @@
 .textbox-success-msg {
   font-size: 0.75em;
   color: #43936c;
+}
+
+.textbox-input-nobtn {
+  border-radius: 8px;
+  border: solid 1px #cacaca;
+  padding: 10px 12px;
+  font-size: 0.875em;
+}
+
+.textbox-input-nobtn:enabled {
+  outline-color: #b24629;
 }

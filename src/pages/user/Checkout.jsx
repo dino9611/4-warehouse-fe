@@ -7,6 +7,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import { debounce } from "throttle-debounce";
 import { Spinner } from "reactstrap";
+import Select from "react-select";
 import axios from "axios";
 
 // Import komponen
@@ -20,7 +21,56 @@ import assets from "../../assets";
 import "./style/cartDetail.css";
 import "./style/checkout.css";
 
-function Checkout(props) {
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    color: "#070707",
+    fontSize: "0.875rem",
+    backgroundColor: "#fff",
+    "&:hover": {
+      color: "#b24629",
+      transition: "all 0.3s",
+    },
+    "&:active": {
+      backgroundColor: "#fff",
+      transition: "all 0.3s",
+    },
+  }),
+  placeholder: (provided, state) => ({
+    ...provided,
+    fontSize: "0.875rem",
+    padding: "12px",
+  }),
+  valueContainer: (provided, state) => ({
+    ...provided,
+    padding: "0",
+  }),
+  control: (provided, state) => ({
+    ...provided,
+    borderRadius: "8px",
+    border: "solid 1px #cacaca",
+    boxShadow: "solid 1px #b24629 !important",
+    "&:hover": {
+      border: "solid 1px #b24629 !important",
+    },
+  }),
+  input: (provided, state) => ({
+    ...provided,
+    fontSize: "0.875rem",
+    padding: "12px",
+  }),
+  singleValue: (provided, state) => ({
+    ...provided,
+    fontSize: "0.875rem",
+    padding: "12px",
+  }),
+  menu: (provided, state) => ({
+    ...provided,
+    color: "#b24629",
+  }),
+};
+
+function Checkout() {
   // State data
 
   const [dataCart, setDataCart] = useState([]); // Data list produk dari tabel cart_detail
@@ -30,6 +80,7 @@ function Checkout(props) {
   const [dataProvince, setDataProvince] = useState([]); // List data provinsi
   const [dataCity, setDataCity] = useState([]); // List data kota
   const [dataKurir, setDataKurir] = useState({}); // Data dari pilih kurir oleh user
+  const [dataEditAddress, setDataEditAddress] = useState({});
 
   // State Handle
 
@@ -40,10 +91,14 @@ function Checkout(props) {
   const [shipping, setShipping] = useState([]); // Get data ongkir
   const [pickShipping, setPickShipping] = useState(0); // Pilih jenis pengiriman
   const [pickBank, setPickBank] = useState({}); // State untuk menyimpan value dari bank yang dipilih
-  const [mainAddress, setMainAddress] = useState(false); // State untuk menyimpan data dari alamat utama user
   const [pickProvince, setPickProvince] = useState(""); // State untuk menyimpan data provinsi yang dipilih
+  const [pickCity, setPickCity] = useState(""); // State untuk menyimpan data city yang dipilih
+  const [pickEditProvince, setPickEditProvince] = useState(null); // menyimpan pilih provinsi dari edit modal
+  const [pickEditCity, setPickEditCity] = useState(null); // menyimpan pilih provinsi dari edit modal
   const [errorFillAddress, setErrorFillAddress] = useState(false); // Jika kolom tambah alamat bellum diisi akan error true
+  const [errorRequest, setErrorRequest] = useState(false);
   const [btnAdd, setBtnAdd] = useState(false);
+  const [btnEdit, setBtnEdit] = useState(false);
 
   // State loading request data
 
@@ -58,7 +113,6 @@ function Checkout(props) {
   const [dataNewAddress, setDataNewAddress] = useState({
     recipient: "",
     phone_number: null,
-    city: "",
     address: "",
     is_main_address: 0,
   });
@@ -72,21 +126,6 @@ function Checkout(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [testing, setTesting] = useState(false);
-  useEffect(() => {
-    (async () => {
-      try {
-        for (let i = 0; i < 100; i++) {
-          let resAddress = await axios.get(
-            `${API_URL}/location/get/main-address/32`
-          );
-          console.log("tes");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
 
   useEffect(() => {
     if (!loadingNewAddress) {
@@ -112,20 +151,24 @@ function Checkout(props) {
           let resAddress = await axios.get(
             `${API_URL}/location/get/main-address/${dataUser.id}`
           );
+
+          setPickAddress(resAddress.data[0]);
+          setDataAddress(resAddress.data[0]);
+
           // Cek apakah address ada atau tidak
 
           if (!resAddress.data.length) {
             setDataAddress(false);
 
-            let resProvince = await axios.get(
-              `${API_URL}/location/get/province`
-            );
+            if (!dataProvince.length) {
+              let resProvince = await axios.get(
+                `${API_URL}/location/get/province`
+              );
 
-            setDataProvince(resProvince.data);
+              setDataProvince(resProvince.data);
+            }
 
-            setShipping([]);
-            setPickAddress(resAddress.data[0]);
-            setDataAddress(resAddress.data[0]);
+            setShipping(false);
 
             setLoadingPage(false);
             return;
@@ -137,14 +180,43 @@ function Checkout(props) {
             `${API_URL}/location/shipping-fee/${resAddress.data[0]?.id}?cartId=${location.state[0].cart_id}`
           );
 
-          setPickAddress(resAddress.data[0]);
-          setDataAddress(resAddress.data[0]);
           setShipping(resShipping.data);
 
           setLoadingPage(false);
         } catch (error) {
-          console.log(error);
-          console.log(error.response.data.message);
+          if (error.response?.data.message === "Kuota habis") {
+            let resAddress = await axios.get(
+              `${API_URL}/location/get/main-address/${dataUser.id}`
+            );
+
+            if (!resAddress.data.length) {
+              setErrorRequest(true);
+
+              setLoadingPage(false);
+
+              return;
+            }
+
+            let resShipping = await axios.get(
+              `${API_URL}/location/get-distance/${resAddress.data[0].id}?cartId=${location.state[0].cart_id}`
+            );
+
+            setShipping(resShipping.data);
+
+            setLoadingPage(false);
+
+            return;
+          }
+
+          dispatch({
+            type: "SHOWSNACKBAR",
+            payload: {
+              status: "error",
+              message: error.response.data.message || "Server error",
+            },
+          });
+
+          dataSnackbar.ref.current.showSnackbarMessage();
         }
       })();
     }
@@ -154,25 +226,65 @@ function Checkout(props) {
 
   useEffect(() => {
     (async () => {
-      if (pickProvince) {
-        let res = await axios.get(
-          `${API_URL}/location/get/city/${pickProvince}`
-        );
-
-        setDataCity(res.data);
+      try {
+        setPickCity(null);
+        if (pickProvince) {
+          let res = await axios.get(
+            `${API_URL}/location/get/city/${pickProvince.province}`
+          );
+          setDataCity(res.data);
+        }
+      } catch (error) {
+        console.log(error);
       }
     })();
   }, [pickProvince]);
 
   useEffect(() => {
     (async () => {
-      let res = await axios.get(
-        `${API_URL}/location/get/data-address/${dataUser.id}`
-      );
+      try {
+        setPickEditCity(null);
+        if (pickEditProvince) {
+          let res = await axios.get(
+            `${API_URL}/location/get/city/${pickEditProvince.province}`
+          );
+          setDataCity(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [pickEditProvince]);
 
-      setListAddress(res.data);
+  useEffect(() => {
+    (async () => {
+      try {
+        let res = await axios.get(
+          `${API_URL}/location/get/data-address/${dataUser.id}`
+        );
+
+        setListAddress(res.data);
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [handleAddress]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (btnAdd || (btnEdit && !dataProvince.length)) {
+          let resProvince = await axios.get(`${API_URL}/location/get/province`);
+
+          setDataProvince(resProvince.data);
+        }
+      } catch (error) {
+        if (error.response?.data.message === "Kuota habis") {
+          setErrorRequest(true);
+        }
+      }
+    })();
+  }, [btnAdd, btnEdit]);
 
   // EVENT
 
@@ -186,7 +298,7 @@ function Checkout(props) {
       address_id: dataAddress.id,
       bank_id: parseInt(pickBank),
       warehouse_id: shipping.id,
-      courier: `JNE ${dataKurir.service}`,
+      courier: `${shipping.code.toUpperCase()} ${dataKurir.service}`,
     };
 
     try {
@@ -235,7 +347,6 @@ function Checkout(props) {
       });
     } catch (error) {
       console.log(error);
-      console.log(error.response.data.message);
     }
   };
 
@@ -278,7 +389,28 @@ function Checkout(props) {
 
       setLoadingPilihAlamat(false);
     } catch (error) {
-      console.log(error);
+      if (error.response?.data.message === "Kuota habis") {
+        let resShipping = await axios.get(
+          `${API_URL}/location/get-distance/${pickAddress.id}?cartId=${location.state[0].cart_id}`
+        );
+
+        setHandleAddress(false);
+        setDataAddress(pickAddress);
+        setPickShipping(0);
+        setShipping(resShipping.data);
+
+        dispatch({
+          type: "SHOWSNACKBAR",
+          payload: {
+            status: "success",
+            message: "Berhasil pilih alamat",
+          },
+        });
+
+        dataSnackbar.ref.current.showSnackbarMessage();
+
+        setLoadingPilihAlamat(false);
+      }
     }
   };
 
@@ -290,24 +422,30 @@ function Checkout(props) {
     const newAddress = {
       ...dataNewAddress,
       user_id: dataUser.id,
-      province: pickProvince,
+      ...pickCity,
     };
 
     try {
       setLoadingNewAddress(true);
 
-      if (!recipient || !phone_number || !address || !city || !pickProvince) {
+      if (
+        !recipient ||
+        !phone_number ||
+        !address ||
+        !pickCity ||
+        !pickProvince
+      ) {
         setLoadingNewAddress(false);
         setErrorFillAddress(true);
         return;
       }
 
-      let alamat = `${newAddress.address}, ${newAddress.city}, ${newAddress.province}`;
+      let alamat = `${newAddress.address}, ${newAddress.label}, ${newAddress.province}`;
 
       let res = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${alamat}&key=AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w`
       );
-      console.log(res.data);
+
       let latitude = res.data.results[0]?.geometry.location.lat;
       let longitude = res.data.results[0]?.geometry.location.lng;
 
@@ -331,7 +469,6 @@ function Checkout(props) {
       dataSnackbar.ref.current.showSnackbarMessage();
     } catch (error) {
       console.log(error);
-      console.log(error.response.data.message);
     }
   };
 
@@ -388,6 +525,15 @@ function Checkout(props) {
     setPickAddress(dataAddress);
     setHandleAddress(false);
     setBtnAdd(false);
+    setDataNewAddress({
+      recipient: "",
+      phone_number: null,
+      address: "",
+      is_main_address: 0,
+    });
+    setPickCity(null);
+    setPickProvince(null);
+    setBtnEdit(false);
   };
 
   // onChange is main address
@@ -400,12 +546,97 @@ function Checkout(props) {
     }
   };
 
+  const onChangeProvince = (pickProvince) => {
+    setPickProvince(pickProvince);
+  };
+
+  const onChangeCity = (pickCity) => {
+    setPickCity(pickCity);
+  };
+
+  // ONCLICK UBAH ALAMAT
+  const onClickUbahData = (data) => {
+    setPickEditCity(true);
+    setPickEditProvince(true);
+    setDataEditAddress(data);
+    setBtnEdit(true);
+  };
+
+  // ONCHANGE DATA EDIT ALAMAT
+  const onChangeEditAddress = (e) => {
+    setDataEditAddress({ ...dataEditAddress, [e.target.name]: e.target.value });
+  };
+
+  // ONCLICK SIMPAN EDIT DATA
+  const onClickSimpanEdit = async () => {
+    const { province, province_id, label, city_id } = pickEditCity;
+
+    try {
+      let alamat = `${dataEditAddress.address}, ${label}, ${province}`;
+
+      let res = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${alamat}&key=AIzaSyBWhGEZmXTsLT8rrd5BGdclTaXg5gk3O-w`
+      );
+
+      let latitude = res.data.results[0]?.geometry.location.lat;
+      let longitude = res.data.results[0]?.geometry.location.lng;
+
+      let editData;
+
+      if (!label) {
+        editData = {
+          ...dataEditAddress,
+          user_id: dataUser.id,
+        };
+      } else {
+        editData = {
+          ...dataEditAddress,
+          province,
+          province_id,
+          city: label,
+          city_id,
+          latitude,
+          longitude,
+          user_id: dataUser.id,
+        };
+      }
+
+      await axios.patch(
+        `${API_URL}/location/edit/address/${dataEditAddress.id}`,
+        editData
+      );
+
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: "Berhasil update alamat",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+    } catch (error) {
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "success",
+          message: error.response?.data.message || "Server error",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
+    }
+  };
+
   // RENDERING
 
   // Render jika user belum mempunyai alamat
 
   const renderNewAddress = () => {
     const { recipient, phone_number, address, pickProvince } = dataNewAddress;
+
+    const listProvince = dataProvince;
+    const listCity = dataCity;
 
     return (
       <div>
@@ -434,7 +665,7 @@ function Checkout(props) {
             Nomor Handphone
           </label>
           <input
-            type="text"
+            type="number"
             id="nomor-hp"
             className={`checkout-input-address w-100 ${
               !dataNewAddress.phone_number && errorFillAddress
@@ -450,50 +681,34 @@ function Checkout(props) {
             : null}
         </div>
         <div className="mb-3">
-          <label htmlFor="province" className="checkout-label-input">
-            Provinsi
-          </label>
-          <input
-            type="text"
-            list="provinces"
-            id="province"
-            name="province"
-            className={`checkout-input-address w-100 ${
-              !pickProvince && errorFillAddress ? "textbox-error" : null
-            }`}
-            placeholder="Masukkan Provinsi"
-            onChange={debounce(1000, (e) => setPickProvince(e.target.value))}
-          />
-          {!pickProvince && errorFillAddress ? errorMessage() : null}
-          <datalist id="provinces">
-            {dataProvince?.map((el, index) => (
-              <option key={el.province_id} value={el.province} />
-            ))}
-          </datalist>
+          <div>
+            <div className="profile-fs14-500-black mb-2">Provinsi</div>
+            <Select
+              options={listProvince}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              onChange={onChangeProvince}
+              placeholder={<div>Masukkan provinsi</div>}
+            />
+          </div>
         </div>
         <div className="mb-3">
-          <label htmlFor="city" className="checkout-label-input">
-            Kota/Kabupaten
-          </label>
-          <input
-            type="text"
-            id="city"
-            list="cities"
-            className={`checkout-input-address w-100 ${
-              !dataNewAddress.city && errorFillAddress ? "textbox-error" : null
-            }`}
-            placeholder="Masukkan Kota/Kabupaten"
-            name="city"
-            onChange={onChangeNewAddress}
-          />
-          {!dataNewAddress.city && errorFillAddress ? errorMessage() : null}
-          <datalist id="cities">
-            {dataCity?.map((el) => (
-              <option key={el.city_id} value={`${el.city_name}`}>
-                {el.type}
-              </option>
-            ))}
-          </datalist>
+          <div>
+            <div className="profile-fs14-500-black mb-2">Kota/Kabupaten</div>
+            <Select
+              options={listCity}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              onChange={onChangeCity}
+              placeholder={<div>Masukkan Kota/Kabupaten</div>}
+            />
+          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="detail-address" className="checkout-label-input">
@@ -559,7 +774,16 @@ function Checkout(props) {
             <ButtonPrimary
               onClick={onClickNewAddress}
               width="w-25"
-              disabled={loadingNewAddress ? true : false}
+              disabled={
+                loadingNewAddress ||
+                !recipient ||
+                !phone_number ||
+                !address ||
+                !pickCity ||
+                !pickProvince
+                  ? false
+                  : true
+              }
             >
               {!loadingNewAddress ? (
                 "Simpan"
@@ -587,6 +811,133 @@ function Checkout(props) {
             </ButtonPrimary>
           </div>
         )}
+      </div>
+    );
+  };
+
+  // RENDER MODAL EDIT ADDRESS
+  const renderEditAddress = () => {
+    const { recipient, phone_number, address, city, province } =
+      dataEditAddress;
+
+    const listProvince = dataProvince;
+    const listCity = dataCity;
+
+    return (
+      <div className="p-4">
+        <div className="mb-3">
+          <label htmlFor="nama-penerima" className="checkout-label-input">
+            Nama Penerima
+          </label>
+          <input
+            type="text"
+            id="nama-penerima"
+            className={`checkout-input-address w-100 ${
+              !recipient && errorFillAddress ? "textbox-error" : null
+            }`}
+            placeholder="Masukkan nama lengkap Anda"
+            name="recipient"
+            onChange={onChangeEditAddress}
+            value={recipient}
+          />
+          {!recipient && errorFillAddress ? errorMessage() : null}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="nomor-hp" className="checkout-label-input">
+            Nomor Handphone
+          </label>
+          <input
+            type="number"
+            id="nomor-hp"
+            className={`checkout-input-address w-100 ${
+              !phone_number && errorFillAddress ? "textbox-error" : null
+            }`}
+            placeholder="Masukkan nomor handphone Anda"
+            name="phone_number"
+            value={phone_number}
+            onChange={onChangeEditAddress}
+          />
+          {!phone_number && errorFillAddress ? errorMessage() : null}
+        </div>
+        <div className="mb-3">
+          <div>
+            <div className="profile-fs14-500-black mb-2">Provinsi</div>
+            <Select
+              options={listProvince}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              defaultValue={{ label: province, value: province }}
+              onChange={(pickProvince) => setPickEditProvince(pickProvince)}
+              placeholder={<div>Masukkan provinsi</div>}
+            />
+          </div>
+        </div>
+        <div className="mb-3">
+          <div>
+            <div className="profile-fs14-500-black mb-2">Kota/Kabupaten</div>
+            <Select
+              options={listCity}
+              components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+              }}
+              styles={customStyles}
+              defaultValue={{ label: city, value: city }}
+              onChange={(pickCity) => setPickEditCity(pickCity)}
+              placeholder={<div>Masukkan Kota/Kabupaten</div>}
+            />
+          </div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="detail-address" className="checkout-label-input">
+            Detail alamat
+          </label>
+          <textarea
+            name="address"
+            id="detail-address"
+            className={`checkout-input-address w-100 ${
+              !address && errorFillAddress ? "textbox-error" : null
+            }`}
+            placeholder="Masukkan alamat lengkap"
+            cols="30"
+            rows="5"
+            value={address}
+            onChange={onChangeEditAddress}
+          ></textarea>
+          {!address && errorFillAddress ? errorMessage() : null}
+        </div>
+        <div className="d-flex align-items-center justify-content-end w-100">
+          <button
+            className="checkout-btn-batal mr-4 w-25"
+            onClick={onClickCloseModal}
+          >
+            Batal
+          </button>
+          <ButtonPrimary
+            onClick={onClickSimpanEdit}
+            width="w-25"
+            disabled={
+              !recipient ||
+              !phone_number ||
+              !address ||
+              !pickEditCity ||
+              !pickEditProvince
+                ? true
+                : false
+            }
+          >
+            {!loadingNewAddress ? (
+              "Simpan"
+            ) : (
+              <Spinner color="light" size="sm">
+                Loading...
+              </Spinner>
+            )}
+          </ButtonPrimary>
+        </div>
       </div>
     );
   };
@@ -677,14 +1028,14 @@ function Checkout(props) {
             <img src={images.close} alt="close" />
           </button>
         </h5>
-        {/* <div className="mt-3">
+        <div className="mt-3">
           <button
             className="checkout-address-btn w-100 py-2"
             onClick={() => setBtnAdd(true)}
           >
             Tambah alamat baru
           </button>
-        </div> */}
+        </div>
       </div>
     );
   };
@@ -718,10 +1069,10 @@ function Checkout(props) {
   const renderListAddress = () => {
     return listAddress.map((el, index) => {
       return (
-        <label htmlFor={el.id} className="w-100">
+        <label htmlFor={el.latitude} className="w-100">
           <input
             type="radio"
-            id={el.id}
+            id={el.latitude}
             value={parseInt(el.id)}
             name="list-address"
             style={{ display: "none", zIndex: "999" }}
@@ -761,12 +1112,15 @@ function Checkout(props) {
               <div className="fs10-400-gray mb-1">{el.address}</div>
               <div className="fs10-400-gray">{`${el.city}, ${el.province}`}</div>
             </div>
-            {!el.is_main_address ? (
-              <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
-                {/* <button className="checkout-ubah-btn d-flex align-items-center p-0">
+            <div className="checkout-address-action py-2 px-3 d-flex align-items-center">
+              <button
+                className="checkout-ubah-btn d-flex align-items-center p-0"
+                onClick={() => onClickUbahData(el)}
+              >
                 <img src={images.edit} alt="edit" className="mr-1" />
                 <div className="fs14-600-red">Ubah alamat</div>
-              </button> */}
+              </button>
+              {!el.is_main_address ? (
                 <>
                   <div className="checkout-addressaction-border mx-3 py-2"></div>
                   <button className="checkout-ubah-btn d-flex align-items-center p-0">
@@ -779,8 +1133,8 @@ function Checkout(props) {
                     </div>
                   </button>
                 </>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         </label>
       );
@@ -851,18 +1205,14 @@ function Checkout(props) {
         <div className="checkout-title mb-3">Pilih Pengiriman</div>
         {loadingPage ? (
           [1, 2, 3].map((el, index) => renderSkeletonCourier())
-        ) : shipping.length ? (
-          <div
-            style={{
-              fontSize: "0.875em",
-              fontWeight: "500",
-              color: "#b24629",
-            }}
-          >
-            Masukkan alamat pengiriman kamu terlebih dahulu.
-          </div>
-        ) : (
+        ) : shipping ? (
           renderListCourier()
+        ) : (
+          <div
+            style={{ fontSize: "0.875em", fontWeight: "600", color: "#b24629" }}
+          >
+            Kamu belum punya alamat! Isi alamat terlebih dahulu
+          </div>
         )}
       </div>
     );
@@ -871,7 +1221,7 @@ function Checkout(props) {
   // Render list kurir
 
   const renderListCourier = () => {
-    return shipping[0]?.costs.map((el, index) => {
+    return shipping.costs?.map((el, index) => {
       return (
         <label className="w-100" for={el.service} style={{ cursor: "pointer" }}>
           <input
@@ -892,7 +1242,7 @@ function Checkout(props) {
                 el.cost[0].value
               )}`}</div>
               <div>
-                <div className="checkout-jeniskurir">{`${shipping[0].code.toUpperCase()} ${
+                <div className="checkout-jeniskurir">{`${shipping.code.toUpperCase()} ${
                   el.service
                 }`}</div>
                 <div className="checkout-desckurir">{el.description}</div>
@@ -969,7 +1319,11 @@ function Checkout(props) {
 
       return (
         <>
-          <label className="w-100" for={el.id} style={{ cursor: "pointer" }}>
+          <label
+            className="w-100"
+            htmlFor={el.id}
+            style={{ cursor: "pointer" }}
+          >
             <input
               type="radio"
               id={el.id}
@@ -1030,6 +1384,34 @@ function Checkout(props) {
     });
   };
 
+  // RENDER ERROR NEW ADDRESS
+  const renderErrorNewAddress = () => {
+    return (
+      <div>
+        <div
+          style={{
+            fontSize: "0.875em",
+            fontWeight: "600",
+            color: "#b24629",
+          }}
+        >
+          Kamu belum punya alamat
+        </div>
+        <div
+          className="mt-3"
+          style={{
+            fontSize: "0.75em",
+            fontWeight: "500",
+            color: "#070707",
+          }}
+        >
+          Akan tetapi, Untuk sementara kamu tidak dapat menambah alamat disini,
+          silahkan coba untuk menambah alamat di halaman profil kamu
+        </div>
+      </div>
+    );
+  };
+
   // RETURN
 
   return (
@@ -1038,7 +1420,11 @@ function Checkout(props) {
         <div className="checkout-col col-4 pr-3">
           <div className="checkout-wrapper p-4">
             <div className="checkout-title mb-3">1. Alamat Pengiriman</div>
-            {dataAddress ? renderUserAddress() : renderNewAddress()}
+            {dataAddress
+              ? renderUserAddress()
+              : errorRequest
+              ? renderErrorNewAddress()
+              : renderNewAddress()}
           </div>
         </div>
         <div className="checkout-col col-4 p-px-2">
@@ -1151,13 +1537,33 @@ function Checkout(props) {
           classModal="checkout-modal p-0"
         >
           {btnAdd ? (
-            renderModalAddAddress()
+            errorRequest ? (
+              <div
+                className="d-flex flex-column align-items-center justify-content-center h-100"
+                style={{ fontWeight: "600", color: "#b24629" }}
+              >
+                Maaf, Kamu tidak bisa menambah alamat sementara
+                <div
+                  className="d-flex align-items-center mt-4"
+                  style={{ cursor: "pointer" }}
+                  onClick={onClickCloseModal}
+                >
+                  <img src={images.btnleft} alt="" />
+                  <div style={{ color: "#5a5a5a" }}>Kembali</div>
+                </div>
+              </div>
+            ) : (
+              renderModalAddAddress()
+            )
+          ) : btnEdit ? (
+            renderEditAddress()
           ) : (
-            <>
-              {renderModalAddress()}{" "}
-              <div style={{ height: "100%" }}>{renderListAddress()}</div>
+            <div className="d-flex flex-column justify-content-between h-100">
+              <div style={{ overflow: "auto" }}>
+                {renderModalAddress()} {renderListAddress()}
+              </div>
               {renderBtnPilihAlamat()}
-            </>
+            </div>
           )}
         </Modal>
       </div>

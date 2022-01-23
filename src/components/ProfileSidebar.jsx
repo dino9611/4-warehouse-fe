@@ -32,6 +32,7 @@ function ProfileSidebar() {
     localStorage.removeItem("token");
     dispatch(logoutAction());
     history.push("/");
+    dispatch({ type: "TOTALNULL" });
   };
 
   // Render photo profile dan username
@@ -40,7 +41,7 @@ function ProfileSidebar() {
     return dataUser.profile_picture ? (
       <div className="mr-3">
         <img
-          src={`${API_URL}/${dataUser.profile_picture}`}
+          src={`${API_URL}${dataUser.profile_picture}`}
           alt="profpic"
           style={{
             width: "56px",

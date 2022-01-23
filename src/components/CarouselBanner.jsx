@@ -8,8 +8,10 @@ import imagesBanner from "./../assets";
 const images = [
   imagesBanner.banner1,
   imagesBanner.banner2,
+  imagesBanner.banner1,
   imagesBanner.banner3,
   imagesBanner.banner2,
+  imagesBanner.banner3,
 ];
 
 function Carousel() {

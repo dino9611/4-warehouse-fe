@@ -23,7 +23,7 @@ function Textbox({
   changeMessage,
   color,
   maxLength,
-  onKeyUp
+  onKeyUp,
 }) {
   return (
     <div className="d-flex flex-column">
@@ -36,9 +36,9 @@ function Textbox({
         </label>
       ) : null}
       <div
-        className={`textbox-styling d-flex align-items-center ${
-          error ? "textbox-error" : null
-        }`}
+        className={`${
+          changeMessage ? "textbox-styling" : null
+        } d-flex align-items-center ${error ? "textbox-error" : null}`}
         onClick={onClick}
         style={{ cursor }}
       >
@@ -46,8 +46,8 @@ function Textbox({
           type={type}
           placeholder={placeholder}
           className={`textbox-input-styling ${
-            error ? "textbox-error-input" : null
-          }`}
+            changeMessage ? null : "textbox-input-nobtn"
+          } ${error ? "textbox-error-input" : null}`}
           style={{
             width,
             height,

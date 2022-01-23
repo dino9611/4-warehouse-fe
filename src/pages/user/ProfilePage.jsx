@@ -20,7 +20,7 @@ function ProfilePage() {
   const dispatch = useDispatch();
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 profile-page-height">
       <div className="row">
         <div className="profile-col col-3 pr-2">
           <ProfileSidebar />

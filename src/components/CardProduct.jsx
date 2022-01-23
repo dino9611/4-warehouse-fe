@@ -63,8 +63,15 @@ function CardProduct({
       snackbarRef.current.showSnackbar();
     } catch (error) {
       setLoading(false);
-      console.log(error);
-      console.log(error.response.data.message);
+      dispatch({
+        type: "SHOWSNACKBAR",
+        payload: {
+          status: "error",
+          message: error.response?.data.message || "Server error",
+        },
+      });
+
+      dataSnackbar.ref.current.showSnackbarMessage();
     }
   };
 
