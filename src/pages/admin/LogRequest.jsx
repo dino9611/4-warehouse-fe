@@ -33,6 +33,7 @@ import "./styles/logRequest.css";
 import "./styles/stockRequest.css";
 import assets from "./../../assets";
 import { API_URL } from "../../constants/api";
+import NotFoundPage from "../non-user/NotFoundV1";
 
 // Styling tabel cell
 
@@ -98,6 +99,10 @@ function LogRequest() {
   // Loading state
 
   const [loadingPage, setLoadingPage] = useState(false); // Loading render data
+
+  // Get data from redux
+
+  const getRoleId = useSelector((state) => state.auth.role_id);
 
   useEffect(() => {
     (async () => {
@@ -394,22 +399,28 @@ function LogRequest() {
 
   return (
     <div className="container-fluid vh-100 p-4" style={{ overflow: "auto" }}>
-      <div className="my-2">
-        <div className="mb-4">{renderBreadcrumb()}</div>
-        {renderTab()}
-        <div className="stock-req-wrapper-table px-4 py-3">
-          <div className="d-flex align-items-center justify-content-between mb-2">
-            {renderInfoPage()}
-            {renderChangeRowsPerPage()}
+      {getRoleId === 2 ?
+        <>
+          <div className="my-2">
+            <div className="mb-4">{renderBreadcrumb()}</div>
+            {renderTab()}
+            <div className="stock-req-wrapper-table px-4 py-3">
+              <div className="d-flex align-items-center justify-content-between mb-2">
+                {renderInfoPage()}
+                {renderChangeRowsPerPage()}
+              </div>
+              {renderTable()}
+              {loadingPage ? renderSpinner() : null}
+              {dataLogRequest.length ? null : renderEmptyData()}
+            </div>
           </div>
-          {renderTable()}
-          {loadingPage ? renderSpinner() : null}
-          {dataLogRequest.length ? null : renderEmptyData()}
-        </div>
-      </div>
-      <div className="d-flex align-items-center justify-content-end mt-3">
-        {renderPagination()}
-      </div>
+          <div className="d-flex align-items-center justify-content-end mt-3">
+            {renderPagination()}
+          </div>
+        </>
+        :
+        <NotFoundPage />
+      }
     </div>
   );
 }

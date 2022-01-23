@@ -88,6 +88,7 @@ function Header() {
   const onLogout = () => {
     localStorage.removeItem("token");
     dispatch(logoutAction());
+    setHandlerProfile(false);
     dispatch({ type: "TOTALNULL" });
   };
 
@@ -213,7 +214,10 @@ function Header() {
               </div>
             </Link>
             <Link to="/profile/address" className="text-link">
-              <div className="header-ddlist-wrapper d-flex align-items-center p-2">
+              <div
+                className="header-ddlist-wrapper d-flex align-items-center p-2"
+                onClick={() => setHandlerProfile(false)}
+              >
                 <div className="mr-2">
                   <img src={asset.alamat} alt="alamat" />
                 </div>

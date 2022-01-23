@@ -11,3 +11,7 @@
 .profile-col {
   padding: 0;
 }
+
+.profile-page-height {
+  min-height: calc(100vh - 74px - 236px);
+}
