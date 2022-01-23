@@ -458,6 +458,16 @@ function Checkout() {
       setErrorFillAddress(false);
       setLoadingNewAddress(false);
 
+      setHandleAddress(false);
+      setDataNewAddress({
+        recipient: "",
+        phone_number: null,
+        address: "",
+        is_main_address: 0,
+      });
+      setBtnAdd(false);
+      setBtnEdit(false);
+
       dispatch({
         type: "SHOWSNACKBAR",
         payload: {
