@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Spinner } from "reactstrap";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Material UI
 
@@ -23,7 +23,15 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
 import { Box } from "@mui/system";
 import Paper from "@mui/material/Paper";
-import { Pagination, Tab, Tabs } from "@mui/material";
+import {
+  Breadcrumbs,
+  Pagination,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 // Component
 
@@ -63,6 +71,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     borderBottom: "1px solid #CACACA",
   },
 }));
+
+const breadcrumbs = [
+  <Link
+    to="/admin/"
+    key="1"
+    className="link-no-decoration adm-breadcrumb-modifier"
+  >
+    Dashboard
+  </Link>,
+  <Typography className="link-no-decoration adm-breadcrumb-modifier">
+    Stock Request
+  </Typography>,
+];
 
 function StockRequest() {
   const dataAdmin = useSelector((state) => state.auth); // Get admin data from redux
@@ -198,6 +219,20 @@ function StockRequest() {
   };
 
   // RENDERING
+
+  //RENDER BREADCRUMBS
+  const renderBreadcrumb = () => {
+    return (
+      <Stack spacing={2}>
+        <Breadcrumbs
+          separator={<NavigateNextIcon fontSize="small" />}
+          aria-label="transaction detail breadcrumb"
+        >
+          {breadcrumbs}
+        </Breadcrumbs>
+      </Stack>
+    );
+  };
 
   // Render tab panel
 
@@ -490,6 +525,7 @@ function StockRequest() {
   return (
     <div className="container-fluid vh-100" style={{ overflow: "auto" }}>
       <div className="my-2">
+        <div className="mt-4 mb-2">{renderBreadcrumb()}</div>
         {renderTab()}
         <div className="stock-req-wrapper-table px-4 py-3">
           <div className="d-flex justify-content-between">
