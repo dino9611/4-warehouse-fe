@@ -107,6 +107,7 @@ function Checkout() {
   const [loadingAddress, setLoadingAddress] = useState(false);
   const [loadingPage, setLoadingPage] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false); // State untuk loading ketika checkout
+  const [loadingEditAddress, setLoadingEditAddress] = useState(false);
 
   // Data input new address user
 
@@ -272,6 +273,8 @@ function Checkout() {
 
   useEffect(() => {
     (async () => {
+      setPickEditCity(true);
+      setPickEditProvince(true);
       try {
         if (btnAdd || (btnEdit && !dataProvince.length)) {
           let resProvince = await axios.get(`${API_URL}/location/get/province`);
@@ -566,8 +569,6 @@ function Checkout() {
 
   // ONCLICK UBAH ALAMAT
   const onClickUbahData = (data) => {
-    setPickEditCity(true);
-    setPickEditProvince(true);
     setDataEditAddress(data);
     setBtnEdit(true);
   };
@@ -582,6 +583,8 @@ function Checkout() {
     const { province, province_id, label, city_id } = pickEditCity;
 
     try {
+      setLoadingEditAddress(true);
+
       let alamat = `${dataEditAddress.address}, ${label}, ${province}`;
 
       let res = await axios.get(
@@ -615,6 +618,11 @@ function Checkout() {
         `${API_URL}/location/edit/address/${dataEditAddress.id}`,
         editData
       );
+
+      setLoadingEditAddress(false);
+
+      setBtnEdit(false);
+      setHandleAddress(false);
 
       dispatch({
         type: "SHOWSNACKBAR",
@@ -930,6 +938,7 @@ function Checkout() {
             onClick={onClickSimpanEdit}
             width="w-25"
             disabled={
+              loadingEditAddress ||
               !recipient ||
               !phone_number ||
               !address ||
@@ -939,7 +948,7 @@ function Checkout() {
                 : false
             }
           >
-            {!loadingNewAddress ? (
+            {!loadingEditAddress ? (
               "Simpan"
             ) : (
               <Spinner color="light" size="sm">
