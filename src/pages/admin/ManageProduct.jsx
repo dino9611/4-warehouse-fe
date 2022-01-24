@@ -420,6 +420,7 @@ function ManageProduct() {
                 });
                 setPassForDel("");
                 setShowPass("password");
+                setSubmitLoad(false);
                 successToast(res.data.message);
                 fetchProdData();
                 if (products.length === 1) { //* Klo list produk hanya 1 pada tabel kemudian delete, akan redirect ke page pagination terakhir
@@ -652,7 +653,8 @@ function ManageProduct() {
                                                                 style={{
                                                                     cursor: "pointer",
                                                                     color: "#B24629",
-                                                                    fontWeight: 600
+                                                                    fontWeight: 600,
+                                                                    textDecoration: "underline"
                                                                 }} 
                                                                 onClick={() => stockModalClick(index, val.id)}
                                                             >
