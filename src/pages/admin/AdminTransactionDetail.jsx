@@ -91,7 +91,7 @@ function AdminTransactionDetail() {
   const [rejectDisabled, setRejectDisabled] = useState(false); //* State kondisi disabled ketika submit button ter-trigger, hingga proses selesai
 
   const [transactionDetail, setTransactionDetail] = useState([]);
-
+  console.log(transactionDetail)
   const [statusIdData, setStatusIdData] = useState({}); //* Buat render ulang klo status berubah (ex: stlh accept/send/reject)
 
   const [shippingInfo, setShippingInfo] = useState({});
@@ -492,6 +492,12 @@ function AdminTransactionDetail() {
 
   //? END STOK REQUEST
 
+  // CHECKERS FUNCTION SECTION
+  const isAllSufficient = (currentValue) =>
+    currentValue.stock_status === "Sufficient"; //* Utk validasi seluruh stock status mencukupi
+
+  const isSomeRequested = (currentValue) => currentValue.status_request === "Requested";
+
   // CLICK FUNCTION SECTION
   const activateButton = () => {
     setSubmitLoad(false);
@@ -499,9 +505,6 @@ function AdminTransactionDetail() {
     setRejectLoad(false);
     setRejectDisabled(false);
   };
-
-  const isAllSufficient = (currentValue) =>
-    currentValue.stock_status === "Sufficient"; //* Utk validasi seluruh stock status mencukupi
 
   const confirmTransactionPay = async (event, transactionId) => {
     //* Function submit saat order status = Wait Confirm
@@ -673,7 +676,7 @@ function AdminTransactionDetail() {
                             onClick={(event) =>
                               confirmTransactionPay(event, parentId)
                             }
-                            disabled={getRoleId === 1 || rejectDisabled || submitDisabled}
+                            disabled={getRoleId === 1 || rejectDisabled || submitDisabled || transactionDetail.some(isSomeRequested)}
                           >
                             {rejectLoad ? <CircularProgress style={{padding: ".5rem"}}/> : "Reject"}
                           </AdmBtnSecondary>
@@ -703,7 +706,7 @@ function AdminTransactionDetail() {
                             onClick={(event) =>
                               confirmTransactionDelivery(event, parentId)
                             }
-                            disabled={getRoleId === 1 || rejectDisabled || submitDisabled}
+                            disabled={getRoleId === 1 || rejectDisabled || submitDisabled || transactionDetail.some(isSomeRequested)}
                           >
                             {rejectLoad ? <CircularProgress style={{padding: ".5rem"}}/> : "Reject"}
                           </AdmBtnSecondary>

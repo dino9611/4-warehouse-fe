@@ -4,7 +4,7 @@ import { logoutAction } from "../redux/actions";
 
 // Library react
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTransition, animated } from "react-spring";
 
@@ -48,6 +48,8 @@ function Header() {
 
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   // Function click outside dropdown
 
   ClickOutside(ref, () => setHandlerCategory(false)); // Click outside untuk dropdown category
@@ -86,7 +88,17 @@ function Header() {
   const onLogout = () => {
     localStorage.removeItem("token");
     dispatch(logoutAction());
+    setHandlerProfile(false);
     dispatch({ type: "TOTALNULL" });
+  };
+
+  // PROTEKSI UNTUK KLIK ICON CART
+  const onCLickIconCart = () => {
+    if (dataUser.role_id !== 3) {
+      history.push("/login");
+    } else {
+      history.push("/cart");
+    }
   };
 
   // RENDERING
@@ -202,7 +214,10 @@ function Header() {
               </div>
             </Link>
             <Link to="/profile/address" className="text-link">
-              <div className="header-ddlist-wrapper d-flex align-items-center p-2">
+              <div
+                className="header-ddlist-wrapper d-flex align-items-center p-2"
+                onClick={() => setHandlerProfile(false)}
+              >
                 <div className="mr-2">
                   <img src={asset.alamat} alt="alamat" />
                 </div>
@@ -285,12 +300,10 @@ function Header() {
           location.pathname === "/checkout/payment" ? null : (
             <div className="d-flex align-items-center">
               <div className="header-right">
-                <Link to="/cart">
-                  <div>
-                    <img src={asset.cart} alt="cart-header" />
-                    {renderNotifCart()}
-                  </div>
-                </Link>
+                <div onClick={onCLickIconCart}>
+                  <img src={asset.cart} alt="cart-header" />
+                  {renderNotifCart()}
+                </div>
               </div>
               <div className="header-right">
                 <img src={asset.notif} alt="notif-header" />
