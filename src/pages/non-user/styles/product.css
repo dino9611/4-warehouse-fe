@@ -90,7 +90,7 @@ input[type="number"] {
   margin-top: 2%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  row-gap: 5%;
+  row-gap: 24px;
 }
 
 .product-card {
