@@ -287,7 +287,7 @@ function HomeDashboard() {
                     <div className="adm-dashboard-header-wrap">
                         {(role_id === 1) ? <h4>Dashboard</h4> : <h4>Dashboard {warehouse_name}</h4>}
                         <div className="adm-dashboard-header-right">
-                            <h4>Filter Year</h4>
+                            <h4>Filter by Year</h4>
                             <div className="adm-dashboard-dropdown-wrap">
                                 <button 
                                     className="adm-dashboard-dropdown-btn" 
