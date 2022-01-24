@@ -76,9 +76,13 @@ const breadcrumbs = [
   >
     Dashboard
   </Link>,
-  <Link key="2" className="link-no-decoration adm-breadcrumb-modifier">
+  <Typography 
+    key="2"
+    color="#070707"
+    style={{ fontSize: "0.75rem", margin: "auto" }}
+  >
     Log request
-  </Link>,
+  </Typography>,
 ];
 
 function LogRequest() {

@@ -4,7 +4,7 @@ import { logoutAction } from "../redux/actions";
 
 // Library react
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTransition, animated } from "react-spring";
 
@@ -48,6 +48,8 @@ function Header() {
 
   const dispatch = useDispatch();
 
+  const history = useHistory();
+
   // Function click outside dropdown
 
   ClickOutside(ref, () => setHandlerCategory(false)); // Click outside untuk dropdown category
@@ -88,6 +90,15 @@ function Header() {
     dispatch(logoutAction());
     setHandlerProfile(false);
     dispatch({ type: "TOTALNULL" });
+  };
+
+  // PROTEKSI UNTUK KLIK ICON CART
+  const onCLickIconCart = () => {
+    if (dataUser.role_id !== 3) {
+      history.push("/login");
+    } else {
+      history.push("/cart");
+    }
   };
 
   // RENDERING
@@ -289,12 +300,10 @@ function Header() {
           location.pathname === "/checkout/payment" ? null : (
             <div className="d-flex align-items-center">
               <div className="header-right">
-                <Link to="/cart">
-                  <div>
-                    <img src={asset.cart} alt="cart-header" />
-                    {renderNotifCart()}
-                  </div>
-                </Link>
+                <div onClick={onCLickIconCart}>
+                  <img src={asset.cart} alt="cart-header" />
+                  {renderNotifCart()}
+                </div>
               </div>
               <div className="header-right">
                 <img src={asset.notif} alt="notif-header" />
