@@ -823,6 +823,12 @@ function AdminTransactionDetail() {
                                   <span className="transaction-detail-insufficient-label">
                                     Cancelled
                                   </span>
+                                ) : (val.status_request === "Request required" && getRoleId === 1) ? (
+                                  <span
+                                    className="transaction-detail-insufficient-label"
+                                  >
+                                    {val.stock_status}
+                                  </span>
                                 ) : val.status_request === "Request required" ? (
                                   <span
                                     className="transaction-detail-insufficient-label"
@@ -831,7 +837,7 @@ function AdminTransactionDetail() {
                                   >
                                     {val.stock_status}
                                   </span>
-                                ) : val.status_request === "Requested" ? (
+                                ): val.status_request === "Requested" ? (
                                   <span className="transaction-detail-requested-label">
                                     {val.status_request}
                                   </span>
