@@ -219,7 +219,7 @@ function ManageStock() {
                     <AdmBtnPrimary 
                         width={"6rem"} 
                         onClick={() => submitEditStock(currentStock, prodId)}
-                        disabled={submitLoad}
+                        disabled={!newStock || submitLoad}
                     >
                         {submitLoad ? <CircularProgress style={{padding: "0.25rem"}}/> : "Submit"}
                     </AdmBtnPrimary>
@@ -332,6 +332,8 @@ function ManageStock() {
         let input = parseInt(event.target.value);
         if (input < 0) {
             setNewStock(input * -1);
+        } else if (input === 0) {
+            setNewStock(1);
         };
     };
 

@@ -155,10 +155,10 @@ function DetailedProduct(props) {
                 dataProduct?.category.slice(1)}
             </div>
             <div className="detailed-product-content-weight my-2">
-              {dataProduct?.weight}
+              {`${dataProduct?.weight} gram`}
             </div>
             <div className="detailed-product-content-weight">
-              {dataProduct?.total_stock}
+              {`${dataProduct?.total_stock} pcs`}
             </div>
           </div>
         </div>

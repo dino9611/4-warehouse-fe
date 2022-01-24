@@ -428,6 +428,10 @@
     opacity: 50%;
 }
 
+.adm-products-lastPage-btn:disabled > img {
+    transform: translateY(0px) rotate(180deg) !important; /* Utk counter selector yg diatas, jd pas disabled ga hover */
+}
+
 .adm-products-firstPage-btn:disabled:hover > img,
 .adm-products-lastPage-btn:disabled:hover > img,
 .adm-products-prev-btn:disabled:hover > img,

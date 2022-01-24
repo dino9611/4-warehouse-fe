@@ -299,6 +299,10 @@
     opacity: 50%;
 }
 
+.admWh-stock-lastPage-btn:disabled > img {
+    transform: translateY(0px) rotate(180deg) !important; /* Utk counter selector yg diatas, jd pas disabled ga hover */
+}
+
 .admWh-stock-firstPage-btn:disabled:hover > img,
 .admWh-stock-lastPage-btn:disabled:hover > img,
 .admWh-stock-prev-btn:disabled:hover > img,
