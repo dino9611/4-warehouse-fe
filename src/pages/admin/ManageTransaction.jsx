@@ -99,6 +99,7 @@ function ManageTransaction() {
   const [loadTable, setLoadTable] = useState(true); //* State kondisi utk masking tampilan client saat loading table stlh select page pagination
 
   const [transactions, setTransactions] = useState([]); //* Data utama render tabel transactions
+  console.log(transactions)
 
   const [value, setValue] = React.useState(0); //* Atur value tabbing
 
@@ -474,10 +475,10 @@ function ManageTransaction() {
                 </button>
                 <button 
                   className="adm-transaction-lastPage-btn" 
-                  disabled={page === pageCountRange.length} 
+                  disabled={page === pageCountRange.length || !transactions.length} 
                   onClick={toLastPage}
                 >
-                  {page === pageCountRange.length ? <img src={firstPageArrowInactive} alt="Go-To-Last-Page-Arrow" style={{transform: "rotate(180deg)"}}/> : <img src={firstPageArrowActive} alt="Go-To-Last-Page-Arrow" style={{transform: "rotate(180deg)"}}/>}
+                  {(page === pageCountRange.length || !transactions.length) ? <img src={firstPageArrowInactive} alt="Go-To-Last-Page-Arrow" style={{transform: "rotate(180deg)"}}/> : <img src={firstPageArrowActive} alt="Go-To-Last-Page-Arrow" style={{transform: "rotate(180deg)"}}/>}
                 </button>
               </div>
             </div>
