@@ -40,7 +40,7 @@ function Product() {
 
   // PAGINATION STATE
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(16);
   const [totalProduct, setTotalProduct] = useState(null);
 
   // FILTER N SORT STATE
