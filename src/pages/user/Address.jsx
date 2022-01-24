@@ -116,13 +116,21 @@ class Address extends React.Component {
 
   // get data kota
   async componentDidUpdate(prevProps, prevState) {
-    const { pickProvince, modalEdit, modalAddress, pickEditProvince } =
-      this.state;
+    const {
+      pickProvince,
+      modalEdit,
+      modalAddress,
+      pickEditProvince,
+      modalDelete,
+    } = this.state;
     try {
       // console.log(prevState.pickProvince);
       if (prevState.pickProvince !== pickProvince) {
         this.fetchCity();
         // console.log("lewat fetchCIty");
+      }
+      if (modalDelete === false) {
+        this.fetchData();
       }
     } catch (error) {
       console.log(error);
@@ -144,12 +152,14 @@ class Address extends React.Component {
     try {
       axios.delete(`${API_URL}/user/address/delete/${idAddress} `);
 
-      this.fetchData();
+      // this.fetchData();
       this.setState({
         modalDelete: false,
         successSnack: true,
         message: "Berhasil menghapus alamat",
       });
+
+      // window.location.reload();
       // console.log();
     } catch (error) {
       console.log(error);
@@ -674,7 +684,13 @@ class Address extends React.Component {
             <button
               className="btn-simpan-alamat"
               onClick={this.onSaveAddressClick}
-              disabled={!pickCity || !pickProvince}
+              disabled={
+                !address ||
+                !pickCity ||
+                !pickProvince ||
+                !phone_number ||
+                !recipient
+              }
             >
               Simpan
             </button>
