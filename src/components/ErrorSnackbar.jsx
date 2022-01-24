@@ -25,7 +25,7 @@ class ErrorSnack extends React.Component {
       <Snackbar
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "center",
         }}
         open={this.props.errorSnack}
         message={this.props.message}

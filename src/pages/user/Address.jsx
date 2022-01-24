@@ -144,12 +144,12 @@ class Address extends React.Component {
     try {
       axios.delete(`${API_URL}/user/address/delete/${idAddress} `);
 
+      this.fetchData();
       this.setState({
         modalDelete: false,
         successSnack: true,
         message: "Berhasil menghapus alamat",
       });
-      this.fetchData();
       // console.log();
     } catch (error) {
       console.log(error);
@@ -531,6 +531,7 @@ class Address extends React.Component {
               placeholder="nama penerima"
               onChange={this.onInputEditChange}
               // defaultValue={addressEdit.recipient}
+              maxLength="45"
               value={addressEdit.recipient}
             />
             <h6 className="mt-3">Nomor telepon</h6>
@@ -550,6 +551,7 @@ class Address extends React.Component {
               className="form-control input-form"
               placeholder="alamat"
               onChange={this.onInputEditChange}
+              maxLength="120"
               // value={addressEdit.address}
               value={addressEdit.address}
             />
@@ -625,6 +627,7 @@ class Address extends React.Component {
             className="form-control input-form"
             placeholder="nama penerima"
             onChange={this.onInputChange}
+            maxLength="45"
             value={recipient}
           />
           <h6 className="mt-3">Nomor telepon</h6>
@@ -643,6 +646,7 @@ class Address extends React.Component {
             className="form-control input-form"
             placeholder="alamat"
             onChange={this.onInputChange}
+            maxLength="120"
             value={address}
           />
           <h6 className="mt-3">Provinsi</h6>
