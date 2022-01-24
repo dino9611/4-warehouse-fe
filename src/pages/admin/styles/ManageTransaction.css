@@ -332,6 +332,9 @@
     opacity: 50%;
 }
 
+.adm-transaction-lastPage-btn:disabled > img {
+    transform: translateY(0px) rotate(180deg) !important; /* Utk counter selector yg diatas, jd pas disabled ga hover */
+}
 
 .adm-transaction-firstPage-btn:disabled:hover > img,
 .adm-transaction-lastPage-btn:disabled:hover > img,

@@ -131,12 +131,12 @@ function HomeDashboard() {
 
     const fetchRevenue = async () => {
         try {
-            const res01 = await axios.get(`${API_URL}/sales/monthly-revenue`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res02 = await axios.get(`${API_URL}/sales/potential-revenue`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res03 = await axios.get(`${API_URL}/sales/status-contribution`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res04 = await axios.get(`${API_URL}/sales/yearly-revenue`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res05 = await axios.get(`${API_URL}/sales/net-sales`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res06 = await axios.get(`${API_URL}/sales/year-net-sales`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
+            const res01 = await axios.get(`${API_URL}/sales/monthly-revenue?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res02 = await axios.get(`${API_URL}/sales/potential-revenue?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res03 = await axios.get(`${API_URL}/sales/status-contribution?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res04 = await axios.get(`${API_URL}/sales/yearly-revenue?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res05 = await axios.get(`${API_URL}/sales/net-sales?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res06 = await axios.get(`${API_URL}/sales/year-net-sales?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
             setMonthlyRevenue(res01.data);
             setMonthRevLabels(Object.keys(res01.data));
             setMonthRevData(Object.values(res01.data));
@@ -172,10 +172,10 @@ function HomeDashboard() {
 
     const fetchProdPerformance = async () => {
         try {
-            const res01 = await axios.get(`${API_URL}/sales/top-prod-qty`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res02 = await axios.get(`${API_URL}/sales/top-prod-val`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res03 = await axios.get(`${API_URL}/sales/category-contribution`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res04 = await axios.get(`${API_URL}/sales/prod-sold`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
+            const res01 = await axios.get(`${API_URL}/sales/top-prod-qty?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res02 = await axios.get(`${API_URL}/sales/top-prod-val?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res03 = await axios.get(`${API_URL}/sales/category-contribution?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res04 = await axios.get(`${API_URL}/sales/prod-sold?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
             setTopProdQty(res01.data);
             res01.data.forEach((val, index) => {
                 setProdQtyLabels((prevState) => {
@@ -217,10 +217,10 @@ function HomeDashboard() {
 
     const fetchUsersInsight = async () => {
         try {
-            const res01 = await axios.get(`${API_URL}/sales/top-users`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
+            const res01 = await axios.get(`${API_URL}/sales/top-users?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
             const res02 = await axios.get(`${API_URL}/sales/total-users`);
-            const res03 = await axios.get(`${API_URL}/sales/average-transaction`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
-            const res04 = await axios.get(`${API_URL}/sales/total-orders`, {headers: {filter_year: filterYear, role_id: role_id, warehouse_id: warehouse_id}});
+            const res03 = await axios.get(`${API_URL}/sales/average-transaction?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
+            const res04 = await axios.get(`${API_URL}/sales/total-orders?filterYear=${filterYear}&roleId=${role_id}&whId=${warehouse_id}`);
             setTopUsers(res01.data);
             setTotalUsers(res02.data.total_users);
             setUserAvgTransaction(res03.data.avg_transaction);
@@ -287,7 +287,7 @@ function HomeDashboard() {
                     <div className="adm-dashboard-header-wrap">
                         {(role_id === 1) ? <h4>Dashboard</h4> : <h4>Dashboard {warehouse_name}</h4>}
                         <div className="adm-dashboard-header-right">
-                            <h4>Filter Year</h4>
+                            <h4>Filter by Year</h4>
                             <div className="adm-dashboard-dropdown-wrap">
                                 <button 
                                     className="adm-dashboard-dropdown-btn" 
