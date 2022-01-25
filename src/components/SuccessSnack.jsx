@@ -24,7 +24,7 @@ class SuccessSnack extends React.Component {
       <Snackbar
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "center",
         }}
         autoHideDuration={3000}
         open={this.props.successSnack}
