@@ -104,7 +104,7 @@ class Login extends React.Component {
               <input
                 type="text"
                 className="form-control shadow-none text-input"
-                placeholder="username"
+                placeholder="Masukkan username / email"
                 name="username"
                 onChange={this.onInputChange}
                 value={username}
@@ -144,10 +144,9 @@ class Login extends React.Component {
               <button className="btn-login" onClick={this.onLoginCLick}>
                 Masuk
               </button>
-              <h6 className="sudah-punya-akun-text">Belum punya akun?</h6>
-              <Link to="/register" className="link-daftar">
-                Daftar
-              </Link>
+              <h6 className="sudah-punya-akun-text">
+                Belum punya akun? <Link to="/register" className="link-daftar">Daftar</Link>
+              </h6>
             </div>
           </div>
         </div>

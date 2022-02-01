@@ -36,7 +36,7 @@
   background-color: var(--primary-5th-color);
   display: flex;
   height: max-content;
-  width: 98vw !important;
+  width: 100% !important;
   justify-content: center;
   margin-top: 0px;
   box-sizing: border-box;
@@ -49,7 +49,6 @@
   width: 1120px;
   background-color: var(--neutral-5th-color);
   border-radius: 12px;
-  margin-left: 10px;
 
   box-shadow: 0px 1px 6px #d7d7d8;
   -webkit-box-shadow: 0px 1px 6px #d7d7d8;
@@ -120,7 +119,7 @@
 }
 .checkbox-form {
   width: 300px;
-  margin-left: 1%;
+  margin-left: -0.5rem;
 }
 .checkbox-input {
   margin-top: 3px !important;
