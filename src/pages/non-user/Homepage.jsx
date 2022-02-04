@@ -11,6 +11,7 @@ import { API_URL } from "./../../constants/api.js";
 import { useDispatch, useSelector } from "react-redux";
 import SkeletonCardProduct from "../../components/SkeletonCardProduct";
 import CarouselCategory from "../../components/CarouselCategory";
+import CarouselHotItems from "../../components/CarouselHotItems";
 
 function Homepage() {
   //STATE
@@ -293,7 +294,7 @@ function Homepage() {
           </h4>
         </div>
         <div className="row justify-content-between mt-3">
-          <div className="w-100">
+          <div className="vw-100" style={{ overflow: "hidden" }}>
             <CarouselCategory />
           </div>
         </div>
@@ -301,7 +302,7 @@ function Homepage() {
       <div className="mt-5">
         <div className="homepage-diskon p-4">
           <div className="container">
-            <div className="row">
+            <div className="row pl-0 pl-md-4 pl-lg-0">
               <h5
                 style={{ fontSize: "20px", fontWeight: "600", color: "#fff" }}
               >
@@ -309,7 +310,11 @@ function Homepage() {
               </h5>
             </div>
           </div>
-          {renderHotProduct()}
+          <div className="container">
+            <div className="row pl-0 pl-md-2 pl-lg-0">
+              <CarouselHotItems />
+            </div>
+          </div>
         </div>
       </div>
       <div className="container mt-5">
