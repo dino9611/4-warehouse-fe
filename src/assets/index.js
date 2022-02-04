@@ -72,6 +72,8 @@ import filter from "./filter.svg";
 import error1 from "./error1.svg";
 import cartkosong from "./cartkosong.svg";
 import emptyorder from "./emptyorder.svg";
+import hamburger from "./hamburger.svg";
+import closehamburger from "./closehamburger.svg";
 
 export default {
   logo,
@@ -148,4 +150,6 @@ export default {
   error1,
   cartkosong,
   emptyorder,
+  hamburger,
+  closehamburger,
 };
