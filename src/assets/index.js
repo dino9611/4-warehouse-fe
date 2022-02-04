@@ -74,6 +74,9 @@ import cartkosong from "./cartkosong.svg";
 import emptyorder from "./emptyorder.svg";
 import hamburger from "./hamburger.svg";
 import closehamburger from "./closehamburger.svg";
+import banner1mobile from "./banner1-mobile.png";
+import banner2mobile from "./banner2-mobile.png";
+import banner3mobile from "./banner3-mobile.png";
 
 export default {
   logo,
@@ -152,4 +155,7 @@ export default {
   emptyorder,
   hamburger,
   closehamburger,
+  banner1mobile,
+  banner2mobile,
+  banner3mobile,
 };

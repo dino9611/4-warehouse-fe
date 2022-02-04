@@ -318,7 +318,7 @@ function Homepage() {
             Temukan Produk dari Kategori
           </h4>
         </div>
-        <div className="row d-flex justify-content-between mt-3">
+        <div className="row justify-content-between mt-3">
           {loadingPage ? renderListSkeletonCategory() : renderListCategory()}
         </div>
       </div>
