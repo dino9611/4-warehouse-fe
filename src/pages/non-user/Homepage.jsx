@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./styles/homepage.css";
 import CarouselBanner from "../../components/CarouselBanner";
-import CardCategory from "../../components/CardCategory";
 import CardProduct from "../../components/CardProduct";
 import CarouselProduct from "../../components/CarouselProduct";
 import TitleCategory from "../../components/TitleCategory";
@@ -10,22 +9,13 @@ import { useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "./../../constants/api.js";
 import { useDispatch, useSelector } from "react-redux";
-import { useRef } from "react";
-import { Link } from "react-router-dom";
 import SkeletonCardProduct from "../../components/SkeletonCardProduct";
-import SkeletonCardCategory from "../../components/SkeletonCardCategory";
 import CarouselCategory from "../../components/CarouselCategory";
-
-const { produk1, buah, coklat, kacang, kopi, rempah, sayur, susu, teh } =
-  images;
-
-const categoryImg = [kopi, teh, susu, coklat, rempah, sayur, buah, kacang];
 
 function Homepage() {
   //STATE
 
   //DATA STATE
-  const [dataCategory, setDataCategory] = useState([]);
   const [dataHotProduct, setDataHotProduct] = useState([]);
   const [dataProductSusu, setDataProductSusu] = useState([]);
   const [dataProductBuah, setDataProductBuah] = useState([]);
@@ -41,8 +31,6 @@ function Homepage() {
     (async () => {
       try {
         setLoadingPage(true);
-
-        let res = await axios.get(`${API_URL}/product/category`);
 
         let resHotProduct = await axios.get(
           `${API_URL}/product/get/hot-product`
@@ -69,7 +57,6 @@ function Homepage() {
         setDataProductBumbu(resProductBumbu.data);
         setDataProductCoklat(resProductCoklat.data);
         setDataHotProduct(resHotProduct.data);
-        setDataCategory(res.data);
 
         dispatch({ type: "RESETCAROUSEL" });
 
@@ -79,20 +66,6 @@ function Homepage() {
       }
     })();
   }, []);
-
-  // RENDER LIST CATEGORY
-  const renderListCategory = () => {
-    return dataCategory.map((el, index) => (
-      <CardCategory img={categoryImg[index]} name={el.category} />
-    ));
-  };
-
-  // RENDER LIST SKELETON CATEGORY
-  const renderListSkeletonCategory = () => {
-    return [1, 2, 3, 4, 5, 6, 7, 8].map((el, index) => (
-      <SkeletonCardCategory key={index} />
-    ));
-  };
 
   // RENDER LIST HOT ITEMS
   const renderHotProductList = () => {
