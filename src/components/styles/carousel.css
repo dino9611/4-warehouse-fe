@@ -96,4 +96,14 @@
   .homepage-carousel-wrapper .carousel-dots {
     margin-top: 1rem !important;
   }
+
+  .carousel-cat-slider {
+    width: 110vw !important;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .carousel-cat-slider {
+    width: 120vw !important;
+  }
 }

@@ -7,7 +7,9 @@ import imagesBanner from "./../assets";
 
 let images;
 
-if (window.matchMedia("(max-width: 480px)")) {
+const mediaQuery = window.matchMedia("(max-width: 480px)");
+
+if (mediaQuery.matches) {
   images = [
     imagesBanner.banner1mobile,
     imagesBanner.banner2mobile,
@@ -114,6 +116,12 @@ function Carousel() {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          arrows: false,
+        },
+      },
       {
         breakpoint: 480,
         settings: {

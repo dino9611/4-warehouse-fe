@@ -14,6 +14,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import SkeletonCardProduct from "../../components/SkeletonCardProduct";
 import SkeletonCardCategory from "../../components/SkeletonCardCategory";
+import CarouselCategory from "../../components/CarouselCategory";
 
 const { produk1, buah, coklat, kacang, kopi, rempah, sayur, susu, teh } =
   images;
@@ -314,12 +315,14 @@ function Homepage() {
       </div>
       <div className="container mt-4">
         <div className="row">
-          <h4 className="homepage-text-category">
+          <h4 className="homepage-text-category pl-4 pl-lg-0">
             Temukan Produk dari Kategori
           </h4>
         </div>
         <div className="row justify-content-between mt-3">
-          {loadingPage ? renderListSkeletonCategory() : renderListCategory()}
+          <div className="w-100">
+            <CarouselCategory />
+          </div>
         </div>
       </div>
       <div className="mt-5">
