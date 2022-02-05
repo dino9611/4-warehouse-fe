@@ -263,8 +263,8 @@ function Homepage() {
   // RENDER CAROUSEL PRODUCT COKLAT
   const renderCarouselProductCoklat = () => {
     return (
-      <div className="row mb-5">
-        <div className="homepage-carousel-product col-12 p-0">
+      <div className="row mb-5 ">
+        <div className="homepage-carousel-product  col-12 p-0">
           <CarouselProduct cat="carousel-coklat">
             <div></div>
             {loadingPage

@@ -144,7 +144,7 @@ function CarouselProduct({ children, cat }) {
   };
 
   return (
-    <div>
+    <div className="carousel-prod-wrap ">
       <Slider {...settings} className="carousel-prod-resp pl-2 pl-md-0">
         {children}
       </Slider>

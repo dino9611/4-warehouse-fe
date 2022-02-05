@@ -24,7 +24,7 @@ function Footer() {
         }}
       >
         <div className="container h-100">
-          <div className="row d-flex justify-content-between align-items-center h-100">
+          <div className="row justify-content-between align-items-center h-100">
             <div
               className="d-flex justify-content-between"
               style={{ width: "70%" }}
@@ -88,7 +88,7 @@ function Footer() {
                 </div>
               </div>
             </div>
-            <div>
+            <div style={{ order: "5" }}>
               <img src={footer} alt="logo-footers" />
             </div>
           </div>
