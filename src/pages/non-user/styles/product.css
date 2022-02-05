@@ -259,3 +259,92 @@ input[type="number"] {
   font-weight: 600;
   text-align: center;
 }
+
+.prod-sort-resp {
+  background-color: #0a4d3c;
+  font-size: 0.625em;
+  font-weight: 500;
+  color: #fff;
+  border-radius: 8px;
+}
+
+.modal-sorting {
+  height: 80%;
+  width: 100% !important;
+}
+
+.modal-filtering {
+  height: 100%;
+  width: 100%;
+}
+
+.prod-modal-filter-cat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media only screen and (max-width: 480px) {
+  .product-list-wrapper {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .product-card:nth-child(even) {
+    justify-self: end;
+  }
+
+  .product-card:nth-child(odd) {
+    justify-self: start;
+  }
+
+  .product-content {
+    width: 100%;
+  }
+
+  .product-show-font {
+    width: 100%;
+    order: 2;
+  }
+
+  .product-filter-nama-wrapper {
+    padding: 4%;
+    width: 100%;
+    order: 0;
+  }
+
+  .prod-filternsort-resp {
+    order: 1;
+  }
+
+  .product-price-wrapper {
+    padding: 4%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .product-list-wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .product-content {
+    /* padding: 0 !important; */
+    width: 100%;
+  }
+
+  .product-show-font {
+    width: 100%;
+    order: 2;
+  }
+
+  .product-filter-nama-wrapper {
+    width: 100%;
+    order: 0;
+  }
+
+  .prod-filternsort-resp {
+    order: 1;
+  }
+
+  .product-price-wrapper {
+    padding: 3%;
+  }
+}
