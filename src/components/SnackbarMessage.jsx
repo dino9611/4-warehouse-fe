@@ -17,9 +17,9 @@ const SnackbarMessage = forwardRef(({ status, message }, ref) => {
       showSnackbarMessage: () => {
         setHandleSnackMessage(true);
 
-        setTimeout(() => {
-          setHandleSnackMessage(false);
-        }, 3000);
+        // setTimeout(() => {
+        //   setHandleSnackMessage(false);
+        // }, 3000);
       },
     };
   });

@@ -148,4 +148,8 @@
 }
 
 @media only screen and (max-width: 1024px) {
+  .cart-del-modal {
+    min-width: 75% !important;
+    max-width: 75% !important;
+  }
 }
