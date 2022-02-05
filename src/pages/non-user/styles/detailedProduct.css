@@ -185,3 +185,31 @@
   border: 1px solid #8d280c;
   color: #8d280c;
 }
+
+@media only screen and (max-width: 480px) {
+  .detailed-product-img {
+    width: 272px;
+    height: 272px;
+  }
+
+  .detailed-product-listcontent {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .detailed-product-photoproduct {
+    display: flex;
+    justify-content: center;
+  }
+
+  .detailed-product-listphoto {
+    width: 100%;
+    margin-top: 2%;
+  }
+
+  .detailed-product-listphoto-wrapper {
+    width: 100%;
+  }
+}

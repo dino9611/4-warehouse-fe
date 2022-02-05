@@ -15,12 +15,12 @@
   }
 
   .footer-content {
-    width: 100%;
+    width: 100% !important;
   }
 }
 
 @media only screen and (max-width: 1024px) {
-  .carousel-cat-slider {
-    width: 120vw !important;
+  .footer-content {
+    width: 100% !important;
   }
 }
