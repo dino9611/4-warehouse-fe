@@ -1434,9 +1434,9 @@ function Checkout() {
   // RETURN
 
   return (
-    <div className="container my-5">
-      <div className="row">
-        <div className="checkout-col col-4 pr-3">
+    <div className="container checkout-container-resp my-5">
+      <div className="row flex-column flex-md-row">
+        <div className="checkout-col col-12 col-md-4 pr-0 pr-md-3">
           <div className="checkout-wrapper p-4">
             <div className="checkout-title mb-3">1. Alamat Pengiriman</div>
             {dataAddress
@@ -1446,7 +1446,7 @@ function Checkout() {
               : renderNewAddress()}
           </div>
         </div>
-        <div className="checkout-col col-4 p-px-2">
+        <div className="checkout-col col-12 col-md-4 my-3 my-md-0">
           <div className="checkout-wrapper p-4">
             <div className="checkout-title mb-3">2. Rincian Pembelanjaan</div>
             <div className="checkout-productcart">
@@ -1467,7 +1467,7 @@ function Checkout() {
             {renderShipping()}
           </div>
         </div>
-        <div className="checkout-col col-4 pl-3 ">
+        <div className="checkout-col col-12 col-md-4 pl-0 pl-md-3">
           <div className="checkout-wrapper p-4 mb-4">
             <div className="checkout-title mb-3">3. Pembayaran</div>
             <div className="checkout-bank-wrapper">{renderPayment()}</div>
@@ -1524,9 +1524,9 @@ function Checkout() {
               </div>
             </div>
           </div>
-          <div className="mt-4">
+          <div className="checkout-btn-wrap-resp mt-4">
             <ButtonPrimary
-              width="w-100"
+              width="checkout-btn-resp w-100"
               onClick={onClickCheckout}
               disabled={
                 loadingCheckout ||

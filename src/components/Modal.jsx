@@ -18,7 +18,7 @@ function Modal({ open, close, children, classModal }) {
   // Transition modal
 
   const transitionModal = useTransition(open, {
-    from: { transform: "translate(-50%, 100%)", top: "100%" },
+    from: { transform: "translate(-50%, 0%)", top: "100%" },
     enter: { transform: "translate(-50%, -50%)", top: "50%", left: "50%" },
     leave: { transform: "translate(-50%, 0%)" },
   });
