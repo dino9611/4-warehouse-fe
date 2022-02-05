@@ -17,19 +17,22 @@ function Footer() {
   return (
     <div>
       <div
-        className="mt-5"
+        className="mt-5 h-100 py-5 w-100"
         style={{
           height: "236px",
           backgroundColor: "#0a4d3c",
         }}
       >
-        <div className="container h-100">
-          <div className="row justify-content-between align-items-center h-100">
+        <div className="container h-100 w-100">
+          <div className="row justify-content-between align-items-center h-100 w-100 px-4 px-lg-0">
             <div
-              className="d-flex justify-content-between"
+              className="footer-content order-1 order-lg-0 d-flex flex-column flex-md-row flex-lg-row justify-content-between"
               style={{ width: "70%" }}
             >
-              <div className="d-flex flex-column" style={{ width: "201px" }}>
+              <div
+                className="order-3 order-lg-0 d-flex flex-column"
+                style={{ width: "201px" }}
+              >
                 <div className="homepage-footer-title">Kategori</div>
                 <div className="homepage-footer-content d-flex justify-content-between w-100">
                   <div
@@ -52,7 +55,7 @@ function Footer() {
                   </div>
                 </div>
               </div>
-              <div className="d-flex flex-column justify-content-between">
+              <div className="d-none d-lg-flex flex-column justify-content-between">
                 <div className="homepage-footer-title">Hubungi kami</div>
                 <div
                   className="homepage-footer-content d-flex flex-column h-100"
@@ -63,7 +66,7 @@ function Footer() {
                   <div>Pengiriman</div>
                 </div>
               </div>
-              <div className="d-flex flex-column justify-content-between">
+              <div className="order-2 order-lg-0 d-flex flex-column justify-content-between mb-4 mb-lg-0">
                 <div className="homepage-footer-title">Tentang kami</div>
                 <div className="homepage-footer-content d-flex flex-column justify-content-between h-100">
                   <div className="mb-4">Kenapa belanja di The Local?</div>
@@ -76,7 +79,7 @@ function Footer() {
                   </div>
                 </div>
               </div>
-              <div className="d-flex flex-column">
+              <div className="order-1 order-lg-0 d-flex flex-column mb-4 mb-lg-0">
                 <div className="homepage-footer-title">Customer service</div>
                 <div className="homepage-footer-content d-flex align-items-center mb-2">
                   <img src={call} alt="call" />
@@ -88,7 +91,7 @@ function Footer() {
                 </div>
               </div>
             </div>
-            <div style={{ order: "5" }}>
+            <div className="order-0 footer-logo-bottom d-flex align-items-center justify-content-center d-lg-inline-block mb-5 mb-lg-0">
               <img src={footer} alt="logo-footers" />
             </div>
           </div>
