@@ -196,6 +196,10 @@
     width: 70px;
     height: 70px;
   }
+
+  .detailed-product-wrapper {
+    width: 100% !important;
+  }
 }
 
 @media only screen and (max-width: 1024px) {

@@ -414,7 +414,7 @@ function DetailedProduct(props) {
           </Breadcrumbs>
         </div>
       </div>
-      <div className="row flex-column flex-lg-row px-4 px-lg-0 pl-0">
+      <div className="row flex-column flex-lg-row px-0 px-md-4 px-lg-0 pl-0">
         <div className="detailed-product-wrapper left-side col-12 col-lg-7 d-flex flex-column flex-lg-row">
           <div className="order-1 order-lg-0 detailed-product-listphoto d-flex flex-column align-items-center">
             <div className="detailed-product-listphoto-wrapper d-flex flex-row flex-lg-column align-items-center justify-content-center justify-content-lg-start">
