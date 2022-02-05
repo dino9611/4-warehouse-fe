@@ -13,6 +13,8 @@ import SkeletonCardProduct from "../../components/SkeletonCardProduct";
 import CarouselCategory from "../../components/CarouselCategory";
 import CarouselHotItems from "../../components/CarouselHotItems";
 
+const mediaQuery = window.matchMedia("(max-width: 1024px)");
+
 function Homepage() {
   //STATE
 
@@ -135,6 +137,7 @@ function Homepage() {
           <CarouselProduct cat="carousel-susu">
             <div></div>
             {loadingPage ? renderSkeletonByCategory() : renderDataProductSusu()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-susu"
@@ -177,6 +180,7 @@ function Homepage() {
           <CarouselProduct cat="carousel-buah">
             <div></div>
             {loadingPage ? renderSkeletonByCategory() : renderDataProductBuah()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-buah"
@@ -221,6 +225,7 @@ function Homepage() {
             {loadingPage
               ? renderSkeletonByCategory()
               : renderDataProductBumbu()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-bumbu"
@@ -265,6 +270,7 @@ function Homepage() {
             {loadingPage
               ? renderSkeletonByCategory()
               : renderDataProductCoklat()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-coklat"
@@ -318,7 +324,7 @@ function Homepage() {
         </div>
       </div>
       <div className="container mt-5">
-        <div className="row mb-3">
+        <div className="row mb-3 pl-4 pl-md-0">
           <h5
             className="mb-3"
             style={{ fontSize: "20px", fontWeight: "600", color: "#070707" }}

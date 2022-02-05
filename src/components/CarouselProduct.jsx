@@ -13,6 +13,8 @@ function CarouselProduct({ children, cat }) {
   const [newIndex, setNewIndex] = useState(null);
   const [isMouseOver, setIsMouseOver] = useState(false);
 
+  const mediaQuery = window.matchMedia("(max-width: 1024px)");
+
   const btnRef = useRef();
 
   const dispatch = useDispatch();
@@ -105,13 +107,47 @@ function CarouselProduct({ children, cat }) {
 
       dispatch({ type, payload });
     },
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    nextArrow: mediaQuery.matches ? (
+      <button
+        ref={btnRef}
+        value={cat}
+        style={{ opacity: "1", pointerEvents: "none" }}
+      ></button>
+    ) : (
+      <NextArrow />
+    ),
+    prevArrow: mediaQuery.matches ? (
+      <button
+        ref={btnRef}
+        value={cat}
+        style={{ opacity: "1", pointerEvents: "none" }}
+      ></button>
+    ) : (
+      <PrevArrow />
+    ),
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 2,
+        },
+      },
+    ],
   };
 
   return (
     <div>
-      <Slider {...settings}>{children}</Slider>
+      <Slider {...settings} className="carousel-prod-resp pl-2 pl-md-0">
+        {children}
+      </Slider>
     </div>
   );
 }
