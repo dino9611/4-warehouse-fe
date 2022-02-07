@@ -167,6 +167,7 @@ function App() {
         getRoleId === 2 ||
         loading || 
         currentPath.includes("/login") ||
+        currentPath.includes("/register") ||
         currentPath.includes("/admin") ? null : (
           <Footer />
         )}
