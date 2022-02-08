@@ -1,0 +1,6 @@
+/* ? TABLET SIZE MD */
+@media (max-width: 991px) {
+    .forget-pass-modal-override {
+        width: 75%;
+    }
+}
