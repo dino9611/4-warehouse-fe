@@ -28,10 +28,11 @@
   align-items: center;
   /* width: ; */
   margin: 15px 22px 0 0;
-  padding-left: 3%;
+  padding: 0.625rem 1rem;
+  /* padding-left: 3%;
   padding-right: 3%;
   padding-bottom: 1%;
-  padding-top: 1%;
+  padding-top: 1%; */
 }
 
 .btn-send-email:hover {
@@ -40,12 +41,14 @@
 .VerifyEmail {
   text-align: center;
 }
-.verif-berhasil {
-  text-align: center;
-}
+.verif-ongoing,
+.verif-berhasil,
 .verif-failed {
-  text-align: center;
-}
-.verif-ongoing {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 90vh;
+  row-gap: 2rem;
   text-align: center;
 }

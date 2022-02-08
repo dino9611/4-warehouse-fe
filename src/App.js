@@ -168,6 +168,7 @@ function App() {
         loading || 
         currentPath.includes("/login") ||
         currentPath.includes("/register") ||
+        currentPath.includes("/verify-email") ||
         currentPath.includes("/admin") ? null : (
           <Footer />
         )}
