@@ -169,6 +169,7 @@ function App() {
         currentPath.includes("/login") ||
         currentPath.includes("/register") ||
         currentPath.includes("/verify-email") ||
+        currentPath.includes("/forget-password") ||
         currentPath.includes("/admin") ? null : (
           <Footer />
         )}

@@ -126,13 +126,13 @@ function ForgetPassInput(props) {
   const renderErrorPage = () => {
     return (
       <div
-        className="d-flex flex-column align-items-center justify-content-center w-100"
+        className="d-flex flex-column align-items-center justify-content-center w-100 forget-pass-error-mobile"
         style={{ height: "100vh" }}
       >
         <div>
           <img src={Admin404Img} alt="" />
         </div>
-        <div className="my-3" style={{ fontWeight: "600", color: "#070707" }}>
+        <div className="my-3" style={{ fontWeight: "600", color: "#070707", textAlign: "center" }}>
           Aduh, link sudah kadaluwarsa! Klik disini untuk mengirim email lagi
         </div>
         <div
@@ -155,6 +155,7 @@ function ForgetPassInput(props) {
         <img
           src={gambar}
           alt=""
+          className="forget-pass-img"
           style={{ objectFit: "cover", height: "100%", width: "50%" }}
         />
         <div className="d-flex flex-column align-items-center justify-content-center w-50">
@@ -211,7 +212,7 @@ function ForgetPassInput(props) {
   };
 
   return (
-    <div className="container  ">
+    <div className="container forget-container-override">
       {errorVerif ? renderErrorPage() : renderForgetPass()}
       <ForgetPass open={handleModal} close={() => setHandleModal(false)} />
     </div>
