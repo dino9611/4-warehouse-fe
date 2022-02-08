@@ -3,3 +3,24 @@
   font-weight: 500;
   color: #5a5a5a;
 }
+
+.footer-logo {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+@media only screen and (max-width: 480px) {
+  .footer-logo-bottom {
+    width: 100% !important;
+  }
+
+  .footer-content {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .footer-content {
+    width: 100% !important;
+  }
+}

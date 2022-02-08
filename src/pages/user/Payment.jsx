@@ -94,15 +94,17 @@ function Payment() {
     return (
       <div className="payment-note-wrapper w-100 mb-3">
         <div className="px-4 pt-4 pb-3 ">
-          <div className="d-flex align-items-center justify-content-between mb-3">
-            <div className="fs12-500-gray">Nomor virtual account</div>
+          <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-3">
+            <div className="fs12-500-gray mb-1 mb-md-0">
+              Nomor virtual account
+            </div>
             <div className="fs12-500-black d-flex align-items-center">
               <div>{`${dataOrders[0]?.account_number}${dataOrders[0]?.phone_number}`}</div>
               <img src={images.copycolor} alt="copy" className="ml-2" />
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="fs12-500-gray">Total pembayaran</div>
+          <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+            <div className="fs12-500-gray mb-1 mb-md-0">Total pembayaran</div>
             <div className="fs12-500-black d-flex align-items-center">
               <div>{`Rp ${thousandSeparator(
                 grandTotal() + dataOrders[0]?.shipping_fee
@@ -113,8 +115,8 @@ function Payment() {
         </div>
         <div className="payment-note-border p-0"></div>
         <div className="px-4 pb-4 pt-3">
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="fs12-500-gray">Metode pembayaran</div>
+          <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+            <div className="fs12-500-gray mb-1 mb-md-0">Metode pembayaran</div>
             <div className="fs12-500-black d-flex align-items-center">
               <div>{dataOrders[0]?.name}</div>
             </div>
@@ -128,14 +130,14 @@ function Payment() {
 
   const renderButton = () => {
     return (
-      <div className="d-flex my-3 w-100">
+      <div className="d-flex flex-column flex-md-row my-3 w-100">
         <button
-          className="payment-btn-detail w-50 mr-3"
+          className="payment-btn-detail w-50 mr-3 py-2 py-md-0 mb-3 mb-md-0"
           onClick={() => setHandleModal(true)}
         >
           Unggah pembayaran
         </button>
-        <Link to="/products" className="w-50">
+        <Link to="/products" className="payment-btn-belanja-resp w-50">
           <ButtonPrimary width="w-100">Belanja lagi</ButtonPrimary>
         </Link>
       </div>

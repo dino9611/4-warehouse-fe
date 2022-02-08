@@ -1,0 +1,52 @@
+.hamburger-active {
+  animation: hamburger-anim-active 0.5s forwards;
+  margin-top: 74px;
+  top: 0;
+  pointer-events: all;
+  visibility: visible;
+  transition: all 0.5s;
+}
+
+.hamburger {
+  animation: hamburger-anim 0.5s forwards ease-out;
+  margin-top: 74px;
+  top: 100vh;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+.hamburger-location {
+  background-color: #f4f4f4;
+  border-radius: 8px 0 0 8px;
+}
+
+.hamburger-location::after {
+  content: "";
+  width: 4px;
+  height: 40px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background-color: #0a4d3c;
+}
+
+.ham-category-dd-active {
+  transform: rotate(-180deg);
+  transition: 0.5s;
+}
+
+.ham-category-dd-noactive {
+  transform: rotate(0deg);
+  transition: 0.5s;
+}
+
+.ham-content-dd {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+
+.ham-content-dd.active {
+  max-height: 300px;
+}
