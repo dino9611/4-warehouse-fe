@@ -17,7 +17,8 @@ import Modal from "./../../components/Modal";
 import images from "./../../assets";
 import assets from "./../../assets";
 import SkeletonListCart from "../../components/SkeletonListCart";
-import SnackbarMessage from "../../components/SnackbarMessage";
+
+const mediaQuery = window.matchMedia("(max-width: 480px)");
 
 function Cart() {
   const [dataCart, setDataCart] = useState([]); // Data cart detail
@@ -312,7 +313,13 @@ function Cart() {
                   ) : null}
                 </div>
                 <div className="cart-nameprod my-2">
-                  {el.name.length.length > 45
+                  {mediaQuery.matches
+                    ? el.name.length > 20
+                      ? el.name.charAt(0).toUpperCase() +
+                        el.name.slice(1, 20) +
+                        "..."
+                      : el.name.charAt(0).toUpperCase() + el.name.slice(1, 60)
+                    : el.name.length > 45
                     ? el.name.charAt(0).toUpperCase() +
                       el.name.slice(1, 45) +
                       "..."
@@ -322,7 +329,7 @@ function Cart() {
                   {`Rp ${thousandSeparator(el.price)}`}{" "}
                 </div>
               </div>
-              <div className="d-flex flex-column justify-content-end w-25">
+              <div className="d-none d-md-flex flex-column justify-content-end w-25">
                 <div className="align-self-end">
                   <button
                     className="cart-delete"
@@ -383,6 +390,56 @@ function Cart() {
               </div>
             </div>
           </div>
+
+          <div className="d-flex d-md-none justify-content-between align-items-center w-100 h-100 mt-4">
+            <div className="d-flex w-50 align-items-center h-100">
+              <button
+                className="cart-delete"
+                style={{ fontSize: "0.875rem" }}
+                onClick={() => openModalDelete(el.id, el.name)}
+              >
+                <span className="mr-1">Hapus</span>
+                <img src={images.trash} alt="trash" />
+              </button>
+            </div>
+            <div className="cart-inputqty d-flex align-items-center w-100 h-100 p-2">
+              <button
+                className="cart-btn"
+                onClick={() =>
+                  onClickMinusQty(index, el.id, el.qty, el.total_stock, el.name)
+                }
+              >
+                <img src={images.minus} alt="minus" />
+              </button>
+              <div>
+                <input
+                  type="number"
+                  className="cart-qty w-100"
+                  value={el.qty}
+                  onChange={(e) =>
+                    onChangeInputQty(e, index, el.id, el.qty, el.total_stock)
+                  }
+                  onBlur={(e) =>
+                    onBlurInputQty(e, index, el.id, el.qty, el.total_stock)
+                  }
+                />
+              </div>
+              <button className="cart-btn">
+                <img
+                  src={
+                    dataCart.qty === dataCart.total_stock
+                      ? images.plus
+                      : images.plusactive
+                  }
+                  alt="plus"
+                  onClick={() =>
+                    onClickPlusQty(index, el.id, el.qty, el.total_stock)
+                  }
+                />
+              </button>
+            </div>
+          </div>
+
           <div className="textbox-error-msg mt-1 d-flex justify-content-end">
             {error >= 0 || el.qty > el.total_stock
               ? `Maks. pembelian ${el.total_stock} barang`
@@ -499,7 +556,7 @@ function Cart() {
 
   const renderLeftSide = () => {
     return (
-      <div className="cart-left col-8 ">
+      <div className="cart-left col-12 col-lg-8 mb-3 mb-lg-0 px-0 pr-md-4 pr-lg-3 pl-md-4 pl-lg-0">
         <div className="cart-left-container p-4">
           <div className="cart-title mb-4">Keranjang</div>
           {errorStock.length ? renderErrorStock() : null}
@@ -519,7 +576,7 @@ function Cart() {
 
   const renderRightSide = () => {
     return (
-      <div className="cart-right col-4">
+      <div className="cart-right col-12 col-lg-4 px-0 pr-md-4 pr-lg-0 pl-md-4 pl-lg-3">
         <div className="cart-right-container p-4">
           <div className="cart-title mb-4">Ringkasan Pembelian</div>
           <div>
@@ -583,7 +640,7 @@ function Cart() {
 
   return (
     <div className="container mt-5">
-      <div className="row">
+      <div className="row flex-column flex-lg-row">
         {renderLeftSide()}
         {renderRightSide()}
       </div>

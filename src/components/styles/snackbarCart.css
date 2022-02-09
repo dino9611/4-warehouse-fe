@@ -15,3 +15,17 @@
   width: 100%;
   z-index: 1001;
 }
+
+@media only screen and (max-width: 480px) {
+  .snackbar-cart {
+    left: 0%;
+    transform: translate(0%, -50%);
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .snackbar-cart {
+    left: 75%;
+  }
+}

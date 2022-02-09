@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./styles/homepage.css";
 import CarouselBanner from "../../components/CarouselBanner";
-import CardCategory from "../../components/CardCategory";
 import CardProduct from "../../components/CardProduct";
 import CarouselProduct from "../../components/CarouselProduct";
 import TitleCategory from "../../components/TitleCategory";
@@ -10,21 +9,16 @@ import { useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "./../../constants/api.js";
 import { useDispatch, useSelector } from "react-redux";
-import { useRef } from "react";
-import { Link } from "react-router-dom";
 import SkeletonCardProduct from "../../components/SkeletonCardProduct";
-import SkeletonCardCategory from "../../components/SkeletonCardCategory";
+import CarouselCategory from "../../components/CarouselCategory";
+import CarouselHotItems from "../../components/CarouselHotItems";
 
-const { produk1, buah, coklat, kacang, kopi, rempah, sayur, susu, teh } =
-  images;
-
-const categoryImg = [kopi, teh, susu, coklat, rempah, sayur, buah, kacang];
+const mediaQuery = window.matchMedia("(max-width: 1024px)");
 
 function Homepage() {
   //STATE
 
   //DATA STATE
-  const [dataCategory, setDataCategory] = useState([]);
   const [dataHotProduct, setDataHotProduct] = useState([]);
   const [dataProductSusu, setDataProductSusu] = useState([]);
   const [dataProductBuah, setDataProductBuah] = useState([]);
@@ -40,8 +34,6 @@ function Homepage() {
     (async () => {
       try {
         setLoadingPage(true);
-
-        let res = await axios.get(`${API_URL}/product/category`);
 
         let resHotProduct = await axios.get(
           `${API_URL}/product/get/hot-product`
@@ -68,7 +60,6 @@ function Homepage() {
         setDataProductBumbu(resProductBumbu.data);
         setDataProductCoklat(resProductCoklat.data);
         setDataHotProduct(resHotProduct.data);
-        setDataCategory(res.data);
 
         dispatch({ type: "RESETCAROUSEL" });
 
@@ -78,20 +69,6 @@ function Homepage() {
       }
     })();
   }, []);
-
-  // RENDER LIST CATEGORY
-  const renderListCategory = () => {
-    return dataCategory.map((el, index) => (
-      <CardCategory img={categoryImg[index]} name={el.category} />
-    ));
-  };
-
-  // RENDER LIST SKELETON CATEGORY
-  const renderListSkeletonCategory = () => {
-    return [1, 2, 3, 4, 5, 6, 7, 8].map((el, index) => (
-      <SkeletonCardCategory key={index} />
-    ));
-  };
 
   // RENDER LIST HOT ITEMS
   const renderHotProductList = () => {
@@ -160,6 +137,7 @@ function Homepage() {
           <CarouselProduct cat="carousel-susu">
             <div></div>
             {loadingPage ? renderSkeletonByCategory() : renderDataProductSusu()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-susu"
@@ -202,6 +180,7 @@ function Homepage() {
           <CarouselProduct cat="carousel-buah">
             <div></div>
             {loadingPage ? renderSkeletonByCategory() : renderDataProductBuah()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-buah"
@@ -246,6 +225,7 @@ function Homepage() {
             {loadingPage
               ? renderSkeletonByCategory()
               : renderDataProductBumbu()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-bumbu"
@@ -283,13 +263,14 @@ function Homepage() {
   // RENDER CAROUSEL PRODUCT COKLAT
   const renderCarouselProductCoklat = () => {
     return (
-      <div className="row mb-5">
-        <div className="homepage-carousel-product col-12 p-0">
+      <div className="row mb-5 ">
+        <div className="homepage-carousel-product  col-12 p-0">
           <CarouselProduct cat="carousel-coklat">
             <div></div>
             {loadingPage
               ? renderSkeletonByCategory()
               : renderDataProductCoklat()}
+            {mediaQuery.matches ? <div></div> : null}
           </CarouselProduct>
           <TitleCategory
             cat="carousel-coklat"
@@ -314,18 +295,20 @@ function Homepage() {
       </div>
       <div className="container mt-4">
         <div className="row">
-          <h4 className="homepage-text-category">
+          <h4 className="homepage-text-category pl-4 pl-lg-0">
             Temukan Produk dari Kategori
           </h4>
         </div>
-        <div className="row d-flex justify-content-between mt-3">
-          {loadingPage ? renderListSkeletonCategory() : renderListCategory()}
+        <div className="row justify-content-between mt-3">
+          <div className="vw-100" style={{ overflow: "hidden" }}>
+            <CarouselCategory />
+          </div>
         </div>
       </div>
       <div className="mt-5">
         <div className="homepage-diskon p-4">
           <div className="container">
-            <div className="row">
+            <div className="row pl-0 pl-md-4 pl-lg-0">
               <h5
                 style={{ fontSize: "20px", fontWeight: "600", color: "#fff" }}
               >
@@ -333,11 +316,15 @@ function Homepage() {
               </h5>
             </div>
           </div>
-          {renderHotProduct()}
+          <div className="container">
+            <div className="row pl-0 pl-md-2 pl-lg-0">
+              <CarouselHotItems />
+            </div>
+          </div>
         </div>
       </div>
       <div className="container mt-5">
-        <div className="row mb-3">
+        <div className="row mb-3 pl-4 pl-md-0">
           <h5
             className="mb-3"
             style={{ fontSize: "20px", fontWeight: "600", color: "#070707" }}

@@ -59,3 +59,20 @@
     pointer-events: all;
   }
 }
+
+@media only screen and (max-width: 480px) {
+  .carousel-prod-resp {
+    width: 200vw !important;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .carousel-prod-resp {
+    width: 120vw !important;
+  }
+
+  .carousel-prod-wrap {
+    width: 93.5vw !important;
+    overflow: hidden;
+  }
+}

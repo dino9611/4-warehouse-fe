@@ -19,6 +19,9 @@ import Pagination from "@mui/material/Pagination";
 import images from "./../../assets";
 import assets from "./../../assets";
 import "./styles/product.css";
+import ModalSort from "../../components/ModalSort";
+import ModalFilter from "../../components/ModalFilter";
+import thousandSeparator from "../../helpers/ThousandSeparator";
 
 // BREADCRUMB ARRAY
 const breadcrumbs = [
@@ -30,6 +33,9 @@ const breadcrumbs = [
   </Link>,
   ,
 ];
+
+const addCommas = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const removeNonNumeric = (num) => num.toString().replace(/[^0-9]/g, "");
 
 function Product() {
   // DATA STATE
@@ -52,7 +58,12 @@ function Product() {
   const [sort, setSort] = useState("nameasc");
   const [sortName, setSortName] = useState("Nama A-Z");
   const [handleSort, setHandleSort] = useState(false);
+  const [inputPriceMin, setInputPriceMin] = useState(null);
+  const [inputPriceMax, setInputPriceMax] = useState(null);
   const ref = useRef();
+
+  const [handleModalSort, setHandleModalSort] = useState(false);
+  const [handleModalFilter, setHandleModalFilter] = useState(false);
 
   ClickOutside(ref, () => setHandleSort(false));
 
@@ -149,6 +160,7 @@ function Product() {
     setSort(e.target.id);
     setSortName(e.target.innerHTML);
     setHandleSort(false);
+    setHandleModalSort(false);
   };
 
   // RENDERING
@@ -267,6 +279,103 @@ function Product() {
     );
   };
 
+  // RENDER MODAL SORTING
+  const renderModalSorting = () => {
+    const sortArr = [
+      {
+        id: "nameasc",
+        name: "Nama A-Z",
+      },
+      {
+        id: "namedesc",
+        name: "Nama Z-A",
+      },
+      {
+        id: "priceasc",
+        name: "Harga terendah",
+      },
+      {
+        id: "pricedesc",
+        name: "Harga tertinggi",
+      },
+    ];
+
+    return (
+      <div>
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{ fontWeight: "600" }}
+        >
+          Urut berdasarkan
+        </div>
+        {sortArr.map((el, index) => {
+          return (
+            <div
+              key={index}
+              id={el.id}
+              onClick={onClickSort}
+              className={`product-sort-sub d-flex align-items-center justify-content-between ${
+                sort === el.id ? "product-sort-sub-active" : null
+              }`}
+            >
+              {el.name}
+              {sort === el.id ? (
+                <div>
+                  <img src={assets.centangsort} alt="centang" />
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // RENDER MODAL FILTER
+  const renderModalFilter = () => {
+    return (
+      <div>
+        <div className="d-flex align-items-center justify-content-between px-4 py-3">
+          <div
+            className="fs14-600-red"
+            onClick={() => {
+              setCategory([]);
+              setJoinCategory("");
+              setPriceMax(null);
+              setPriceMin(null);
+            }}
+          >
+            Reset
+          </div>
+          <div style={{ fontWeight: "600", color: "#070707" }}>Filter</div>
+          <div>
+            <img
+              src={images.close}
+              alt="close"
+              onClick={() => setHandleModalFilter(false)}
+            />
+          </div>
+        </div>
+
+        <div
+          className="mb-3"
+          style={{ borderBottom: "1px solid #f4f4f4" }}
+        ></div>
+
+        <div className="prod-modal-filter-cat px-4">
+          {renderFilterCategory()}
+        </div>
+
+        <div
+          className="my-3"
+          style={{ borderBottom: "1px solid #f4f4f4" }}
+        ></div>
+
+        <div className="px-4">{renderPriceFilter()}</div>
+      </div>
+    );
+  };
+
   // RENDER LIST PRODUK
 
   const renderProduct = () => {
@@ -303,9 +412,16 @@ function Product() {
             Rp
           </div>
           <input
-            type="number"
+            type="text"
             placeholder="Harga Minimum"
-            onChange={debounce(1000, (e) => setPriceMin(e.target.value))}
+            value={inputPriceMin}
+            onChange={(e) => {
+              setInputPriceMin(addCommas(removeNonNumeric(e.target.value)));
+
+              debounce(1000, (e) =>
+                setPriceMin(parseInt(removeNonNumeric(e.target.value)))
+              )(e);
+            }}
             className="product-input-price w-100"
           />
         </div>
@@ -317,9 +433,15 @@ function Product() {
             Rp
           </div>
           <input
-            type="number"
+            type="text"
             placeholder="Harga maksimum"
-            onChange={debounce(1000, (e) => setPriceMax(e.target.value))}
+            value={inputPriceMax}
+            onChange={(e) => {
+              setInputPriceMax(addCommas(removeNonNumeric(e.target.value)));
+              debounce(1000, (e) =>
+                setPriceMax(parseInt(removeNonNumeric(e.target.value)))
+              )(e);
+            }}
             className="product-input-price w-100"
           />
         </div>
@@ -330,7 +452,11 @@ function Product() {
   // RENDER SKELETON CARD PRODUK
   const renderSkeletonCard = () => {
     return [1, 2, 3, 4, 5, 6, 7, 8].map((el, index) => {
-      return <SkeletonCardProduct />;
+      return (
+        <div key={index} className="product-card">
+          <SkeletonCardProduct />;
+        </div>
+      );
     });
   };
 
@@ -368,9 +494,9 @@ function Product() {
 
   return (
     <div className="container mt-2">
-      <div className="row">{renderBreadcrumbs()}</div>
+      <div className="row px-4 px-lg-0">{renderBreadcrumbs()}</div>
       <div className="row justify-content-between">
-        <div className="product-sidebar mr-3">
+        <div className="product-sidebar d-none d-lg-inline-block  mr-3">
           <div className="product-sidebar-wrapper w-100 mb-2">
             <div className="product-sidebar-title d-flex align-items-center justify-content-between">
               <div className="product-title-name d-flex align-items-center">
@@ -412,12 +538,28 @@ function Product() {
             </div>
           </div>
         </div>
-        <div className="product-content">
-          <div className="d-flex justify-content-between align-items-center">
+        <div className="product-content px-4 px-lg-0">
+          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-3 mb-lg-0">
             <div className="product-show-font">
               {`Menampilkan ${
                 totalProduct < limit ? totalProduct : limit
               } dari ${totalProduct} produk`}
+            </div>
+            <div className="prod-filternsort-resp d-flex d-lg-none my-3 w-100">
+              <div
+                className="prod-sort-resp d-flex align-items-center py-2 px-3 mr-2 w-100"
+                onClick={() => setHandleModalSort(!handleModalSort)}
+              >
+                <img src={images.sort} alt="sort-resp" className="mr-1" />
+                <div>{sortName ? sortName : "Urut berdasarkan"}</div>
+              </div>
+              <div
+                className="prod-sort-resp d-flex align-items-center py-2 px-3 w-100"
+                onClick={() => setHandleModalFilter(!handleModalFilter)}
+              >
+                <img src={images.filter} alt="sort-resp" className="mr-1" />
+                <div>Filter</div>
+              </div>
             </div>
             <div className="product-filter-nama-wrapper d-flex align-items-center">
               <img src={images.searchpolos} alt="" />
@@ -453,6 +595,24 @@ function Product() {
             />
           </div>
         </div>
+      </div>
+      <div>
+        <ModalSort
+          open={handleModalSort}
+          close={() => setHandleModalSort(false)}
+          classModal="modal-sorting px-4"
+        >
+          {renderModalSorting()}
+        </ModalSort>
+      </div>
+      <div>
+        <ModalFilter
+          open={handleModalFilter}
+          close={() => setHandleModalFilter(false)}
+          classModal="modal-filtering p-0"
+        >
+          {renderModalFilter()}
+        </ModalFilter>
       </div>
     </div>
   );

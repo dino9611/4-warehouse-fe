@@ -20,3 +20,12 @@
   bottom: 0;
   z-index: -1;
 }
+
+@media only screen and (max-width: 480px) {
+  .snack-message-wrapper {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+}

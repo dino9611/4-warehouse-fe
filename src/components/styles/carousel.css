@@ -78,3 +78,32 @@
   width: 40px;
   height: 40px;
 }
+
+@media only screen and (max-width: 480px) {
+  .carousel-content {
+    width: 272px !important;
+    height: 106px;
+  }
+
+  .carousel-testing {
+    height: 106px !important;
+  }
+
+  .carousel-slider {
+    width: 1000px !important;
+  }
+
+  .homepage-carousel-wrapper .carousel-dots {
+    margin-top: 1rem !important;
+  }
+
+  .carousel-cat-slider {
+    width: 110vw !important;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .carousel-cat-slider {
+    width: 120vw !important;
+  }
+}

@@ -30,3 +30,21 @@
   background-position: 50px 20px, left top, 180px;
   position: relative;
 }
+
+@media only screen and (max-width: 480px) {
+  .title-banner-category {
+    width: 100%;
+    height: 250px;
+    font-size: 0.5em !important;
+    border-radius: 0;
+  }
+
+  .vector1 {
+    background-image: url("./../../assets/vector1.png");
+    background-position: 20px 20px, left top, 180px;
+    width: 50% !important;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+}

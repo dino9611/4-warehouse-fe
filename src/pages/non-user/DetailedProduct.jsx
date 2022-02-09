@@ -26,6 +26,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import CardProduct from "../../components/CardProduct";
 import SkeletonCardProduct from "../../components/SkeletonCardProduct";
 
+const mediaQuery = window.matchMedia("(max-width: 1024px)");
+
 function DetailedProduct(props) {
   const [dataProduct, setDataProduct] = useState(); // Data produk
   const [inputQty, setInputQty] = useState(1); // Input qty produk
@@ -59,7 +61,9 @@ function DetailedProduct(props) {
             `${API_URL}/product/detailed-product/${props.match.params.productId}`
           );
           let resProduct = await axios.get(
-            `${API_URL}/product/get/product-category/${location.state.category_id}?limit=5`
+            `${API_URL}/product/get/product-category/${
+              location.state.category_id
+            }?limit=${mediaQuery.matches ? "3" : "5"}`
           );
 
           setDataOthersProduct(resProduct.data);
@@ -76,7 +80,9 @@ function DetailedProduct(props) {
           setLoadingPage(true);
 
           let res = await axios.get(
-            `${API_URL}/product/get/product-category/${location.state.category_id}?limit=5`
+            `${API_URL}/product/get/product-category/${
+              location.state.category_id
+            }?limit=${mediaQuery.matches ? "3" : "5"}`
           );
 
           setDataOthersProduct(res.data);
@@ -112,7 +118,7 @@ function DetailedProduct(props) {
   const renderImage = () => {
     return dataProduct?.images.map((el, index) => {
       return (
-        <div className="mb-3" onMouseOver={() => setMainImg(el)}>
+        <div className="mb-3 mx-3 mx-lg-0" onMouseOver={() => setMainImg(el)}>
           <img
             src={`${API_URL}/${el}`}
             alt="list-photo"
@@ -251,7 +257,7 @@ function DetailedProduct(props) {
   // RENDER PILIH PRODUK LAINNYA WRAPPER
   const renderProdukLainnya = () => {
     return (
-      <div className="row mt-5">
+      <div className="row d-none d-md-flex mt-5 px-4 px-lg-0">
         <div
           className="mb-3"
           style={{ fontSize: "1.250em", fontWeight: "600", color: "#070707" }}
@@ -398,7 +404,7 @@ function DetailedProduct(props) {
 
   return (
     <div className="container">
-      <div className="row">
+      <div className="row pl-4 pl-lg-0">
         <div className="mt-3 mb-4">
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="10" />}
@@ -408,14 +414,14 @@ function DetailedProduct(props) {
           </Breadcrumbs>
         </div>
       </div>
-      <div className="row">
-        <div className="detailed-product-wrapper left-side col-7 d-flex">
-          <div className="detailed-product-listphoto d-flex flex-column align-items-center">
-            <div className="detailed-product-listphoto-wrapper d-flex flex-column align-items-center justify-content-start">
+      <div className="row flex-column flex-lg-row px-0 px-md-4 px-lg-0 pl-0">
+        <div className="detailed-product-wrapper left-side col-12 col-lg-7 d-flex flex-column flex-lg-row">
+          <div className="order-1 order-lg-0 detailed-product-listphoto d-flex flex-column align-items-center">
+            <div className="detailed-product-listphoto-wrapper d-flex flex-row flex-lg-column align-items-center justify-content-center justify-content-lg-start">
               {renderImage()}
             </div>
           </div>
-          <div className="detailed-product-photoproduct mx-3">
+          <div className="order-0 order-md-0 detailed-product-photoproduct mx-3">
             <img
               src={`${API_URL}/${mainImg}`}
               alt="photo-product"
@@ -423,13 +429,13 @@ function DetailedProduct(props) {
             />
           </div>
         </div>
-        <div className="detailed-product-wrapper col-5">
-          <div className="detailed-product-content d-flex flex-column justify-content-between ml-3 p-4">
+        <div className="detailed-product-wrapper col-12 col-lg-5 ">
+          <div className="detailed-product-content d-flex flex-column justify-content-between ml-0 ml-lg-3 p-4">
             {renderProductDesc()}
             <div className="d-flex flex-column justify-content-between mt-4">
               <div className="detailed-product-jumlah mb-2">Jumlah</div>
-              <div className="d-flex justify-content-between ">
-                <div className="detailed-product-setqty d-flex mr-4">
+              <div className="d-flex flex-column flex-lg-row justify-content-between ">
+                <div className="detailed-product-setqty d-flex mr-4 mb-4 mb-lg-0">
                   <button
                     className="detailed-product-btnminus"
                     onClick={onClickMinusQty}
@@ -463,7 +469,7 @@ function DetailedProduct(props) {
 
                 <ButtonPrimary
                   onClick={onClickAddToCart}
-                  width="w-50"
+                  width="w-100 w-lg-50"
                   disabled={
                     loading ||
                     inputQty > parseInt(dataProduct?.total_stock) ||

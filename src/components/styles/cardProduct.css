@@ -57,3 +57,24 @@
   line-height: 1.63;
   color: #070707;
 }
+
+@media only screen and (max-width: 480px) {
+  .card-product-wrapper {
+    width: 132px;
+    height: 209px;
+  }
+
+  .card-product-img {
+    width: 100%;
+    height: 75px;
+    object-fit: cover;
+  }
+
+  .card-product-category {
+    font-size: 0.5em;
+  }
+
+  .card-product-name {
+    font-size: 0.625em;
+  }
+}
