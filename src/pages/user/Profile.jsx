@@ -395,11 +395,11 @@ function Profile() {
 
   const renderBtnChangePhoto = () => {
     return (
-      <div className="mt-4 w-100">
-        <div className="d-flex align-items-center w-100">
+      <div className="mt-4 w-100 mb-3 mb-md-0">
+        <div className="d-flex flex-column flex-md-row align-items-center w-100">
           <label
             htmlFor="photo-profile"
-            className={`d-flex align-items-center w-100 mr-2 ${
+            className={`d-flex align-items-center w-100 mr-0 mr-md-2 mb-2 mb-md-0 ${
               handleUbahData
                 ? "profile-btn-editpp profile-btn-edit-active"
                 : "profile-btn-editpp-disabled"
@@ -417,7 +417,7 @@ function Profile() {
             onChange={(e) => setFile(e.target.files[0])}
           />
           <button
-            className="profile-btn-editpp d-flex align-items-center w-100 ml-2"
+            className="profile-btn-editpp d-flex align-items-center w-100 ml-0 ml-md-2"
             disabled={
               (file || personalData.profile_picture) && handleUbahData
                 ? false
@@ -438,8 +438,8 @@ function Profile() {
   const renderDataUser = () => {
     return (
       <div className="d-flex flex-column w-100">
-        <div className="d-flex justify-content-between mb-3">
-          <div className="flex-fill mr-3">
+        <div className="d-flex justify-content-between flex-column flex-md-row mb-3">
+          <div className="flex-fill mr-3 mb-3 mb-md-0">
             <Textbox
               label="Nama depan"
               placeholder="Masukkan nama depan"
@@ -484,11 +484,11 @@ function Profile() {
             color="#CACACA"
           />
         </div>
-        <div className="d-flex justify-content-between mb-3">
+        <div className="d-flex justify-content-between flex-column flex-md-row mb-3">
           {renderGenderUser()}
           {renderDataBirthUser()}
         </div>
-        <div className="mb-3 mr-3">{renderPhoneNumber()}</div>
+        <div className="mb-3 mr-0 mr-md-3">{renderPhoneNumber()}</div>
         <div className="mt-3 ">
           {handleUbahData ? (
             renderBtnEdit()
@@ -554,7 +554,7 @@ function Profile() {
     return (
       <div
         ref={genderRef}
-        className="flex-fill mr-3"
+        className="flex-fill mr-0 mr-md-3 mb-3 mb-md-0"
         style={{ position: "relative" }}
       >
         <Textbox
@@ -612,7 +612,7 @@ function Profile() {
             type="number"
             id="phone-number"
             placeholder="Nomer ponsel"
-            className="profile-phonenumber-input"
+            className="profile-phonenumber-input w-100"
             disabled={!handleUbahData}
             name="phone_number"
             style={{ color: handleUbahData ? null : "#CACACA" }}
@@ -628,9 +628,9 @@ function Profile() {
 
   const renderBtnEdit = () => {
     return (
-      <div>
+      <div className="d-flex d-inline-block">
         <button
-          className="profile-btn-cancel profile-btn-width mr-4"
+          className="profile-btn-cancel profile-btn-width mr-4 w-100"
           onClick={() => {
             setHandleUbahData(false);
             setPersonalData(initialData);
@@ -641,7 +641,7 @@ function Profile() {
           Batal
         </button>
         <ButtonPrimary
-          width="profile-btn-width"
+          width="profile-btn-width w-100"
           onClick={onClickSimpanData}
           disabled={loading ? true : false}
         >
@@ -661,8 +661,8 @@ function Profile() {
 
   const renderChangePersonalData = () => {
     return (
-      <div className="d-flex">
-        <div className="mr-4">
+      <div className="d-flex flex-column flex-md-row">
+        <div className="mr-0 mr-md-4">
           <div className="profile-fs14-600-black mb-2">Foto Profil</div>
           {renderPhotoProfile()}
           {renderBtnChangePhoto()}
@@ -676,7 +676,7 @@ function Profile() {
 
   const renderChangePassword = () => {
     return (
-      <div className="w-50">
+      <div className="profile-btn-changepass-resp w-50">
         <div>
           <Textbox
             type="password"
@@ -733,7 +733,7 @@ function Profile() {
         <div className="d-flex justify-content-end w-100">
           <ButtonPrimary
             onClick={onClickChangePassword}
-            width="w-50"
+            width="profile-btn-changepass-resp w-50"
             disabled={
               (dataPassword.currentPass &&
                 dataPassword.newPass &&

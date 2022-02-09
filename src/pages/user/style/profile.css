@@ -161,3 +161,15 @@
   font-weight: 600;
   color: #070707;
 }
+
+@media only screen and (max-width: 480px) {
+  .profile-phonenumber {
+    width: 100% !important;
+  }
+
+  .profile-btn-cancel,
+  .profile-btn-width,
+  .profile-btn-changepass-resp {
+    width: 100% !important;
+  }
+}
