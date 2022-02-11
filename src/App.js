@@ -165,7 +165,12 @@ function App() {
       <div>
         {getRoleId === 1 ||
         getRoleId === 2 ||
-        loading | currentPath.includes("/admin") ? null : (
+        loading || 
+        currentPath.includes("/login") ||
+        currentPath.includes("/register") ||
+        currentPath.includes("/verify-email") ||
+        currentPath.includes("/forget-password") ||
+        currentPath.includes("/admin") ? null : (
           <Footer />
         )}
       </div>

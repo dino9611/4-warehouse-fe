@@ -5,7 +5,7 @@ import { API_URL } from "../../constants/api";
 import "./styles/VerifyEmail.css";
 // import logo from "../../assets/logo.svg";
 import verified from "../../assets/Verified.png";
-import failed from "../../assets/failed.jpg";
+import failed from "../../assets/components/Fetch-Fail.svg";
 import loading from "../../assets/Loading.png";
 import SuccessSnack from "../../components/SuccessSnack";
 import ErrorSnack from "../../components/ErrorSnackbar";
@@ -62,7 +62,7 @@ class VerifyEmail extends React.Component {
     } catch (err) {
       console.log(err);
       this.setState({
-        verifyCondition: 3,
+        verifyCondition: 3, //! Utk coba2, ganti ini
         errorSnack: true,
         message: err.response.data.message || "Server Error",
       });
@@ -74,33 +74,35 @@ class VerifyEmail extends React.Component {
     if (verifyCondition === 1) {
       return (
         <div className="verif-ongoing">
-          <img className="mt-4" src={loading} height="10%" width="20%" />
-          <h2 className="mt-5">Sedang menunggu Verifikasi</h2>
+          <img src={loading} height="10%" width="20%" />
+          <h2>Sedang menunggu Verifikasi</h2>
         </div>
       );
     }
     if (verifyCondition === 2) {
       return (
         <div className="verif-berhasil">
-          <img className="mt-4" src={verified} height="10%" width="20%" />
-          <h2 className="mt-5">Verifikasi Berhasil</h2>
+          <img src={verified} height="320px" width="320px" />
+          <h2>Verifikasi Berhasil</h2>
         </div>
       );
     }
 
     return (
       <div className="verif-failed">
-        <img src={failed} height="15%" width="25%" />
+        <img src={failed} height="320px" width="320px" />
         <h3>Verifikasi Gagal</h3>
 
-        <button onClick={this.onSendEmailClick} className="btn-send-email">
-          Kirim Email Ulang
-        </button>
-        <Link to="/">
-          <button className="btn-send-email" type="button">
-            Homepage
+        <div>
+          <button onClick={this.onSendEmailClick} className="btn-send-email">
+            Kirim Email Ulang
           </button>
-        </Link>
+          <Link to="/">
+            <button className="btn-send-email" type="button">
+              Homepage
+            </button>
+          </Link>
+        </div>
         <div>
           <SuccessSnack
             message={this.state.message}

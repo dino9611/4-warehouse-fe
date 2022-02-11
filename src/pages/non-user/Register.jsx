@@ -149,10 +149,9 @@ class Register extends Component {
               >
                 Daftar
               </button>
-              <h6 className="sudah-punya-akun-text">Sudah punya akun?</h6>
-              <Link to="/login" className="link-masuk">
-                Masuk
-              </Link>
+              <h6 className="sudah-punya-akun-text">
+                Sudah punya akun? <Link to="/login" className="link-masuk">Masuk</Link>
+              </h6>
             </div>
           </div>
         </div>

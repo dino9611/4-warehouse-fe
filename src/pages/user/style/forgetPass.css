@@ -3,3 +3,34 @@
   border-radius: 12px;
   box-shadow: 0 1px 12px 0 rgba(161, 132, 87, 0.16);
 }
+
+/* ? TABLET SIZE MD */
+@media (max-width: 991px) {
+  .forget-container-override {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 92vh;
+    min-width: 100vw;
+  }
+
+  .forget-pass-wrapper {
+    border-radius: 0;
+    min-height: 92vh;
+    margin: 0 !important;
+    width: 100%;
+
+    box-shadow: none;
+  }
+
+  .forget-pass-img {
+    display: none;
+  }
+
+  .forget-pass-wrapper > div:first-of-type {
+    width: 100% !important;
+  }
+
+  .forget-pass-error-mobile {
+    padding: 0 1.5rem;
+  }
+}

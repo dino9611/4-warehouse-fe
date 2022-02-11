@@ -1,0 +1,13 @@
+/* ? TABLET SIZE MD */
+@media (max-width: 991px) {
+    .forget-pass-modal-override {
+        width: 65%;
+    }
+}
+
+/* ? MOBILE SMALL SM */
+@media (max-width: 575px) {
+    .forget-pass-modal-override {
+        width: 75%;
+    }
+}
