@@ -172,4 +172,13 @@
   .profile-btn-changepass-resp {
     width: 100% !important;
   }
+
+  .profile-dropdown-gender {
+    z-index: 1 !important;
+  }
+
+  .profile-dropdown-calender {
+    display: flex;
+    justify-content: center;
+  }
 }
