@@ -6,6 +6,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#document {
+  height: 100px !important;
+}
+
 code {
   font-family: "Poppins", "Open Sans", sans-serif;
 }

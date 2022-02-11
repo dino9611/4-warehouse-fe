@@ -208,14 +208,14 @@ function HistoryOrder() {
       return (
         <div
           key={index}
-          className="history-list-order d-flex align-items-center justify-content-between px-4 py-3 mb-3"
+          className="history-list-order d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between px-4 py-3 mb-3"
           onClick={() => openModalDetailOrder(el.orders_id)}
         >
           <div>
-            <div className="d-flex align-items-center">
+            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center mb-3 mb-md-0">
               <div className="history-list-pesanan">{`Pesanan #TLU${date.getTime()}`}</div>
-              <div className="history-list-border mx-2"></div>
-              <div className="history-list-tanggal mr-2">{`${date.getDate()} ${
+              <div className="history-list-border mx-2 d-none d-md-inline-block "></div>
+              <div className="history-list-tanggal mr-2 my-1 my-md-0">{`${date.getDate()} ${
                 months[date.getMonth()]
               } ${date.getFullYear()}`}</div>
               <div
@@ -225,7 +225,7 @@ function HistoryOrder() {
                 {arrayStatus[el.status_id - 1]}
               </div>
             </div>
-            <div className="d-flex align-items-center mt-2">
+            <div className="d-flex align-items-center mt-2 mb-2 mb-md-0">
               <div className="mr-3">
                 <img
                   src={`${API_URL}/${el.images[0]}`}
@@ -243,7 +243,7 @@ function HistoryOrder() {
               </div>
             </div>
             {el.total_barang - 1 === 0 ? null : (
-              <button className="history-list-otherprod mt-3">
+              <button className="history-list-otherprod mt-3 mb-2 mb-md-0">
                 {`+${el.total_barang - 1} produk lainnya`}
               </button>
             )}
