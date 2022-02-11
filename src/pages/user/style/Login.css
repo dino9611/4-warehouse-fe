@@ -217,8 +217,11 @@
 /* ? MOBILE SMALL SM */
 @media (max-width: 575px) {
   /* .login-right-form-wrap {
-    width: 100% !important;
+    width: 100vw !important;
   } */
+  .login-right-form-wrap > .d-flex {
+    width: 100%;
+  }
 
   .label-text {
     width: 100%;
