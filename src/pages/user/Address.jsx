@@ -60,7 +60,7 @@ class Address extends React.Component {
     try {
       let res = await axios.get(`${API_URL}/user/address/province`);
       this.setState({ dataProvince: res.data });
-      console.log(this.state.dataProvince);
+      // console.log(this.state.dataProvince);
     } catch (error) {
       console.log(error);
     }
@@ -91,7 +91,7 @@ class Address extends React.Component {
       //?get data province
       if ((!modalAddress || !modalEdit) && !dataProvince.length) {
         this.fetchProvince();
-        console.log("lewat fetchProvince");
+        // console.log("lewat fetchProvince");
       }
 
       this.setState({ resAddress: dataAddress.data });
@@ -198,7 +198,7 @@ class Address extends React.Component {
         user_id: user_id,
       });
 
-      console.log(this.state.idAddress);
+      // console.log(this.state.idAddress);
       this.setState({
         successSnack: true,
         message: "Berhasil mengganti alamat",
@@ -281,7 +281,7 @@ class Address extends React.Component {
   // onchange province
   provinceChange = (pickProvince) => {
     this.setState({ pickProvince, pickCity: "" });
-    console.log(pickProvince);
+    // console.log(pickProvince);
   };
 
   // provinceEditChange = (pickEditProvince) => {
@@ -307,7 +307,7 @@ class Address extends React.Component {
       addressEdit: { ...addressEdit, [e.target.name]: e.target.value },
     });
 
-    console.log("lewat defaulValue", this.state.addressEdit);
+    // console.log("lewat defaulValue", this.state.addressEdit);
   };
 
   // onclick submit add address
@@ -333,9 +333,9 @@ class Address extends React.Component {
           },
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           // ambil data lat & lang
-          console.log(res.data.results[0].geometry.location.lat);
+          // console.log(res.data.results[0].geometry.location.lat);
           axios
             .post(`${API_URL}/user/address/${user_id}`, {
               recipient,
@@ -349,7 +349,7 @@ class Address extends React.Component {
               longitude: res.data.results[0].geometry.location.lng,
             })
             .then((res) => {
-              console.log(addAddress);
+              // console.log(addAddress);
 
               this.setState({
                 modalAddress: false,
@@ -438,8 +438,8 @@ class Address extends React.Component {
         },
       })
       .then((res) => {
-        console.log(res.data);
-        console.log(addAddress);
+        // console.log(res.data);
+        // console.log(addAddress);
         // ambil data lat & lang
         // console.log(res.data.results[0].geometry.location.lat);
         let editInput = {
@@ -460,12 +460,12 @@ class Address extends React.Component {
           editInput.city = addressEdit.city;
           editInput.province_id = addressEdit.province_id;
           editInput.city_id = addressEdit.city_id;
-          console.log("lewat kondisi", editInput.province, editInput.city);
+          // console.log("lewat kondisi", editInput.province, editInput.city);
         }
         axios
           .patch(`${API_URL}/user/address/edit/${idAddress}`, editInput)
           .then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
             this.fetchData();
             this.setState({
               modalEdit: false,
@@ -680,7 +680,10 @@ class Address extends React.Component {
             options={dataCity}
           />
 
-          <div className="row">
+          <div className="row modal-address-row-override">
+            <button onClick={this.onCancelClick} className="btn-batal-alamat">
+              Batal
+            </button>
             <button
               className="btn-simpan-alamat"
               onClick={this.onSaveAddressClick}
@@ -694,10 +697,6 @@ class Address extends React.Component {
             >
               Simpan
             </button>
-
-            <button onClick={this.onCancelClick} className="btn-batal-alamat">
-              Batal
-            </button>
           </div>
         </div>
       </div>
@@ -705,10 +704,10 @@ class Address extends React.Component {
   };
 
   render() {
-    console.log("testes", this.state.addressEdit);
+    // console.log("testes", this.state.addressEdit);
     return (
-      <div>
-        <div className="row">
+      <>
+        <div className="row address-row-override">
           <h5 className="daftar-alamat">Daftar Alamat</h5>
 
           <button
@@ -727,7 +726,7 @@ class Address extends React.Component {
           <Modal
             open={this.state.modalAddress}
             close={() => this.setState({ modalAddress: false })}
-            classModal="modal-address"
+            classModal="modal-address modal-address-override"
           >
             {this.renderModalAddAddress()}
           </Modal>
@@ -745,7 +744,7 @@ class Address extends React.Component {
           <Modal
             open={this.state.modalEdit}
             close={() => this.setState({ modalEdit: false })}
-            classModal="modal-address"
+            classModal="modal-address modal-address-override"
           >
             {this.renderModalEdit()}
           </Modal>
@@ -762,7 +761,7 @@ class Address extends React.Component {
           handleClose={this.handleClose}
           // autoHideDuration={3000}
         />
-      </div>
+      </>
     );
   }
 }
