@@ -224,10 +224,10 @@ function ModalOrderDetail({ id, open, close }) {
                       className="history-modal-img mr-3"
                     />
                     <div>
-                      <div className="fs10-500-green">{`${
+                      <div className="history-modal-qty-resp fs10-500-green">{`${
                         el.qty
                       } barang x Rp ${thousandSeparator(el.price)}`}</div>
-                      <div className="fs14-600-gray">
+                      <div className="history-modal-name-resp fs14-600-gray">
                         {el.name_prod.length > 25
                           ? el.name_prod.charAt(0).toUpperCase() +
                             el.name_prod.slice(1, 25) +
@@ -237,7 +237,7 @@ function ModalOrderDetail({ id, open, close }) {
                       </div>
                     </div>
                   </div>
-                  <div className="history-modalprice-wrapper pl-3 pr-4 d-flex flex-column justify-content-center">
+                  <div className="history-modalprice-wrapper pl-md-3 pr-md-4 px-2 d-flex flex-column justify-content-center">
                     <div className="fs10-500-gray">Total harga</div>
                     <div className="profile-fs14-600-black">{`Rp ${thousandSeparator(
                       el.qty * el.price
@@ -319,7 +319,7 @@ function ModalOrderDetail({ id, open, close }) {
               onClickUploadPaymentProof();
             }}
             disabled={file || loadingUpload ? false : true}
-            width="w-50"
+            width="history-btn-upload w-50"
           >
             {loadingUpload ? (
               <Spinner color="light" size="sm">
