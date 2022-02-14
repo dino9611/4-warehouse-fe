@@ -21,7 +21,9 @@ function Payment() {
 
   const [dataOrders, setDataOrders] = useState([]);
   const location = useLocation();
-  console.log(dataOrders);
+  const [hour, setHour] = useState("");
+  const [minute, setMinute] = useState("");
+  const [second, setSecond] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -31,6 +33,55 @@ function Payment() {
         );
 
         setDataOrders(res.data);
+
+        const dateOrder = new Date(res.data[0].create_on);
+
+        const getDate = dateOrder.getDate();
+
+        dateOrder.setDate(getDate + 1);
+
+        const present = new Date().getTime();
+        const future = dateOrder.getTime();
+
+        const timeDiff = Math.ceil((future - present) / 1000);
+
+        let count = timeDiff;
+
+        let timer = setInterval(() => {
+          count--;
+
+          let hour = Math.floor(count / 3600);
+          let minute = Math.floor(count / 60) % 60;
+          let second = Math.ceil(count % 60);
+
+          hour = `${hour}`;
+          minute = `${minute}`;
+          second = `${second}`;
+
+          if (second < 10) {
+            second = `0${second}`;
+          }
+
+          if (minute < 10) {
+            minute = `0${minute}`;
+          }
+
+          if (hour < 10) {
+            hour = `0${hour}`;
+          }
+
+          setHour(hour);
+          setMinute(minute);
+          setSecond(second);
+
+          if (second == 0 || minute == 0 || hour == 0) {
+            clearInterval(timer);
+          }
+        }, 1000);
+
+        return () => {
+          clearInterval(timer);
+        };
       } catch (error) {
         console.log(error);
       }
@@ -48,33 +99,33 @@ function Payment() {
   // RENDERING
 
   // Render countdown
-
+  console.log(hour, minute, second);
   const renderCountdown = () => {
     return (
       <div className="d-flex my-3">
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center mr-2">
-          2
+          {hour[0]}
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center">
-          3
+          {hour[1]}
         </div>
         <div className="payment-count-separate d-flex align-items-center mx-1">
           :
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center mr-2">
-          5
+          {minute[0]}
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center">
-          9
+          {minute[1]}
         </div>
         <div className="payment-count-separate d-flex align-items-center mx-1">
           :
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center mr-2">
-          1
+          {second[0]}
         </div>
         <div className="payment-count-wrapper d-flex align-items-center justify-content-center mr-2">
-          0
+          {second[1]}
         </div>
       </div>
     );
