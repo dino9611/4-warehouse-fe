@@ -238,8 +238,15 @@
 
 @media only screen and (max-width: 480px) {
   .history-modal {
-    min-width: 100%;
-    max-width: 100%;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 100%;
+  }
+
+  .history-modal-detail {
+    height: 90vh;
+    overflow: auto;
+    padding-right: 8px;
   }
 
   .history-btn-upload {
