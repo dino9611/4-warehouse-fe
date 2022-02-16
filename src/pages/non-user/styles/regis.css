@@ -36,7 +36,7 @@
   background-color: var(--primary-5th-color);
   display: flex;
   height: max-content;
-  width: 98vw !important;
+  width: 100% !important;
   justify-content: center;
   margin-top: 0px;
   box-sizing: border-box;
@@ -49,7 +49,6 @@
   width: 1120px;
   background-color: var(--neutral-5th-color);
   border-radius: 12px;
-  margin-left: 10px;
 
   box-shadow: 0px 1px 6px #d7d7d8;
   -webkit-box-shadow: 0px 1px 6px #d7d7d8;
@@ -102,10 +101,11 @@
   align-items: center;
   width: 180px;
   margin: 30px 32px 0 0;
-  padding-left: 15%;
+  padding: 0.625rem 0.75rem;
+  /* padding-left: 15%;
   padding-right: 18%;
   padding-bottom: 2%;
-  padding-top: 2%;
+  padding-top: 2%; */
 }
 .sudah-punya-akun-text {
   margin-top: 10%;
@@ -120,7 +120,7 @@
 }
 .checkbox-form {
   width: 300px;
-  margin-left: 1%;
+  margin-left: -0.5rem;
 }
 .checkbox-input {
   margin-top: 3px !important;

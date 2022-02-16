@@ -154,7 +154,7 @@ function CardProduct({
               style={{ color: !total_stock ? "#5a5a5a" : null }}
             >{`Rp ${thousandSeparator(price)}`}</div>
           </div>
-          <div className="w-50 ">
+          <div className="w-50 d-none d-md-inline-block">
             <ButtonPrimary
               width="w-100"
               disabled={!total_stock || loading ? true : false}

@@ -4,7 +4,7 @@ import ClickOutside from "./ClickOutside";
 import { useTransition, animated } from "react-spring";
 import "./styles/modal.css";
 
-function Modal({ open, close, children, classModal }) {
+function ModalSort({ open, close, children, classModal }) {
   const ref = useRef();
 
   useEffect(() => {
@@ -18,8 +18,8 @@ function Modal({ open, close, children, classModal }) {
   // Transition modal
 
   const transitionModal = useTransition(open, {
-    from: { transform: "translate(-50%, 0%)", top: "100%" },
-    enter: { transform: "translate(-50%, -50%)", top: "50%", left: "50%" },
+    from: { transform: "translate(-50%, 100%)", top: "150%" },
+    enter: { transform: "translate(-50%, -50%)", top: "100%", left: "50%" },
     leave: { transform: "translate(-50%, 0%)" },
   });
 
@@ -49,4 +49,4 @@ function Modal({ open, close, children, classModal }) {
   );
 }
 
-export default Modal;
+export default ModalSort;

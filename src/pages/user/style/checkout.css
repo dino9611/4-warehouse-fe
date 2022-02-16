@@ -276,3 +276,31 @@ textarea[name="address"] {
   border: none;
   background-color: #cacaca;
 }
+
+@media only screen and (max-width: 480px) {
+  .checkout-btn-wrap-resp {
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+  }
+
+  .checkout-btn-resp {
+    width: 75% !important;
+  }
+
+  .checkout-modal {
+    width: 100% !important;
+    height: 100%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .checkout-container-resp {
+    font-size: 12px !important;
+  }
+
+  .checkout-modal {
+    width: 75% !important;
+    height: 75%;
+  }
+}

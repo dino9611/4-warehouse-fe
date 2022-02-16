@@ -5,14 +5,29 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import imagesBanner from "./../assets";
 
-const images = [
-  imagesBanner.banner1,
-  imagesBanner.banner2,
-  imagesBanner.banner1,
-  imagesBanner.banner3,
-  imagesBanner.banner2,
-  imagesBanner.banner3,
-];
+let images;
+
+const mediaQuery = window.matchMedia("(max-width: 480px)");
+
+if (mediaQuery.matches) {
+  images = [
+    imagesBanner.banner1mobile,
+    imagesBanner.banner2mobile,
+    imagesBanner.banner1mobile,
+    imagesBanner.banner3mobile,
+    imagesBanner.banner2mobile,
+    imagesBanner.banner3mobile,
+  ];
+} else {
+  images = [
+    imagesBanner.banner1,
+    imagesBanner.banner2,
+    imagesBanner.banner1,
+    imagesBanner.banner3,
+    imagesBanner.banner2,
+    imagesBanner.banner3,
+  ];
+}
 
 function Carousel() {
   const [imageIndex, setImageIndex] = useState(0);
@@ -84,7 +99,10 @@ function Carousel() {
     appendDots: (dots) => {
       return (
         <div>
-          <ul style={{ margin: "auto" }}> {dots} </ul>
+          <ul style={{ margin: "auto" }} className="p-0">
+            {" "}
+            {dots}{" "}
+          </ul>
         </div>
       );
     },
@@ -97,6 +115,20 @@ function Carousel() {
     ),
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          arrows: false,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          arrows: false,
+        },
+      },
+    ],
   };
 
   return (

@@ -7,6 +7,7 @@ import gambar from "./../../assets/register.png";
 import { Link } from "react-router-dom";
 import SuccessSnack from "../../components/SuccessSnack";
 import ErrorSnack from "../../components/ErrorSnackbar";
+import { debounce } from "throttle-debounce";
 
 class Register extends Component {
   state = {
@@ -52,6 +53,10 @@ class Register extends Component {
               successSnack: true,
               message:
                 "Registrasi Berhasil, Silahkan Cek Email Anda untuk Verifikasi",
+              username: "",
+              email: "",
+              password: "",
+              confirm_password: "",
             });
           })
           .catch((err) => {
@@ -138,13 +143,15 @@ class Register extends Component {
               <h6 className="showpassword">Show Password</h6>
             </div>
             <div className="d-flex">
-              <button className="btn-regis" onClick={this.onRegisClick}>
+              <button
+                className="btn-regis"
+                onClick={debounce(350, this.onRegisClick)}
+              >
                 Daftar
               </button>
-              <h6 className="sudah-punya-akun-text">Sudah punya akun?</h6>
-              <Link to="/login" className="link-masuk">
-                Masuk
-              </Link>
+              <h6 className="sudah-punya-akun-text">
+                Sudah punya akun? <Link to="/login" className="link-masuk">Masuk</Link>
+              </h6>
             </div>
           </div>
         </div>

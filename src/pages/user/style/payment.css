@@ -71,3 +71,18 @@
 .payment-howtopay {
   line-height: 16px;
 }
+
+@media only screen and (max-width: 480px) {
+  .payment-btn-detail {
+    width: 100% !important;
+  }
+
+  .payment-btn-belanja-resp {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .payment-container-resp {
+  }
+}

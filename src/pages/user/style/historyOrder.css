@@ -102,8 +102,8 @@
 }
 
 .history-modal {
-  min-width: 45% !important;
-  max-width: 45% !important;
+  min-width: 45%;
+  max-width: 45%;
   overflow: hidden;
 }
 
@@ -234,4 +234,41 @@
   font-size: 0.875em;
   font-weight: 600;
   color: #b24629;
+}
+
+@media only screen and (max-width: 480px) {
+  .history-modal {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 100%;
+  }
+
+  .history-modal-detail {
+    height: 90vh;
+    overflow: auto;
+    padding-right: 8px;
+  }
+
+  .history-btn-upload {
+    width: 100% !important;
+  }
+
+  .history-modal-name-resp {
+    font-size: 0.65em;
+  }
+
+  .history-modal-qty-resp {
+    font-size: 0.5em;
+  }
+
+  .history-modalprice-wrapper {
+    font-size: 0.725em;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .history-modal {
+    min-width: 75%;
+    max-width: 75%;
+  }
 }

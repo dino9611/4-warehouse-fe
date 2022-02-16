@@ -11,6 +11,7 @@ import { useTransition, animated } from "react-spring";
 // Komponen
 
 import ClickOutside from "./../helpers/ClickOutside";
+import Hamburger from "./Hamburger";
 import { API_URL } from "../constants/api";
 import asset from "./../assets/index";
 import axios from "axios";
@@ -19,6 +20,8 @@ function Header() {
   const [dataCategory, setDataCategory] = useState([]); // State untuk menyimpan data produk dari database
   const [handlerCategory, setHandlerCategory] = useState(false); // State untuk kondisi dropdown category
   const [handlerProfile, setHandlerProfile] = useState(false); // State untuk kondisi dropdown profile
+
+  const [handleHamburger, setHandleHamburger] = useState(false);
 
   // Use effect untuk get data list category
 
@@ -130,8 +133,8 @@ function Header() {
 
   const renderLoginFalse = () => {
     return (
-      <>
-        <div className="header-right ">
+      <div className="d-none d-lg-flex align-items-center">
+        <div className=" header-right ">
           <Link to="/login">
             <button className="header-masuk">Masuk</button>
           </Link>
@@ -141,7 +144,7 @@ function Header() {
             <button className="header-btn-daftar px-4 py-2">Daftar</button>
           </Link>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -150,7 +153,7 @@ function Header() {
   const renderLoginTrue = () => {
     return (
       <button
-        className="header-container-login d-flex align-items-center justify-content-between"
+        className="header-container-login d-none d-lg-flex align-items-center justify-content-between"
         onClick={() => setHandlerProfile(!handlerProfile)}
       >
         <div className="d-flex align-items-center">
@@ -260,9 +263,9 @@ function Header() {
   // RETURN
 
   return (
-    <div className="header-bar">
+    <div className="header-bar ">
       <div className="container" style={{ height: "74px" }}>
-        <div className="row align-items-center justify-content-between h-100">
+        <div className="row align-items-center justify-content-between h-100 pr-4 pr-lg-0">
           <div className="d-flex">
             <div style={{ marginRight: "57px" }}>
               <Link to="/">
@@ -272,7 +275,7 @@ function Header() {
             {location.pathname === "/checkout" ||
             location.pathname === "/checkout/payment" ? null : (
               <div
-                className="d-flex align-items-center"
+                className="d-none d-lg-flex align-items-center"
                 style={{ fontWeight: "600", fontSize: "14px" }}
               >
                 <Link to="/products" className="text-link">
@@ -316,10 +319,23 @@ function Header() {
               ) : (
                 renderLoginFalse()
               )}
+              <div
+                className="d-flex d-lg-none"
+                onClick={() => setHandleHamburger(!handleHamburger)}
+              >
+                <img
+                  src={handleHamburger ? asset.closehamburger : asset.hamburger}
+                  alt="hamburger"
+                />
+              </div>
             </div>
           )}
         </div>
       </div>
+      <Hamburger
+        open={handleHamburger}
+        close={() => setHandleHamburger(false)}
+      />
     </div>
   );
 }

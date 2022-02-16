@@ -8,6 +8,7 @@ import ButtonPrimary from "../../components/ButtonPrimary";
 import Modal from "../../components/Modal";
 import { API_URL } from "../../constants/api";
 import Textbox from "./../../components/Textbox";
+import "./style/ForgetPassModal.css";
 
 function ForgetPass({ open, close }) {
   const [inputEmail, setInputEmail] = useState("");
@@ -120,7 +121,7 @@ function ForgetPass({ open, close }) {
   // RENDER MODAL
   const renderModal = () => {
     return (
-      <Modal open={open} close={close} classModal="forget-pass-modal p-0">
+      <Modal open={open} close={close} classModal="forget-pass-modal p-0 forget-pass-modal-override">
         {renderHeaderModal()}
         {renderContentForget()}
       </Modal>
